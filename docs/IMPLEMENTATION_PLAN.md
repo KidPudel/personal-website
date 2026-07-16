@@ -17,6 +17,8 @@ The project is still in active implementation. Remaining launch work includes co
 ## Confirmed decisions
 
 - Deployment target: GitHub Pages.
+- Public URL: `https://kidpudel.github.io/personal-website/`.
+- Repository visibility: private. The published Pages site remains public.
 - Framework: Astro with strict TypeScript.
 - Rendering: static HTML by default.
 - Content: local Markdown or MDX backed by typed Astro content collections.
@@ -167,7 +169,7 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 ### GitHub Pages
 
 - Use static Astro output.
-- Configure the canonical `site` URL and repository-dependent `base` path.
+- Configure the canonical `site` URL as `https://kidpudel.github.io` and the project-site `base` path as `/personal-website/`.
 - Add a GitHub Actions workflow using the official Pages deployment flow.
 - Ensure all internal links and assets work from the selected Pages path.
 - Generate a sitemap, RSS feed, and a useful `404.html` page.

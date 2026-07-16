@@ -8,7 +8,7 @@ This file is the living implementation record. Update it whenever a meaningful t
 
 Status: active full-project implementation, page structure and core experience built, launch completion work remains
 
-The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. This is not a prototype. Work continues through content completion, release infrastructure, final verification, deployment, and public inspection.
+The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. The first public release targets `https://kidpudel.github.io/personal-website/` from the private source repository. Work continues through deployment, public inspection, content completion, and the remaining launch infrastructure.
 
 ## Completed
 
@@ -122,6 +122,8 @@ The production website is implemented across five purpose-specific routes with t
 - Widened the homepage headline column at desktop widths so the notebook title uses the available screen instead of forming a narrow text tower.
 - Clarified that the homepage checklist describes qualities Igor wants in his work and artifacts, including `A useful capability` and `A joyful artifact`.
 - Consolidated the overlapping nine-item checklist into three large outcomes: meaningful work, a more joyful world through capability, and a real standalone artifact.
+- Selected `https://kidpudel.github.io/personal-website/` as the first public GitHub Pages URL while keeping the source repository private.
+- Configured the Pages workflow to build all links and assets against the `/personal-website/` project path.
 
 ## Confirmed public links
 
@@ -133,9 +135,6 @@ The production website is implemented across five purpose-specific routes with t
 
 ## Pending decisions
 
-- Choose the final GitHub Pages URL form:
-  - `https://kidpudel.github.io/`; or
-  - `https://kidpudel.github.io/personal-website/`.
 - Confirm the exact itch.io project URL for `Discourses by Campfire`.
 
 ## Current implementation checklist
@@ -147,7 +146,7 @@ The production website is implemented across five purpose-specific routes with t
 - [x] Inspect résumé and available visual material.
 - [x] Write the implementation plan.
 - [x] Establish a progress log.
-- [ ] Resolve remaining project and deployment URL details.
+- [x] Resolve the GitHub Pages URL and repository-dependent base path.
 - [x] Scaffold the Astro application.
 - [x] Create content schemas.
 - [x] Build the complete core homepage experience.
@@ -165,11 +164,11 @@ The production website is implemented across five purpose-specific routes with t
 
 ## Current blockers
 
-Implementation is not technically blocked. The exact Discourses by Campfire URL and the permanent GitHub Pages path still require confirmation, but they do not prevent progress on local content, detail routes, RSS, the error page, metadata, or verification.
+Deployment from a private repository requires GitHub Pro, Team, or Enterprise. If the current account plan does not include private-repository Pages, deployment will require either a plan upgrade or explicit approval to make the repository public. The exact Discourses by Campfire URL still requires confirmation but does not block deployment.
 
 ## Next action
 
-Continue with launch content and infrastructure that does not require unresolved public details: host `Identity Cage` locally, add the planned detail routes, implement RSS and `404.html`, complete metadata, and then perform the final verification pass. Incorporate visual feedback when it arrives without pausing unrelated completion work.
+Deploy the current release to `https://kidpudel.github.io/personal-website/`, inspect the published routes and assets, then continue with the remaining launch content and infrastructure.
 
 ## Notes for future work
 
