@@ -167,24 +167,18 @@ The homepage introduces Igor through the values underneath his work, games, and 
 The homepage contains:
 
 - a personal opening;
-- a vertically scrolling list of values;
-- one original doodle associated with each value;
-- a reveal or alteration interaction for every value doodle;
+- three large outcomes Igor wants from his work;
+- one original doodle associated with each outcome;
+- a reveal or alteration interaction for every doodle;
 - concise onward links to Work, Games, and Blog.
 
-The initial launch values are:
+The initial launch outcomes are:
 
-- clear meaning;
-- a real purpose;
-- a useful capability;
-- a joyful artifact;
-- a mechanism or system feel;
-- meaningful data or state flow;
-- visible behaviour;
-- a complete experience;
-- honest trade-offs.
+- it is meaningful and clear why it exists;
+- it makes the world more joyful by fulfilling someone's wish for a capability;
+- it becomes a real, complete artifact that can stand on its own.
 
-Present these values as qualities Igor wants in the software, games, tools, capabilities, and artifacts he makes, not as generic claims about what matters in every part of life. Keep the labels direct. Their doodles should read as compact checkbox-like marks placed beside the value rather than as large standalone illustrations.
+Present these as qualities Igor wants in the software, games, tools, capabilities, and artifacts he makes, not as generic claims about what matters in every part of life. Do not split them into overlapping sub-values. Give each outcome one large card and one original doodle.
 
 The homepage should not begin with a long technology list.
 

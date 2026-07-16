@@ -121,6 +121,7 @@ The production website is implemented across five purpose-specific routes with t
 - Replaced the distracting click burst with a small three-line pencil tick that fades in roughly a quarter second and has no central spot or ring.
 - Widened the homepage headline column at desktop widths so the notebook title uses the available screen instead of forming a narrow text tower.
 - Clarified that the homepage checklist describes qualities Igor wants in his work and artifacts, including `A useful capability` and `A joyful artifact`.
+- Consolidated the overlapping nine-item checklist into three large outcomes: meaningful work, a more joyful world through capability, and a real standalone artifact.
 
 ## Confirmed public links
 

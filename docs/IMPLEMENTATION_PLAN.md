@@ -34,8 +34,8 @@ The project is still in active implementation. Remaining launch work includes co
 ### Home
 
 - Personal opening and portrait switcher.
-- A compact checklist of nine directly worded values.
-- A small checkbox-like original doodle beside each value.
+- Three large, directly worded outcomes for Igor's work.
+- One original interactive doodle for each outcome.
 - Scroll reveal plus a keyboard, pointer, and touch alteration state for each doodle.
 - Short onward links to Work, Games, and Blog without duplicating their content.
 
@@ -181,7 +181,7 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 - Original code-native doodles drawn from Igor's interests in games, systems, cooking, music, curiosity, and playful energy.
 - Original avatar or personal artwork where it strengthens the introduction.
 - A two-state homepage portrait that switches between `drawn me` and `real me`.
-- A focused homepage introduction followed by a compact checklist of interactive values.
+- A focused homepage introduction followed by three large interactive outcome cards.
 - Professional work and games live on their own dedicated routes rather than as homepage portfolio cards.
 - Taped, clipped, or torn-paper media treatment for selected images.
 - A restrained pencil-and-paper palette built from ink, faded red, blue-green, moss, and sticky-note yellow.
@@ -230,7 +230,7 @@ Optimize raster media, preserve intentional pixel edges, provide meaningful alte
 ### Phase 2: core route implementation, completed
 
 - Home, Work, Games, Blog, and Connect routes, each with a clear purpose.
-- Nine interactive homepage values with compact original SVG doodles.
+- Three interactive homepage outcomes with large original SVG doodles.
 - Two production stories on Work and two game projects on Games.
 - Dedicated pixel-art Games visual system.
 - Notebook page-turn route transitions.
