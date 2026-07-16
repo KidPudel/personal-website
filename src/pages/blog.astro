@@ -1,0 +1,38 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Blog | Igor Kupchinenko"
+  description="Writing about identity, software, games, systems, and ideas Igor is trying to understand."
+>
+  <div class="site-frame">
+    <SiteHeader active="blog" />
+    <main id="main-content" class="notebook page-notebook">
+      <header class="page-hero">
+        <p class="eyebrow"><span aria-hidden="true">✦</span> writing</p>
+        <h1>Writing from the margins.</h1>
+        <p>I write when an idea keeps following me around. The subjects tend to include identity, capability, software, games, systems, and how people learn.</p>
+      </header>
+
+      <section class="writing-list" aria-label="Published writing">
+        <article class="writing-card">
+          <div>
+            <p class="card-label">essay / first published on Medium</p>
+            <h2>Identity Cage</h2>
+            <p>A personal essay about identity, capability, and the limits created by the labels we hold too tightly.</p>
+          </div>
+          <a class="button button-primary" href="https://medium.com/@iggysleepy/identity-cage-a9a79286cef9">Read the essay</a>
+        </article>
+      </section>
+
+      <aside class="page-note">
+        <p class="card-label">in progress</p>
+        <p>The locally hosted version of Identity Cage and future writing will appear here as the blog grows.</p>
+      </aside>
+    </main>
+    <SiteFooter />
+  </div>
+</BaseLayout>

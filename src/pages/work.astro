@@ -1,0 +1,60 @@
+---
+import { getEntry } from 'astro:content';
+
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const performanceStory = await getEntry('work', 'high-load-service');
+const orderingStory = await getEntry('work', 'ordering-platform');
+
+if (!performanceStory || !orderingStory) {
+  throw new Error('Work content is missing.');
+}
+---
+
+<BaseLayout
+  title="Work | Igor Kupchinenko"
+  description="Selected production software work from Igor Kupchinenko."
+>
+  <div class="site-frame">
+    <SiteHeader active="work" />
+    <main id="main-content" class="notebook page-notebook">
+      <header class="page-hero">
+        <p class="eyebrow"><span aria-hidden="true">✦</span> work and experience</p>
+        <h1>Things I helped make behave.</h1>
+        <p>Most of my commercial experience is in Go, backend systems, data flow, APIs, and production problem-solving. The source code is private, so these stories focus on the problem, decisions, and evidence.</p>
+      </header>
+
+      <section class="page-grid" aria-label="Selected professional work">
+        <article class="page-card">
+          <p class="card-label">performance investigation</p>
+          <h2>{performanceStory.data.title}</h2>
+          <p>{performanceStory.data.summary}</p>
+          <ul class="work-facts">
+            <li>profiled the real execution path with pprof</li>
+            <li>tuned goroutine behavior and connection pooling</li>
+            <li>investigated and optimized SQL queries</li>
+          </ul>
+        </article>
+
+        <article class="page-card page-card-blue">
+          <p class="card-label">product ownership</p>
+          <h2>{orderingStory.data.title}</h2>
+          <p>{orderingStory.data.summary}</p>
+          <ul class="work-facts">
+            <li>translated stakeholder requirements into working features</li>
+            <li>worked across the Go backend and a Flutter application</li>
+            <li>carried implementation decisions into production operation</li>
+          </ul>
+        </article>
+      </section>
+
+      <aside class="page-note">
+        <p class="card-label">still being documented</p>
+        <p>More backend stories are coming, including event-driven callback delivery, service boundaries, and data-pipeline work.</p>
+      </aside>
+    </main>
+    <SiteFooter />
+  </div>
+</BaseLayout>

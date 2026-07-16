@@ -6,9 +6,9 @@ This file is the living implementation record. Update it whenever a meaningful t
 
 ## Current status
 
-Status: representative homepage slice ready for Igor's review
+Status: active full-project implementation, core experience built, launch completion work remains
 
-The Astro foundation, typed content collections, first homepage slice, optimized media, résumé downloads, and GitHub Pages workflow are implemented. The visual direction should be reviewed before it is generalized across the rest of the site.
+The production website is implemented across its four core routes with typed content, the original paper-and-doodles system, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. This is not a prototype. Work continues through content completion, release infrastructure, final verification, deployment, and public inspection.
 
 ## Completed
 
@@ -44,7 +44,7 @@ The Astro foundation, typed content collections, first homepage slice, optimized
   - `Identity Cage`.
 - Copied selected web-ready avatar and Campfire assets into the repository.
 - Added visually verified PDF and DOCX résumé downloads.
-- Built the representative homepage slice with:
+- Built the first complete homepage implementation with:
   - conventional anchor navigation;
   - original avatar artwork;
   - a handmade notebook surface;
@@ -55,10 +55,42 @@ The Astro foundation, typed content collections, first homepage slice, optimized
 - Added the official Astro GitHub Pages deployment workflow.
 - Completed a clean Astro type check and static production build.
 - Verified a `/personal-website` GitHub Pages base-path build and prefixed asset links.
-- Visually checked the slice at desktop and 390px mobile widths.
+- Visually checked the homepage at desktop and 390px mobile widths.
 - Confirmed no horizontal overflow at desktop or mobile widths.
 - Confirmed one `h1`, one `main`, complete image alternative text, a working skip link, visible focus styling, and a clean browser console.
 - Increased small navigation and text links to 44px mobile touch targets.
+- Replaced the unclear `I make games and notes, too` heading with `A quick glimpse into Igor's personal notebook`.
+- Replaced the anchor-only navigation with separate Home, Work, Connect, and Blog pages.
+- Added a second résumé-backed production story about ordering-platform ownership in a two-person team.
+- Added Santa Foundation as the second homepage game.
+- Composed an original Santa Foundation preview from Igor's pixel-art layers and sleigh sprite.
+- Added clearly visible previous and next controls, `1 / 2` status, and explanatory copy to both homepage stacks.
+- Implemented the switchers with progressive enhancement. Both cards remain visible when JavaScript is unavailable.
+- Verified that each switcher exposes exactly one active panel when enhanced.
+- Verified both directions reveal the expected second items:
+  - `Owning an ordering platform in a two-person team`;
+  - `Santa Foundation`.
+- Added Home, Work, Connect, and Blog active-navigation states.
+- Added 44 by 44 pixel touch areas for all four mobile primary-navigation links.
+- Rebuilt and verified all four routes with both root and `/personal-website` GitHub Pages paths.
+- Confirmed zero Astro diagnostics, no browser console warnings or errors, and no horizontal overflow at 390px.
+- Added a clearly visible `drawn me` and `real me` portrait switcher to the homepage.
+- Verified synchronized portrait captions, one active portrait panel, and correct `aria-pressed` state.
+- Replaced the temporary `real me` placeholder with Igor's approved `src/assets/art/avatar_irl.png` photograph.
+- Added descriptive alternative text and Astro image optimization. The generated WebP is 36KB, down from the 9.5MB source.
+- Verified the real-photo crop at desktop and 390px mobile widths, 45px portrait-switcher buttons, and no horizontal overflow.
+- Recorded Igor's concern that the earlier dark frame, editorial hero, tilted portrait, and paired showcase cards followed the supplied reference too closely.
+- Rebuilt the site around an original loose-leaf sketchbook composition:
+  - warm desk background instead of the dark portfolio surround;
+  - punched paper holes, ruled lines, red notebook margin, torn scraps, and sticky notes;
+  - a three-part homepage collage instead of the previous two-column hero;
+  - a circular portrait cutout instead of a polaroid-like card;
+  - separate scrapbook rows for production stories and games instead of paired showcase cards.
+- Added original code-native doodles inspired by Igor's interests in systems, games, cooking, music, campfires, and playful dog-like energy without copying any reference artwork.
+- Carried the paper system through Home, Work, Blog, and Connect while retaining conventional navigation and approved content.
+- Reverified project and portrait switchers, all four route active states, desktop and 390px layouts, 44px interaction targets, one `h1` and `main` per page, and zero horizontal overflow.
+- Completed a clean production build with zero Astro diagnostics after the redesign.
+- Updated `Agents.md` and the project trackers to require completion of the production website instead of stopping after an initial visual section.
 
 ## Confirmed public links
 
@@ -87,21 +119,24 @@ The Astro foundation, typed content collections, first homepage slice, optimized
 - [ ] Resolve remaining contact and deployment URL details.
 - [x] Scaffold the Astro application.
 - [x] Create content schemas.
-- [x] Build the representative homepage slice.
-- [ ] Review and approve the visual direction.
-- [ ] Build remaining routes and content.
-- [x] Optimize representative media and add résumé downloads.
+- [x] Build the complete core homepage experience.
+- [x] Apply the original visual system across all core routes.
+- [ ] Complete remaining launch content and planned detail pages.
+- [ ] Adapt and host `Identity Cage` locally.
+- [ ] Add game and professional detail pages.
+- [x] Optimize current media and add résumé downloads.
 - [x] Add GitHub Pages deployment workflow.
-- [ ] Complete accessibility, responsive, and performance verification.
+- [ ] Add RSS, a useful `404.html`, and complete social metadata.
+- [ ] Complete final accessibility, responsive, link, and performance verification.
 - [ ] Deploy and inspect the published site.
 
 ## Current blockers
 
-Implementation is not technically blocked. Expansion is intentionally waiting for Igor's review of the representative visual direction, as required by the project workflow. Final contact copy and the permanent GitHub Pages path still require confirmation before release.
+Implementation is not technically blocked. Public email approval, the public X URL, exact game URLs, and the permanent GitHub Pages path still require confirmation, but they do not prevent progress on local content, detail routes, RSS, the error page, metadata, or verification.
 
 ## Next action
 
-Igor reviews the representative homepage slice. After approval, refine any requested details and generalize the visual system into the remaining routes and content.
+Continue with launch content and infrastructure that does not require unresolved public details: host `Identity Cage` locally, add the planned detail routes, implement RSS and `404.html`, complete metadata, and then perform the final verification pass. Incorporate visual feedback when it arrives without pausing unrelated completion work.
 
 ## Notes for future work
 

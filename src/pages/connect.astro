@@ -1,0 +1,52 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout
+  title="Connect | Igor Kupchinenko"
+  description="Contact links for Igor Kupchinenko."
+>
+  <div class="site-frame">
+    <SiteHeader active="connect" />
+    <main id="main-content" class="notebook page-notebook">
+      <header class="page-hero connect-hero">
+        <p class="eyebrow"><span aria-hidden="true">✦</span> connect</p>
+        <h1>Say hello.</h1>
+        <p>If you want to talk about backend systems, games, a role, or something interesting you are making, these are the best places to find me.</p>
+      </header>
+
+      <section class="contact-grid" aria-label="Contact links">
+        <a class="contact-card" href="https://www.linkedin.com/in/iggydev/">
+          <span>professional conversations</span>
+          <strong>LinkedIn</strong>
+          <b aria-hidden="true">↗</b>
+        </a>
+        <a class="contact-card" href="https://github.com/KidPudel">
+          <span>code and projects</span>
+          <strong>GitHub</strong>
+          <b aria-hidden="true">↗</b>
+        </a>
+        <a class="contact-card" href="https://kidpudel.itch.io/">
+          <span>playable things</span>
+          <strong>itch.io</strong>
+          <b aria-hidden="true">↗</b>
+        </a>
+        <a class="contact-card" href={`${base}resume/igor-kupchinenko-resume.pdf`}>
+          <span>work history</span>
+          <strong>Résumé PDF</strong>
+          <b aria-hidden="true">↓</b>
+        </a>
+      </section>
+
+      <aside class="page-note">
+        <p class="card-label">email</p>
+        <p>The public email address will be added here before launch.</p>
+      </aside>
+    </main>
+    <SiteFooter />
+  </div>
+</BaseLayout>

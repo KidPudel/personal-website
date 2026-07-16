@@ -4,6 +4,17 @@ This repository contains Igor's personal website.
 
 The website is a personal place first and a professional portfolio second. It should feel like a quick glimpse into Igor's notebook while remaining clear, credible, accessible, and useful for networking and job opportunities.
 
+## Delivery mandate
+
+This repository is the production website project, not a disposable prototype, design exercise, or isolated visual demo.
+
+- Work toward a complete, deployable, publicly useful website.
+- Treat visual reviews as iterative feedback, not as a terminal state or permission to leave the rest of the project unfinished.
+- Do not stop after an initial section when safe, in-scope work remains.
+- Keep `docs/IMPLEMENTATION_PLAN.md` and `docs/PROGRESS.md` synchronized with the actual repository state.
+- Record completed work, remaining work, decisions, and genuine blockers accurately.
+- Prefer finishing required content, routes, accessibility, metadata, verification, and deployment over adding optional spectacle.
+
 ## Read before working
 
 Use the following documents when relevant:
@@ -80,9 +91,9 @@ Before adding complexity, ask:
 5. Can the same result be achieved more simply?
 6. Is this helping publication or delaying it?
 
-## Initial release
+## Completion target
 
-The first useful version should include:
+The completed launch version should include:
 
 - homepage;
 - personal introduction;
@@ -95,16 +106,19 @@ The first useful version should include:
 - responsive and accessible layout;
 - a restrained version of the handmade visual style.
 
-The first release does not require every animation, illustration, transition, or project case study.
+Completion does not require every possible animation, illustration, transition, or project case study. It does require every agreed launch feature to be implemented, verified, and deployable.
 
 ## Working process
 
 For substantial visual changes:
 
 1. read the relevant context document;
-2. implement a small representative section;
+2. implement the change first in one real section with real content;
 3. review it with real content;
 4. refine the direction;
-5. only then generalize it across the site.
+5. apply the validated direction across every affected route;
+6. continue through verification and release work.
+
+The first affected section is a risk-reduction step inside the project, not the final deliverable.
 
 When a request conflicts with these instructions, follow the user's most recent explicit request.

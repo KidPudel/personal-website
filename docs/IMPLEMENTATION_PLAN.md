@@ -4,9 +4,15 @@ Last updated: 2026-07-16
 
 ## Objective
 
-Publish a useful first version of Igor's personal website that feels like a glimpse into his notebook. The site should introduce Igor as a person, show credible professional evidence, present finished games and writing, and make contact straightforward.
+Complete and publish Igor's personal website so it feels like a glimpse into his notebook. The site should introduce Igor as a person, show credible professional evidence, present finished games and writing, and make contact straightforward.
 
-The first release should favor clarity, real content, accessibility, and publication speed over elaborate interaction.
+The launch release should favor clarity, real content, accessibility, and publication readiness over elaborate interaction. This plan governs the complete project, not a prototype or design-only phase.
+
+## Current delivery state
+
+The Astro application, content collections, shared paper-and-doodles visual system, Home, Work, Connect, and Blog routes, project switchers, portrait switcher, optimized media, résumé downloads, and GitHub Pages workflow are implemented.
+
+The project is still in active implementation. Remaining launch work includes completing the locally hosted article and planned project detail content, resolving public contact and deployment URLs, adding remaining discovery and error-page features, completing final accessibility and performance verification, and deploying and inspecting the public site.
 
 ## Confirmed decisions
 
@@ -23,29 +29,41 @@ The first release should favor clarity, real content, accessibility, and publica
 - Selected web-ready artwork and game media may be copied into the repository for implementation.
 - Personal context guides the atmosphere and voice. Private facts are not automatically public content.
 
-## First-release content
+## Launch content
 
 ### Home
 
-- Personal opening.
+- Opening headed by `A quick glimpse into Igor's personal notebook`.
 - Short, concrete explanation of Igor's professional work.
 - Current interests or current exploration.
-- Selected professional work.
-- Two selected games.
+- Two clearly switchable professional stories.
+- Two clearly switchable selected games.
 - Recent writing.
-- Short personal note.
+- Short personal story content where approved.
 - Contact, social, and résumé links.
-
-### My Story
-
-- Starting programming in 2019.
-- Progression through mobile, backend, systems, and game work.
-- Current direction without presenting a job title as a permanent identity.
-- Only explicitly approved personal details.
 
 ### Work
 
-Initial stories:
+- A dedicated page for production software work.
+- High-load service performance investigation.
+- Ordering-platform ownership in a two-person team.
+- Future backend stories as they are documented.
+
+### Connect
+
+- Dedicated LinkedIn, GitHub, itch.io, résumé, and approved email links.
+- Direct wording that supports professional opportunities and compatible collaborators.
+
+### Blog
+
+- A dedicated writing index.
+- Locally hosted `Identity Cage` article when adapted.
+- Medium canonical link where appropriate.
+- RSS feed.
+
+### Professional stories
+
+Homepage and Work-page stories:
 
 1. High-load service performance investigation and optimization.
 2. Building a payment or ordering service with another developer.
@@ -71,12 +89,6 @@ The stories should explain constraints, responsibilities, decisions, results, an
    - Mechanics, production constraints, technical decisions, and reflection.
    - itch.io link.
 
-### Writing
-
-- Locally hosted `Identity Cage` article.
-- Writing index prepared for future posts.
-- RSS feed.
-
 ### Current exploration
 
 - Game telemetry and analytics project.
@@ -96,44 +108,42 @@ The stories should explain constraints, responsibilities, decisions, results, an
 
 ```text
 /
-├── story/
 ├── work/
-│   ├── high-load-service-performance/
-│   ├── payment-service/
-│   └── flutter-product-delivery/
-├── games/
+│   ├── high-load-service-performance/  # planned detail page
+│   └── ordering-platform/              # planned detail page
+├── connect/
+├── blog/
+│   └── identity-cage/        # planned local article
+├── games/                    # planned detail routes
 │   ├── discourses-by-campfire/
-│   └── secret-santa-foundation/
-├── writing/
-│   └── identity-cage/
-└── contact/
+│   └── santa-foundation/
+└── 404.html                  # required launch error page
 ```
 
-Final navigation labels may be playful only when paired with clear functional labels.
+Primary navigation is conventional and uses `Home`, `Work`, `Connect`, and `Blog` as separate pages. Playful language may be used inside those pages without making visitors decode navigation.
 
 ## Technical architecture
 
 ```text
 src/
+├── assets/
+│   ├── art/
+│   └── games/
 ├── components/
-│   ├── cards/
-│   ├── handmade/
-│   ├── layout/
-│   ├── media/
-│   └── navigation/
+│   ├── DoodleGarden.astro
+│   ├── SiteFooter.astro
+│   └── SiteHeader.astro
 ├── content/
 │   ├── games/
 │   ├── work/
 │   └── writing/
-├── layouts/
-│   ├── BaseLayout.astro
-│   ├── ProjectLayout.astro
-│   └── WritingLayout.astro
+├── layouts/BaseLayout.astro
 ├── pages/
-├── styles/
-│   ├── global.css
-│   ├── motion.css
-│   └── tokens.css
+│   ├── index.astro
+│   ├── work.astro
+│   ├── connect.astro
+│   └── blog.astro
+├── styles/global.css
 └── content.config.ts
 
 public/
@@ -168,13 +178,17 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 ## Visual direction
 
 - Clean, readable structure beneath a handmade layer.
-- Dark textured surround with warm paper-like content surfaces.
-- Small original drawings and handwritten annotations.
+- A warm desk and loose-leaf paper system rather than a dark framed portfolio shell.
+- Visible ruled lines, punched holes, a red notebook margin, torn edges, tape, and uneven paper scraps.
+- Original code-native doodles drawn from Igor's interests in games, systems, cooking, music, curiosity, and playful energy.
 - Original avatar or personal artwork where it strengthens the introduction.
-- Taped or stitched media treatment for selected images.
-- One restrained accent palette shared across the site.
+- A two-state homepage portrait that switches between `drawn me` and `real me`.
+- A three-part homepage collage with introduction, circular portrait cutout, and a small handwritten contents note.
+- Separate full-width scrapbook rows for professional work and games instead of paired portfolio showcase cards.
+- Taped, clipped, or torn-paper media treatment for selected images.
+- A restrained pencil-and-paper palette built from ink, faded red, blue-green, moss, and sticky-note yellow.
 - Selective pixel-art treatment for Games while preserving site-wide typography and navigation.
-- No copied illustrations, borders, or exact composition from reference sites.
+- No copied illustrations, borders, signature framing, card arrangements, or exact composition from reference sites.
 
 ### Signature interaction
 
@@ -198,64 +212,54 @@ Available source folders:
 
 Copy only selected web-ready assets into the repository. Keep editable production files such as `.kra`, `.aseprite`, and `.af` outside the published site unless they are explicitly needed.
 
+The portrait switcher uses Igor's approved `avatar_irl.png` photograph for the `real me` state and his original avatar artwork for the `drawn me` state. Keep both assets optimized, preserve meaningful alternative text, and do not generate or infer replacement likenesses.
+
 Optimize raster media, preserve intentional pixel edges, provide meaningful alternative text, include video posters, and avoid autoplay with sound.
 
-## Implementation phases
+## Delivery phases
 
-### Phase 1: resolve publication details
+### Phase 1: foundation and visual system, completed
 
-- Confirm public email.
-- Receive the public X profile URL or omit X.
-- Choose root GitHub Pages deployment or a repository subpath.
-- Confirm exact itch.io project links.
+- Astro with strict TypeScript and typed content collections.
+- Static rendering, shared layout, semantic navigation, skip link, and focus states.
+- Original loose-leaf paper and doodles system applied across all core routes.
+- GitHub Pages build and deployment workflow.
+- Optimized current game and portrait media.
 
-### Phase 2: project foundation
+### Phase 2: core route implementation, completed
 
-- Scaffold Astro and strict TypeScript.
-- Add content collections and schemas.
-- Add base layout, metadata, semantic navigation, skip link, and accessible focus states.
-- Add design tokens and responsive layout primitives.
-- Add initial GitHub Pages configuration.
+- Home, Work, Connect, and Blog routes.
+- Two switchable production stories and two switchable games.
+- Drawn and real portrait switcher.
+- Responsive layouts, progressive enhancement, touch controls, and reduced-motion behavior.
+- PDF and DOCX résumé downloads.
 
-### Phase 3: representative homepage slice
+### Phase 3: launch content completion, in progress
 
-- Build the header and personal introduction.
-- Use one original avatar or illustration.
-- Add one anonymized professional preview.
-- Add a `Discourses by Campfire` preview using real media.
-- Add the first drawn-stroke interaction.
-- Test mobile, keyboard, touch, and reduced-motion behavior.
-
-Do not generalize the visual system until this slice is reviewed.
-
-### Phase 4: content expansion
-
-- Build all main routes.
-- Add the two games and their detail pages.
-- Add the professional stories.
 - Adapt and host `Identity Cage` locally.
-- Add the story, current exploration, contact, and résumé content.
+- Complete selected game detail pages with real media, mechanics, technical decisions, and reflection.
+- Complete selected professional detail stories with anonymized constraints, decisions, results, and reflection.
+- Add approved personal story and current-exploration content where it improves visitor understanding.
+- Replace unresolved contact and project URLs with confirmed public values.
 
-### Phase 5: media and refinement
+### Phase 4: discovery and release infrastructure, pending
 
-- Optimize images and video delivery.
-- Add responsive taped or stitched media frames.
-- Add the restrained Games pixel treatment.
-- Add placeholders only where Igor is expected to provide future material.
-- Refine typography, texture, spacing, and annotations.
+- Add RSS for writing.
+- Add a useful `404.html` page.
+- Complete canonical metadata and social preview assets.
+- Verify internal links, downloads, sitemap, and repository-base paths.
 
-### Phase 6: verification and release
+### Phase 5: final verification and deployment, pending
 
-- Run type and production build checks.
-- Verify all routes and downloads under the GitHub Pages base path.
-- Test responsive layouts.
+- Run clean type and production build checks.
+- Test all routes at desktop and mobile widths.
 - Test keyboard navigation, focus visibility, touch targets, and reduced motion.
 - Check color contrast, headings, landmarks, labels, and alternative text.
-- Check metadata, social previews, sitemap, RSS, broken links, and `404.html`.
 - Review image weight, layout shift, and unnecessary JavaScript.
 - Deploy through GitHub Actions and inspect the published site.
+- Fix deployment-only issues before declaring the project complete.
 
-## First-release acceptance criteria
+## Launch acceptance criteria
 
 - Every required route is directly addressable and works without client-side JavaScript.
 - The homepage introduces Igor as a person before showing dense professional information.
@@ -276,4 +280,4 @@ Do not generalize the visual system until this slice is reviewed.
 - Public X profile URL.
 - Root Pages URL versus `/personal-website/` project URL.
 - Exact public itch.io links for both featured games.
-- Final homepage opening copy after the representative visual slice exists.
+- Final refinements to the approved notebook heading and homepage introduction.

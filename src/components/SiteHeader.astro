@@ -1,0 +1,44 @@
+---
+interface Props {
+  active: 'home' | 'work' | 'connect' | 'blog';
+}
+
+const { active } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const links = [
+  { key: 'home', label: 'home', href: base },
+  { key: 'work', label: 'work', href: `${base}work/` },
+  { key: 'connect', label: 'connect', href: `${base}connect/` },
+  { key: 'blog', label: 'blog', href: `${base}blog/` },
+] as const;
+
+const resumePdf = `${base}resume/igor-kupchinenko-resume.pdf`;
+---
+
+<header class="site-header" aria-label="Site header">
+  <a class="brand draw-link" href={base} aria-label="Igor Kupchinenko, home">
+    igor<span class="brand-dot" aria-hidden="true">.</span>
+  </a>
+
+  <nav class="primary-nav" aria-label="Primary navigation">
+    {
+      links.map((link) => (
+        <a
+          class:list={['draw-link', { 'is-active': active === link.key }]}
+          href={link.href}
+          aria-current={active === link.key ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+
+  <a class="resume-link" href={resumePdf}>
+    résumé
+    <svg aria-hidden="true" viewBox="0 0 20 20">
+      <path d="M10 3v10m0 0 4-4m-4 4-4-4M4 17h12" />
+    </svg>
+  </a>
+</header>
