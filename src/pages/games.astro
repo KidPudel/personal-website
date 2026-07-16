@@ -10,6 +10,7 @@ import santaSky from '../assets/games/santa/sky-texture.png';
 import santaSleigh from '../assets/games/santa/sleigh-with-elf.png';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { paperTransition } from '../config/transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const campfire = await getEntry('games', 'discourses-by-campfire');
@@ -20,7 +21,7 @@ if (!campfire || !santa) throw new Error('Game content is missing.');
 <BaseLayout page="games" title="Games | Igor Kupchinenko" description="Games and game-development work by Igor Kupchinenko, including Godot projects and original pixel art.">
   <div class="site-frame game-frame">
     <SiteHeader active="games" />
-    <main id="main-content" class="notebook-page games-page">
+    <main id="main-content" class="notebook-page games-page" transition:name="notebook-page" transition:animate={paperTransition}>
       <header class="games-hero">
         <div>
           <p class="pixel-kicker">PLAYER 1 / IGOR</p>

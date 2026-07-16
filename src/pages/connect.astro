@@ -1,6 +1,8 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { publicEmail, publicLinks } from '../config/site';
+import { paperTransition } from '../config/transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
@@ -13,7 +15,7 @@ const base = import.meta.env.BASE_URL;
 >
   <div class="site-frame">
     <SiteHeader active="connect" />
-    <main id="main-content" class="notebook notebook-page simple-page">
+    <main id="main-content" class="notebook notebook-page simple-page" transition:name="notebook-page" transition:animate={paperTransition}>
       <header class="page-hero connect-hero">
         <p class="eyebrow"><span aria-hidden="true">✦</span> connect</p>
         <h1>Say hello.</h1>
@@ -21,22 +23,22 @@ const base = import.meta.env.BASE_URL;
       </header>
 
       <section class="contact-grid" aria-label="Contact links">
-        <a class="contact-card" href="https://www.linkedin.com/in/iggydev/">
+        <a class="contact-card" href={publicLinks.linkedin}>
           <span>professional conversations</span>
           <strong>LinkedIn</strong>
           <b aria-hidden="true">↗</b>
         </a>
-        <a class="contact-card" href="https://github.com/KidPudel">
+        <a class="contact-card" href={publicLinks.github}>
           <span>code and projects</span>
           <strong>GitHub</strong>
           <b aria-hidden="true">↗</b>
         </a>
-        <a class="contact-card" href="https://kidpudel.itch.io/">
+        <a class="contact-card" href={publicLinks.itch}>
           <span>playable things</span>
           <strong>itch.io</strong>
           <b aria-hidden="true">↗</b>
         </a>
-        <a class="contact-card" href="https://x.com/kidpudel">
+        <a class="contact-card" href={publicLinks.x}>
           <span>short notes and updates</span>
           <strong>X / @kidpudel</strong>
           <b aria-hidden="true">↗</b>
@@ -46,10 +48,10 @@ const base = import.meta.env.BASE_URL;
           <strong>Résumé PDF</strong>
           <b aria-hidden="true">↓</b>
         </a>
-        <a class="contact-card" href="mailto:i.kupchinenko@gmail.com">
+        <a class="contact-card" href={publicLinks.email}>
           <span>direct message</span>
           <strong>Email</strong>
-          <small>i.kupchinenko@gmail.com</small>
+          <small>{publicEmail}</small>
           <b aria-hidden="true">↗</b>
         </a>
       </section>

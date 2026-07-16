@@ -12,6 +12,8 @@ The launch release should favor clarity, real content, accessibility, and public
 
 The Astro application, content collections, five-purpose route structure, shared notebook shell, interactive values homepage, professional Work page, pixel-art Games page, Blog, Connect, portrait switcher, optimized media, résumé downloads, and GitHub Pages workflow are implemented.
 
+The implementation has also completed a local architecture and compatibility audit. Node 24 is the documented development and deployment runtime, public profile links are centralized, and homepage interactions now preserve readable, non-misleading HTML when JavaScript is unavailable.
+
 The project is still in active implementation. Remaining launch work includes completing the locally hosted article and planned project detail content, resolving public contact and deployment URLs, adding remaining discovery and error-page features, completing final accessibility and performance verification, and deploying and inspecting the public site.
 
 ## Confirmed decisions
@@ -20,6 +22,7 @@ The project is still in active implementation. Remaining launch work includes co
 - Public URL: `https://kidpudel.github.io/personal-website/`.
 - Repository visibility: private. The published Pages site remains public.
 - Framework: Astro with strict TypeScript.
+- Runtime: Node 24 for both local development and GitHub Pages builds.
 - Rendering: static HTML by default.
 - Content: local Markdown or MDX backed by typed Astro content collections.
 - Styling: plain CSS with custom properties and isolated component styles.
@@ -132,6 +135,9 @@ src/
 │   ├── DoodleGarden.astro
 │   ├── SiteFooter.astro
 │   └── SiteHeader.astro
+├── config/
+│   ├── site.ts
+│   └── transitions.ts
 ├── content/
 │   ├── games/
 │   ├── work/
@@ -182,14 +188,15 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 - Visible ruled lines, punched holes, a red notebook margin, torn edges, tape, and uneven paper scraps.
 - Original code-native doodles drawn from Igor's interests in games, systems, cooking, music, curiosity, and playful energy.
 - Original avatar or personal artwork where it strengthens the introduction.
-- A two-state homepage portrait that switches between `drawn me` and `real me`.
+- A stacked two-polaroid homepage portrait that swaps between `drawn me` and `real me`, with pointer-angle tilt on fine-pointer devices.
 - A focused homepage introduction followed by three large interactive outcome cards.
 - Professional work and games live on their own dedicated routes rather than as homepage portfolio cards.
 - Taped, clipped, or torn-paper media treatment for selected images.
+- A subtle static grain overlay on loose-leaf notebook surfaces, excluded from the Games visual system.
 - A restrained pencil-and-paper palette built from ink, faded red, blue-green, moss, and sticky-note yellow.
-- Selective pixel-art treatment for Games while preserving site-wide typography and navigation.
+- A charcoal-and-phosphor pixel-art treatment for Games, using warm amber and faded red accents, static subtle CRT scanlines, and a soft vignette while preserving site-wide navigation.
 - Hand-drawn regular prose with a distinct notebook-editorial heading face.
-- Route-level perspective movement that reads as turning a notebook page.
+- A clear but comfortable route-level paper lift and crossfade, without 3D rotation or lateral movement.
 - A minimal three-stroke pencil tick at mouse-click coordinates, disabled for touch and reduced to a stationary fade when reduced motion is requested.
 - No copied illustrations, borders, signature framing, card arrangements, or exact composition from reference sites.
 
@@ -203,7 +210,16 @@ Begin with one drawn-stroke interaction for links, buttons, and selected cards:
 - becomes static when reduced motion is requested;
 - uses CSS or a small SVG enhancement before considering JavaScript.
 
-Route transitions use the native View Transitions API through Astro progressive enhancement. They fall back safely and are disabled when reduced motion is requested.
+Route transitions use Astro's transition contract with the native View Transitions API when available and Astro's animated fallback elsewhere. The notebook moves vertically by less than one rem during a 400-millisecond two-stage exchange, with a restrained scale, light, and shadow shift and almost no overlap between readable page content. The transition is disabled when reduced motion is requested.
+
+## Local verification baseline
+
+- Production builds must be checked with the real `/personal-website/` base path.
+- Every core route must keep one `main`, one `h1`, a correct active-navigation state, and no horizontal document overflow.
+- Responsive checks cover 360, 390, 760, 761, 1000, 1001, and 1440 pixel widths so both sides of the current CSS breakpoints are exercised.
+- Homepage controls must remain readable without JavaScript and become enabled only after their event handlers are attached.
+- Reduced-motion behavior must keep content visible and remove continuous or route motion.
+- Public deployment still requires a final check in current Chromium, Firefox, and Safari engines because local viewport testing does not replace cross-engine testing.
 
 ## Asset strategy
 
@@ -234,9 +250,9 @@ Optimize raster media, preserve intentional pixel edges, provide meaningful alte
 - Home, Work, Games, Blog, and Connect routes, each with a clear purpose.
 - Three interactive homepage outcomes with large original SVG doodles.
 - Two production stories on Work and two game projects on Games.
-- Dedicated pixel-art Games visual system.
-- Notebook page-turn route transitions.
-- Drawn and real portrait switcher.
+- Dedicated charcoal CRT and pixel-art Games visual system.
+- Notebook paper-lift route transitions.
+- Drawn and real stacked-polaroid switcher with pointer tilt and touch-safe swapping.
 - Responsive layouts, progressive enhancement, touch controls, and reduced-motion behavior.
 - PDF and DOCX résumé downloads.
 

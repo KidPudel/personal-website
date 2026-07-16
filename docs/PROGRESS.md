@@ -10,6 +10,8 @@ Status: active full-project implementation, page structure and core experience b
 
 The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. The first public release targets `https://kidpudel.github.io/personal-website/` from the private source repository. Work continues through deployment, public inspection, content completion, and the remaining launch infrastructure.
 
+A local architecture and compatibility audit is complete. The project builds cleanly against the production base path, the five routes have been checked across the current breakpoint range, and confirmed runtime and progressive-enhancement issues have been corrected. Public cross-engine and performance verification remains launch work.
+
 ## Completed
 
 - Read `Agents.md`.
@@ -75,7 +77,7 @@ The production website is implemented across five purpose-specific routes with t
 - Rebuilt and verified all four routes with both root and `/personal-website` GitHub Pages paths.
 - Confirmed zero Astro diagnostics, no browser console warnings or errors, and no horizontal overflow at 390px.
 - Added a clearly visible `drawn me` and `real me` portrait switcher to the homepage.
-- Verified synchronized portrait captions, one active portrait panel, and correct `aria-pressed` state.
+- Verified synchronized portrait captions, one active portrait panel, and correct inactive-panel accessibility state.
 - Replaced the temporary `real me` placeholder with Igor's approved `src/assets/art/avatar_irl.png` photograph.
 - Added descriptive alternative text and Astro image optimization. The generated WebP is 36KB, down from the 9.5MB source.
 - Verified the real-photo crop at desktop and 390px mobile widths, 45px portrait-switcher buttons, and no horizontal overflow.
@@ -101,7 +103,7 @@ The production website is implemented across five purpose-specific routes with t
 - Added the initial six-value homepage interaction with original SVG doodles, later refined into the nine-value checklist recorded below.
 - Preserved the drawn and real portrait switcher as part of the personal introduction.
 - Added a dedicated Games route with a dark pixel-art surface, square borders, stepped animation, real project media, and two selected games.
-- Added Astro route transitions with a perspective notebook page-turn treatment and a reduced-motion-safe static path.
+- Added Astro route transitions, initially with a perspective notebook page-turn treatment and a reduced-motion-safe static path.
 - Changed regular prose to a hand-drawn font stack while keeping large headings distinct and notebook-like.
 - Added `https://x.com/kidpudel` to Connect and the site footer.
 - Verified Home, Work, Games, Blog, and Connect at 1440px and 390px widths with no horizontal overflow.
@@ -124,6 +126,50 @@ The production website is implemented across five purpose-specific routes with t
 - Consolidated the overlapping nine-item checklist into three large outcomes: meaningful work, a more joyful world through capability, and a real standalone artifact.
 - Selected `https://kidpudel.github.io/personal-website/` as the first public GitHub Pages URL while keeping the source repository private.
 - Configured the Pages workflow to build all links and assets against the `/personal-website/` project path.
+- Audited the Astro 7 architecture against current official Astro guidance and confirmed that static Astro, strict TypeScript, typed local content, plain CSS, and small vanilla scripts remain a good fit for this website.
+- Standardized local and deployment development on Node 24 with `package.json` engine metadata and `.nvmrc`; the previously active local Node 25 runtime is not an Astro-supported odd-numbered release.
+- Centralized public email and profile URLs in `src/config/site.ts` so Connect and the shared footer cannot drift independently.
+- Improved homepage progressive enhancement:
+  - value notes remain readable in server-rendered HTML;
+  - value controls are disabled until their handlers are attached;
+  - the portrait switch control is hidden until it works;
+  - value cards remain fully visible when JavaScript is unavailable.
+- Completed a production-base build with zero Astro diagnostics after the audit changes.
+- Verified Home, Work, Games, Blog, and Connect at 360, 390, 760, 761, 1000, 1001, and 1440 pixel widths.
+- Confirmed no horizontal document overflow, no broken images, one `h1`, one `main`, and the correct active navigation state on every route at the tested widths.
+- Confirmed 44 by 44 pixel or larger mobile navigation targets, working portrait and value controls after enhancement, readable server-rendered fallbacks, valid résumé and favicon responses, and a clean browser console.
+- Confirmed that the reduced-motion environment shortens continuous animations to effectively static states and that the Games animation selectors remain attached to their intended elements.
+- Refined the mobile header and homepage after reviewing a real device-width capture:
+  - reduced the mobile homepage title to a 44-to-56-pixel responsive range and allowed it to use the available content width;
+  - removed the hidden-label flex gap so the résumé download glyph is exactly centered;
+  - stopped reduced-motion styling from forcing every navigation underline visible, leaving only the current route underlined at rest.
+- Reverified all five routes at 360, 390, 430, and 760 pixel widths after the mobile refinements. Every route has zero horizontal overflow, a centered download glyph, no broken images, and exactly one visible navigation underline matching the active route.
+- Replaced the motion-heavy 520-millisecond perspective page turn after it caused discomfort with a 400-millisecond two-stage paper lift and crossfade:
+  - no rotation or sideways travel;
+  - approximately 12-to-14 pixels of vertical movement;
+  - a restrained 0.8 percent scale change plus light and shadow variation;
+  - the old page lifts away before the new page settles, avoiding prolonged double-text ghosting;
+  - the same custom animation is declared through Astro's transition API for native and fallback implementations;
+  - reduced-motion behavior remains an immediate static swap.
+- Verified the paper transition with motion enabled across repeated Home, Games, and Connect navigation in Astro's non-native fallback path, with correct routes, no overflow, and a clean browser console.
+- Added a reusable low-opacity SVG grain texture over Home, Work, Blog, and Connect notebook surfaces. The overlay is static, ignores pointer input, preserves readable contrast, and is absent from the Games pixel-art surface.
+- Rebuilt the homepage portrait interaction as a real two-card polaroid stack:
+  - both approved portraits remain in the stack, with the inactive card visibly behind the active one;
+  - swapping sends the outgoing card around the incoming card before returning it to the back of the stack;
+  - fine-pointer movement tilts the stack toward the pointer by at most five degrees on each axis;
+  - touch and keyboard use the same explicit swap button without depending on hover;
+  - reduced motion switches cards immediately and skips pointer tilt;
+  - inactive portrait content is hidden from assistive technology while the active alternative text and caption remain available.
+- Visually verified the grain, both completed portrait states, the mid-swap animation, and pointer-angle tilt at 1440 pixels; reverified the stacked layout and completed swap at 390 pixels with zero horizontal overflow and a clean browser console. Confirmed the Games page has no notebook grain layer.
+- Overhauled the Games interface palette to remove the previous purple shell:
+  - charcoal-black and deep green surfaces;
+  - phosphor green metadata and structural accents;
+  - warm amber headings and controller body;
+  - faded red focus, shadow, button, and border accents;
+  - original game artwork remains unaltered.
+- Added a static CRT treatment to the Games surface with fine scanlines, a soft edge vignette, and very low-opacity color-channel texture. It adds no flicker or rolling animation and ignores pointer input.
+- Tuned the CRT layer separately for mobile so scanlines and the vignette remain subtle over screenshots and small text.
+- Visually verified the redesigned Games hero and project media at 1440 and 390 pixels. Confirmed one `h1`, one `main`, correct active navigation, no broken images, no horizontal overflow, and a clean browser console.
 
 ## Confirmed public links
 
@@ -159,7 +205,8 @@ The production website is implemented across five purpose-specific routes with t
 - [x] Optimize current media and add résumé downloads.
 - [x] Add GitHub Pages deployment workflow.
 - [ ] Add RSS, a useful `404.html`, and complete social metadata.
-- [ ] Complete final accessibility, responsive, link, and performance verification.
+- [x] Complete local accessibility, responsive, interaction, link, and base-path verification.
+- [ ] Complete public cross-engine and performance verification.
 - [ ] Deploy and inspect the published site.
 
 ## Current blockers
@@ -168,7 +215,7 @@ Deployment from a private repository requires GitHub Pro, Team, or Enterprise. I
 
 ## Next action
 
-Deploy the current release to `https://kidpudel.github.io/personal-website/`, inspect the published routes and assets, then continue with the remaining launch content and infrastructure.
+Use Node 24 locally, deploy the current release to `https://kidpudel.github.io/personal-website/`, inspect the published routes and assets in current Chromium, Firefox, and Safari, then continue with the remaining launch content and infrastructure.
 
 ## Notes for future work
 

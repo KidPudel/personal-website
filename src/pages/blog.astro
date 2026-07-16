@@ -1,6 +1,7 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { paperTransition } from '../config/transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -11,7 +12,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
   <div class="site-frame">
     <SiteHeader active="blog" />
-    <main id="main-content" class="notebook notebook-page simple-page">
+    <main id="main-content" class="notebook notebook-page simple-page" transition:name="notebook-page" transition:animate={paperTransition}>
       <header class="page-hero">
         <p class="eyebrow"><span aria-hidden="true">✦</span> writing</p>
         <h1>Ideas that kept following me.</h1>

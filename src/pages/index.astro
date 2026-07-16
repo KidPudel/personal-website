@@ -6,6 +6,7 @@ import avatarIrl from '../assets/art/avatar_irl.png';
 import InteractionCue from '../components/InteractionCue.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { paperTransition } from '../config/transitions';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const base = import.meta.env.BASE_URL;
@@ -36,7 +37,7 @@ const values = [
   <div class="site-frame">
     <SiteHeader active="home" />
 
-    <main id="main-content" class="notebook notebook-page home-page">
+    <main id="main-content" class="notebook notebook-page home-page" transition:name="notebook-page" transition:animate={paperTransition}>
       <section class="home-intro" aria-labelledby="home-title">
         <div class="home-opening">
           <p class="eyebrow"><span aria-hidden="true">✦</span> hello, I am Igor</p>
@@ -46,17 +47,22 @@ const values = [
         </div>
 
         <figure class="home-portrait" data-portrait-switcher>
-          <span class="tape" aria-hidden="true"></span>
-          <div class="portrait-panel" data-portrait-panel data-caption="drawn by me">
-            <Image src={avatar} alt="A black-and-white hand-drawn avatar with large dark eyes and curly hair" width={520} height={520} loading="eager" format="webp" />
-          </div>
-          <div class="portrait-panel" data-portrait-panel data-caption="real me" hidden>
-            <Image src={avatarIrl} alt="Igor smiling in a cap and orange life jacket while sitting in a boat" width={520} loading="eager" format="webp" />
+          <div class="portrait-stack" data-portrait-stack>
+            <div class="portrait-panel is-active" data-portrait-panel data-caption="drawn by me" aria-hidden="false">
+              <span class="portrait-tape" aria-hidden="true"></span>
+              <Image src={avatar} alt="A black-and-white hand-drawn avatar with large dark eyes and curly hair" width={520} height={520} loading="eager" format="webp" />
+              <span class="portrait-card-label">drawn by me</span>
+            </div>
+            <div class="portrait-panel" data-portrait-panel data-caption="real me" aria-hidden="true">
+              <span class="portrait-tape" aria-hidden="true"></span>
+              <Image src={avatarIrl} alt="Igor smiling in a cap and orange life jacket while sitting in a boat" width={520} loading="eager" format="webp" />
+              <span class="portrait-card-label">real me</span>
+            </div>
           </div>
           <figcaption>
-            <span data-portrait-caption>drawn by me</span>
-            <button type="button" data-portrait-next>
-              <span>switch portrait</span>
+            <span class="sr-only" data-portrait-caption>drawn by me</span>
+            <button type="button" data-portrait-next hidden>
+              <span>swap polaroid</span>
               <InteractionCue kind="switch" />
             </button>
           </figcaption>
@@ -73,7 +79,7 @@ const values = [
         <div class="values-list">
           {values.map((value) => (
             <article class={`value-entry value-${value.id}`} data-value-entry>
-              <button class="value-toggle" type="button" aria-expanded="false" data-value-toggle>
+              <button class="value-toggle" type="button" aria-expanded="false" data-value-toggle disabled>
                 <span class="value-doodle" aria-hidden="true">
                 {value.id === 'meaning' && (
                   <svg viewBox="0 0 240 240" aria-hidden="true">
@@ -95,7 +101,7 @@ const values = [
                 <span class="value-copy">
                   <span class="value-number">{value.number}</span>
                   <strong>{value.title}</strong>
-                  <span class="value-note" data-value-note hidden>{value.note}</span>
+                  <span class="value-note" data-value-note>{value.note}</span>
                 </span>
                 <InteractionCue />
               </button>
@@ -118,7 +124,10 @@ const values = [
   <script>
     const initializeHome = () => {
       const entries = document.querySelectorAll<HTMLElement>('[data-value-entry]:not([data-bound])');
+      const valuesList = document.querySelector<HTMLElement>('.values-list');
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      valuesList?.classList.add('is-enhanced');
 
       const reveal = (entry: HTMLElement) => entry.classList.add('is-visible');
       if ('IntersectionObserver' in window && !prefersReducedMotion) {
@@ -141,6 +150,9 @@ const values = [
         const note = entry.querySelector<HTMLElement>('[data-value-note]');
         if (!button || !note) return;
 
+        button.disabled = false;
+        note.hidden = true;
+
         button.addEventListener('click', () => {
           const active = entry.classList.toggle('is-altered');
           button.setAttribute('aria-expanded', String(active));
@@ -152,14 +164,56 @@ const values = [
       if (portrait) {
         portrait.dataset.bound = 'true';
         const panels = Array.from(portrait.querySelectorAll<HTMLElement>('[data-portrait-panel]'));
+        const stack = portrait.querySelector<HTMLElement>('[data-portrait-stack]');
         const button = portrait.querySelector<HTMLButtonElement>('[data-portrait-next]');
         const caption = portrait.querySelector<HTMLElement>('[data-portrait-caption]');
-        let active = 0;
+        let active = Math.max(0, panels.findIndex((panel) => panel.classList.contains('is-active')));
+        if (button) button.hidden = false;
         button?.addEventListener('click', () => {
+          if (button.disabled) return;
+
+          const previous = panels[active];
           active = (active + 1) % panels.length;
-          panels.forEach((panel, index) => panel.hidden = index !== active);
+          const next = panels[active];
+          if (!previous || !next) return;
+
+          button.disabled = true;
+          previous.classList.remove('is-active');
+          next.classList.add('is-active');
+          panels.forEach((panel, index) => panel.setAttribute('aria-hidden', String(index !== active)));
           if (caption) caption.textContent = panels[active]?.dataset.caption ?? '';
+
+          if (prefersReducedMotion) {
+            button.disabled = false;
+            return;
+          }
+
+          previous.classList.add('is-departing');
+          let fallbackTimer: number | undefined;
+          const finishSwap = () => {
+            if (fallbackTimer) window.clearTimeout(fallbackTimer);
+            previous.classList.remove('is-departing');
+            button.disabled = false;
+          };
+          previous.addEventListener('animationend', finishSwap, { once: true });
+          fallbackTimer = window.setTimeout(finishSwap, 600);
         });
+
+        const supportsTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (stack && supportsTilt && !prefersReducedMotion) {
+          const resetTilt = () => {
+            stack.style.setProperty('--portrait-tilt-x', '0deg');
+            stack.style.setProperty('--portrait-tilt-y', '0deg');
+          };
+          stack.addEventListener('pointermove', (event) => {
+            const bounds = stack.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+            const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+            stack.style.setProperty('--portrait-tilt-x', `${(-y * 10).toFixed(2)}deg`);
+            stack.style.setProperty('--portrait-tilt-y', `${(x * 10).toFixed(2)}deg`);
+          });
+          stack.addEventListener('pointerleave', resetTilt);
+        }
       }
     };
 
