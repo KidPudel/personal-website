@@ -1,0 +1,194 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+
+import avatar from '../assets/art/avatar.png';
+import campfireCover from '../assets/games/discourses/cover.png';
+import campfireScene from '../assets/games/discourses/winter-scene.jpeg';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const work = await getEntry('work', 'high-load-service');
+const game = await getEntry('games', 'discourses-by-campfire');
+
+if (!work || !game) {
+  throw new Error('Featured homepage content is missing.');
+}
+
+const base = import.meta.env.BASE_URL;
+const resumePdf = `${base}resume/igor-kupchinenko-resume.pdf`;
+---
+
+<BaseLayout>
+  <div class="site-frame">
+    <header class="site-header" aria-label="Site header">
+      <a class="brand draw-link" href="#about" aria-label="Igor Kupchinenko, back to introduction">
+        igor<span class="brand-dot" aria-hidden="true">.</span>
+      </a>
+
+      <nav class="primary-nav" aria-label="Primary navigation">
+        <a class="draw-link" href="#about">about</a>
+        <a class="draw-link" href="#work">work</a>
+        <a class="draw-link" href="#games">games</a>
+        <a class="draw-link" href="#notes">notes</a>
+      </nav>
+
+      <a class="resume-link" href={resumePdf}>
+        résumé
+        <svg aria-hidden="true" viewBox="0 0 20 20">
+          <path d="M10 3v10m0 0 4-4m-4 4-4-4M4 17h12" />
+        </svg>
+      </a>
+    </header>
+
+    <main id="main-content" class="notebook">
+      <section id="about" class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span aria-hidden="true">✦</span> hello, I am Igor</p>
+          <h1 id="hero-title">
+            I build software.<br />
+            <span>I make games and notes, too.</span>
+          </h1>
+          <p class="hero-lede">
+            Most of my paid work has been backend engineering in Go. Outside of that, I make games and write about systems, mechanics, and ideas I am trying to understand.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">Look through the notebook</a>
+            <a class="button button-quiet" href="https://www.linkedin.com/in/iggydev/">LinkedIn</a>
+          </div>
+
+          <p class="margin-note margin-note-arrow">
+            personal website first<br />
+            portfolio second
+          </p>
+        </div>
+
+        <figure class="portrait-card">
+          <span class="tape tape-top" aria-hidden="true"></span>
+          <div class="portrait-background">
+            <Image
+              src={avatar}
+              alt="A black-and-white hand-drawn avatar with large dark eyes and curly hair"
+              width={620}
+              height={620}
+              loading="eager"
+              format="webp"
+            />
+          </div>
+          <figcaption>
+            <span>drawn by me</span>
+            <svg aria-hidden="true" viewBox="0 0 78 34">
+              <path d="M74 5C48 2 30 10 12 25m0 0 9-2m-9 2 5 7" />
+            </svg>
+          </figcaption>
+        </figure>
+      </section>
+
+      <div class="section-divider" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+
+      <section class="selected-grid" aria-label="Selected work and game">
+        <article id="work" class="work-note">
+          <header class="card-heading">
+            <p class="card-label">01 / production story</p>
+            <span class="status-stamp">backend</span>
+          </header>
+
+          <h2>{work.data.title}</h2>
+          <p class="card-summary">{work.data.summary}</p>
+
+          <div class="metric" aria-label="Latency reduced from 9.5 seconds to 650 milliseconds">
+            <div>
+              <span>before</span>
+              <strong>9.5s</strong>
+            </div>
+            <svg aria-hidden="true" viewBox="0 0 88 34">
+              <path d="M2 18c25-6 52-6 80 0m0 0-11-8m11 8-11 8" />
+            </svg>
+            <div>
+              <span>after</span>
+              <strong>650ms</strong>
+            </div>
+          </div>
+
+          <ul class="work-facts">
+            <li>profiled the real execution path with pprof</li>
+            <li>tuned goroutine behavior and connection pooling</li>
+            <li>investigated and optimized SQL queries</li>
+          </ul>
+
+          <p class="privacy-note">Company details are anonymized, but the problem, approach, and result are real.</p>
+        </article>
+
+        <article id="games" class="game-card">
+          <div class="game-media">
+            <Image
+              class="game-scene"
+              src={campfireScene}
+              alt="A snowy mountain forest at sunset in Discourses by Campfire"
+              width={960}
+              height={540}
+              format="webp"
+            />
+            <div class="cover-card">
+              <span class="tape tape-small" aria-hidden="true"></span>
+              <Image
+                src={campfireCover}
+                alt="Discourses by Campfire cover with a glowing fire in the darkness"
+                width={315}
+                height={250}
+                format="webp"
+              />
+            </div>
+            <span class="pixel-spark spark-one" aria-hidden="true"></span>
+            <span class="pixel-spark spark-two" aria-hidden="true"></span>
+          </div>
+
+          <div class="game-copy">
+            <header class="card-heading">
+              <p class="card-label">02 / playable thing</p>
+              <span class="status-stamp status-stamp-light">godot</span>
+            </header>
+            <h2>{game.data.title}</h2>
+            <p>{game.data.summary}</p>
+            <a class="game-link" href="https://kidpudel.itch.io/">
+              Visit my itch.io
+              <span aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </article>
+      </section>
+
+      <section id="notes" class="notes-strip" aria-labelledby="notes-title">
+        <div>
+          <p class="card-label">currently on the desk</p>
+          <h2 id="notes-title">A game telemetry pipeline</h2>
+          <p>Collecting events, shaping the data, and finding useful ways to understand player behavior. It is still in progress, so this note will grow with the project.</p>
+        </div>
+        <div class="scribble-box" aria-hidden="true">
+          <svg viewBox="0 0 170 100">
+            <path d="M9 61c13-25 30-35 49-30 18 5 26 23 43 22 20-2 26-25 53-39M8 77c34-2 51 13 77 12 24-1 41-14 71-10" />
+            <circle cx="9" cy="61" r="5" />
+            <circle cx="58" cy="31" r="5" />
+            <circle cx="101" cy="53" r="5" />
+            <circle cx="154" cy="14" r="5" />
+          </svg>
+          <span>events become clues</span>
+        </div>
+        <a class="note-link draw-link" href="https://medium.com/@iggysleepy/identity-cage-a9a79286cef9">
+          read: Identity Cage
+        </a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Made with care, a few crooked lines, and no database.</p>
+      <nav aria-label="Social links">
+        <a class="draw-link" href="https://github.com/KidPudel">GitHub</a>
+        <a class="draw-link" href="https://kidpudel.itch.io/">itch.io</a>
+        <a class="draw-link" href="https://www.linkedin.com/in/iggydev/">LinkedIn</a>
+      </nav>
+    </footer>
+  </div>
+</BaseLayout>

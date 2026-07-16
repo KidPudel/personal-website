@@ -1,0 +1,38 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Igor Kupchinenko | Software, games, and notes',
+  description = 'Igor builds backend software, makes games, and writes about systems and ideas he is trying to understand.',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const faviconPath = `${import.meta.env.BASE_URL}favicon.svg`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#1d1b1a" />
+    <link rel="icon" type="image/svg+xml" href={faviconPath} />
+    <link rel="canonical" href={canonicalURL} />
+    <title>{title}</title>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to the notebook</a>
+    <slot />
+  </body>
+</html>
