@@ -7,52 +7,63 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const performanceStory = await getEntry('work', 'high-load-service');
 const orderingStory = await getEntry('work', 'ordering-platform');
+if (!performanceStory || !orderingStory) throw new Error('Work content is missing.');
 
-if (!performanceStory || !orderingStory) {
-  throw new Error('Work content is missing.');
-}
+const base = import.meta.env.BASE_URL;
 ---
 
-<BaseLayout
-  title="Work | Igor Kupchinenko"
-  description="Selected production software work from Igor Kupchinenko."
->
+<BaseLayout page="work" title="Work | Igor Kupchinenko" description="Production software work by Igor Kupchinenko, focused on backend systems, data flow, APIs, and product delivery.">
   <div class="site-frame">
     <SiteHeader active="work" />
-    <main id="main-content" class="notebook page-notebook">
-      <header class="page-hero">
-        <p class="eyebrow"><span aria-hidden="true">✦</span> work and experience</p>
-        <h1>Things I helped make behave.</h1>
-        <p>Most of my commercial experience is in Go, backend systems, data flow, APIs, and production problem-solving. The source code is private, so these stories focus on the problem, decisions, and evidence.</p>
+    <main id="main-content" class="notebook notebook-page work-page">
+      <header class="page-hero work-hero">
+        <p class="eyebrow"><span aria-hidden="true">✦</span> professional work</p>
+        <h1>Production systems with consequences.</h1>
+        <p>My strongest paid experience is in Go and backend engineering: stateful services, data flow, APIs, integrations, and finding out why production behaves differently from the diagram.</p>
+        <div class="hero-links">
+          <a class="button button-dark" href={`${base}resume/igor-kupchinenko-resume.pdf`}>Résumé PDF</a>
+          <a class="button" href={`${base}resume/igor-kupchinenko-resume.docx`}>DOCX</a>
+        </div>
       </header>
 
-      <section class="page-grid" aria-label="Selected professional work">
-        <article class="page-card">
-          <p class="card-label">performance investigation</p>
-          <h2>{performanceStory.data.title}</h2>
-          <p>{performanceStory.data.summary}</p>
-          <ul class="work-facts">
-            <li>profiled the real execution path with pprof</li>
-            <li>tuned goroutine behavior and connection pooling</li>
-            <li>investigated and optimized SQL queries</li>
-          </ul>
+      <section class="work-stories" aria-label="Selected professional stories">
+        <article class="work-story">
+          <header><span>01</span><p>performance investigation</p></header>
+          <div class="work-story-copy">
+            <h2>{performanceStory.data.title}</h2>
+            <p>{performanceStory.data.summary}</p>
+            <ul>
+              <li>Profiled the real execution path with pprof.</li>
+              <li>Tuned goroutine behavior and connection pooling.</li>
+              <li>Investigated and optimized SQL queries.</li>
+            </ul>
+          </div>
+          <div class="work-result" aria-label="Latency reduced from 9.5 seconds to 650 milliseconds">
+            <span>9.5s</span><b aria-hidden="true">→</b><strong>650ms</strong>
+            <small>verified production result</small>
+          </div>
         </article>
 
-        <article class="page-card page-card-blue">
-          <p class="card-label">product ownership</p>
-          <h2>{orderingStory.data.title}</h2>
-          <p>{orderingStory.data.summary}</p>
-          <ul class="work-facts">
-            <li>translated stakeholder requirements into working features</li>
-            <li>worked across the Go backend and a Flutter application</li>
-            <li>carried implementation decisions into production operation</li>
-          </ul>
+        <article class="work-story work-story-blue">
+          <header><span>02</span><p>end-to-end ownership</p></header>
+          <div class="work-story-copy">
+            <h2>{orderingStory.data.title}</h2>
+            <p>{orderingStory.data.summary}</p>
+            <ul>
+              <li>Translated stakeholder needs into working features.</li>
+              <li>Worked across a Go backend and Flutter application.</li>
+              <li>Carried implementation decisions into production operation.</li>
+            </ul>
+          </div>
+          <div class="work-flow" aria-label="Work from requirements through production">
+            <span>requirements</span><b>→</b><span>backend</span><b>→</b><span>production</span>
+          </div>
         </article>
       </section>
 
-      <aside class="page-note">
-        <p class="card-label">still being documented</p>
-        <p>More backend stories are coming, including event-driven callback delivery, service boundaries, and data-pipeline work.</p>
+      <aside class="privacy-strip">
+        <strong>About the missing logos</strong>
+        <p>The source code and company details are private. The problems, responsibilities, and approved result shown here are real.</p>
       </aside>
     </main>
     <SiteFooter />

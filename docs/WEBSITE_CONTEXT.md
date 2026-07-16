@@ -137,14 +137,13 @@ They should encounter:
 
 The final names may be more playful, but their function must remain understandable.
 
-Possible primary areas:
+Primary areas:
 
 - Home
-- My Story
-- Games
 - Work
-- Writing
-- Contact
+- Games
+- Blog
+- Connect
 
 Playful titles may be paired with clear subtitles.
 
@@ -163,19 +162,29 @@ Do not require visitors to decode navigation labels.
 
 ## Homepage
 
-The homepage should introduce Igor as a person before presenting a dense professional summary.
+The homepage introduces Igor through the values underneath his work, games, and writing. It is not a portfolio index and should not repeat the full content owned by the other routes.
 
-It may contain:
+The homepage contains:
 
 - a personal opening;
-- a short explanation of what Igor does;
-- selected work;
-- selected games;
-- recent writing;
-- current interests;
-- a brief personal note;
-- contact links;
-- résumé link.
+- a vertically scrolling list of values;
+- one original doodle associated with each value;
+- a reveal or alteration interaction for every value doodle;
+- concise onward links to Work, Games, and Blog.
+
+The initial launch values are:
+
+- clear meaning;
+- a real purpose;
+- a useful capability;
+- a joyful artifact;
+- a mechanism or system feel;
+- meaningful data or state flow;
+- visible behaviour;
+- a complete experience;
+- honest trade-offs.
+
+Present these values as qualities Igor wants in the software, games, tools, capabilities, and artifacts he makes, not as generic claims about what matters in every part of life. Keep the labels direct. Their doodles should read as compact checkbox-like marks placed beside the value rather than as large standalone illustrations.
 
 The homepage should not begin with a long technology list.
 
@@ -233,7 +242,9 @@ The résumé should be offered in pdf or docx. (the visitior should be able to e
 
 ## Games
 
-The Games section should contain:
+Games is a dedicated primary route rather than a subsection of Home. Entering it should feel like switching from the paper notebook into a playable pixel-art world while retaining clear global navigation.
+
+The Games page should contain:
 
 - playable links;
 - videos;
@@ -278,6 +289,12 @@ A Medium link may be included, but the website should host or present the writin
 
 The site should use a clean and readable foundation with a handmade layer (the style is called hand-drawn).
 
+Regular prose uses a readable hand-drawn style. Large headings use a distinct notebook-editorial face that remains compatible with the handmade surface. Labels and technical annotations may use a restrained monospace face.
+
+Page navigation should resemble turning to another notebook page. The route-level transition may use perspective and page movement, must not block direct navigation, and must become static when reduced motion is requested.
+
+Games intentionally changes the visual surface to square pixels, stepped motion, pixel borders, and a dark game-like palette. It remains part of the same website through shared navigation, content clarity, and route behavior.
+
 Possible elements include:
 
 - handwritten annotations;
@@ -303,8 +320,9 @@ Note 3: references for the visual language of hand-drawn style you'll find here 
 
 ## Typography
 
-- Use a readable typeface for body text.
-- Use handwriting or script primarily for headings, annotations, and accents.
+- Use a readable hand-drawn typeface for regular body text.
+- Use a distinct notebook-editorial typeface for headings.
+- Reserve looser handwriting treatments for annotations and accents.
 - Do not use difficult handwriting for long paragraphs.
 - Use a clear monospace font for code and technical material.
 - Maintain readable sizing, line height, and contrast.
@@ -433,7 +451,7 @@ The first version should contain:
 - responsive and accessible layout;
 - a restrained version of the handmade visual language.
 
-The pixel transition and richer game interactions may be added after the core site is published.
+The dedicated pixel-art Games surface and notebook page-turn route transition are part of the core site. Further game interactions may be added only when they improve understanding of a real project.
 
 ## Constraints
 

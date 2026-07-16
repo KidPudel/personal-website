@@ -1,0 +1,82 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+
+import campfireCover from '../assets/games/discourses/cover.png';
+import campfireScene from '../assets/games/discourses/winter-scene.jpeg';
+import santaCity from '../assets/games/santa/city.png';
+import santaMountains from '../assets/games/santa/mountains.png';
+import santaSky from '../assets/games/santa/sky-texture.png';
+import santaSleigh from '../assets/games/santa/sleigh-with-elf.png';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const campfire = await getEntry('games', 'discourses-by-campfire');
+const santa = await getEntry('games', 'santa-foundation');
+if (!campfire || !santa) throw new Error('Game content is missing.');
+---
+
+<BaseLayout page="games" title="Games | Igor Kupchinenko" description="Games and game-development work by Igor Kupchinenko, including Godot projects and original pixel art.">
+  <div class="site-frame game-frame">
+    <SiteHeader active="games" />
+    <main id="main-content" class="notebook-page games-page">
+      <header class="games-hero">
+        <div>
+          <p class="pixel-kicker">PLAYER 1 / IGOR</p>
+          <h1>Playable systems.</h1>
+          <p>I make games to explore mechanics, atmosphere, player strategy, and the strange behavior that appears when small rules meet each other.</p>
+        </div>
+        <div class="pixel-controller" aria-hidden="true">
+          <span class="controller-cross">+</span><i></i><i></i>
+        </div>
+      </header>
+
+      <section class="game-projects" aria-label="Selected games">
+        <article class="game-project">
+          <div class="game-project-media campfire-media">
+            <Image src={campfireScene} alt="A snowy mountain forest at sunset in Discourses by Campfire" width={960} height={540} format="webp" />
+            <Image class="game-cover" src={campfireCover} alt="Discourses by Campfire cover with a glowing fire in the darkness" width={315} height={250} format="webp" />
+            <span class="pixel-flame" aria-hidden="true"></span>
+          </div>
+          <div class="game-project-copy">
+            <p class="pixel-kicker">01 / SURVIVAL SUSPENSE / GODOT</p>
+            <h2>{campfire.data.title}</h2>
+            <p>{campfire.data.summary}</p>
+            <dl>
+              <div><dt>Intent</dt><dd>Isolation, pressure, and an uneasy winter atmosphere.</dd></div>
+              <div><dt>Focus</dt><dd>Systems, survival behavior, and environmental presentation.</dd></div>
+            </dl>
+            <a href={campfire.data.externalUrl}>VISIT ON ITCH.IO <span aria-hidden="true">▶</span></a>
+          </div>
+        </article>
+
+        <article class="game-project game-project-reverse">
+          <div class="game-project-media santa-pixel-scene" role="img" aria-label="A pixel-art elf flying a sleigh over a winter city in Santa Foundation">
+            <Image class="santa-layer" src={santaSky} alt="" width={640} height={360} />
+            <Image class="santa-layer santa-mountains" src={santaMountains} alt="" width={640} height={360} />
+            <Image class="santa-layer santa-city" src={santaCity} alt="" width={640} height={360} />
+            <span class="sleigh-sprite" aria-hidden="true"><Image src={santaSleigh} alt="" width={256} height={128} /></span>
+            <span class="pixel-snow snow-a" aria-hidden="true"></span><span class="pixel-snow snow-b" aria-hidden="true"></span><span class="pixel-snow snow-c" aria-hidden="true"></span>
+          </div>
+          <div class="game-project-copy">
+            <p class="pixel-kicker">02 / GAME JAM / GODOT</p>
+            <h2>{santa.data.title}</h2>
+            <p>{santa.data.summary}</p>
+            <dl>
+              <div><dt>Intent</dt><dd>A compact, playful browser game built under a jam deadline.</dd></div>
+              <div><dt>Made here</dt><dd>Game logic, original pixel art, layered scenes, and production scope.</dd></div>
+            </dl>
+            <a href={santa.data.externalUrl}>PLAY IN BROWSER <span aria-hidden="true">▶</span></a>
+          </div>
+        </article>
+      </section>
+
+      <aside class="games-more">
+        <span aria-hidden="true">+</span>
+        <p>See my other games <a href="https://kidpudel.itch.io/">here</a>.</p>
+      </aside>
+    </main>
+    <SiteFooter />
+  </div>
+</BaseLayout>

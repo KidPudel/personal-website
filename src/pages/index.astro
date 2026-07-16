@@ -1,353 +1,169 @@
 ---
 import { Image } from 'astro:assets';
-import { getEntry } from 'astro:content';
 
-import SiteFooter from '../components/SiteFooter.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import DoodleGarden from '../components/DoodleGarden.astro';
 import avatar from '../assets/art/avatar.png';
 import avatarIrl from '../assets/art/avatar_irl.png';
-import campfireCover from '../assets/games/discourses/cover.png';
-import campfireScene from '../assets/games/discourses/winter-scene.jpeg';
-import santaCity from '../assets/games/santa/city.png';
-import santaMountains from '../assets/games/santa/mountains.png';
-import santaSky from '../assets/games/santa/sky-texture.png';
-import santaSleigh from '../assets/games/santa/sleigh-with-elf.png';
+import InteractionCue from '../components/InteractionCue.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const performanceStory = await getEntry('work', 'high-load-service');
-const orderingStory = await getEntry('work', 'ordering-platform');
-const campfire = await getEntry('games', 'discourses-by-campfire');
-const santa = await getEntry('games', 'santa-foundation');
-
-if (!performanceStory || !orderingStory || !campfire || !santa) {
-  throw new Error('Featured homepage content is missing.');
-}
-
 const base = import.meta.env.BASE_URL;
+
+const values = [
+  {
+    number: '01',
+    id: 'meaning',
+    title: 'It is meaningful.',
+    note: 'It is clear why we are here.',
+  },
+  {
+    number: '02',
+    id: 'joy',
+    title: 'It makes the world more joyful.',
+    note: "It fulfills someone's wish for a new capability.",
+  },
+  {
+    number: '03',
+    id: 'experience',
+    title: 'The artifact becomes real.',
+    note: 'It becomes a tool, a game, or another complete thing that can stand on its own.',
+  },
+] as const;
 ---
 
-<BaseLayout>
+<BaseLayout page="home">
   <div class="site-frame">
     <SiteHeader active="home" />
 
-    <main id="main-content" class="notebook">
-      <section id="about" class="hero" aria-labelledby="hero-title">
-        <DoodleGarden />
-        <header class="hero-heading">
+    <main id="main-content" class="notebook notebook-page home-page">
+      <section class="home-intro" aria-labelledby="home-title">
+        <div class="home-opening">
           <p class="eyebrow"><span aria-hidden="true">✦</span> hello, I am Igor</p>
-          <h1 id="hero-title">A quick glimpse into <span>Igor's personal notebook.</span></h1>
-        </header>
+          <h1 id="home-title">A quick glimpse into <span>Igor's personal notebook.</span></h1>
+          <p class="home-lede">I build production software, make games, and write. This page is about the values underneath those things.</p>
+          <a class="scroll-note" href="#values">keep scrolling <span aria-hidden="true">↓</span></a>
+        </div>
 
-        <div class="hero-body">
-          <div class="hero-copy paper-scrap">
-            <p class="scrap-label">a note before you look around</p>
-          <p class="hero-lede">
-            Most of my paid work has been backend engineering in Go. Outside of that, I make games and write about systems, mechanics, and ideas I am trying to understand.
-          </p>
-
-          <div class="hero-actions">
-            <a class="button button-primary" href="#selected">Look through the notebook</a>
-            <a class="button button-quiet" href={`${base}connect/`}>Connect</a>
+        <figure class="home-portrait" data-portrait-switcher>
+          <span class="tape" aria-hidden="true"></span>
+          <div class="portrait-panel" data-portrait-panel data-caption="drawn by me">
+            <Image src={avatar} alt="A black-and-white hand-drawn avatar with large dark eyes and curly hair" width={520} height={520} loading="eager" format="webp" />
           </div>
-
-          <p class="margin-note margin-note-arrow">
-            personal first<br />
-            portfolio second
-          </p>
-          </div>
-
-        <figure class="portrait-card" data-portrait-switcher>
-          <span class="tape tape-top" aria-hidden="true"></span>
-          <div class="portrait-background portrait-panel" data-portrait-panel data-caption="drawn by me">
-            <Image
-              src={avatar}
-              alt="A black-and-white hand-drawn avatar with large dark eyes and curly hair"
-              width={620}
-              height={620}
-              loading="eager"
-              format="webp"
-            />
-          </div>
-          <div class="portrait-panel portrait-real" data-portrait-panel data-caption="real me" hidden>
-            <Image
-              src={avatarIrl}
-              alt="Igor smiling in a cap and orange life jacket while sitting in a boat"
-              width={620}
-              loading="eager"
-              format="webp"
-            />
-          </div>
-          <div class="portrait-controls" data-portrait-controls aria-label="Choose how to see Igor">
-            <button type="button" data-portrait-target="0" aria-pressed="true">drawn me</button>
-            <button type="button" data-portrait-target="1" aria-pressed="false">real me</button>
+          <div class="portrait-panel" data-portrait-panel data-caption="real me" hidden>
+            <Image src={avatarIrl} alt="Igor smiling in a cap and orange life jacket while sitting in a boat" width={520} loading="eager" format="webp" />
           </div>
           <figcaption>
             <span data-portrait-caption>drawn by me</span>
-            <svg aria-hidden="true" viewBox="0 0 78 34">
-              <path d="M74 5C48 2 30 10 12 25m0 0 9-2m-9 2 5 7" />
-            </svg>
+            <button type="button" data-portrait-next>
+              <span>switch portrait</span>
+              <InteractionCue kind="switch" />
+            </button>
           </figcaption>
         </figure>
-
-          <aside class="notebook-index" aria-label="What is in this notebook">
-            <p class="scrap-label">inside these pages</p>
-            <ul>
-              <li><span>01</span> systems that carry real traffic</li>
-              <li><span>02</span> small worlds you can play</li>
-              <li><span>03</span> ideas I cannot leave alone</li>
-            </ul>
-            <svg aria-hidden="true" viewBox="0 0 180 76">
-              <path d="M7 56c32-42 65 19 99-20 18-20 38-21 67-8m-11-9 11 9-14 3" />
-            </svg>
-            <p class="index-foot">backend depth, game-shaped curiosity</p>
-          </aside>
-        </div>
       </section>
 
-      <section id="selected" class="selected-area" aria-labelledby="selected-title">
-        <header class="selected-intro">
-          <div>
-            <p class="card-label">selected from the notebook</p>
-            <h2 id="selected-title">Loose pages from my desk.</h2>
-          </div>
-          <p>One trail follows production systems. The other wanders into playable things. Use the arrows to turn each little page.</p>
+      <section id="values" class="values-section" aria-labelledby="values-title">
+        <header class="values-heading">
+          <p class="eyebrow">three notes for the things I make</p>
+          <h2 id="values-title">What matters to <em>me</em> in my work.</h2>
+          <p>Three outcomes I want from software, games, tools, and other artifacts.</p>
         </header>
 
-        <div class="selected-grid">
-          <section class="switcher-shell" data-project-switcher aria-label="Production stories">
-            <header class="switcher-topline">
-              <p>production stories</p>
-              <div class="switcher-controls" data-switcher-controls aria-label="Choose a production story">
-                <span class="flip-note">flip through</span>
-                <button type="button" data-previous aria-label="Previous production story">←</button>
-                <output data-counter aria-live="polite">1 / 2</output>
-                <button type="button" data-next aria-label="Next production story">→</button>
-              </div>
-            </header>
-
-            <div class="switcher-deck">
-              <article class="work-note switcher-panel" data-panel>
-                <header class="card-heading">
-                  <p class="card-label">01 / production story</p>
-                  <span class="status-stamp">backend</span>
-                </header>
-
-                <h3>{performanceStory.data.title}</h3>
-                <p class="card-summary">{performanceStory.data.summary}</p>
-
-                <div class="metric" aria-label="Latency reduced from 9.5 seconds to 650 milliseconds">
-                  <div>
-                    <span>before</span>
-                    <strong>9.5s</strong>
-                  </div>
-                  <svg aria-hidden="true" viewBox="0 0 88 34">
-                    <path d="M2 18c25-6 52-6 80 0m0 0-11-8m11 8-11 8" />
+        <div class="values-list">
+          {values.map((value) => (
+            <article class={`value-entry value-${value.id}`} data-value-entry>
+              <button class="value-toggle" type="button" aria-expanded="false" data-value-toggle>
+                <span class="value-doodle" aria-hidden="true">
+                {value.id === 'meaning' && (
+                  <svg viewBox="0 0 240 240" aria-hidden="true">
+                    <circle cx="120" cy="120" r="72"/><circle cx="120" cy="120" r="38"/><circle class="doodle-fill" cx="120" cy="120" r="9"/>
+                    <path class="doodle-after" d="m120 28 12 30-12 16-12-16 12-30Zm0 184-12-30 12-16 12 16-12 30Z"/>
                   </svg>
-                  <div>
-                    <span>after</span>
-                    <strong>650ms</strong>
-                  </div>
-                </div>
-
-                <ul class="work-facts">
-                  <li>profiled the real execution path with pprof</li>
-                  <li>tuned goroutine behavior and connection pooling</li>
-                  <li>investigated and optimized SQL queries</li>
-                </ul>
-
-                <p class="privacy-note">Company details are anonymized, but the problem, approach, and result are real.</p>
-              </article>
-
-              <article class="work-note switcher-panel work-note-blue" data-panel>
-                <header class="card-heading">
-                  <p class="card-label">02 / production story</p>
-                  <span class="status-stamp status-stamp-blue">ownership</span>
-                </header>
-
-                <h3>{orderingStory.data.title}</h3>
-                <p class="card-summary">{orderingStory.data.summary}</p>
-
-                <div class="ownership-sketch" aria-hidden="true">
-                  <span>requirements</span><b>→</b><span>backend</span><b>→</b><span>production</span>
-                </div>
-
-                <ul class="work-facts">
-                  <li>translated stakeholder needs into working features</li>
-                  <li>worked across a Go backend and Flutter application</li>
-                  <li>carried implementation decisions into production</li>
-                </ul>
-
-                <p class="privacy-note">A small team meant broad responsibility and direct feedback from the product.</p>
-              </article>
-            </div>
-          </section>
-
-          <section class="switcher-shell" data-project-switcher aria-label="Playable things">
-            <header class="switcher-topline switcher-topline-dark">
-              <p>playable things</p>
-              <div class="switcher-controls" data-switcher-controls aria-label="Choose a game">
-                <span class="flip-note">shuffle games</span>
-                <button type="button" data-previous aria-label="Previous game">←</button>
-                <output data-counter aria-live="polite">1 / 2</output>
-                <button type="button" data-next aria-label="Next game">→</button>
-              </div>
-            </header>
-
-            <div class="switcher-deck">
-              <article class="game-card switcher-panel" data-panel>
-                <div class="game-media">
-                  <Image
-                    class="game-scene"
-                    src={campfireScene}
-                    alt="A snowy mountain forest at sunset in Discourses by Campfire"
-                    width={960}
-                    height={540}
-                    format="webp"
-                  />
-                  <div class="cover-card">
-                    <span class="tape tape-small" aria-hidden="true"></span>
-                    <Image
-                      src={campfireCover}
-                      alt="Discourses by Campfire cover with a glowing fire in the darkness"
-                      width={315}
-                      height={250}
-                      format="webp"
-                    />
-                  </div>
-                  <span class="pixel-spark spark-one" aria-hidden="true"></span>
-                  <span class="pixel-spark spark-two" aria-hidden="true"></span>
-                </div>
-
-                <div class="game-copy">
-                  <header class="card-heading">
-                    <p class="card-label">01 / survival suspense</p>
-                    <span class="status-stamp status-stamp-light">godot</span>
-                  </header>
-                  <h3>{campfire.data.title}</h3>
-                  <p>{campfire.data.summary}</p>
-                  <a class="game-link" href={campfire.data.externalUrl}>Visit my itch.io <span aria-hidden="true">↗</span></a>
-                </div>
-              </article>
-
-              <article class="game-card game-card-santa switcher-panel" data-panel>
-                <div
-                  class="game-media santa-scene"
-                  role="img"
-                  aria-label="A pixel-art elf flying a sleigh over a winter city in Santa Foundation"
-                >
-                  <Image class="santa-layer santa-sky" src={santaSky} alt="" width={640} height={360} />
-                  <Image class="santa-layer santa-mountains" src={santaMountains} alt="" width={640} height={360} />
-                  <Image class="santa-layer santa-city" src={santaCity} alt="" width={640} height={360} />
-                  <span class="sleigh-window" aria-hidden="true">
-                    <Image src={santaSleigh} alt="" width={256} height={128} />
-                  </span>
-                  <span class="pixel-snow snow-one" aria-hidden="true"></span>
-                  <span class="pixel-snow snow-two" aria-hidden="true"></span>
-                  <span class="pixel-snow snow-three" aria-hidden="true"></span>
-                </div>
-
-                <div class="game-copy">
-                  <header class="card-heading">
-                    <p class="card-label">02 / game jam platformer</p>
-                    <span class="status-stamp status-stamp-light">godot</span>
-                  </header>
-                  <h3>{santa.data.title}</h3>
-                  <p>{santa.data.summary}</p>
-                  <a class="game-link" href={santa.data.externalUrl}>Play in browser <span aria-hidden="true">↗</span></a>
-                </div>
-              </article>
-            </div>
-          </section>
+                )}
+                {value.id === 'joy' && (
+                  <svg viewBox="0 0 240 240" aria-hidden="true">
+                    <circle cx="120" cy="120" r="72"/><path d="M88 108h2m60 0h2m-55 31c14 15 33 18 49 0"/><path class="doodle-after" d="m52 48 6 14 14 6-14 6-6 14-6-14-14-6 14-6 6-14Z"/>
+                  </svg>
+                )}
+                {value.id === 'experience' && (
+                  <svg viewBox="0 0 240 240" aria-hidden="true">
+                    <path d="M49 56h142v132H49zM49 56l26-24h142v132l-26 24M191 56l26-24M191 188l26-24"/><path class="doodle-after" d="m82 119 27 29 55-65"/>
+                  </svg>
+                )}
+                </span>
+                <span class="value-copy">
+                  <span class="value-number">{value.number}</span>
+                  <strong>{value.title}</strong>
+                  <span class="value-note" data-value-note hidden>{value.note}</span>
+                </span>
+                <InteractionCue />
+              </button>
+            </article>
+          ))}
         </div>
       </section>
 
-      <section id="notes" class="notes-strip" aria-labelledby="notes-title">
-        <div>
-          <p class="card-label">currently on the desk</p>
-          <h2 id="notes-title">A game telemetry pipeline</h2>
-          <p>Collecting events, shaping the data, and finding useful ways to understand player behavior. It is still in progress, so this note will grow with the project.</p>
-        </div>
-        <div class="scribble-box" aria-hidden="true">
-          <svg viewBox="0 0 170 100">
-            <path d="M9 61c13-25 30-35 49-30 18 5 26 23 43 22 20-2 26-25 53-39M8 77c34-2 51 13 77 12 24-1 41-14 71-10" />
-            <circle cx="9" cy="61" r="5" />
-            <circle cx="58" cy="31" r="5" />
-            <circle cx="101" cy="53" r="5" />
-            <circle cx="154" cy="14" r="5" />
-          </svg>
-          <span>events become clues</span>
-        </div>
-        <a class="note-link draw-link" href={`${base}blog/`}>visit the blog</a>
-      </section>
+      <nav class="next-pages" aria-label="Continue through the notebook">
+        <p>Those values turn into different kinds of evidence.</p>
+        <a href={`${base}work/`}><span>professional systems</span><strong>Work</strong></a>
+        <a href={`${base}games/`}><span>playable systems</span><strong>Games</strong></a>
+        <a href={`${base}blog/`}><span>thoughts in progress</span><strong>Blog</strong></a>
+      </nav>
     </main>
 
     <SiteFooter />
   </div>
 
   <script>
-    const switchers = document.querySelectorAll<HTMLElement>('[data-project-switcher]');
+    const initializeHome = () => {
+      const entries = document.querySelectorAll<HTMLElement>('[data-value-entry]:not([data-bound])');
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    for (const switcher of switchers) {
-      const panels = Array.from(switcher.querySelectorAll<HTMLElement>('[data-panel]'));
-      const previous = switcher.querySelector<HTMLButtonElement>('[data-previous]');
-      const next = switcher.querySelector<HTMLButtonElement>('[data-next]');
-      const counter = switcher.querySelector<HTMLOutputElement>('[data-counter]');
-
-      if (!panels.length || !previous || !next || !counter) continue;
-
-      let activeIndex = 0;
-      switcher.dataset.enhanced = 'true';
-
-      const showPanel = (nextIndex: number) => {
-        activeIndex = (nextIndex + panels.length) % panels.length;
-
-        panels.forEach((panel, index) => {
-          const isActive = index === activeIndex;
-          panel.hidden = !isActive;
-          panel.setAttribute('aria-hidden', String(!isActive));
-          panel.classList.toggle('is-active-panel', isActive);
-        });
-
-        counter.value = `${activeIndex + 1} / ${panels.length}`;
-        counter.textContent = counter.value;
-      };
-
-      previous.addEventListener('click', () => showPanel(activeIndex - 1));
-      next.addEventListener('click', () => showPanel(activeIndex + 1));
-      showPanel(0);
-    }
-
-    const portraitSwitcher = document.querySelector<HTMLElement>('[data-portrait-switcher]');
-
-    if (portraitSwitcher) {
-      const panels = Array.from(portraitSwitcher.querySelectorAll<HTMLElement>('[data-portrait-panel]'));
-      const buttons = Array.from(portraitSwitcher.querySelectorAll<HTMLButtonElement>('[data-portrait-target]'));
-      const caption = portraitSwitcher.querySelector<HTMLElement>('[data-portrait-caption]');
-
-      if (panels.length && buttons.length === panels.length && caption) {
-        portraitSwitcher.dataset.enhanced = 'true';
-
-        const showPortrait = (activeIndex: number) => {
-          panels.forEach((panel, index) => {
-            const isActive = index === activeIndex;
-            panel.hidden = !isActive;
-            panel.setAttribute('aria-hidden', String(!isActive));
+      const reveal = (entry: HTMLElement) => entry.classList.add('is-visible');
+      if ('IntersectionObserver' in window && !prefersReducedMotion) {
+        const observer = new IntersectionObserver((items) => {
+          items.forEach((item) => {
+            if (item.isIntersecting) {
+              reveal(item.target as HTMLElement);
+              observer.unobserve(item.target);
+            }
           });
-
-          buttons.forEach((button, index) => {
-            button.setAttribute('aria-pressed', String(index === activeIndex));
-          });
-
-          caption.textContent = panels[activeIndex]?.dataset.caption ?? '';
-        };
-
-        buttons.forEach((button, index) => {
-          button.addEventListener('click', () => showPortrait(index));
-        });
-
-        showPortrait(0);
+        }, { threshold: 0.28 });
+        entries.forEach((entry) => observer.observe(entry));
+      } else {
+        entries.forEach(reveal);
       }
-    }
+
+      entries.forEach((entry) => {
+        entry.dataset.bound = 'true';
+        const button = entry.querySelector<HTMLButtonElement>('[data-value-toggle]');
+        const note = entry.querySelector<HTMLElement>('[data-value-note]');
+        if (!button || !note) return;
+
+        button.addEventListener('click', () => {
+          const active = entry.classList.toggle('is-altered');
+          button.setAttribute('aria-expanded', String(active));
+          note.hidden = !active;
+        });
+      });
+
+      const portrait = document.querySelector<HTMLElement>('[data-portrait-switcher]:not([data-bound])');
+      if (portrait) {
+        portrait.dataset.bound = 'true';
+        const panels = Array.from(portrait.querySelectorAll<HTMLElement>('[data-portrait-panel]'));
+        const button = portrait.querySelector<HTMLButtonElement>('[data-portrait-next]');
+        const caption = portrait.querySelector<HTMLElement>('[data-portrait-caption]');
+        let active = 0;
+        button?.addEventListener('click', () => {
+          active = (active + 1) % panels.length;
+          panels.forEach((panel, index) => panel.hidden = index !== active);
+          if (caption) caption.textContent = panels[active]?.dataset.caption ?? '';
+        });
+      }
+    };
+
+    document.addEventListener('astro:page-load', initializeHome);
+    initializeHome();
   </script>
 </BaseLayout>

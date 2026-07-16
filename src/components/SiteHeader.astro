@@ -1,6 +1,6 @@
 ---
 interface Props {
-  active: 'home' | 'work' | 'connect' | 'blog';
+  active: 'home' | 'work' | 'games' | 'blog' | 'connect';
 }
 
 const { active } = Astro.props;
@@ -9,8 +9,9 @@ const base = import.meta.env.BASE_URL;
 const links = [
   { key: 'home', label: 'home', href: base },
   { key: 'work', label: 'work', href: `${base}work/` },
-  { key: 'connect', label: 'connect', href: `${base}connect/` },
+  { key: 'games', label: 'games', href: `${base}games/` },
   { key: 'blog', label: 'blog', href: `${base}blog/` },
+  { key: 'connect', label: 'connect', href: `${base}connect/` },
 ] as const;
 
 const resumePdf = `${base}resume/igor-kupchinenko-resume.pdf`;

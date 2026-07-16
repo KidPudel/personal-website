@@ -6,9 +6,9 @@ This file is the living implementation record. Update it whenever a meaningful t
 
 ## Current status
 
-Status: active full-project implementation, core experience built, launch completion work remains
+Status: active full-project implementation, page structure and core experience built, launch completion work remains
 
-The production website is implemented across its four core routes with typed content, the original paper-and-doodles system, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. This is not a prototype. Work continues through content completion, release infrastructure, final verification, deployment, and public inspection.
+The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. This is not a prototype. Work continues through content completion, release infrastructure, final verification, deployment, and public inspection.
 
 ## Completed
 
@@ -91,21 +91,51 @@ The production website is implemented across its four core routes with typed con
 - Reverified project and portrait switchers, all four route active states, desktop and 390px layouts, 44px interaction targets, one `h1` and `main` per page, and zero horizontal overflow.
 - Completed a clean production build with zero Astro diagnostics after the redesign.
 - Updated `Agents.md` and the project trackers to require completion of the production website instead of stopping after an initial visual section.
+- Reworked the primary information architecture so every route has one purpose:
+  - Home presents values;
+  - Work presents professional evidence;
+  - Games presents game-development work;
+  - Blog presents writing;
+  - Connect presents contact and profile links.
+- Replaced the portfolio-style homepage project switchers with a long-form values journey.
+- Added the initial six-value homepage interaction with original SVG doodles, later refined into the nine-value checklist recorded below.
+- Preserved the drawn and real portrait switcher as part of the personal introduction.
+- Added a dedicated Games route with a dark pixel-art surface, square borders, stepped animation, real project media, and two selected games.
+- Added Astro route transitions with a perspective notebook page-turn treatment and a reduced-motion-safe static path.
+- Changed regular prose to a hand-drawn font stack while keeping large headings distinct and notebook-like.
+- Added `https://x.com/kidpudel` to Connect and the site footer.
+- Verified Home, Work, Games, Blog, and Connect at 1440px and 390px widths with no horizontal overflow.
+- Verified one `h1`, one `main`, correct active navigation, and expected route content across all five pages.
+- Verified the value-doodle expanded state, visible explanatory note, and synchronized `aria-expanded` value.
+- Verified reduced-motion behavior disables route and doodle motion in the browser environment.
+- Restored the homepage heading `A quick glimpse into Igor's personal notebook.` after visual review.
+- Replaced the portrait switcher's red wavy underline with a blue circular switch cue that animates on hover and focus.
+- Reworked the values section from six large, abstract statements into Igor's exact nine values in a compact three-column checklist.
+- Kept one original interactive doodle per value, now presented as a small checkbox-like mark with a separate click cue.
+- Reduced the empty vertical space between the homepage introduction and values.
+- Verified the revised desktop, 1100px, and 390px layouts with no horizontal overflow.
+- Published `i.kupchinenko@gmail.com` as a direct `mailto:` card after explicit approval.
+- Added a closing Games-page link to the full `kidpudel.itch.io` profile beneath the selected projects.
+- Added a global mouse-click impact effect with hand-drawn radial lines, page-aware colors, no pointer interception, and reduced-motion and touch safeguards.
+- Changed the reduced-motion click path from fully hidden to a stationary fading burst after browser feedback showed that the effect otherwise appeared absent.
+- Replaced the distracting click burst with a small three-line pencil tick that fades in roughly a quarter second and has no central spot or ring.
+- Widened the homepage headline column at desktop widths so the notebook title uses the available screen instead of forming a narrow text tower.
+- Clarified that the homepage checklist describes qualities Igor wants in his work and artifacts, including `A useful capability` and `A joyful artifact`.
 
 ## Confirmed public links
 
 - LinkedIn: `https://www.linkedin.com/in/iggydev/`
 - GitHub: `https://github.com/KidPudel`
 - itch.io profile: `https://kidpudel.itch.io/`
+- X: `https://x.com/kidpudel`
+- Email: `i.kupchinenko@gmail.com`
 
 ## Pending decisions
 
-- Confirm whether `i.kupchinenko@gmail.com` may be published.
-- Replace `https://x.com/home` with a public X profile URL, or omit X.
 - Choose the final GitHub Pages URL form:
   - `https://kidpudel.github.io/`; or
   - `https://kidpudel.github.io/personal-website/`.
-- Confirm the exact itch.io project URLs for both games.
+- Confirm the exact itch.io project URL for `Discourses by Campfire`.
 
 ## Current implementation checklist
 
@@ -116,11 +146,13 @@ The production website is implemented across its four core routes with typed con
 - [x] Inspect résumé and available visual material.
 - [x] Write the implementation plan.
 - [x] Establish a progress log.
-- [ ] Resolve remaining contact and deployment URL details.
+- [ ] Resolve remaining project and deployment URL details.
 - [x] Scaffold the Astro application.
 - [x] Create content schemas.
 - [x] Build the complete core homepage experience.
 - [x] Apply the original visual system across all core routes.
+- [x] Separate Home, Work, Games, Blog, and Connect by purpose.
+- [x] Add the interactive values journey and dedicated pixel-art Games route.
 - [ ] Complete remaining launch content and planned detail pages.
 - [ ] Adapt and host `Identity Cage` locally.
 - [ ] Add game and professional detail pages.
@@ -132,7 +164,7 @@ The production website is implemented across its four core routes with typed con
 
 ## Current blockers
 
-Implementation is not technically blocked. Public email approval, the public X URL, exact game URLs, and the permanent GitHub Pages path still require confirmation, but they do not prevent progress on local content, detail routes, RSS, the error page, metadata, or verification.
+Implementation is not technically blocked. The exact Discourses by Campfire URL and the permanent GitHub Pages path still require confirmation, but they do not prevent progress on local content, detail routes, RSS, the error page, metadata, or verification.
 
 ## Next action
 

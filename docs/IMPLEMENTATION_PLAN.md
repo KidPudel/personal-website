@@ -10,7 +10,7 @@ The launch release should favor clarity, real content, accessibility, and public
 
 ## Current delivery state
 
-The Astro application, content collections, shared paper-and-doodles visual system, Home, Work, Connect, and Blog routes, project switchers, portrait switcher, optimized media, résumé downloads, and GitHub Pages workflow are implemented.
+The Astro application, content collections, five-purpose route structure, shared notebook shell, interactive values homepage, professional Work page, pixel-art Games page, Blog, Connect, portrait switcher, optimized media, résumé downloads, and GitHub Pages workflow are implemented.
 
 The project is still in active implementation. Remaining launch work includes completing the locally hosted article and planned project detail content, resolving public contact and deployment URLs, adding remaining discovery and error-page features, completing final accessibility and performance verification, and deploying and inspecting the public site.
 
@@ -33,14 +33,11 @@ The project is still in active implementation. Remaining launch work includes co
 
 ### Home
 
-- Opening headed by `A quick glimpse into Igor's personal notebook`.
-- Short, concrete explanation of Igor's professional work.
-- Current interests or current exploration.
-- Two clearly switchable professional stories.
-- Two clearly switchable selected games.
-- Recent writing.
-- Short personal story content where approved.
-- Contact, social, and résumé links.
+- Personal opening and portrait switcher.
+- A compact checklist of nine directly worded values.
+- A small checkbox-like original doodle beside each value.
+- Scroll reveal plus a keyboard, pointer, and touch alteration state for each doodle.
+- Short onward links to Work, Games, and Blog without duplicating their content.
 
 ### Work
 
@@ -51,7 +48,7 @@ The project is still in active implementation. Remaining launch work includes co
 
 ### Connect
 
-- Dedicated LinkedIn, GitHub, itch.io, résumé, and approved email links.
+- Dedicated LinkedIn, GitHub, itch.io, X, résumé, and email links.
 - Direct wording that supports professional opportunities and compatible collaborators.
 
 ### Blog
@@ -63,7 +60,7 @@ The project is still in active implementation. Remaining launch work includes co
 
 ### Professional stories
 
-Homepage and Work-page stories:
+Work-page stories:
 
 1. High-load service performance investigation and optimization.
 2. Building a payment or ordering service with another developer.
@@ -100,8 +97,8 @@ The stories should explain constraints, responsibilities, decisions, results, an
 - LinkedIn.
 - GitHub.
 - itch.io.
-- Email after approval.
-- X after receiving a public profile URL.
+- Email at `i.kupchinenko@gmail.com`.
+- X at `https://x.com/kidpudel`.
 - Downloadable PDF and DOCX résumé.
 
 ## Information architecture
@@ -111,16 +108,16 @@ The stories should explain constraints, responsibilities, decisions, results, an
 ├── work/
 │   ├── high-load-service-performance/  # planned detail page
 │   └── ordering-platform/              # planned detail page
-├── connect/
-├── blog/
-│   └── identity-cage/        # planned local article
 ├── games/                    # planned detail routes
 │   ├── discourses-by-campfire/
 │   └── santa-foundation/
+├── blog/
+│   └── identity-cage/        # planned local article
+├── connect/
 └── 404.html                  # required launch error page
 ```
 
-Primary navigation is conventional and uses `Home`, `Work`, `Connect`, and `Blog` as separate pages. Playful language may be used inside those pages without making visitors decode navigation.
+Primary navigation is conventional and uses `Home`, `Work`, `Games`, `Blog`, and `Connect` as separate pages. Each route has one clear purpose. Playful language may be used inside those pages without making visitors decode navigation.
 
 ## Technical architecture
 
@@ -141,6 +138,7 @@ src/
 ├── pages/
 │   ├── index.astro
 │   ├── work.astro
+│   ├── games.astro
 │   ├── connect.astro
 │   └── blog.astro
 ├── styles/global.css
@@ -183,11 +181,14 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 - Original code-native doodles drawn from Igor's interests in games, systems, cooking, music, curiosity, and playful energy.
 - Original avatar or personal artwork where it strengthens the introduction.
 - A two-state homepage portrait that switches between `drawn me` and `real me`.
-- A three-part homepage collage with introduction, circular portrait cutout, and a small handwritten contents note.
-- Separate full-width scrapbook rows for professional work and games instead of paired portfolio showcase cards.
+- A focused homepage introduction followed by a compact checklist of interactive values.
+- Professional work and games live on their own dedicated routes rather than as homepage portfolio cards.
 - Taped, clipped, or torn-paper media treatment for selected images.
 - A restrained pencil-and-paper palette built from ink, faded red, blue-green, moss, and sticky-note yellow.
 - Selective pixel-art treatment for Games while preserving site-wide typography and navigation.
+- Hand-drawn regular prose with a distinct notebook-editorial heading face.
+- Route-level perspective movement that reads as turning a notebook page.
+- A minimal three-stroke pencil tick at mouse-click coordinates, disabled for touch and reduced to a stationary fade when reduced motion is requested.
 - No copied illustrations, borders, signature framing, card arrangements, or exact composition from reference sites.
 
 ### Signature interaction
@@ -200,7 +201,7 @@ Begin with one drawn-stroke interaction for links, buttons, and selected cards:
 - becomes static when reduced motion is requested;
 - uses CSS or a small SVG enhancement before considering JavaScript.
 
-Richer transitions should wait until the core site is complete.
+Route transitions use the native View Transitions API through Astro progressive enhancement. They fall back safely and are disabled when reduced motion is requested.
 
 ## Asset strategy
 
@@ -228,8 +229,11 @@ Optimize raster media, preserve intentional pixel edges, provide meaningful alte
 
 ### Phase 2: core route implementation, completed
 
-- Home, Work, Connect, and Blog routes.
-- Two switchable production stories and two switchable games.
+- Home, Work, Games, Blog, and Connect routes, each with a clear purpose.
+- Nine interactive homepage values with compact original SVG doodles.
+- Two production stories on Work and two game projects on Games.
+- Dedicated pixel-art Games visual system.
+- Notebook page-turn route transitions.
 - Drawn and real portrait switcher.
 - Responsive layouts, progressive enhancement, touch controls, and reduced-motion behavior.
 - PDF and DOCX résumé downloads.
@@ -275,9 +279,5 @@ Optimize raster media, preserve intentional pixel edges, provide meaningful alte
 - The GitHub Pages deployment succeeds from a clean checkout.
 
 ## Open decisions
-
-- Public email approval.
-- Public X profile URL.
 - Root Pages URL versus `/personal-website/` project URL.
-- Exact public itch.io links for both featured games.
-- Final refinements to the approved notebook heading and homepage introduction.
+- Exact public itch.io link for `Discourses by Campfire`.

@@ -1,14 +1,17 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
   description?: string;
+  page?: 'home' | 'work' | 'games' | 'blog' | 'connect';
 }
 
 const {
   title = "A quick glimpse into Igor's personal notebook",
   description = 'Igor builds backend software, makes games, and writes about systems and ideas he is trying to understand.',
+  page = 'home',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -30,9 +33,38 @@ const faviconPath = `${import.meta.env.BASE_URL}favicon.svg`;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
+    <ClientRouter fallback="animate" />
   </head>
-  <body>
+  <body data-page={page}>
     <a class="skip-link" href="#main-content">Skip to the notebook</a>
     <slot />
+
+    <script>
+      const hasMousePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+      const drawClickImpact = (event: MouseEvent) => {
+        if (event.button !== 0 || !hasMousePointer.matches) return;
+
+        const impact = document.createElement('span');
+        impact.className = 'cursor-impact';
+        impact.setAttribute('aria-hidden', 'true');
+        impact.style.left = `${event.clientX}px`;
+        impact.style.top = `${event.clientY}px`;
+        impact.style.setProperty('--impact-tilt', `${(event.clientX + event.clientY) % 18 - 9}deg`);
+        impact.innerHTML = `
+          <svg viewBox="0 0 32 32">
+            <path d="M16 4c-1 3-1 5 0 8M27 10c-3 1-5 3-7 5M5 10c3 1 5 3 7 5" />
+          </svg>
+        `;
+
+        document.body.append(impact);
+        impact.addEventListener('animationend', (animationEvent) => {
+          if (animationEvent.target === impact) impact.remove();
+        });
+        window.setTimeout(() => impact.remove(), 500);
+      };
+
+      document.addEventListener('mousedown', drawClickImpact);
+    </script>
   </body>
 </html>

@@ -7,12 +7,13 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout
+  page="connect"
   title="Connect | Igor Kupchinenko"
   description="Contact links for Igor Kupchinenko."
 >
   <div class="site-frame">
     <SiteHeader active="connect" />
-    <main id="main-content" class="notebook page-notebook">
+    <main id="main-content" class="notebook notebook-page simple-page">
       <header class="page-hero connect-hero">
         <p class="eyebrow"><span aria-hidden="true">✦</span> connect</p>
         <h1>Say hello.</h1>
@@ -35,17 +36,23 @@ const base = import.meta.env.BASE_URL;
           <strong>itch.io</strong>
           <b aria-hidden="true">↗</b>
         </a>
+        <a class="contact-card" href="https://x.com/kidpudel">
+          <span>short notes and updates</span>
+          <strong>X / @kidpudel</strong>
+          <b aria-hidden="true">↗</b>
+        </a>
         <a class="contact-card" href={`${base}resume/igor-kupchinenko-resume.pdf`}>
           <span>work history</span>
           <strong>Résumé PDF</strong>
           <b aria-hidden="true">↓</b>
         </a>
+        <a class="contact-card" href="mailto:i.kupchinenko@gmail.com">
+          <span>direct message</span>
+          <strong>Email</strong>
+          <small>i.kupchinenko@gmail.com</small>
+          <b aria-hidden="true">↗</b>
+        </a>
       </section>
-
-      <aside class="page-note">
-        <p class="card-label">email</p>
-        <p>The public email address will be added here before launch.</p>
-      </aside>
     </main>
     <SiteFooter />
   </div>
