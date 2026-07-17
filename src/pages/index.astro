@@ -3,7 +3,17 @@ import { Image } from 'astro:assets';
 
 import avatar from '../assets/art/avatar.png';
 import avatarIrl from '../assets/art/avatar_irl.png';
+import campfireFrame3 from '../assets/art/doodles/campfire/frame-3.png';
+import cdDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-1.png';
+import thoughtsDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-2.png';
+import computerDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-3.png';
+import birdDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-4.png';
+import burgerDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-5.png';
+import cameraDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-6.png';
+import fishDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-7.png';
+import fishboneDoodle from '../assets/art/doodles/campfire/Doodles_For_Website_-8.png';
 import InteractionCue from '../components/InteractionCue.astro';
+import PersonalDoodle from '../components/PersonalDoodle.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import { paperTransition } from '../config/transitions';
@@ -30,6 +40,17 @@ const values = [
     title: 'The artifact becomes real.',
     note: 'It becomes a tool, a game, or another complete thing that can stand on its own.',
   },
+] as const;
+
+const notebookDoodles = [
+  { image: cdDoodle, label: 'A hand-drawn CD case', className: 'values-sketch-cd', artScale: 1.12 },
+  { image: thoughtsDoodle, label: 'A hand-drawn tangle of thoughts', className: 'values-sketch-thoughts', artScale: 1.08 },
+  { image: computerDoodle, label: 'A cute hand-drawn computer', className: 'values-sketch-computer', artScale: 1.1 },
+  { image: birdDoodle, label: 'A small hand-drawn bird', className: 'values-sketch-bird', artScale: 1.08 },
+  { image: burgerDoodle, label: 'A hand-drawn burger', className: 'values-sketch-burger', artScale: 1.12 },
+  { image: cameraDoodle, label: 'A hand-drawn camera', className: 'values-sketch-camera', artScale: 1.08 },
+  { image: fishDoodle, label: 'A hand-drawn fish with bubbles', className: 'values-sketch-fish', artScale: 1.08 },
+  { image: fishboneDoodle, label: 'A hand-drawn fishbone', className: 'values-sketch-fishbone', artScale: 1.12 },
 ] as const;
 ---
 
@@ -70,43 +91,63 @@ const values = [
       </section>
 
       <section id="values" class="values-section" aria-labelledby="values-title">
+        <div class="values-doodle-layer" aria-hidden="true">
+          <PersonalDoodle
+            class="values-campfire"
+            image={campfireFrame3}
+            label="A strong campfire drawn by Igor"
+            artScale={1}
+          />
+
+          {notebookDoodles.map((doodle) => (
+            <PersonalDoodle
+              class={`values-sketch ${doodle.className}`}
+              image={doodle.image}
+              label={doodle.label}
+              artScale={doodle.artScale}
+            />
+          ))}
+        </div>
+
         <header class="values-heading">
-          <p class="eyebrow">three notes for the things I make</p>
-          <h2 id="values-title">What matters to <em>me</em> in my work.</h2>
-          <p>Three outcomes I want from software, games, tools, and other artifacts.</p>
+          <div>
+            <p class="eyebrow">three notes for the things I make</p>
+            <h2 id="values-title">What matters to <em>me</em> in my work.</h2>
+            <p>Three outcomes I want from software, games, tools, and other artifacts.</p>
+          </div>
         </header>
 
-        <div class="values-list">
-          {values.map((value) => (
-            <article class={`value-entry value-${value.id}`} data-value-entry>
-              <button class="value-toggle" type="button" aria-expanded="false" data-value-toggle disabled>
-                <span class="value-doodle" aria-hidden="true">
-                {value.id === 'meaning' && (
-                  <svg viewBox="0 0 240 240" aria-hidden="true">
-                    <circle cx="120" cy="120" r="72"/><circle cx="120" cy="120" r="38"/><circle class="doodle-fill" cx="120" cy="120" r="9"/>
-                    <path class="doodle-after" d="m120 28 12 30-12 16-12-16 12-30Zm0 184-12-30 12-16 12 16-12 30Z"/>
-                  </svg>
-                )}
-                {value.id === 'joy' && (
-                  <svg viewBox="0 0 240 240" aria-hidden="true">
-                    <circle cx="120" cy="120" r="72"/><path d="M88 108h2m60 0h2m-55 31c14 15 33 18 49 0"/><path class="doodle-after" d="m52 48 6 14 14 6-14 6-6 14-6-14-14-6 14-6 6-14Z"/>
-                  </svg>
-                )}
-                {value.id === 'experience' && (
-                  <svg viewBox="0 0 240 240" aria-hidden="true">
-                    <path d="M49 56h142v132H49zM49 56l26-24h142v132l-26 24M191 56l26-24M191 188l26-24"/><path class="doodle-after" d="m82 119 27 29 55-65"/>
-                  </svg>
-                )}
-                </span>
-                <span class="value-copy">
-                  <span class="value-number">{value.number}</span>
-                  <strong>{value.title}</strong>
-                  <span class="value-note" data-value-note>{value.note}</span>
-                </span>
+        <div class="values-workspace">
+          <div class="values-checklist-column">
+            <div class="values-list">
+              {values.map((value) => (
+                <article class={`value-entry value-${value.id}`} data-value-entry>
+                  <label class="value-toggle">
+                    <input class="value-input" type="checkbox" data-value-input />
+                    <span class="value-checkbox" aria-hidden="true">
+                      <svg viewBox="0 0 64 64">
+                        <path class="checkbox-box" d="M10 12c12-2 29-2 43 1 1 12 1 27-2 40-12 1-27 1-40-2-1-13-1-27-1-39Z"/>
+                        <path class="checkbox-check" d="m16 33 10 10 23-25"/>
+                      </svg>
+                    </span>
+                    <span class="value-copy">
+                      <span class="value-number">{value.number}</span>
+                      <strong>{value.title}</strong>
+                      <span class="value-note"><span aria-hidden="true">↳ note:</span> {value.note}</span>
+                    </span>
+                  </label>
+                </article>
+              ))}
+            </div>
+
+            <aside class="values-complete-note" data-values-complete aria-live="polite" hidden>
+              <p><span aria-hidden="true">✦</span> Hey, I've been looking for you.</p>
+              <a href={`${base}connect/`}>
+                <span>Let's chat</span>
                 <InteractionCue />
-              </button>
-            </article>
-          ))}
+              </a>
+            </aside>
+          </div>
         </div>
       </section>
 
@@ -125,6 +166,7 @@ const values = [
     const initializeHome = () => {
       const entries = document.querySelectorAll<HTMLElement>('[data-value-entry]:not([data-bound])');
       const valuesList = document.querySelector<HTMLElement>('.values-list');
+      const completionNote = document.querySelector<HTMLElement>('[data-values-complete]');
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       valuesList?.classList.add('is-enhanced');
@@ -144,21 +186,17 @@ const values = [
         entries.forEach(reveal);
       }
 
-      entries.forEach((entry) => {
-        entry.dataset.bound = 'true';
-        const button = entry.querySelector<HTMLButtonElement>('[data-value-toggle]');
-        const note = entry.querySelector<HTMLElement>('[data-value-note]');
-        if (!button || !note) return;
+      if (valuesList && completionNote && !valuesList.dataset.completionBound) {
+        valuesList.dataset.completionBound = 'true';
+        const inputs = Array.from(valuesList.querySelectorAll<HTMLInputElement>('[data-value-input]'));
+        const updateCompletion = () => {
+          const isComplete = inputs.length > 0 && inputs.every((input) => input.checked);
+          completionNote.hidden = !isComplete;
+        };
 
-        button.disabled = false;
-        note.hidden = true;
-
-        button.addEventListener('click', () => {
-          const active = entry.classList.toggle('is-altered');
-          button.setAttribute('aria-expanded', String(active));
-          note.hidden = !active;
-        });
-      });
+        inputs.forEach((input) => input.addEventListener('change', updateCompletion));
+        updateCompletion();
+      }
 
       const portrait = document.querySelector<HTMLElement>('[data-portrait-switcher]:not([data-bound])');
       if (portrait) {

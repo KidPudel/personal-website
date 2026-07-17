@@ -1,6 +1,6 @@
 # Personal Website Implementation Plan
 
-Last updated: 2026-07-16
+Last updated: 2026-07-17
 
 ## Objective
 
@@ -11,6 +11,8 @@ The launch release should favor clarity, real content, accessibility, and public
 ## Current delivery state
 
 The Astro application, content collections, five-purpose route structure, shared notebook shell, interactive values homepage, professional Work page, pixel-art Games page, Blog, Connect, portrait switcher, optimized media, résumé downloads, and GitHub Pages workflow are implemented.
+
+The shared shell now reads as a physical open journal with a visible cover edge, page gutter, ruled sheets, and Igor's supplied real crumpled-paper texture beneath the ink. A reusable `PersonalDoodle` component supports Igor-authored static drawings that render directly on the journal page rather than inside cards. The first production use is the strongest final frame of Igor's campfire drawing on the homepage.
 
 The implementation has also completed a local architecture and compatibility audit. Node 24 is the documented development and deployment runtime, public profile links are centralized, and homepage interactions now preserve readable, non-misleading HTML when JavaScript is unavailable.
 
@@ -40,8 +42,13 @@ The project is still in active implementation. Remaining launch work includes co
 
 - Personal opening and portrait switcher.
 - Three large, directly worded outcomes for Igor's work.
-- One original interactive doodle for each outcome.
-- Scroll reveal plus a keyboard, pointer, and touch alteration state for each doodle.
+- One large irregular sticky note containing the three outcomes as a handwritten to-do checklist.
+- One original hand-drawn checkbox per outcome.
+- Checking an outcome draws its tick, strikes through the outcome text, and reveals the existing explanatory sentence as a handwritten note.
+- Native checkbox semantics support keyboard, pointer, and touch interaction without requiring JavaScript.
+- Checking all three outcomes reveals a small handwritten invitation linking to Connect through the shared notebook page transition.
+- Static personal doodles sit in a non-interactive paper-level layer beneath the readable content and use scattered, intentionally imperfect placement.
+- Igor's CD case, tangled thoughts, computer, bird, burger, camera, fish, and fishbone drawings join the campfire across that paper-level layer.
 - Short onward links to Work, Games, and Blog without duplicating their content.
 
 ### Work
@@ -133,6 +140,7 @@ src/
 │   └── games/
 ├── components/
 │   ├── DoodleGarden.astro
+│   ├── PersonalDoodle.astro
 │   ├── SiteFooter.astro
 │   └── SiteHeader.astro
 ├── config/
@@ -172,6 +180,20 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 - featured ordering;
 - draft state.
 
+### Personal doodle system
+
+`src/components/PersonalDoodle.astro` is the shared path for Igor's own notebook drawings.
+
+- Each doodle uses one transparent source image and remains static.
+- Astro optimizes the source image to WebP at build time.
+- Doodles are lazy-loaded and require no client-side script.
+- Drawings do not animate, tilt, or react to hover and tap because they represent literal ink on the page.
+- Doodles may be positioned in a pointer-transparent layer beneath the primary content so they feel embedded in the sheet rather than arranged as UI.
+- Decorative drawings never carry required information.
+- `artScale` compensates for intentional transparent space without modifying source artwork.
+
+Future drawings such as a computer, joystick, brain, data flow, game object, or campfire should be exported as single transparent PNG files. Animation studies may remain in the art source folder, but only the selected still should be imported into the published page.
+
 ### GitHub Pages
 
 - Use static Astro output.
@@ -184,15 +206,19 @@ Work, game, and writing entries should have validated frontmatter. Fields should
 ## Visual direction
 
 - Clean, readable structure beneath a handmade layer.
-- A warm desk and loose-leaf paper system rather than a dark framed portfolio shell.
-- Visible ruled lines, punched holes, a red notebook margin, torn edges, tape, and uneven paper scraps.
+- A warm desk and open-journal system rather than a dark framed portfolio shell.
+- Visible ruled lines, a red notebook margin, page gutter, layered page and cover edges, tape for real attached ephemera, and uneven paper scraps where the content calls for them.
+- Igor-authored doodles appear as literal ink on the journal sheets, never as framed doodle cards.
+- Doodles use scattered, asymmetric placement and may be partly obscured by paper notes or page edges when readability remains intact.
 - Original code-native doodles drawn from Igor's interests in games, systems, cooking, music, curiosity, and playful energy.
+- Igor-authored raster doodles may replace or supplement code-native marks as they become available.
+- Page drawings remain static. Motion is reserved for purposeful controls and transitions.
 - Original avatar or personal artwork where it strengthens the introduction.
 - A stacked two-polaroid homepage portrait that swaps between `drawn me` and `real me`, with pointer-angle tilt on fine-pointer devices.
 - A focused homepage introduction followed by three large interactive outcome cards.
 - Professional work and games live on their own dedicated routes rather than as homepage portfolio cards.
 - Taped, clipped, or torn-paper media treatment for selected images.
-- A subtle static grain overlay on loose-leaf notebook surfaces, excluded from the Games visual system.
+- The supplied real crumpled-paper photograph is a static low-opacity texture beneath the page content and is excluded from the Games visual system.
 - A restrained pencil-and-paper palette built from ink, faded red, blue-green, moss, and sticky-note yellow.
 - A charcoal-and-phosphor pixel-art treatment for Games, using warm amber and faded red accents, static subtle CRT scanlines, and a soft vignette while preserving site-wide navigation.
 - Hand-drawn regular prose with a distinct notebook-editorial heading face.
@@ -217,7 +243,7 @@ Route transitions use Astro's transition contract with the native View Transitio
 - Production builds must be checked with the real `/personal-website/` base path.
 - Every core route must keep one `main`, one `h1`, a correct active-navigation state, and no horizontal document overflow.
 - Responsive checks cover 360, 390, 760, 761, 1000, 1001, and 1440 pixel widths so both sides of the current CSS breakpoints are exercised.
-- Homepage controls must remain readable without JavaScript and become enabled only after their event handlers are attached.
+- Homepage value controls must work without JavaScript through native checkbox behavior; JavaScript is used only for the optional scroll reveal.
 - Reduced-motion behavior must keep content visible and remove continuous or route motion.
 - Public deployment still requires a final check in current Chromium, Firefox, and Safari engines because local viewport testing does not replace cross-engine testing.
 
@@ -235,6 +261,10 @@ The portrait switcher uses Igor's approved `avatar_irl.png` photograph for the `
 
 Optimize raster media, preserve intentional pixel edges, provide meaningful alternative text, include video posters, and avoid autoplay with sound.
 
+The repository retains the three approved campfire source studies from Igor's Procreate export folder under `src/assets/art/doodles/campfire/`. The homepage imports only `frame-3.png`, where the flame is strongest, and Astro publishes one optimized WebP derivative. Eight additional transparent PNG doodles supplied by Igor are imported from the same current source directory and optimized independently at build time.
+
+The journal surface uses the user-supplied `Texturelabs_Paper_143M.jpg`, converted to a stripped 112 KB WebP at `src/assets/art/paper-crumpled.webp`. It is reused by the header and journal pages, loaded once, desaturated in presentation, and placed below the ink layer so typography and artwork stay clear.
+
 ## Delivery phases
 
 ### Phase 1: foundation and visual system, completed
@@ -248,7 +278,8 @@ Optimize raster media, preserve intentional pixel edges, provide meaningful alte
 ### Phase 2: core route implementation, completed
 
 - Home, Work, Games, Blog, and Connect routes, each with a clear purpose.
-- Three interactive homepage outcomes with large original SVG doodles.
+- Three interactive homepage outcomes presented as one handwritten sticky-note checklist.
+- Nine static paper-level homepage doodles, including the campfire and eight additional Igor-authored sketches.
 - Two production stories on Work and two game projects on Games.
 - Dedicated charcoal CRT and pixel-art Games visual system.
 - Notebook paper-lift route transitions.

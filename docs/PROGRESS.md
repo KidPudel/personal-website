@@ -1,6 +1,6 @@
 # Personal Website Progress
 
-Last updated: 2026-07-16
+Last updated: 2026-07-17
 
 This file is the living implementation record. Update it whenever a meaningful task is completed, a decision changes, a blocker appears, or the next action changes.
 
@@ -8,7 +8,7 @@ This file is the living implementation record. Update it whenever a meaningful t
 
 Status: active full-project implementation, page structure and core experience built, launch completion work remains
 
-The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. The first public release targets `https://kidpudel.github.io/personal-website/` from the private source repository. Work continues through deployment, public inspection, content completion, and the remaining launch infrastructure.
+The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. The shared notebook now has a more physical diary treatment and a reusable path for Igor-authored static doodles. The first public release targets `https://kidpudel.github.io/personal-website/` from the private source repository. Work continues through deployment, public inspection, content completion, and the remaining launch infrastructure.
 
 A local architecture and compatibility audit is complete. The project builds cleanly against the production base path, the five routes have been checked across the current breakpoint range, and confirmed runtime and progressive-enhancement issues have been corrected. Public cross-engine and performance verification remains launch work.
 
@@ -152,7 +152,7 @@ A local architecture and compatibility audit is complete. The project builds cle
   - the same custom animation is declared through Astro's transition API for native and fallback implementations;
   - reduced-motion behavior remains an immediate static swap.
 - Verified the paper transition with motion enabled across repeated Home, Games, and Connect navigation in Astro's non-native fallback path, with correct routes, no overflow, and a clean browser console.
-- Added a reusable low-opacity SVG grain texture over Home, Work, Blog, and Connect notebook surfaces. The overlay is static, ignores pointer input, preserves readable contrast, and is absent from the Games pixel-art surface.
+- Added an initial reusable low-opacity SVG grain texture over Home, Work, Blog, and Connect notebook surfaces. It was later replaced by the real paper photograph described below.
 - Rebuilt the homepage portrait interaction as a real two-card polaroid stack:
   - both approved portraits remain in the stack, with the inactive card visibly behind the active one;
   - swapping sends the outgoing card around the incoming card before returning it to the back of the stack;
@@ -170,6 +170,42 @@ A local architecture and compatibility audit is complete. The project builds cle
 - Added a static CRT treatment to the Games surface with fine scanlines, a soft edge vignette, and very low-opacity color-channel texture. It adds no flicker or rolling animation and ignores pointer input.
 - Tuned the CRT layer separately for mobile so scanlines and the vignette remain subtle over screenshots and small text.
 - Visually verified the redesigned Games hero and project media at 1440 and 390 pixels. Confirmed one `h1`, one `main`, correct active navigation, no broken images, no horizontal overflow, and a clean browser console.
+- Replaced the synthetic crease gradients and procedural paper grain with Igor's supplied `Texturelabs_Paper_143M.jpg`.
+- Converted the 336 KB source JPEG into a stripped 112 KB WebP and reused that one asset for the journal header and page surfaces.
+- Moved the real texture beneath the ink layer so crumples affect the paper without reducing text or artwork clarity.
+- Rebuilt Home, Work, Blog, and Connect as a physical open journal with a cover edge, layered page edge, center gutter, ruled paper, red notebook margin, and real crumpling.
+- Removed the binder-hole treatment and the large synthetic diagonal and circular crease marks.
+- Preserved the Games route as a separate pixel-art surface instead of applying the paper texture over game media.
+- Added `src/components/PersonalDoodle.astro` as a reusable system for Igor-authored drawings:
+  - each component renders one static transparent image;
+  - source artwork remains unchanged, lazy-loaded, and optimized by Astro during the build;
+  - no frame timer, client script, hover tilt, or touch animation is attached to page drawings;
+  - `artScale` can compensate for transparent source padding without modifying the artwork.
+- Removed the card, tape, border, background, shadow, and caption from the campfire presentation so the static drawing reads as literal ink on the page.
+- Retained Igor's three transparent campfire studies under `src/assets/art/doodles/campfire/`, but imported only the strongest final frame beside the homepage values introduction.
+- Confirmed the production build publishes one optimized 14 KB campfire WebP.
+- Reduced the final campfire drawing, removed its clipping, and moved it into a pointer-transparent layer beneath the values content.
+- Replaced the four reserved sketch positions with Igor's eight new transparent drawings: CD case, tangled thoughts, computer, bird, burger, camera, fish, and fishbone.
+- Positioned all eight new drawings asymmetrically in the same paper-level layer, using varied scale and partial occlusion so they feel scattered through the diary rather than arranged in a gallery.
+- Confirmed the eight optimized published doodles total approximately 86 KB, or approximately 100 KB together with the campfire.
+- Rebalanced the doodle hierarchy after visual review by shrinking and tucking the tangled-thoughts drawing against the page edge while moving the fishbone into the open left-page space.
+- Reworked the three homepage outcomes from bordered UI cards into direct journal entries, then refined them into the sticky-note checklist described below.
+- Reworked the homepage onward links into irregular yellow, blue, and faded-red paper notes to supply playful color without turning the drawings into stickers.
+- Briefly added a yellow highlighter shape behind the campfire, then removed it after visual feedback so the campfire remains unbacked ink on the page.
+- Replaced the three value interactions with one irregular yellow sticky-note to-do checklist on the right journal page.
+- Replaced the JavaScript-driven value buttons with native checkboxes that work through keyboard, pointer, and touch input without JavaScript.
+- Added original irregular checkbox outlines that draw during scroll reveal and animated check marks that draw when selected.
+- Added a red strike-through state and revealed handwritten `note:` sentence for every checked outcome.
+- Added an all-checked completion note reading `Hey, I've been looking for you.` with a `Let's chat` link to Connect.
+- Reused the existing notebook page transition for the completion link rather than forcing an automatic redirect.
+- Verified unchecked and checked checklist states at 1440 pixels and on a 390-pixel mobile viewport. The mobile tap state reveals the note with zero horizontal overflow.
+- Verified the scattered paper-level doodle positions, all-checked completion note, and Connect navigation at 1440 and 390 pixels with zero horizontal overflow.
+- Verified all nine paper-level doodles remain pointer-transparent and discoverable across the desktop and mobile values section, with a clean browser console.
+- Visually verified the revised homepage at desktop and 390-pixel mobile widths, including the campfire drawn directly on the page, open gutter, real paper texture, journal-entry spacing, and zero horizontal overflow.
+- Visually verified the shared Work journal treatment at 1440 pixels with one `h1`, one `main`, and zero horizontal overflow.
+- Completed clean root and `/personal-website/` production builds with zero Astro diagnostics after adding the paper and personal-doodle systems.
+- Confirmed the homepage contains one campfire image with no doodle client script and zero horizontal overflow.
+- Verified that the strongest final campfire frame is visible on the page as a static drawing.
 
 ## Confirmed public links
 
@@ -215,7 +251,7 @@ Deployment from a private repository requires GitHub Pro, Team, or Enterprise. I
 
 ## Next action
 
-Use Node 24 locally, deploy the current release to `https://kidpudel.github.io/personal-website/`, inspect the published routes and assets in current Chromium, Firefox, and Safari, then continue with the remaining launch content and infrastructure.
+Use Node 24 locally, deploy the current release to `https://kidpudel.github.io/personal-website/`, inspect the published routes and assets in current Chromium, Firefox, and Safari, then continue with the remaining launch content and infrastructure. Additional Igor-authored doodles can be added incrementally through the same static image component.
 
 ## Notes for future work
 
