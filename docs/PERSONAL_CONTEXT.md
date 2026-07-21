@@ -4,6 +4,8 @@
 
 This document helps explain the person behind the website.
 
+`docs/CONTEXT_ABOUT_IGOR.md` is the authority for professional experience, craft evidence, capability levels, process and outcome values, gaps, direction, and role fit. This file supplies personal and private context only. It must not override or be used as a shortcut for that professional and craft context.
+
 It may guide:
 
 - tone;
@@ -120,35 +122,13 @@ Relevant qualities may include:
 
 Admiration does not mean the site should imitate their websites, tone, or opinions.
 
-## Values
+## Professional and craft boundary
 
-I value work and artifacts that have:
+Do not derive Igor's professional positioning, capability level, role fit, or craft values from this file. Read `docs/CONTEXT_ABOUT_IGOR.md` completely for those subjects.
 
-- clear meaning;
-- a real purpose;
-- usefulness;
-- joy;
-- a mechanism or system feel;
-- meaningful data or state flow;
-- visible behaviour;
-- a complete experience;
-- honest trade-offs.
+This personal context contributes only complementary qualities such as playfulness, sincerity, curiosity, warmth, cultural taste, and Igor's dislike of fixed identity labels. It should not be used to simplify the professional story into “backend engineer,” “game developer,” “generalist,” or another permanent identity.
 
-I prefer choosing tools according to the intended result rather than loyalty to a language, framework, engine, or community.
-
-I do not expect every task to be exciting. I dislike work dominated by low-information busywork that is disconnected from understanding or useful progress.
-
-## Professional relationship to personal interests
-
-My strongest paid experience is in backend and product engineering.
-
-My most visible work is in game development.
-
-Do not present this as a contradiction.
-
-Backend, data, frontend, games, art, and design are capability groups that may overlap in projects without defining my identity.
-
-The site should let professional evidence and personal interests coexist without forcing them into one artificial label.
+Software, games, tools, writing, art, music, cooking, and other interests may coexist on the site without implying equal professional depth in all of them. The authoritative context determines what evidence supports each claim.
 
 ## Personal development
 
@@ -173,6 +153,22 @@ Do not publish relationship details without explicit approval.
 ## Appearance
 
 - I somewhat resemble Jeremy Allen White from The Bear.
+
+
+## Hobbies
+
+- play music
+- cooking
+
+## Hobbies that I want to do
+
+- Tailoring more
+- Haiku
+- Writing more
+- Dancing
+- Singing
+- Improv class
+- Carpenter
 
 This is informal context only.
 

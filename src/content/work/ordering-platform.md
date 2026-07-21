@@ -1,13 +1,15 @@
 ---
-title: Owning an ordering platform in a two-person team
-summary: End-to-end responsibility for a Go backend, from design and implementation through production operation.
+title: Building payment and expiration flows across services
+summary: Implementing parts of an early-stage fintech system across service, storage, messaging, and integration boundaries.
 featured: true
 status: published
 capabilities:
   - Go
-  - product delivery
-  - Flutter
-  - production ownership
+  - PostgreSQL
+  - Kafka and Redis
+  - gRPC and Protobuf
 ---
 
-I worked across backend and mobile delivery in a two-person team. That meant turning stakeholder requirements into features, owning the main Go ordering backend, and carrying decisions through production rather than handing work off at an artificial boundary.
+I implemented parts of an early-stage fintech system that included order processing, a payment gateway, expiration behavior, and delivery through webhooks and callbacks. The work crossed Go services, PostgreSQL, Kafka, Redis, gRPC, Protobuf, and JWT middleware.
+
+It is useful evidence of becoming productive across unfamiliar boundaries and translating product flows into stateful services. It is not presented as proof of long-term operational ownership or deep distributed-systems specialization.

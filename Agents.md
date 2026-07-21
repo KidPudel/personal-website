@@ -19,6 +19,14 @@ This repository is the production website project, not a disposable prototype, d
 
 Use the following documents when relevant:
 
+- `docs/CONTEXT_ABOUT_IGOR.md`
+  - authoritative professional and craft context;
+  - demonstrated experience and evidence;
+  - capability levels and current gaps;
+  - process and outcome values;
+  - current direction and suitable role labels;
+  - boundaries on claims that the evidence does not support.
+
 - `docs/WEBSITE_CONTEXT.md`
   - product purpose;
   - information architecture;
@@ -33,7 +41,30 @@ Use the following documents when relevant:
   - personal interests;
   - private context that may guide tone but must not be published automatically.
 
-Do not load or apply every personal detail mechanically. Use context only when it improves the current task.
+### Context authority
+
+Use this precedence when documents overlap:
+
+1. Igor's latest explicit instruction.
+2. `docs/CONTEXT_ABOUT_IGOR.md` for professional background, craft, evidence, capability levels, values related to work and outcomes, gaps, direction, and role fit.
+3. `docs/WEBSITE_CONTEXT.md` for the website's purpose, audience, information architecture, public-content strategy, and interaction principles.
+4. `docs/DESIGN_REFINEMENT_BRIEF.md` for the current approved visual refinement direction.
+5. `docs/PERSONAL_CONTEXT.md` for personality, culture, interests, private emotional context, and tone.
+6. `docs/IMPLEMENTATION_PLAN.md` for current delivery sequencing.
+7. `docs/PROGRESS.md` as a historical implementation record.
+
+The progress log records what was believed or implemented at a point in time. It is not an authority when newer context corrects an earlier interpretation. Preserve historical entries, add an explicit correction, and update current plans and public content.
+
+Read `docs/CONTEXT_ABOUT_IGOR.md` completely before changing:
+
+- professional positioning or biography;
+- Work Software mode, Work Games mode, About, or My Story content;
+- case studies, capability labels, role labels, or résumé framing;
+- process values, outcome values, or explanations of what Igor likes making;
+- claims about expertise, seniority, specialization, ownership, production experience, or game-development depth;
+- the relationship between backend, product, mobile, and game experience.
+
+Do not load or apply every personal detail mechanically. `docs/CONTEXT_ABOUT_IGOR.md` contains internal assessment and employment context, not blanket approval to publish every fact. `docs/PERSONAL_CONTEXT.md` contains private and emotionally sensitive material. Use the public-use rules and ask Igor before publishing details that are personal, sensitive, employer-confidential, or not already approved.
 
 ## Core principles
 
@@ -44,8 +75,20 @@ Do not load or apply every personal detail mechanically. Use context only when i
 - Preserve Igor's voice.
 - Do not invent facts, responsibilities, results, or metrics.
 - Mark uncertain information instead of presenting it as verified.
-- Do not overstate professional game-development or data-engineering experience.
-- Do not minimize production backend experience.
+- Do not position Igor as a mature specialist in backend, distributed systems, data engineering, mobile architecture, product design, or professional game development.
+- Do not minimize the real evidence in mobile product ownership, paid fintech backend work, receipt-processing investigation, end-to-end product construction, and independent game development.
+- Distinguish approximately 11 months of officially documented employment from substantial paid but unofficial or project-based backend experience.
+- Describe games as serious independent multidisciplinary work with some external player feedback, not as established commercial game-development specialization.
+- Present `Experience-driven product systems design and engineering` as the current coherent direction, not a permanent identity or a conventional title Igor has already held.
+- When a conventional label is necessary, choose it for the audience and evidence. Relevant labels include Product Engineer, Product-oriented Software Engineer, Interactive Product Engineer, Mobile Product Engineer, Gameplay Systems Engineer, Gameplay Programmer, and Technical Game Designer. Do not imply equal readiness for all of them.
+- Keep demonstrated capability, current level, desired direction, and capability gaps separate.
+- Keep Igor and his values together on Home. Values is a composition within Home, not a separate primary route.
+- When Igor describes a value as “raw,” interpret that as personally meaningful and emotionally close to what matters to him, not careless, maximally confessional, or merely factually accurate.
+- Do not over-correct Igor's story toward only engineering or only design. His strongest direction combines product design, interaction and behavior design, game design, and implementation across technical boundaries.
+- Use one Work index with directly linkable Software and Games modes. Keep `Home`, `Work`, `Blog`, and `Connect` as the primary navigation labels.
+- Inventory all verified work Igor chooses to include. Use featured, supporting, experiment, early-work, and unfinished levels instead of giving every artifact equal prominence or hiding less polished work.
+- Lead professional evidence with the complete Flutter application and Chinese Bee. Use receipt processing as the strongest focused investigation and fintech services as supporting technical breadth.
+- Keep `Discourses by Campfire` and `Secret Santa Foundation` as the primary game cases. Snake with Go and raylib and C++ and OpenGL Tic-Tac-Toe are smaller supporting artifacts in the longer game-making trajectory.
 - Do not use em dashes in public copy.
 - Avoid generic corporate language.
 - Avoid identity-based positioning such as "I am a creator who can do anything."
@@ -53,12 +96,21 @@ Do not load or apply every personal detail mechanically. Use context only when i
 ## Design principles
 
 - Expressive surface, disciplined structure.
-- Use handwritten details as accents, not for long body text.
+- Treat one persistent physical notebook as the website and the only primary content surface. The desk is quiet environmental space, not a second canvas.
+- On notebook routes, use Bright Chalk for regular prose and interface text and Cartoon Relief only for larger distinctive elements, subject to webfont files and embedding rights being available.
+- Use blueprint-like construction marks inside the notebook to explain real product behavior, system flow, mechanics, state, and decisions in both Work modes. Do not add fake technical notation.
+- Present Games as minimal pixel art integrated into warm notebook paper. Do not preserve or recreate the current dark CRT, phosphor, console, arcade-menu, or generic retro-interface treatment.
+- Pixel typography may appear inside authentic game media or a small project-specific label, but it must not become a second site interface type system.
+- Do not force a visible H1/H2/H3 landing-page ladder. Preserve accessible page and region names without making semantic support dictate the composition.
 - Intentional imperfection must not create actual confusion.
 - Navigation and primary actions must remain conventional and understandable.
-- The Games section may use a distinct pixel-art treatment.
+- Render links, mode choices, and action controls visually as clear written text with underlines, circles, strokes, or margin marks. Preserve semantic links and buttons, visible focus, and 44-pixel hit areas without generic boxed buttons, pills, CTA cards, or application-style tabs.
 - Do not invent additional visual systems without a clear reason.
-- Do not add animation only to demonstrate technical ability.
+- Treat high interactivity as an approved part of the website's portfolio value. Use one physical grammar based on unwrapping, lifting, sliding, drawing, rearranging, riffling, and settling paper.
+- Favor deliberately low-frame-rate, stepped paper motion over smooth generic application animation.
+- Allow selected loose artifacts to move on scroll or be draggable when the resting layout remains complete, bounds are safe, and equivalent content is available through keyboard and touch.
+- Do not begin implementation from prose alone. Storyboard desktop, mobile, motion, reduced-motion, and JavaScript-free states and obtain Igor's approval first.
+- Do not invent dates, days, timestamps, locations, coordinates, measurements, or notebook notes for atmosphere. Use them only when verified and useful.
 - Respect reduced-motion preferences.
 - Ensure important interactions also work with touch and keyboard input.
 
@@ -80,7 +132,7 @@ Do not load or apply every personal detail mechanically. Use context only when i
 
 This website can easily become a long-running meta-project.
 
-Prioritize publishing a useful version before building elaborate interactions.
+The approved interactive notebook is required launch work, not optional spectacle. Keep its implementation bounded by the reviewed storyboard and finish publication, content, accessibility, metadata, verification, and deployment alongside it.
 
 Before adding complexity, ask:
 
@@ -97,16 +149,17 @@ The completed launch version should include:
 
 - homepage;
 - personal introduction;
-- selected professional work;
-- selected games;
+- raw personal values within Home;
+- one Work index with Software and Games modes;
+- a complete, honestly tiered inventory of verified software and game work;
 - writing section;
 - short story or About section;
 - contact details;
 - LinkedIn, GitHub, itch.io, email, and résumé links;
 - responsive and accessible layout;
-- a restrained version of the handmade visual style.
+- the approved living-notebook visual and interaction system.
 
-Completion does not require every possible animation, illustration, transition, or project case study. It does require every agreed launch feature to be implemented, verified, and deployable.
+Completion does not require every possible animation or movable object. It does require the approved signature unwrapping, shared low-frame-rate paper grammar, and reviewed interactions to be implemented, accessible, performant, and deployable.
 
 ## Working process
 

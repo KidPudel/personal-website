@@ -1,16 +1,60 @@
 # Personal Website Progress
 
-Last updated: 2026-07-17
+Last updated: 2026-07-21
 
 This file is the living implementation record. Update it whenever a meaningful task is completed, a decision changes, a blocker appears, or the next action changes.
 
 ## Current status
 
-Status: active full-project implementation, page structure and core experience built, launch completion work remains
+Status: active full-project design discovery, current implementation built but new visual work paused pending storyboard approval
 
 The production website is implemented across five purpose-specific routes with typed content, an interactive values homepage, a professional Work page, a dedicated pixel-art Games page, Blog, Connect, responsive interactions, optimized media, résumé downloads, and a GitHub Pages workflow. The shared notebook now has a more physical diary treatment and a reusable path for Igor-authored static doodles. The first public release targets `https://kidpudel.github.io/personal-website/` from the private source repository. Work continues through deployment, public inspection, content completion, and the remaining launch infrastructure.
 
 A local architecture and compatibility audit is complete. The project builds cleanly against the production base path, the five routes have been checked across the current breakpoint range, and confirmed runtime and progressive-enhancement issues have been corrected. Public cross-engine and performance verification remains launch work.
+
+A public design-quality review identified a new refinement pass. Igor subsequently clarified that the website itself should become a highly interactive portfolio piece. `docs/DESIGN_REFINEMENT_BRIEF.md` now separates approved constraints from a working `living blueprint notebook` hypothesis and requires desktop, mobile, motion, reduced-motion, and JavaScript-free storyboards before new visual implementation.
+
+### Current information-architecture decision
+
+The five-route implementation remains the current code state, but it is no longer the launch target.
+
+- Home contains both Igor's portrait-led introduction and his values. Values is not a separate route or peer destination.
+- “Raw” values means personally meaningful and emotionally close to Igor, even when less professionally neat. It does not mean careless, unedited, or maximally confessional.
+- Primary navigation becomes Home, Work, Blog, Connect.
+- Work becomes one complete index with directly linkable Software and Games modes.
+- The Work inventory should include every verified artifact Igor chooses to include, organized as featured cases, supporting work, experiments or early work, and unfinished work.
+- The strongest cases receive the best visual and narrative lighting, while smaller or incomplete artifacts remain discoverable with honest status.
+- The current Games page's content hierarchy and real media remain useful evidence references, but its visual language is rejected. The dark CRT and generic retro-interface treatment must be replaced.
+
+### Current visual-direction decision
+
+These requirements are approved, while exact compositions and motion sequences remain in design discovery:
+
+- One persistent notebook is the website and the only primary content surface. The desk is quiet environmental space, not a second content canvas.
+- Work uses a blueprint-like drawing method in both modes to explain real behavior, state, system flow, mechanics, and decisions.
+- Games uses minimal pixel art integrated into the same warm notebook paper. It must not use the current dark CRT, phosphor, terminal, console, arcade-menu, neon, or generic retro-portfolio language.
+- Links and semantic buttons should look like clear written text with drawn states rather than boxed buttons, pills, segmented controls, CTA cards, or dashboard tabs.
+- Do not invent day marks, dates, timestamps, locations, coordinates, measurements, or notebook notes for atmosphere.
+- High interactivity is a core portfolio requirement. The shared physical grammar may unwrap, lift, slide, draw, rearrange, riffle, and settle paper with a deliberately stepped low-frame-rate feel.
+- Selected objects may move on scroll or be draggable, but the resting layout must remain complete and equivalent content must remain available through keyboard, touch, reduced-motion, and JavaScript-free paths.
+- No new visual implementation begins until Igor approves the storyboards and interaction states.
+
+### Authoritative professional-context correction
+
+`docs/CONTEXT_ABOUT_IGOR.md` is now the authority for professional evidence, craft values, capability levels, gaps, direction, and role fit. It supersedes earlier interpretations in current plans and public content while the historical entries below remain unchanged as a record of what was previously believed or implemented.
+
+Current corrections:
+
+- Do not position Igor as a mature backend, distributed-systems, data-engineering, mobile-architecture, product-design, or commercial game-development specialist.
+- The current coherent umbrella is experience-driven product systems design and engineering, not a claimed past job title or permanent identity.
+- The strongest performance story is receipt processing reduced from approximately 6 to 10 seconds to approximately 600 to 650 milliseconds by detecting PDFs, extracting text directly, introducing a separate Python service, adapting downstream parsing, and reducing unnecessary OCR.
+- The earlier generic `9.5 seconds to 650 milliseconds` high-load Go story is superseded unless Igor re-verifies that exact measurement and interpretation.
+- Ordering-platform ownership in a two-person team is not supported by the authoritative context and must be removed from current public content unless separately verified.
+- Officially documented employment is approximately 11 months under the title Mobile Developer. Substantial paid backend work was unofficial or project-based. This distinction guides claim review but is not automatic permission to publish sensitive employment context.
+- The professional story should preserve the real breadth of mobile product ownership, paid fintech backend work, end-to-end personal products, receipt investigation, and serious independent games while keeping capability limits explicit.
+- The homepage should not publish the complete process-and-outcome framework. Its selected principles are clear purpose, a close feedback relationship with users or players, and capability or understanding that can be shared.
+- The complete Flutter application and Chinese Bee are the strongest product design and engineering cases. Receipt processing remains the strongest focused investigation, not the page's leading identity.
+- The Go and raylib Snake post and C++ and OpenGL Tic-Tac-Toe repository are verified smaller artifacts in Igor's longer game-making trajectory.
 
 ## Completed
 
@@ -206,6 +250,18 @@ A local architecture and compatibility audit is complete. The project builds cle
 - Completed clean root and `/personal-website/` production builds with zero Astro diagnostics after adding the paper and personal-doodle systems.
 - Confirmed the homepage contains one campfire image with no doodle client script and zero horizontal overflow.
 - Verified that the strongest final campfire frame is visible on the page as a static drawing.
+- Created `docs/DESIGN_REFINEMENT_BRIEF.md` to translate the comparative design review into an actionable full-site refinement specification.
+- Revised the typography and structure direction after Igor's review: Bright Chalk is the regular handwritten voice, Cartoon Relief is reserved for large distinctive elements, and accessible semantics must not force a conventional visible H1/H2/H3 layout.
+- Clarified the homepage content model after Igor's review: the primary positioning is software and games, while writing remains in Blog; standards for the work itself must remain distinct from the broader effect Igor wants his contributions to have in the world; invented sentimental or quirky slogans are not acceptable public copy.
+- Read `docs/CONTEXT_ABOUT_IGOR.md` completely and adopted it as the professional and craft source of truth.
+- Added context-authority rules to `Agents.md`, including precedence, required reading triggers, privacy boundaries, and evidence-level safeguards.
+- Aligned `docs/WEBSITE_CONTEXT.md`, `docs/PERSONAL_CONTEXT.md`, `docs/DESIGN_REFINEMENT_BRIEF.md`, and `docs/IMPLEMENTATION_PLAN.md` with the authoritative capability model and corrected receipt-processing narrative.
+- Inspected the surviving Flutter, Chinese Bee API, Telegram bot, and handwriting-interface sources to anchor the primary product cases in current evidence.
+- Verified the public Go and raylib X post and the C++ and OpenGL Tic-Tac-Toe repository before adding them as supporting game artifacts.
+- Recorded the decision to keep Values within Home and combine the current Work and Games indexes into one Work route with Software and Games modes.
+- Recorded the approved notebook-first constraints, rejection of the current Games visual system, text-like controls, blueprint method across both Work modes, prohibition on fake day and date decoration, and high-interactivity requirement.
+- Paused new visual implementation and added a pre-implementation storyboard gate covering desktop, mobile, motion, reduced motion, JavaScript-free states, real artifacts, and removed decoration.
+- Added the tracing-paper wrapper, kraft wrapper, and folded-page opening as concepts to compare, with tracing-paper overlays as the current leading hypothesis rather than an approved implementation.
 
 ## Confirmed public links
 
@@ -235,6 +291,18 @@ A local architecture and compatibility audit is complete. The project builds cle
 - [x] Apply the original visual system across all core routes.
 - [x] Separate Home, Work, Games, Blog, and Connect by purpose.
 - [x] Add the interactive values journey and dedicated pixel-art Games route.
+- [ ] Complete the full-site design refinement described in `docs/DESIGN_REFINEMENT_BRIEF.md`.
+- [ ] Approve the notebook binding, opening reveal, within-route spread behavior, route transition, blueprint treatment, Home-values composition, and exact draggable artifacts before implementation.
+- [ ] Review desktop and mobile resting compositions plus frames for unwrapping, scroll, text focus, Work-mode change, click response, drag, reduced motion, and JavaScript-free use.
+- [ ] Keep the raw values composition within Home and reduce it to the most personally meaningful principles.
+- [ ] Merge the current Work and Games routes into one Work index with directly linkable, progressively enhanced Software and Games modes.
+- [ ] Inventory every verified included artifact and assign featured, supporting, experiment or early-work, or unfinished prominence.
+- [ ] Replace current public Work copy that still contains the superseded generic high-load and two-person ordering-platform stories.
+- [ ] Rebuild Work around the Flutter application, Chinese Bee, receipt investigation, and bounded fintech evidence in that order.
+- [ ] Add the Snake and Tic-Tac-Toe projects as compact supporting game artifacts without displacing the two primary game cases.
+- [ ] Remove the current CRT Games shell and rebuild Games as minimal pixel art integrated into warm notebook paper.
+- [ ] Replace boxed or application-like controls with semantic text controls using drawn states and touch-safe hit areas.
+- [ ] Implement the approved low-frame-rate unwrapping, scroll, click, draggable-object, and page behaviors as one physical system.
 - [ ] Complete remaining launch content and planned detail pages.
 - [ ] Adapt and host `Identity Cage` locally.
 - [ ] Add game and professional detail pages.
@@ -251,13 +319,14 @@ Deployment from a private repository requires GitHub Pro, Team, or Enterprise. I
 
 ## Next action
 
-Use Node 24 locally, deploy the current release to `https://kidpudel.github.io/personal-website/`, inspect the published routes and assets in current Chromium, Firefox, and Safari, then continue with the remaining launch content and infrastructure. Additional Igor-authored doodles can be added incrementally through the same static image component.
+Review and refine the design exploration in `docs/DESIGN_REFINEMENT_BRIEF.md`. Decide the physical notebook form, opening wrapper, route and scroll behavior, blueprint treatment, Home-values composition, and draggable artifacts from storyboards before changing visual code. After approval, correct the Work stories, merge Work and Games, implement the shared notebook interaction system, complete launch content and infrastructure, deploy, and inspect the published site.
 
 ## Notes for future work
 
 - Preserve existing user changes in the Git working tree.
+- Read `docs/CONTEXT_ABOUT_IGOR.md` before changing professional positioning, case studies, capabilities, values, role fit, or the relationship between product, mobile, backend, and game work.
 - Do not publish private personal context automatically.
 - Do not invent professional details or metrics.
-- Keep the Games pixel treatment related to the main visual system.
-- Prefer publication over expanding the interaction scope.
+- Keep Games on the same warm paper and shared blueprint system. Do not restore the rejected CRT or generic retro treatment.
+- Implement only the interaction family approved in the storyboard, then finish publication work instead of adding unrelated effects.
 - Avoid em dashes in all public website copy.
