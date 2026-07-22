@@ -4,7 +4,7 @@
 
 This document helps explain the person behind the website.
 
-`docs/CONTEXT_ABOUT_IGOR.md` is the authority for professional experience, craft evidence, capability levels, process and outcome values, gaps, direction, and role fit. This file supplies personal and private context only. It must not override or be used as a shortcut for that professional and craft context.
+`docs/CONTEXT_ABOUT_IGOR.md` is the authority for professional experience, craft evidence, capability levels, unified craft values, working conditions, gaps, direction, and role fit. This file supplies personal and private context only. It must not override or be used as a shortcut for that professional and craft context.
 
 It may guide:
 

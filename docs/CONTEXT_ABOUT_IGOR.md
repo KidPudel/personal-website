@@ -2,7 +2,7 @@
 
 ## How this document is used
 
-This is the authoritative internal source for Igor's professional background, craft evidence, capability levels, process values, outcome values, gaps, current direction, and suitable role labels.
+This is the authoritative internal source for Igor's professional background, craft evidence, capability levels, craft values, working conditions, gaps, current direction, and suitable role labels.
 
 When another project document conflicts with it, use this document unless Igor has given a newer explicit instruction. Update current plans and public content to match, but preserve dated progress entries as history and add a clear correction.
 
@@ -30,7 +30,7 @@ This document records significant evidence and direction, not an exhaustive inve
 
 ## 2. Current employment situation
 
-* Igor has been unable to find a job despite approximately three months of cold applications. One of the reasons is because of uncertancy in what direction to move and not letting yourself to do what really fits him based on capabilities + process values + outcome values + willingness to endure.
+* Igor has been unable to find a job despite approximately three months of cold applications. One reason is uncertainty about which direction best fits his capabilities, craft values, working conditions, and willingness to endure.
 * He does not consider backend work beneath him and would not reject a suitable backend position. The problem is that employers are currently not selecting him.
 * His official employment history makes his real capability level difficult for recruiters to interpret:
 
@@ -461,7 +461,9 @@ He has onboarded developers and taught people close to him.
 
 Current level: **working**, with stronger informal teaching ability than formal technical leadership evidence.
 
-## 7. Process values
+## 7. Conditions that support Igor's best work
+
+These are conditions and practices that support Igor's craft. They are not a separate category of public values and should not be placed opposite “outcome values” on the website.
 
 Igor is most engaged when the work includes:
 
@@ -478,15 +480,17 @@ He is not motivated merely by producing a high volume of output.
 
 He needs to respect what is being produced and why it exists.
 
-## 8. Outcome values
+## 8. Craft values
 
+Do not divide these into process and outcome values. They describe what matters to Igor in the craft of making a product or game and in the relationship between the artifact and the person using it.
 
-* Wish fulfillment of experience, behaviour, or capability for the user/player.
-* Empowering, Electrifying the life interactions that leave a mark of what is possible to feel.
+1. **Fulfil a real wish for an experience, behaviour, or capability.** Begin from something a user or player genuinely wants to do, feel, understand, or experience, then make that possible through the artifact.
+2. **Create an impactful and empowering interaction experience.** The interaction should expand what feels possible for the person, give them a meaningful capability or experience, and make life richer rather than merely occupy attention.
+3. **Be clear and honest with users or players.** The product's purpose, behavior, feedback, choices, and consequences should be understandable. Do not create false expectations, hide what the interaction is doing, or use confusion as a substitute for depth.
 
-The common pattern is that the result must be directly experienced by a person.
+The common pattern is that the craft is judged through the experience of a person. Meaning, design, behavior, systems, implementation, feedback, and iteration are parts of making that experience real rather than separate value categories.
 
-In terms of engineering specifically He is more interested in it as a means to deliver the design of an interaction, capability, behaviour, or experience to the world than in solving technical problems purely for their own sake.
+In engineering specifically, Igor is more interested in it as a means to deliver an interaction, capability, behaviour, or experience than in solving technical problems purely for their own sake.
 
 ## 9. What drains him
 
@@ -779,7 +783,7 @@ Based on the available evidence, the following are less suitable as the central 
 
 These capabilities may still support the primary direction and may still provide employment.
 
-They simply do not appear to represent the strongest combination of demonstrated capability, process value, outcome value, and willingness to endure.
+They simply do not appear to represent the strongest combination of demonstrated capability, craft values, suitable working conditions, and willingness to endure.
 
 ## 19. Current concise capability statement
 
