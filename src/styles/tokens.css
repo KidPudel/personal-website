@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'Bright Chalk';
+  src: url('../assets/fonts/bright-chalk.regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cartoon Relief';
+  src: url('../assets/fonts/cartoon-relief.regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@layer tokens {
+  :root {
+    --color-field: #171716;
+    --color-paper: #f2e8cf;
+    --color-paper-edge: #d8ccb0;
+    --color-ink: #20201e;
+    --color-field-ink: #f3efe4;
+    --color-focus: #7db7ff;
+
+    --font-reading: 'Bright Chalk', 'Segoe Print', 'Bradley Hand', cursive;
+    --font-distinctive: 'Cartoon Relief', 'Bright Chalk', 'Segoe Print', cursive;
+
+    --field-gutter: clamp(1rem, 4vw, 4rem);
+    --paper-width: 72rem;
+    --reading-width: 58ch;
+
+    --focus-width: 0.2rem;
+    --focus-offset: 0.25rem;
+  }
+}

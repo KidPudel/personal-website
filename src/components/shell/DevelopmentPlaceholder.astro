@@ -1,0 +1,14 @@
+---
+interface Props {
+  title: string;
+  surface?: 'field' | 'paper';
+}
+
+const { title, surface = 'paper' } = Astro.props;
+---
+
+<section class:list={['development-placeholder', { 'development-placeholder--field': surface === 'field' }]} aria-labelledby="placeholder-title">
+  <p class="development-placeholder__status">Development placeholder</p>
+  <h1 id="placeholder-title">{title}</h1>
+  <p>This route is ready for its authored composition in a later implementation milestone.</p>
+</section>

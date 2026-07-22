@@ -1,0 +1,138 @@
+---
+import connectIcon from '../../assets/art/icons/Doodles_connect.png';
+import { publicLinks, sitePath } from '../../config/site';
+import NavigationDrawing from './NavigationDrawing.astro';
+
+const links = [
+  { label: 'Email', href: publicLinks.email },
+  { label: 'LinkedIn', href: publicLinks.linkedin },
+  { label: 'GitHub', href: publicLinks.github },
+  { label: 'itch.io', href: publicLinks.itch },
+  { label: 'X', href: publicLinks.x },
+  { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-resume.pdf') },
+] as const;
+---
+
+<connect-disclosure id="connect">
+  <NavigationDrawing
+    art={connectIcon}
+    artScale={2.2}
+    label="Connect"
+    labelPlacement="lower-right"
+    class="connect-choice"
+    connectToggle
+    ariaControls="connect-links"
+    ariaExpanded={true}
+    tilt="-2deg"
+  />
+
+  <div id="connect-links" class="connect-links">
+    {links.map((link) => <a href={link.href}>{link.label}</a>)}
+  </div>
+</connect-disclosure>
+
+<script>
+  class ConnectDisclosureElement extends HTMLElement {
+    connectedCallback() {
+      if (this.hasAttribute('data-enhanced')) return;
+
+      const button = this.querySelector<HTMLButtonElement>('[data-connect-toggle]');
+      const panel = this.querySelector<HTMLElement>('#connect-links');
+      if (!button || !panel) return;
+
+      this.setAttribute('data-enhanced', '');
+
+      const setExpanded = (expanded: boolean) => {
+        button.setAttribute('aria-expanded', String(expanded));
+        panel.hidden = !expanded;
+        this.toggleAttribute('data-open', expanded);
+      };
+
+      const syncFromHash = () => setExpanded(window.location.hash === '#connect');
+      syncFromHash();
+
+      button.addEventListener('click', () => {
+        const expanded = button.getAttribute('aria-expanded') !== 'true';
+        setExpanded(expanded);
+
+        const nextURL = expanded
+          ? `${window.location.pathname}${window.location.search}#connect`
+          : `${window.location.pathname}${window.location.search}`;
+        window.history.replaceState(null, '', nextURL);
+      });
+
+      window.addEventListener('hashchange', syncFromHash);
+    }
+  }
+
+  if (!customElements.get('connect-disclosure')) {
+    customElements.define('connect-disclosure', ConnectDisclosureElement);
+  }
+</script>
+
+<style>
+  connect-disclosure {
+    position: relative;
+    display: block;
+    width: max-content;
+  }
+
+  .connect-links {
+    position: absolute;
+    z-index: 4;
+    bottom: 3.5rem;
+    left: calc(100% + 1.5rem);
+    display: flex;
+    width: min(25rem, 42vw);
+    flex-wrap: wrap;
+    gap: 0.25rem 1.15rem;
+    padding-left: 1.2rem;
+    border-left: 1px dashed color-mix(in srgb, var(--color-field-ink) 42%, transparent);
+  }
+
+  .connect-links[hidden] {
+    display: none;
+  }
+
+  .connect-links a {
+    position: relative;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-field-ink);
+    font-size: 0.95rem;
+    text-underline-offset: 0.22em;
+  }
+
+  connect-disclosure:not([data-enhanced]) .connect-links {
+    position: static;
+    width: min(28rem, 75vw);
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 40rem) {
+    connect-disclosure {
+      display: grid;
+      width: 100%;
+      justify-items: center;
+    }
+
+    connect-disclosure[data-open],
+    connect-disclosure:not([data-enhanced]) {
+      grid-column: 1 / -1;
+      justify-items: start;
+    }
+
+    .connect-links,
+    connect-disclosure:not([data-enhanced]) .connect-links {
+      position: static;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.65rem 0 0 1rem;
+    }
+
+    .connect-links a {
+      font-size: 0.9rem;
+    }
+  }
+</style>

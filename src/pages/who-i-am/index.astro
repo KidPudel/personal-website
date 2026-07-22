@@ -1,0 +1,18 @@
+---
+import DevelopmentPlaceholder from '../../components/shell/DevelopmentPlaceholder.astro';
+import HomeReturn from '../../components/shell/HomeReturn.astro';
+import PaperSurface from '../../components/shell/PaperSurface.astro';
+import WorldField from '../../components/shell/WorldField.astro';
+import BaseDocument from '../../layouts/BaseDocument.astro';
+---
+
+<BaseDocument title="Who I am | Igor Kupchinenko" description="An introduction to Igor Kupchinenko and his craft values.">
+  <WorldField>
+    <HomeReturn />
+    <main id="main-content">
+      <PaperSurface>
+        <DevelopmentPlaceholder title="Who I am" />
+      </PaperSurface>
+    </main>
+  </WorldField>
+</BaseDocument>

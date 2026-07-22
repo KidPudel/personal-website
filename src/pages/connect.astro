@@ -1,61 +1,20 @@
 ---
-import SiteFooter from '../components/SiteFooter.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import { publicEmail, publicLinks } from '../config/site';
-import { paperTransition } from '../config/transitions';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { sitePath } from '../config/site';
 
-const base = import.meta.env.BASE_URL;
+const redirectTarget = `${sitePath('/')}#connect`;
+const canonicalURL = new URL(redirectTarget, Astro.site);
 ---
 
-<BaseLayout
-  page="connect"
-  title="Connect | Igor Kupchinenko"
-  description="Contact links for Igor Kupchinenko."
->
-  <div class="site-frame">
-    <SiteHeader active="connect" />
-    <main id="main-content" class="notebook notebook-page simple-page" transition:name="notebook-page" transition:animate={paperTransition}>
-      <header class="page-hero connect-hero">
-        <p class="eyebrow"><span aria-hidden="true">✦</span> connect</p>
-        <h1>Say hello.</h1>
-        <p>If you want to talk about backend systems, games, a role, or something interesting you are making, these are the best places to find me.</p>
-      </header>
-
-      <section class="contact-grid" aria-label="Contact links">
-        <a class="contact-card" href={publicLinks.linkedin}>
-          <span>professional conversations</span>
-          <strong>LinkedIn</strong>
-          <b aria-hidden="true">↗</b>
-        </a>
-        <a class="contact-card" href={publicLinks.github}>
-          <span>code and projects</span>
-          <strong>GitHub</strong>
-          <b aria-hidden="true">↗</b>
-        </a>
-        <a class="contact-card" href={publicLinks.itch}>
-          <span>playable things</span>
-          <strong>itch.io</strong>
-          <b aria-hidden="true">↗</b>
-        </a>
-        <a class="contact-card" href={publicLinks.x}>
-          <span>short notes and updates</span>
-          <strong>X / @kidpudel</strong>
-          <b aria-hidden="true">↗</b>
-        </a>
-        <a class="contact-card" href={`${base}resume/igor-kupchinenko-resume.pdf`}>
-          <span>work history</span>
-          <strong>Résumé PDF</strong>
-          <b aria-hidden="true">↓</b>
-        </a>
-        <a class="contact-card" href={publicLinks.email}>
-          <span>direct message</span>
-          <strong>Email</strong>
-          <small>{publicEmail}</small>
-          <b aria-hidden="true">↗</b>
-        </a>
-      </section>
-    </main>
-    <SiteFooter />
-  </div>
-</BaseLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${redirectTarget}`} />
+    <link rel="canonical" href={canonicalURL} />
+    <title>Redirecting to Connect</title>
+  </head>
+  <body>
+    <p><a href={redirectTarget}>Continue to Connect</a></p>
+  </body>
+</html>

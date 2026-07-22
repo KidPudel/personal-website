@@ -208,8 +208,10 @@ Connect does not create a full-screen page. Ink lines or another drawn connectio
 
 Use exactly two handwritten families across Home and destination materials:
 
-1. `Bright Chalk` for regular reading and interface text;
+1. `Bright Chalk` for regular reading and interface text; 
 2. `Cartoon Relief` for a small number of large distinctive moments.
+
+
 
 Bright Chalk is used for:
 

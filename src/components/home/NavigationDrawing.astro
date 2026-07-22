@@ -1,0 +1,169 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  label: string;
+  art: ImageMetadata;
+  labelPlacement: 'upper-right' | 'right' | 'lower-right' | 'below-right';
+  href?: string;
+  class?: string;
+  connectToggle?: boolean;
+  ariaControls?: string;
+  ariaExpanded?: boolean;
+  tilt?: string;
+  artScale?: number;
+}
+
+const {
+  label,
+  art,
+  labelPlacement,
+  href,
+  class: className,
+  connectToggle = false,
+  ariaControls,
+  ariaExpanded,
+  tilt = '0deg',
+  artScale = 1,
+} = Astro.props;
+
+const Element = href ? 'a' : 'button';
+---
+
+<Element
+  class:list={['home-choice', className]}
+  href={href}
+  type={href ? undefined : 'button'}
+  aria-controls={ariaControls}
+  aria-expanded={ariaExpanded}
+  data-connect-toggle={connectToggle ? '' : undefined}
+  data-label-placement={labelPlacement}
+  style={`--choice-tilt: ${tilt}; --choice-art-scale: ${artScale}`}
+>
+  <span class="home-choice__art" aria-hidden="true">
+    <Image src={art} alt="" width={512} />
+  </span>
+  <span class="home-choice__label">{label}</span>
+</Element>
+
+<style>
+  .home-choice {
+    position: relative;
+    display: block;
+    width: clamp(6.5rem, 9vw, 8rem);
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-field-ink);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .home-choice__art {
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1;
+    place-items: center;
+    transform: rotate(var(--choice-tilt));
+    transition: transform 140ms ease;
+  }
+
+  .home-choice__art :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(1) invert(1);
+    transform: scale(var(--choice-art-scale));
+  }
+
+  .home-choice__label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: clamp(1.1rem, 1.8vw, 1.35rem);
+    font-weight: 650;
+    line-height: 1.2;
+    white-space: nowrap;
+    transform: translate(-50%, -50%) translate(var(--choice-label-x), var(--choice-label-y))
+      rotate(var(--choice-label-tilt));
+  }
+
+  .home-choice[data-label-placement='upper-right'] {
+    --choice-label-x: 5.15rem;
+    --choice-label-y: -3.7rem;
+    --choice-label-tilt: -2deg;
+  }
+
+  .home-choice[data-label-placement='right'] {
+    --choice-label-x: 5rem;
+    --choice-label-y: -1.45rem;
+    --choice-label-tilt: 1deg;
+  }
+
+  .home-choice[data-label-placement='lower-right'] {
+    --choice-label-x: 4.2rem;
+    --choice-label-y: 3.45rem;
+    --choice-label-tilt: -1deg;
+  }
+
+  .home-choice[data-label-placement='below-right'] {
+    --choice-label-x: 3.35rem;
+    --choice-label-y: 4.25rem;
+    --choice-label-tilt: 2deg;
+  }
+
+  .home-choice__label::after {
+    position: absolute;
+    right: -0.15em;
+    bottom: -0.25rem;
+    left: -0.15em;
+    border-top: 0.12rem solid currentColor;
+    content: '';
+    transform: scaleX(0) rotate(-1deg);
+    transform-origin: right;
+    transition: transform 140ms ease;
+  }
+
+  .home-choice:is(:hover, :focus-visible) .home-choice__art {
+    transform: translateY(-0.2rem) rotate(calc(var(--choice-tilt) - 1deg));
+  }
+
+  .home-choice:is(:hover, :focus-visible) .home-choice__label::after {
+    transform: scaleX(1) rotate(-1deg);
+    transform-origin: left;
+  }
+
+  @media (max-width: 40rem) {
+    .home-choice {
+      width: clamp(5.5rem, 26vw, 6.5rem);
+    }
+
+    .home-choice__art {
+      width: 100%;
+    }
+
+    .home-choice[data-label-placement='upper-right'] {
+      --choice-label-x: 3.4rem;
+      --choice-label-y: -2.6rem;
+    }
+
+    .home-choice[data-label-placement='right'] {
+      --choice-label-x: 3.25rem;
+      --choice-label-y: -0.85rem;
+    }
+
+    .home-choice[data-label-placement='lower-right'] {
+      --choice-label-x: 2.75rem;
+      --choice-label-y: 2.75rem;
+    }
+
+    .home-choice[data-label-placement='below-right'] {
+      --choice-label-x: 2.4rem;
+      --choice-label-y: 3.15rem;
+    }
+  }
+</style>
