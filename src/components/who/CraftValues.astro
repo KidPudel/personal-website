@@ -4,16 +4,22 @@ const values = [
     words: ['experience', 'behaviour', 'capability'],
     before: 'Fulfil a real wish for ',
     after: '.',
+    boxPath: 'M4.6 5.5 C9.2 4.6 16.1 5 21.6 4.2 C21.8 9.1 22.5 15.5 21.4 21.8 C16.3 21.2 9.2 22.4 4 21.5 C4.5 15.6 3.4 10.4 4.7 4.6',
+    tickPath: 'M5.8 13.3 C7.9 14.5 9.3 16.4 10.8 18.1 C13.8 13.8 17.2 9.4 21.1 6.7',
   },
   {
     words: ['impactful', 'empowering'],
     before: 'Create an ',
     after: ' interaction experience.',
+    boxPath: 'M4.1 4.7 C9.6 4.9 15.8 3.7 22.1 4.8 C21.7 10.3 22.6 16.6 21.5 22.1 C16.1 21.3 10.3 22.6 4.4 21.2 C5 15.3 3.6 9.6 4.5 4',
+    tickPath: 'M5.7 13 C7.6 14.1 9.2 16.2 10.6 17.6 C13.5 14.1 17.5 9 21.2 6.4',
   },
   {
     words: ['clear', 'honest'],
     before: 'Be ',
     after: ' with users or players.',
+    boxPath: 'M4.5 5 C9 4 17.4 4.2 21.7 4.8 C22.3 9.5 21.6 16.1 22.3 21.4 C16.7 22 9.7 22.5 4.1 21.6 C4.7 16.8 3.5 10.1 4.3 4.2',
+    tickPath: 'M5.6 13.5 C7.8 14.4 9.1 16.1 10.7 17.9 C13.3 14.5 17.7 9.1 21.4 6.5',
   },
 ] as const;
 
@@ -45,8 +51,10 @@ const { completionId } = Astro.props;
         />
         <label class="craft-values__check-control" for={`craft-value-${index + 1}`}>
           <span class="craft-values__check" aria-hidden="true">
-            <span class="craft-values__mark craft-values__mark--short"></span>
-            <span class="craft-values__mark craft-values__mark--long"></span>
+            <svg class="craft-values__check-svg" viewBox="0 0 26 26" focusable="false">
+              <path class="craft-values__outline" d={value.boxPath}></path>
+              <path class="craft-values__tick" d={value.tickPath} pathLength="100"></path>
+            </svg>
           </span>
         </label>
         <p>
@@ -199,74 +207,58 @@ const { completionId } = Astro.props;
   }
 
   .craft-values li:nth-child(2) {
-    margin-left: clamp(1.75rem, 7vw, 5rem);
+    margin-left: 0;
     transform: rotate(0.45deg);
   }
 
   .craft-values li:nth-child(3) {
-    margin-left: clamp(0.35rem, 2.5vw, 1.6rem);
+    margin-left: 0;
     transform: rotate(-0.55deg);
   }
 
   .craft-values__check {
-    --box-transform: rotate(-3deg) skewX(-1deg);
-    --box-border: 0.1rem 0.15rem 0.13rem 0.1rem;
-    --box-radius: 14% 7% 18% 9%;
     position: relative;
     display: block;
-    width: 1.25rem;
-    height: 1.12rem;
+    width: 1.45rem;
+    height: 1.45rem;
+    transform: rotate(-2.5deg);
+    transition: transform 80ms ease;
   }
 
   .craft-values li:nth-child(2) .craft-values__check {
-    --box-transform: rotate(2.5deg) skewY(1deg);
-    --box-border: 0.14rem 0.1rem 0.11rem 0.15rem;
-    --box-radius: 8% 17% 6% 15%;
+    transform: rotate(2deg);
   }
 
   .craft-values li:nth-child(3) .craft-values__check {
-    --box-transform: rotate(-1.5deg) skewX(1.5deg);
-    --box-border: 0.11rem 0.14rem 0.15rem 0.09rem;
-    --box-radius: 17% 9% 13% 5%;
+    transform: rotate(-1deg);
   }
 
-  .craft-values__check::before {
-    position: absolute;
-    pointer-events: none;
-    content: '';
-    inset: 0;
-    border-color: currentColor;
-    border-style: solid;
-    border-width: var(--box-border);
-    border-radius: var(--box-radius);
-    transform: var(--box-transform);
-    transition: background-color 80ms ease;
+  .craft-values__check-svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
   }
 
-  .craft-values__mark {
-    position: absolute;
-    z-index: 1;
-    height: 0.16rem;
-    border-radius: 999px 35% 999px 45%;
-    background: currentColor;
-    opacity: 0;
-    transform-origin: left center;
+  .craft-values__outline,
+  .craft-values__tick {
+    fill: transparent;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
   }
 
-  .craft-values__mark--short {
-    top: 0.52rem;
-    left: 0.06rem;
-    width: 0.5rem;
-    transform: rotate(42deg) scaleX(0);
-    transition: opacity 35ms linear, transform 70ms ease-in;
+  .craft-values__outline {
+    stroke-width: 1.65;
+    transition: fill 80ms ease, stroke-width 80ms ease;
   }
 
-  .craft-values__mark--long {
-    top: 0.83rem;
-    left: 0.4rem;
-    width: 1.05rem;
-    transform: rotate(-49deg) scaleX(0);
-    transition: opacity 40ms linear, transform 100ms ease-out;
+  .craft-values__tick {
+    stroke-width: 2.15;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 115ms cubic-bezier(0.22, 0.75, 0.3, 1);
   }
 
   .craft-values__input {
@@ -296,20 +288,13 @@ const { completionId } = Astro.props;
     animation: checkbox-settle 135ms ease-out;
   }
 
-  .craft-values__input:checked + .craft-values__check-control .craft-values__check::before {
-    background: rgba(134, 69, 56, 0.05);
+  .craft-values__input:checked + .craft-values__check-control .craft-values__outline {
+    fill: rgba(134, 69, 56, 0.045);
   }
 
-  .craft-values__input:checked + .craft-values__check-control .craft-values__mark--short {
-    opacity: 1;
-    transform: rotate(42deg) scaleX(1);
-    transition-delay: 10ms;
-  }
-
-  .craft-values__input:checked + .craft-values__check-control .craft-values__mark--long {
-    opacity: 1;
-    transform: rotate(-49deg) scaleX(1);
-    transition-delay: 38ms;
+  .craft-values__input:checked + .craft-values__check-control .craft-values__tick {
+    stroke-dashoffset: 0;
+    transition-delay: 18ms;
   }
 
   .craft-values__input:focus-visible + .craft-values__check-control {
@@ -389,8 +374,9 @@ const { completionId } = Astro.props;
       scale: 1.035;
     }
 
-    .craft-values__input:not(:checked) + .craft-values__check-control:hover .craft-values__check::before {
-      background: rgba(134, 69, 56, 0.035);
+    .craft-values__input:not(:checked) + .craft-values__check-control:hover .craft-values__outline {
+      fill: rgba(134, 69, 56, 0.025);
+      stroke-width: 1.85;
     }
   }
 
@@ -424,8 +410,8 @@ const { completionId } = Astro.props;
     }
 
     .craft-values__check,
-    .craft-values__check::before,
-    .craft-values__mark,
+    .craft-values__outline,
+    .craft-values__tick,
     .craft-values li p,
     .craft-values__strike {
       transition-duration: 0.01ms;
@@ -445,12 +431,9 @@ const { completionId } = Astro.props;
       gap: 0.1rem;
     }
 
-    .craft-values li:nth-child(2) {
-      margin-left: 0.85rem;
-    }
-
+    .craft-values li:nth-child(2),
     .craft-values li:nth-child(3) {
-      margin-left: 0.15rem;
+      margin-left: 0;
     }
 
     .craft-values__strike {
