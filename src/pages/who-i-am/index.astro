@@ -11,14 +11,15 @@ import ColorWord from '../../components/who/ColorWord.astro';
 import CraftValues from '../../components/who/CraftValues.astro';
 import PlayfulWord from '../../components/who/PlayfulWord.astro';
 import PortraitInteraction from '../../components/who/PortraitInteraction.astro';
+import { connectLinks } from '../../config/site';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 ---
 
 <BaseDocument title="Who I am | Igor Kupchinenko" description="An introduction to Igor Kupchinenko and his craft values.">
   <WorldField destination>
     <HomeReturn />
-    <main id="main-content">
-      <PaperSurface variant="notebook">
+    <main id="main-content" class="who-main">
+      <PaperSurface variant="notebook" compact>
         <article class="who-page" aria-labelledby="who-title">
           <div class="who-page__doodles" aria-hidden="true">
             <Image class="who-page__bird" src={birdDoodle} alt="" width={190} />
@@ -39,14 +40,30 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
             <PortraitInteraction />
           </section>
 
-          <CraftValues />
+          <CraftValues completionId="who-contact-sheet" />
         </article>
       </PaperSurface>
+
+      <aside id="who-contact-sheet" class="who-contact-sheet" aria-live="polite" hidden>
+        <p>I'd love to chat with you.</p>
+        <div class="who-contact-sheet__links" aria-label="Connect options">
+          {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        </div>
+      </aside>
     </main>
   </WorldField>
 </BaseDocument>
 
 <style>
+  .who-main {
+    isolation: isolate;
+  }
+
+  .who-main :global(.paper-surface-frame) {
+    position: relative;
+    z-index: 2;
+  }
+
   .who-page {
     position: relative;
     isolation: isolate;
@@ -58,13 +75,13 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
     align-items: center;
-    gap: clamp(2.5rem, 5vw, 5rem);
-    min-height: 39rem;
+    gap: clamp(2rem, 4vw, 3.75rem);
+    min-height: 31.5rem;
   }
 
   .who-introduction__copy {
     display: grid;
-    gap: 1.35rem;
+    gap: 1.1rem;
     max-width: 38rem;
   }
 
@@ -122,6 +139,93 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
     transform: rotate(-6deg);
   }
 
+  .who-contact-sheet {
+    position: relative;
+    z-index: 1;
+    width: min(74%, 42rem);
+    max-width: calc(100% - 2rem);
+    margin: -1.35rem auto 1rem;
+    padding: 2.5rem 1.5rem 1.15rem;
+    overflow: clip;
+    background:
+      linear-gradient(rgba(237, 225, 196, 0.9), rgba(242, 232, 207, 0.96)),
+      var(--color-paper);
+    box-shadow: 0 0.85rem 1.1rem rgba(7, 7, 6, 0.2);
+    color: var(--color-ink);
+    clip-path: polygon(
+      0.4% 0.8%,
+      15% 0.2%,
+      33% 0.65%,
+      51% 0.15%,
+      69% 0.55%,
+      86% 0.18%,
+      99.6% 0.7%,
+      99.85% 31%,
+      99.55% 68%,
+      99.7% 99.35%,
+      79% 99.8%,
+      58% 99.45%,
+      37% 99.85%,
+      16% 99.4%,
+      0.3% 99.65%,
+      0.1% 55%
+    );
+    scroll-margin-block: 1.5rem;
+    transform-origin: top center;
+  }
+
+  .who-contact-sheet::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: url('../../assets/art/paper-grain.svg') 0 0 / 180px 180px;
+    content: '';
+    mix-blend-mode: multiply;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .who-contact-sheet[hidden] {
+    display: none;
+  }
+
+  .who-contact-sheet:not([hidden]) {
+    animation: contact-sheet-emerges 420ms cubic-bezier(0.2, 0.72, 0.28, 1) both;
+  }
+
+  .who-contact-sheet > p {
+    font-size: clamp(1.2rem, 2vw, 1.55rem);
+  }
+
+  .who-contact-sheet__links {
+    display: flex;
+    max-width: 34rem;
+    flex-wrap: wrap;
+    gap: 0.1rem 1rem;
+    margin-top: 0.35rem;
+  }
+
+  .who-contact-sheet__links a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: #864538;
+    font-size: 0.95rem;
+    text-decoration-thickness: 0.1rem;
+    text-underline-offset: 0.24em;
+  }
+
+  @keyframes contact-sheet-emerges {
+    from {
+      opacity: 0.45;
+      transform: translateY(-4.5rem) rotate(1.2deg) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) rotate(-0.65deg) scale(1);
+    }
+  }
+
   @media (max-width: 50rem) {
     .who-introduction {
       grid-template-columns: minmax(0, 1fr);
@@ -153,6 +257,19 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
 
     .who-page__camera {
       right: -2.8rem;
+    }
+
+    .who-contact-sheet {
+      width: calc(100% - 1rem);
+      max-width: none;
+      margin-top: -1rem;
+      padding: 2rem 1rem 0.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .who-contact-sheet:not([hidden]) {
+      animation-duration: 0.01ms;
     }
   }
 </style>

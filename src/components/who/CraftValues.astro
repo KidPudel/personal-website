@@ -1,6 +1,4 @@
 ---
-import { connectLinks } from '../../config/site';
-
 const values = [
   {
     words: ['experience', 'behaviour', 'capability'],
@@ -18,9 +16,19 @@ const values = [
     after: ' with users or players.',
   },
 ] as const;
+
+interface Props {
+  completionId: string;
+}
+
+const { completionId } = Astro.props;
 ---
 
-<craft-values class="craft-values" aria-label="What matters to me in the things I make">
+<craft-values
+  class="craft-values"
+  aria-label="What matters to me in the things I make"
+  data-completion-id={completionId}
+>
   <div class="craft-values__heading">
     <p>three notes for the things I make</p>
     <span aria-hidden="true">tap a changing word</span>
@@ -36,7 +44,10 @@ const values = [
           aria-label={`Mark value ${index + 1} as checked`}
         />
         <label class="craft-values__check-control" for={`craft-value-${index + 1}`}>
-          <span class="craft-values__check" aria-hidden="true"></span>
+          <span class="craft-values__check" aria-hidden="true">
+            <span class="craft-values__mark craft-values__mark--short"></span>
+            <span class="craft-values__mark craft-values__mark--long"></span>
+          </span>
         </label>
         <p>
           <span class="craft-values__copy">
@@ -66,12 +77,6 @@ const values = [
     ))}
   </ol>
 
-  <div class="craft-values__completion" data-craft-completion aria-live="polite" hidden>
-    <p>I'd love to chat with you.</p>
-    <div class="craft-values__connect-links" aria-label="Connect options">
-      {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-    </div>
-  </div>
 </craft-values>
 
 <script>
@@ -81,7 +86,7 @@ const values = [
 
       const controls = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-word-cycle]'));
       const checkboxes = Array.from(this.querySelectorAll<HTMLInputElement>('.craft-values__input'));
-      const completion = this.querySelector<HTMLElement>('[data-craft-completion]');
+      const completion = document.getElementById(this.dataset.completionId ?? '');
       if (!controls.length || !checkboxes.length || !completion) return;
 
       this.dataset.enhanced = 'true';
@@ -131,7 +136,7 @@ const values = [
               behavior: reduceMotion ? 'auto' : 'smooth',
               block: 'nearest',
             });
-          }, reduceMotion ? 0 : 260);
+          }, reduceMotion ? 0 : 360);
         }
       };
 
@@ -148,31 +153,35 @@ const values = [
 <style>
   .craft-values {
     display: block;
-    max-width: 54rem;
-    margin: clamp(4.5rem, 10vw, 8rem) auto 1rem;
+    max-width: 47rem;
+    margin: clamp(2.25rem, 4.5vw, 3.5rem) auto 0.15rem;
   }
 
   .craft-values__heading {
     display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.7rem;
+    width: fit-content;
+    max-width: 100%;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.2rem 1.25rem;
+    margin: 0 0 0.45rem 0.35rem;
+    transform: rotate(-0.35deg);
   }
 
   .craft-values__heading p {
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    font-size: clamp(1rem, 1.65vw, 1.2rem);
   }
 
   .craft-values__heading span {
     color: rgba(32, 32, 30, 0.68);
-    font-size: 0.92rem;
-    transform: rotate(-2deg);
+    font-size: 0.82rem;
+    transform: rotate(1.5deg);
   }
 
   .craft-values ol {
     display: grid;
-    gap: 0;
+    justify-items: start;
+    gap: 0.15rem;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -180,101 +189,84 @@ const values = [
 
   .craft-values li {
     position: relative;
-    display: grid;
-    grid-template-columns: 2.7rem minmax(0, 1fr);
-    align-items: start;
-    gap: 0.9rem;
-    padding: 1.4rem 0.3rem 1.55rem;
-  }
-
-  .craft-values li::before,
-  .craft-values li:last-child::after {
-    position: absolute;
-    left: var(--rule-left, 0.2rem);
-    width: var(--rule-width, calc(100% - 0.5rem));
-    height: 0.08rem;
-    background: rgba(32, 32, 30, 0.28);
-    content: '';
-    transform: rotate(var(--rule-tilt, -0.15deg));
-    transform-origin: left center;
-  }
-
-  .craft-values li::before {
-    top: 0;
-  }
-
-  .craft-values li:last-child::after {
-    bottom: 0;
-    --rule-left: 0.65rem;
-    --rule-width: calc(100% - 1rem);
-    --rule-tilt: 0.25deg;
+    display: inline-grid;
+    grid-template-columns: 3rem minmax(0, auto);
+    align-items: center;
+    gap: 0.15rem;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0;
   }
 
   .craft-values li:nth-child(2) {
-    padding-left: clamp(0rem, 3vw, 2.2rem);
-    --rule-left: 1.2rem;
-    --rule-width: calc(100% - 1.45rem);
-    --rule-tilt: 0.35deg;
+    margin-left: clamp(1.75rem, 7vw, 5rem);
+    transform: rotate(0.45deg);
   }
 
   .craft-values li:nth-child(3) {
-    padding-left: clamp(0rem, 1.5vw, 1rem);
-    --rule-left: 0.45rem;
-    --rule-width: calc(100% - 1.3rem);
-    --rule-tilt: -0.4deg;
+    margin-left: clamp(0.35rem, 2.5vw, 1.6rem);
+    transform: rotate(-0.55deg);
   }
 
   .craft-values__check {
+    --box-transform: rotate(-3deg) skewX(-1deg);
+    --box-border: 0.1rem 0.15rem 0.13rem 0.1rem;
+    --box-radius: 14% 7% 18% 9%;
     position: relative;
     display: block;
-    width: 2rem;
-    height: 1.8rem;
-    border-color: currentColor;
-    border-style: solid;
-    border-width: 0.12rem 0.18rem 0.16rem 0.13rem;
-    border-radius: 14% 7% 18% 9%;
-    box-shadow: inset 0.04rem -0.03rem 0 rgba(32, 32, 30, 0.22);
-    transform: rotate(-3deg) skewX(-1deg);
-    transition: background-color 120ms ease, box-shadow 120ms ease;
+    width: 1.25rem;
+    height: 1.12rem;
   }
 
   .craft-values li:nth-child(2) .craft-values__check {
-    border-width: 0.17rem 0.12rem 0.13rem 0.18rem;
-    border-radius: 8% 17% 6% 15%;
-    transform: rotate(2.5deg) skewY(1deg);
+    --box-transform: rotate(2.5deg) skewY(1deg);
+    --box-border: 0.14rem 0.1rem 0.11rem 0.15rem;
+    --box-radius: 8% 17% 6% 15%;
   }
 
   .craft-values li:nth-child(3) .craft-values__check {
-    border-width: 0.13rem 0.16rem 0.19rem 0.11rem;
-    border-radius: 17% 9% 13% 5%;
-    transform: rotate(-1.5deg) skewX(1.5deg);
+    --box-transform: rotate(-1.5deg) skewX(1.5deg);
+    --box-border: 0.11rem 0.14rem 0.15rem 0.09rem;
+    --box-radius: 17% 9% 13% 5%;
   }
 
-  .craft-values__check::before,
-  .craft-values__check::after {
+  .craft-values__check::before {
     position: absolute;
-    height: 0.2rem;
+    pointer-events: none;
+    content: '';
+    inset: 0;
+    border-color: currentColor;
+    border-style: solid;
+    border-width: var(--box-border);
+    border-radius: var(--box-radius);
+    transform: var(--box-transform);
+    transition: background-color 80ms ease;
+  }
+
+  .craft-values__mark {
+    position: absolute;
+    z-index: 1;
+    height: 0.16rem;
     border-radius: 999px 35% 999px 45%;
     background: currentColor;
-    content: '';
     opacity: 0;
     transform-origin: left center;
   }
 
-  .craft-values__check::before {
-    top: 0.88rem;
-    left: 0.15rem;
-    width: 0.8rem;
+  .craft-values__mark--short {
+    top: 0.52rem;
+    left: 0.06rem;
+    width: 0.5rem;
     transform: rotate(42deg) scaleX(0);
-    transition: opacity 50ms linear, transform 110ms ease-in;
+    transition: opacity 35ms linear, transform 70ms ease-in;
   }
 
-  .craft-values__check::after {
-    top: 1.38rem;
-    left: 0.72rem;
-    width: 1.65rem;
+  .craft-values__mark--long {
+    top: 0.83rem;
+    left: 0.4rem;
+    width: 1.05rem;
     transform: rotate(-49deg) scaleX(0);
-    transition: opacity 60ms linear, transform 160ms ease-out;
+    transition: opacity 40ms linear, transform 100ms ease-out;
   }
 
   .craft-values__input {
@@ -291,29 +283,33 @@ const values = [
 
   .craft-values__check-control {
     display: grid;
-    width: 2.75rem;
-    min-height: 2.75rem;
+    width: 3rem;
+    min-height: 3rem;
     align-items: center;
-    justify-content: start;
+    justify-content: center;
+    border-radius: 48% 42% 53% 45%;
     cursor: pointer;
+    transition: background-color 80ms ease;
   }
 
   .craft-values__input:checked + .craft-values__check-control .craft-values__check {
-    background: rgba(134, 69, 56, 0.055);
-    box-shadow: inset 0.04rem -0.03rem 0 rgba(32, 32, 30, 0.18), 0 0.12rem 0 rgba(32, 32, 30, 0.08);
-    animation: checkbox-settle 210ms ease-out;
+    animation: checkbox-settle 135ms ease-out;
   }
 
   .craft-values__input:checked + .craft-values__check-control .craft-values__check::before {
-    opacity: 1;
-    transform: rotate(42deg) scaleX(1);
-    transition-delay: 35ms;
+    background: rgba(134, 69, 56, 0.05);
   }
 
-  .craft-values__input:checked + .craft-values__check-control .craft-values__check::after {
+  .craft-values__input:checked + .craft-values__check-control .craft-values__mark--short {
+    opacity: 1;
+    transform: rotate(42deg) scaleX(1);
+    transition-delay: 10ms;
+  }
+
+  .craft-values__input:checked + .craft-values__check-control .craft-values__mark--long {
     opacity: 1;
     transform: rotate(-49deg) scaleX(1);
-    transition-delay: 110ms;
+    transition-delay: 38ms;
   }
 
   .craft-values__input:focus-visible + .craft-values__check-control {
@@ -324,10 +320,10 @@ const values = [
   .craft-values li p {
     position: relative;
     width: fit-content;
-    max-width: 35ch;
-    font-size: clamp(1.35rem, 3vw, 2.25rem);
-    line-height: 1.35;
-    transition: opacity 140ms ease;
+    max-width: 36ch;
+    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+    line-height: 1.3;
+    transition: opacity 90ms ease;
   }
 
   .craft-values__strike {
@@ -343,13 +339,13 @@ const values = [
     pointer-events: none;
     transform: rotate(-0.7deg) scaleX(0);
     transform-origin: left center;
-    transition: opacity 80ms linear, transform 180ms cubic-bezier(0.22, 0.75, 0.3, 1);
+    transition: opacity 45ms linear, transform 120ms cubic-bezier(0.22, 0.75, 0.3, 1);
   }
 
   .craft-values__input:checked ~ p .craft-values__strike {
     opacity: 0.66;
     transform: rotate(-0.7deg) scaleX(1);
-    transition-delay: 145ms;
+    transition-delay: 65ms;
   }
 
   .craft-values__input:checked ~ p {
@@ -384,53 +380,17 @@ const values = [
     content: none;
   }
 
-  .craft-values__completion {
-    width: fit-content;
-    max-width: 100%;
-    margin: 2.2rem 0.5rem 0 auto;
-    padding: 1rem 1.2rem 0.9rem;
-    border: 0.1rem solid rgba(32, 32, 30, 0.46);
-    border-width: 0.12rem 0.16rem 0.1rem 0.13rem;
-    border-radius: 7% 3% 8% 4%;
-    scroll-margin-block: 1.5rem;
-    transform: rotate(-0.7deg);
-  }
-
-  .craft-values__completion[hidden] {
-    display: none;
-  }
-
-  .craft-values[data-complete] .craft-values__completion {
-    animation: completion-arrives 320ms ease-out both;
-  }
-
-  .craft-values__completion > p {
-    max-width: none;
-    font-size: clamp(1.25rem, 2.4vw, 1.7rem);
-  }
-
-  .craft-values__connect-links {
-    display: flex;
-    max-width: 34rem;
-    flex-wrap: wrap;
-    gap: 0.15rem 1.1rem;
-    margin-top: 0.45rem;
-  }
-
-  .craft-values__connect-links a {
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    color: #864538;
-    font-size: 1rem;
-    text-decoration-thickness: 0.1rem;
-    text-underline-offset: 0.24em;
-  }
-
   @media (hover: hover) and (pointer: fine) {
+    .craft-values__check-control:hover {
+      background: rgba(134, 69, 56, 0.045);
+    }
+
     .craft-values__input:not(:checked) + .craft-values__check-control:hover .craft-values__check {
+      scale: 1.035;
+    }
+
+    .craft-values__input:not(:checked) + .craft-values__check-control:hover .craft-values__check::before {
       background: rgba(134, 69, 56, 0.035);
-      box-shadow: inset 0.04rem -0.03rem 0 rgba(32, 32, 30, 0.18), 0 0.12rem 0 rgba(32, 32, 30, 0.07);
     }
   }
 
@@ -457,27 +417,15 @@ const values = [
     }
   }
 
-  @keyframes completion-arrives {
-    from {
-      opacity: 0;
-      transform: translateY(0.7rem) rotate(-1.8deg);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) rotate(-0.7deg);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .craft-values__input:checked + .craft-values__check-control .craft-values__check,
-    .craft-values[data-complete] .craft-values__completion {
+    .craft-values__input:checked + .craft-values__check-control .craft-values__check {
       animation-duration: 0.01ms;
       animation-delay: 0ms;
     }
 
     .craft-values__check,
     .craft-values__check::before,
-    .craft-values__check::after,
+    .craft-values__mark,
     .craft-values li p,
     .craft-values__strike {
       transition-duration: 0.01ms;
@@ -487,20 +435,22 @@ const values = [
 
   @media (max-width: 36rem) {
     .craft-values__heading {
-      display: grid;
+      display: flex;
     }
 
     .craft-values li,
     .craft-values li:nth-child(2),
     .craft-values li:nth-child(3) {
-      grid-template-columns: 2.25rem minmax(0, 1fr);
-      gap: 0.65rem;
-      padding-inline: 0;
+      grid-template-columns: 3rem minmax(0, auto);
+      gap: 0.1rem;
     }
 
-    .craft-values__check {
-      width: 1.7rem;
-      height: 1.55rem;
+    .craft-values li:nth-child(2) {
+      margin-left: 0.85rem;
+    }
+
+    .craft-values li:nth-child(3) {
+      margin-left: 0.15rem;
     }
 
     .craft-values__strike {

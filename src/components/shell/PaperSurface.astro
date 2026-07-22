@@ -1,13 +1,14 @@
 ---
 interface Props {
   variant?: 'plain' | 'notebook' | 'work';
+  compact?: boolean;
 }
 
-const { variant = 'plain' } = Astro.props;
+const { variant = 'plain', compact = false } = Astro.props;
 ---
 
-<div class:list={['paper-surface-frame', `paper-surface-frame--${variant}`]}>
-  <div class:list={['paper-surface', `paper-surface--${variant}`]}>
+<div class:list={['paper-surface-frame', `paper-surface-frame--${variant}`, { 'paper-surface-frame--compact': compact }]}>
+  <div class:list={['paper-surface', `paper-surface--${variant}`, { 'paper-surface--compact': compact }]}>
     <slot />
   </div>
 </div>

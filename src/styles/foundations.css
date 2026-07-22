@@ -172,6 +172,10 @@
     filter: drop-shadow(0 1.1rem 1.4rem rgba(7, 7, 6, 0.18));
   }
 
+  .paper-surface-frame--compact {
+    min-height: 0;
+  }
+
   .paper-surface {
     position: relative;
     isolation: isolate;
@@ -181,6 +185,11 @@
     border: 1px solid var(--color-paper-edge);
     background: var(--color-paper);
     color: var(--color-ink);
+  }
+
+  .paper-surface--compact {
+    min-height: 0;
+    padding: clamp(2rem, 4vw, 3.5rem);
   }
 
   .paper-surface--notebook {
@@ -277,10 +286,11 @@
     opacity: 0.13;
   }
 
-  .home-return {
-    position: sticky;
+  .world-field--destination .home-return {
+    position: fixed;
     z-index: 3;
     top: var(--field-gutter);
+    left: calc(max(calc(var(--field-gutter) + 4rem), calc(50vw - 36rem)) - 5rem);
     display: inline-flex;
     width: 5.625rem;
     min-height: 4.125rem;
@@ -300,13 +310,19 @@
     width: 5.625rem;
     height: 4.125rem;
     overflow: hidden;
+    transition: transform 140ms ease;
   }
 
   .home-return__drawing img {
-    width: 100%;
+    width: 261%;
+    max-width: none;
     height: auto;
     filter: grayscale(1) invert(1);
-    transform: translateY(-24px);
+    transform: translate(-29.4%, -33%);
+  }
+
+  .home-return:is(:hover, :focus-visible) .home-return__drawing {
+    transform: translateY(-0.2rem) rotate(-1deg);
   }
 
   @media (max-width: 60rem) {
@@ -323,9 +339,10 @@
       grid-column: 1;
     }
 
-    .home-return {
+    .world-field--destination .home-return {
       position: relative;
       top: auto;
+      left: auto;
       grid-column: 1;
       justify-self: start;
       margin-bottom: 0.75rem;
