@@ -5,13 +5,13 @@ import { z } from 'astro/zod';
 const sharedProjectFields = {
   title: z.string(),
   summary: z.string(),
-  featured: z.boolean().default(false),
-  status: z.enum(['published', 'in-progress', 'planned']).default('published'),
+  prominence: z.enum(['featured', 'supporting', 'trajectory']),
+  status: z.enum(['complete', 'ongoing', 'unfinished', 'early-work']),
   externalUrl: z.url().optional(),
 };
 
-const work = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/work' }),
+const software = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/software' }),
   schema: z.object({
     ...sharedProjectFields,
     capabilities: z.array(z.string()).default([]),
@@ -39,4 +39,4 @@ const writing = defineCollection({
   }),
 });
 
-export const collections = { work, games, writing };
+export const collections = { software, games, writing };

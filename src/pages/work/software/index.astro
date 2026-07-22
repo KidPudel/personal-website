@@ -1,17 +1,27 @@
 ---
-import DevelopmentPlaceholder from '../../../components/shell/DevelopmentPlaceholder.astro';
+import { getCollection } from 'astro:content';
+
 import HomeReturn from '../../../components/shell/HomeReturn.astro';
 import PaperSurface from '../../../components/shell/PaperSurface.astro';
 import WorldField from '../../../components/shell/WorldField.astro';
+import WorkInventory from '../../../components/work/WorkInventory.astro';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
+
+const order = ['flutter-product', 'chinese-bee', 'receipt-processing', 'ordering-platform'];
+const entries = (await getCollection('software')).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 ---
 
 <BaseDocument title="Software | Igor Kupchinenko" description="Software work by Igor Kupchinenko.">
-  <WorldField>
+  <WorldField destination>
     <HomeReturn />
     <main id="main-content">
-      <PaperSurface>
-        <DevelopmentPlaceholder title="Software" />
+      <PaperSurface variant="work">
+        <WorkInventory
+          current="software"
+          title="Software"
+          introduction="I like following a real need across the boundaries it refuses to respect: interface, behavior, data, services, and delivery. These are the artifacts that best show how I do that."
+          entries={entries}
+        />
       </PaperSurface>
     </main>
   </WorldField>

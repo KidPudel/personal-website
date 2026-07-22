@@ -1,0 +1,292 @@
+---
+import { Image } from 'astro:assets';
+
+import drawnPortrait from '../../assets/art/avatar.png';
+import realPortrait from '../../assets/art/avatar_irl.png';
+---
+
+<portrait-interaction class="portrait-interaction">
+  <div class="portrait-interaction__stack">
+    <figure class="portrait-card portrait-card--drawn" data-portrait-panel>
+      <span class="portrait-card__tape" aria-hidden="true"></span>
+      <Image
+        src={drawnPortrait}
+        alt="A black-and-white hand-drawn portrait of Igor with large dark eyes and curly hair"
+        width={620}
+        height={620}
+        loading="eager"
+        format="webp"
+      />
+      <figcaption>drawn me</figcaption>
+    </figure>
+
+    <figure class="portrait-card portrait-card--real" data-portrait-panel data-active>
+      <span class="portrait-card__tape" aria-hidden="true"></span>
+      <Image
+        src={realPortrait}
+        alt="Igor smiling in a cap and orange life jacket while sitting in a boat"
+        width={620}
+        loading="eager"
+        format="webp"
+      />
+      <figcaption>real me</figcaption>
+    </figure>
+  </div>
+
+  <div class="portrait-interaction__controls" aria-label="Choose a portrait" hidden data-portrait-controls>
+    <button type="button" data-portrait-choice="1" aria-pressed="true">real me</button>
+    <span aria-hidden="true">/</span>
+    <button type="button" data-portrait-choice="0" aria-pressed="false">drawn me</button>
+  </div>
+</portrait-interaction>
+
+<script>
+  class PortraitInteraction extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.enhanced) return;
+
+      const panels = Array.from(this.querySelectorAll<HTMLElement>('[data-portrait-panel]'));
+      const buttons = Array.from(this.querySelectorAll<HTMLButtonElement>('[data-portrait-choice]'));
+      const controls = this.querySelector<HTMLElement>('[data-portrait-controls]');
+      const stack = this.querySelector<HTMLElement>('.portrait-interaction__stack');
+
+      if (panels.length < 2 || buttons.length !== panels.length || !controls || !stack) return;
+
+      this.dataset.enhanced = 'true';
+      controls.hidden = false;
+
+      const replayPortraits = () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        this.removeAttribute('data-replaying');
+        void this.offsetWidth;
+        this.setAttribute('data-replaying', '');
+      };
+
+      const selectPortrait = (nextIndex: number, replay = false) => {
+        panels.forEach((panel, index) => {
+          const isActive = index === nextIndex;
+          panel.toggleAttribute('data-active', isActive);
+          panel.setAttribute('aria-hidden', String(!isActive));
+        });
+
+        buttons.forEach((button) => {
+          button.setAttribute('aria-pressed', String(Number(button.dataset.portraitChoice) === nextIndex));
+        });
+
+        if (replay) replayPortraits();
+      };
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => selectPortrait(Number(button.dataset.portraitChoice), true));
+        button.addEventListener('focus', replayPortraits);
+      });
+
+      stack.addEventListener('pointerenter', replayPortraits);
+      panels[1].addEventListener('animationend', (event) => {
+        if (event.animationName === 'portrait-replay-real') {
+          this.removeAttribute('data-replaying');
+        }
+      });
+
+      selectPortrait(1);
+    }
+  }
+
+  if (!customElements.get('portrait-interaction')) {
+    customElements.define('portrait-interaction', PortraitInteraction);
+  }
+</script>
+
+<style>
+  .portrait-interaction {
+    display: grid;
+    justify-items: center;
+    gap: 1.15rem;
+    width: min(100%, 23rem);
+    justify-self: end;
+  }
+
+  .portrait-interaction__stack {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+    align-items: start;
+  }
+
+  .portrait-card {
+    position: relative;
+    margin: 0;
+    padding: 0.65rem 0.65rem 2.2rem;
+    background: #f7f0df;
+    box-shadow: 0.45rem 0.6rem 1.1rem rgba(55, 45, 27, 0.2);
+    color: #292720;
+  }
+
+  .portrait-card--drawn {
+    transform: rotate(-2.2deg);
+  }
+
+  .portrait-card--real {
+    margin-top: 1.8rem;
+    transform: rotate(2.8deg);
+  }
+
+  .portrait-card :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+
+  .portrait-card--real :global(img) {
+    object-position: 50% 44%;
+  }
+
+  .portrait-card figcaption {
+    position: absolute;
+    right: 0.8rem;
+    bottom: 0.55rem;
+    font-size: 0.92rem;
+    transform: rotate(-1deg);
+  }
+
+  .portrait-card__tape {
+    position: absolute;
+    z-index: 2;
+    top: -0.8rem;
+    left: 50%;
+    width: 4.5rem;
+    height: 1.55rem;
+    background: rgba(210, 187, 128, 0.62);
+    transform: translateX(-50%) rotate(1.5deg);
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-interaction__stack {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 1.08;
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-card {
+    position: absolute;
+    inset: 0.5rem 1.5rem 1.5rem;
+    transition: transform 180ms ease, opacity 180ms ease;
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-card--drawn:not([data-active]) {
+    z-index: 1;
+    opacity: 0.72;
+    transform: translate(1.1rem, 0.7rem) rotate(4deg) scale(0.95);
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-card--real:not([data-active]) {
+    z-index: 1;
+    margin: 0;
+    opacity: 0.72;
+    transform: translate(-1rem, 0.8rem) rotate(-4deg) scale(0.95);
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-card[data-active] {
+    z-index: 2;
+    margin: 0;
+    opacity: 1;
+    transform: rotate(-1.5deg);
+  }
+
+  .portrait-interaction[data-enhanced][data-replaying] .portrait-card--drawn {
+    animation: portrait-replay-drawn 460ms ease-out;
+  }
+
+  .portrait-interaction[data-enhanced][data-replaying] .portrait-card--real {
+    animation: portrait-replay-real 500ms ease-out 45ms;
+  }
+
+  .portrait-interaction__controls {
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .portrait-interaction__controls:not([hidden]) {
+    display: flex;
+  }
+
+  .portrait-interaction__controls button {
+    min-height: 2.75rem;
+    padding: 0.35rem 0.2rem;
+    border: 0;
+    border-bottom: 0.16rem solid transparent;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .portrait-interaction__controls button[aria-pressed='true'] {
+    border-bottom-color: currentColor;
+  }
+
+  @keyframes portrait-replay-drawn {
+    0% {
+      filter: none;
+      rotate: 0deg;
+      translate: 0 0;
+    }
+    42% {
+      filter: drop-shadow(0.2rem 0.35rem 0.2rem rgba(55, 45, 27, 0.13));
+      rotate: -1.8deg;
+      translate: -0.35rem -0.65rem;
+    }
+    72% {
+      rotate: 0.65deg;
+      translate: 0.12rem 0.08rem;
+    }
+    100% {
+      filter: none;
+      rotate: 0deg;
+      translate: 0 0;
+    }
+  }
+
+  @keyframes portrait-replay-real {
+    0% {
+      filter: none;
+      rotate: 0deg;
+      translate: 0 0;
+    }
+    38% {
+      filter: drop-shadow(0.25rem 0.4rem 0.22rem rgba(55, 45, 27, 0.14));
+      rotate: 1.5deg;
+      translate: 0.35rem -0.75rem;
+    }
+    70% {
+      rotate: -0.55deg;
+      translate: -0.1rem 0.06rem;
+    }
+    100% {
+      filter: none;
+      rotate: 0deg;
+      translate: 0 0;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .portrait-interaction {
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 31rem) {
+    .portrait-interaction {
+      width: min(100%, 19rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portrait-interaction[data-enhanced] .portrait-card {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>

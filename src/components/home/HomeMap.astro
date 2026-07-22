@@ -1,29 +1,14 @@
 ---
-import { Image } from 'astro:assets';
-
-import birdDoodle from '../../assets/art/doodles/Doodles_bird_1.png';
-import burgerDoodle from '../../assets/art/doodles/Doodles_burger.png';
-import deadFishDoodle from '../../assets/art/doodles/Doodles_dead_fish.png';
-import diskDoodle from '../../assets/art/doodles/Doodles_disk.png';
-import fishDoodle from '../../assets/art/doodles/Doodles_fish_1.png';
 import blogIcon from '../../assets/art/icons/Doodles_blog.png';
 import whoIAmIcon from '../../assets/art/icons/Doodles_whoiam.png';
-import workIcon from '../../assets/art/icons/Doodles_work.png';
 import { sitePath } from '../../config/site';
 import ConnectDisclosure from './ConnectDisclosure.astro';
 import NavigationDrawing from './NavigationDrawing.astro';
+import WorkDisclosure from './WorkDisclosure.astro';
 ---
 
 <section class="home-map" aria-labelledby="home-title">
   <h1 id="home-title" class="sr-only">Igor Kupchinenko</h1>
-
-  <div class="home-map__doodles" aria-hidden="true">
-    <Image class="home-doodle home-doodle--disk" src={diskDoodle} alt="" width={220} />
-    <Image class="home-doodle home-doodle--burger" src={burgerDoodle} alt="" width={256} />
-    <Image class="home-doodle home-doodle--bird" src={birdDoodle} alt="" width={220} />
-    <Image class="home-doodle home-doodle--fish" src={fishDoodle} alt="" width={240} />
-    <Image class="home-doodle home-doodle--dead-fish" src={deadFishDoodle} alt="" width={230} />
-  </div>
 
   <nav class="home-map__choices" aria-label="Explore Igor's website">
     <NavigationDrawing
@@ -35,15 +20,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
       href={sitePath('/who-i-am/')}
       tilt="-2deg"
     />
-    <NavigationDrawing
-      art={workIcon}
-      artScale={2}
-      class="choice-work"
-      label="Work"
-      labelPlacement="right"
-      href={sitePath('/work/')}
-      tilt="2deg"
-    />
+    <WorkDisclosure />
     <ConnectDisclosure />
     <NavigationDrawing
       art={blogIcon}
@@ -65,6 +42,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     min-height: calc(100vh - (2 * var(--field-gutter)));
     overflow: clip;
     place-items: center;
+    pointer-events: none;
   }
 
   .home-map__choices {
@@ -78,6 +56,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     align-items: center;
     gap: 1rem clamp(1rem, 4vw, 3rem);
     padding: 1rem;
+    pointer-events: auto;
   }
 
   .home-map__choices :global(.choice-who) {
@@ -87,7 +66,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     justify-self: center;
   }
 
-  .home-map__choices :global(.choice-work) {
+  .home-map__choices :global(work-disclosure) {
     grid-column: 3;
     grid-row: 2;
     justify-self: start;
@@ -104,66 +83,6 @@ import NavigationDrawing from './NavigationDrawing.astro';
     grid-row: 3;
     align-self: start;
     justify-self: center;
-  }
-
-  .home-map__doodles {
-    position: absolute;
-    z-index: 1;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .home-doodle {
-    position: absolute;
-    width: clamp(7rem, 13vw, 12rem);
-    height: auto;
-    object-fit: contain;
-    filter: grayscale(1) invert(1);
-    opacity: 0.09;
-    transition: opacity 140ms ease;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .home-doodle {
-      pointer-events: auto;
-    }
-
-    .home-doodle:hover {
-      opacity: 0.13;
-    }
-  }
-
-  .home-doodle--disk {
-    top: 5%;
-    left: 3%;
-    width: clamp(6rem, 10vw, 9rem);
-    transform: rotate(-5deg);
-  }
-
-  .home-doodle--burger {
-    top: 4%;
-    right: 5%;
-    transform: rotate(7deg);
-  }
-
-  .home-doodle--bird {
-    bottom: 5%;
-    left: 7%;
-    width: clamp(6rem, 10vw, 9rem);
-    transform: rotate(-9deg);
-  }
-
-  .home-doodle--fish {
-    right: 15%;
-    bottom: -2rem;
-    transform: rotate(4deg);
-  }
-
-  .home-doodle--dead-fish {
-    bottom: 5%;
-    left: 43%;
-    width: clamp(6rem, 11vw, 10rem);
-    transform: rotate(5deg);
   }
 
   @media (max-width: 40rem) {
@@ -183,7 +102,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     }
 
     .home-map__choices :global(.choice-who),
-    .home-map__choices :global(.choice-work),
+    .home-map__choices :global(work-disclosure),
     .home-map__choices :global(connect-disclosure),
     .home-map__choices :global(.choice-blog) {
       grid-column: auto;
@@ -194,39 +113,13 @@ import NavigationDrawing from './NavigationDrawing.astro';
     }
 
     .home-map__choices :global(connect-disclosure[data-open]),
-    .home-map__choices :global(connect-disclosure:not([data-enhanced])) {
+    .home-map__choices :global(connect-disclosure:not([data-enhanced])),
+    .home-map__choices :global(work-disclosure[data-open]),
+    .home-map__choices :global(work-disclosure:not([data-enhanced])) {
       grid-column: 1 / -1;
       grid-row: auto;
       justify-self: stretch;
     }
 
-    .home-doodle--burger {
-      top: 1%;
-      right: -1.5rem;
-    }
-
-    .home-doodle--bird {
-      bottom: 2%;
-      left: -1.5rem;
-    }
-
-    .home-doodle--fish {
-      right: -1.5rem;
-      bottom: 1%;
-      width: 7rem;
-    }
-
-    .home-doodle--disk {
-      top: 1%;
-      left: -1rem;
-      width: 6.5rem;
-    }
-
-    .home-doodle--dead-fish {
-      top: 3%;
-      bottom: auto;
-      left: 39%;
-      width: 6rem;
-    }
   }
 </style>

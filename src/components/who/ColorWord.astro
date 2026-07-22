@@ -1,0 +1,98 @@
+---
+interface Props {
+  word: string;
+}
+
+const { word } = Astro.props;
+---
+
+<color-word class="color-word">
+  <button
+    type="button"
+    data-color-word
+    data-color="rust"
+    aria-label={`${word}. Change its colour.`}
+    disabled
+  >
+    {word}
+  </button>
+</color-word>
+
+<script>
+  const colorNames = ['rust', 'blue', 'green', 'purple', 'ochre'] as const;
+
+  class ColorWord extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.enhanced) return;
+
+      const button = this.querySelector<HTMLButtonElement>('[data-color-word]');
+      if (!button) return;
+
+      let colorIndex = 0;
+      this.dataset.enhanced = 'true';
+      button.disabled = false;
+
+      button.addEventListener('click', () => {
+        colorIndex = (colorIndex + 1) % colorNames.length;
+        button.dataset.color = colorNames[colorIndex];
+      });
+    }
+  }
+
+  if (!customElements.get('color-word')) {
+    customElements.define('color-word', ColorWord);
+  }
+</script>
+
+<style>
+  .color-word {
+    display: inline;
+  }
+
+  .color-word button {
+    min-height: 2.75rem;
+    padding: 0 0.05em;
+    border: 0;
+    border-bottom: 0.13rem solid currentColor;
+    background: transparent;
+    color: #8f3f38;
+    font: inherit;
+    line-height: inherit;
+    text-decoration: none;
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .color-word button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  .color-word button:disabled {
+    opacity: 1;
+  }
+
+  .color-word button[data-color='blue'] {
+    color: #315f85;
+  }
+
+  .color-word button[data-color='green'] {
+    color: #4f6c3a;
+  }
+
+  .color-word button[data-color='purple'] {
+    color: #6c4f7a;
+  }
+
+  .color-word button[data-color='ochre'] {
+    color: #8a5a24;
+  }
+
+  .color-word button:active {
+    transform: rotate(-1deg) translateY(0.04em);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .color-word button {
+      transition: none;
+    }
+  }
+</style>

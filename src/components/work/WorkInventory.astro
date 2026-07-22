@@ -1,0 +1,222 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { sitePath } from '../../config/site';
+import ArtifactSketch from './ArtifactSketch.astro';
+import WorkArtifact from './WorkArtifact.astro';
+import WorkModeNav from './WorkModeNav.astro';
+
+interface Props {
+  current: 'software' | 'games';
+  title: string;
+  introduction: string;
+  entries: Array<CollectionEntry<'software'> | CollectionEntry<'games'>>;
+}
+
+const { current, title, introduction, entries } = Astro.props;
+
+const sectionLabels = {
+  featured: current === 'software' ? 'Products and investigations I would begin with' : 'Games I would begin with',
+  supporting: current === 'software' ? 'Supporting systems work' : 'Unfinished and supporting work',
+  trajectory: 'Earlier trajectory',
+} as const;
+
+const groups = (['featured', 'supporting', 'trajectory'] as const)
+  .map((prominence) => ({
+    prominence,
+    entries: entries.filter((entry) => entry.data.prominence === prominence),
+  }))
+  .filter((group) => group.entries.length > 0);
+
+const entryHref = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
+  sitePath(`/work/${current}/${entry.id}/`);
+
+const entryCapabilities = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
+  'capabilities' in entry.data ? entry.data.capabilities : [];
+
+const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
+  'result' in entry.data ? entry.data.result : undefined;
+
+const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) => {
+  if (!('engine' in entry.data)) return undefined;
+  return [entry.data.engine, entry.data.jam].filter(Boolean).join(' · ');
+};
+---
+
+<div class:list={['work-inventory', `work-inventory--${current}`]}>
+  <WorkModeNav current={current} />
+
+  <header class="work-inventory__introduction">
+    <h1>{title}</h1>
+    <p>{introduction}</p>
+  </header>
+
+  {
+    groups.map((group) => (
+      <section class:list={['work-inventory__group', `work-inventory__group--${group.prominence}`]} aria-labelledby={`${current}-${group.prominence}`}>
+        <p class="work-inventory__group-label" id={`${current}-${group.prominence}`}>{sectionLabels[group.prominence]}</p>
+        <div class="work-inventory__artifacts">
+          {group.entries.map((entry) => (
+            <WorkArtifact
+              title={entry.data.title}
+              summary={entry.data.summary}
+              href={entryHref(entry)}
+              prominence={entry.data.prominence}
+              status={entry.data.status}
+              capabilities={entryCapabilities(entry)}
+              result={entryResult(entry)}
+              meta={entryMeta(entry)}
+            >
+              <ArtifactSketch slot="sketch" category={current} slug={entry.id} />
+            </WorkArtifact>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+
+  {
+    current === 'software' && (
+      <aside class="work-inventory__resume" aria-labelledby="resume-label">
+        <p id="resume-label">Need the practical version?</p>
+        <div>
+          <a href={sitePath('/resume/igor-kupchinenko-resume.pdf')} download>résumé PDF</a>
+          <a href={sitePath('/resume/igor-kupchinenko-resume.docx')} download>résumé DOCX</a>
+        </div>
+      </aside>
+    )
+  }
+</div>
+
+<style>
+  .work-inventory {
+    position: relative;
+    display: grid;
+    gap: clamp(4rem, 8vw, 7rem);
+  }
+
+  .work-inventory::after {
+    position: absolute;
+    z-index: -1;
+    top: 5rem;
+    right: -3rem;
+    width: clamp(10rem, 26vw, 20rem);
+    aspect-ratio: 0.72;
+    border: 1px solid rgba(54, 102, 122, 0.2);
+    background: rgba(226, 235, 225, 0.2);
+    content: '';
+    transform: rotate(6deg);
+  }
+
+  .work-inventory__introduction {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(18rem, 1.2fr);
+    align-items: end;
+    gap: clamp(1.5rem, 5vw, 5rem);
+    min-height: 14rem;
+  }
+
+  .work-inventory__introduction h1 {
+    font-family: var(--font-distinctive);
+    font-size: clamp(3.2rem, 8vw, 7rem);
+    font-weight: 400;
+    line-height: 0.9;
+    transform: rotate(-2deg);
+  }
+
+  .work-inventory__introduction p {
+    max-width: 49ch;
+    padding: 1.25rem 1.5rem;
+    border: 0.1rem solid rgba(32, 32, 30, 0.35);
+    background: rgba(247, 239, 218, 0.55);
+    font-size: clamp(1.08rem, 1.7vw, 1.25rem);
+    line-height: 1.55;
+    transform: rotate(1deg);
+  }
+
+  .work-inventory__group {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .work-inventory__group-label {
+    width: fit-content;
+    max-width: 34ch;
+    padding: 0.35rem 0.7rem;
+    background: rgba(221, 209, 180, 0.7);
+    font-size: clamp(1.05rem, 1.7vw, 1.2rem);
+    line-height: 1.3;
+    transform: rotate(-1deg);
+  }
+
+  .work-inventory__group--supporting .work-inventory__group-label {
+    transform: rotate(1.3deg);
+  }
+
+  .work-inventory__artifacts {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .work-inventory__group--trajectory .work-inventory__artifacts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact) {
+    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+  }
+
+  .work-inventory__resume {
+    display: grid;
+    grid-template-columns: minmax(0, 0.7fr) minmax(16rem, 1.3fr);
+    gap: 1.5rem;
+    width: min(100%, 43rem);
+    align-items: center;
+    justify-self: end;
+    padding: 1.5rem;
+    border: 0.12rem dashed rgba(32, 32, 30, 0.45);
+    background: rgba(247, 239, 218, 0.66);
+    transform: rotate(-1deg);
+  }
+
+  .work-inventory__resume > p {
+    font-family: var(--font-distinctive);
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    line-height: 1.05;
+  }
+
+  .work-inventory__resume > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .work-inventory__resume a {
+    min-height: 2.75rem;
+    padding-block: 0.55rem;
+    color: var(--color-ink);
+    text-underline-offset: 0.2em;
+  }
+
+  @media (max-width: 48rem) {
+    .work-inventory__introduction,
+    .work-inventory__resume {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-inventory__introduction {
+      min-height: auto;
+    }
+
+    .work-inventory__group--trajectory .work-inventory__artifacts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

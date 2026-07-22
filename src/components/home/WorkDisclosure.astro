@@ -1,0 +1,171 @@
+---
+import workIcon from '../../assets/art/icons/Doodles_work.png';
+import WorkChoice from '../work/WorkChoice.astro';
+import NavigationDrawing from './NavigationDrawing.astro';
+---
+
+<work-disclosure id="work">
+  <NavigationDrawing
+    art={workIcon}
+    artScale={2}
+    label="Work"
+    labelPlacement="right"
+    class="work-choice-toggle"
+    workToggle
+    ariaControls="work-choices"
+    ariaExpanded={true}
+    tilt="2deg"
+  />
+
+  <div id="work-choices" class="work-disclosure__panel">
+    <WorkChoice />
+  </div>
+</work-disclosure>
+
+<script>
+  class WorkDisclosureElement extends HTMLElement {
+    private button?: HTMLButtonElement;
+    private panel?: HTMLElement;
+
+    private setExpanded = (expanded: boolean, announce = false) => {
+      if (!this.button || !this.panel) return;
+
+      this.button.setAttribute('aria-expanded', String(expanded));
+      this.panel.hidden = !expanded;
+      this.toggleAttribute('data-open', expanded);
+
+      if (expanded && announce) {
+        window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: 'work' } }));
+      }
+    };
+
+    private clearWorkHash = () => {
+      if (window.location.hash !== '#work') return;
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    };
+
+    private syncFromHash = () => this.setExpanded(window.location.hash === '#work');
+
+    private handleToggle = () => {
+      if (!this.button) return;
+
+      const expanded = this.button.getAttribute('aria-expanded') !== 'true';
+      this.setExpanded(expanded, expanded);
+
+      const nextURL = expanded
+        ? `${window.location.pathname}${window.location.search}#work`
+        : `${window.location.pathname}${window.location.search}`;
+      window.history.replaceState(null, '', nextURL);
+    };
+
+    private handleOutsidePointer = (event: PointerEvent) => {
+      if (!this.hasAttribute('data-open') || this.contains(event.target as Node)) return;
+      this.setExpanded(false);
+      this.clearWorkHash();
+    };
+
+    private handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !this.hasAttribute('data-open')) return;
+      this.setExpanded(false);
+      this.clearWorkHash();
+      this.button?.focus();
+    };
+
+    private handleOtherDisclosure = (event: Event) => {
+      const disclosureEvent = event as CustomEvent<{ id?: string }>;
+      if (disclosureEvent.detail?.id === 'work') return;
+      this.setExpanded(false);
+      this.clearWorkHash();
+    };
+
+    connectedCallback() {
+      if (this.hasAttribute('data-enhanced')) return;
+
+      this.button = this.querySelector<HTMLButtonElement>('[data-work-toggle]') ?? undefined;
+      this.panel = this.querySelector<HTMLElement>('#work-choices') ?? undefined;
+      if (!this.button || !this.panel) return;
+
+      this.setAttribute('data-enhanced', '');
+      this.syncFromHash();
+
+      this.button.addEventListener('click', this.handleToggle);
+      document.addEventListener('pointerdown', this.handleOutsidePointer);
+      document.addEventListener('keydown', this.handleEscape);
+      window.addEventListener('hashchange', this.syncFromHash);
+      window.addEventListener('home-disclosure-open', this.handleOtherDisclosure);
+    }
+
+    disconnectedCallback() {
+      this.button?.removeEventListener('click', this.handleToggle);
+      document.removeEventListener('pointerdown', this.handleOutsidePointer);
+      document.removeEventListener('keydown', this.handleEscape);
+      window.removeEventListener('hashchange', this.syncFromHash);
+      window.removeEventListener('home-disclosure-open', this.handleOtherDisclosure);
+    }
+  }
+
+  if (!customElements.get('work-disclosure')) {
+    customElements.define('work-disclosure', WorkDisclosureElement);
+  }
+</script>
+
+<style>
+  work-disclosure {
+    position: relative;
+    z-index: 5;
+    display: block;
+    width: max-content;
+  }
+
+  .work-disclosure__panel {
+    position: absolute;
+    z-index: 6;
+    top: 50%;
+    left: calc(100% + 2rem);
+    width: min(18rem, 25vw);
+    transform: translateY(-50%);
+  }
+
+  .work-disclosure__panel[hidden] {
+    display: none;
+  }
+
+  work-disclosure:not([data-enhanced]) .work-disclosure__panel {
+    display: block;
+  }
+
+  @media (max-width: 52rem) and (min-width: 40.001rem) {
+    .work-disclosure__panel {
+      right: calc(100% + 1.25rem);
+      left: auto;
+      width: min(19rem, 45vw);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    work-disclosure {
+      display: grid;
+      width: 100%;
+      justify-items: center;
+    }
+
+    work-disclosure[data-open],
+    work-disclosure:not([data-enhanced]) {
+      grid-column: 1 / -1;
+      justify-items: stretch;
+    }
+
+    .work-disclosure__panel,
+    work-disclosure:not([data-enhanced]) .work-disclosure__panel {
+      position: static;
+      width: 100%;
+      margin-top: 1rem;
+      transform: none;
+    }
+
+    work-disclosure[data-open] :global(.work-choice-toggle),
+    work-disclosure:not([data-enhanced]) :global(.work-choice-toggle) {
+      justify-self: center;
+    }
+  }
+</style>

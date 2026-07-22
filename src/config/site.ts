@@ -14,3 +14,12 @@ export const sitePath = (path: string) => {
 
   return relativePath ? `${base}${relativePath}` : base;
 };
+
+export const connectLinks = [
+  { label: 'Email', href: publicLinks.email },
+  { label: 'LinkedIn', href: publicLinks.linkedin },
+  { label: 'GitHub', href: publicLinks.github },
+  { label: 'itch.io', href: publicLinks.itch },
+  { label: 'X', href: publicLinks.x },
+  { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-resume.pdf') },
+] as const;

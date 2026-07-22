@@ -1,3 +1,13 @@
-<div class="paper-surface">
-  <slot />
+---
+interface Props {
+  variant?: 'plain' | 'notebook' | 'work';
+}
+
+const { variant = 'plain' } = Astro.props;
+---
+
+<div class:list={['paper-surface-frame', `paper-surface-frame--${variant}`]}>
+  <div class:list={['paper-surface', `paper-surface--${variant}`]}>
+    <slot />
+  </div>
 </div>

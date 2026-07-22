@@ -1,8 +1,8 @@
 ---
 title: Building payment and expiration flows across services
 summary: Implementing parts of an early-stage fintech system across service, storage, messaging, and integration boundaries.
-featured: true
-status: published
+prominence: supporting
+status: complete
 capabilities:
   - Go
   - PostgreSQL

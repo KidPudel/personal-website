@@ -1,0 +1,151 @@
+---
+import { sitePath } from '../../config/site';
+
+const choices = [
+  {
+    label: 'Software',
+    note: 'products, services, investigations',
+    href: sitePath('/work/software/'),
+    className: 'work-choice__paper--software',
+  },
+  {
+    label: 'Games',
+    note: 'finished games, systems, early experiments',
+    href: sitePath('/work/games/'),
+    className: 'work-choice__paper--games',
+  },
+] as const;
+---
+
+<section class="work-choice" aria-label="Choose a kind of work">
+  <div class="work-choice__papers">
+    {
+      choices.map((choice) => (
+        <a class:list={['work-choice__paper', choice.className]} href={choice.href}>
+          <span class="work-choice__fold" aria-hidden="true" />
+          <span class="work-choice__label">{choice.label}</span>
+          <span class="work-choice__note">{choice.note}</span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .work-choice {
+    display: block;
+  }
+
+  .work-choice__papers {
+    display: grid;
+    grid-template-columns: minmax(13rem, 18rem);
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .work-choice__paper {
+    position: relative;
+    display: grid;
+    min-height: 10.5rem;
+    align-content: center;
+    gap: 0.65rem;
+    padding: 2rem 1.25rem 1.35rem;
+    background:
+      linear-gradient(rgba(242, 232, 207, 0.9), rgba(242, 232, 207, 0.95)),
+      url('../../assets/art/paper-crumpled.webp') center / cover;
+    color: var(--color-ink);
+    text-align: center;
+    text-decoration: none;
+    filter: drop-shadow(0 1.1rem 1.2rem rgba(0, 0, 0, 0.2));
+    clip-path: polygon(3% 2%, 84% 0, 100% 18%, 98% 97%, 8% 100%, 0 86%);
+    transition: filter 150ms ease, transform 150ms ease;
+  }
+
+  .work-choice__paper::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 1.55rem, rgba(52, 95, 113, 0.09) 1.58rem 1.64rem),
+      repeating-linear-gradient(90deg, transparent 0 1.55rem, rgba(52, 95, 113, 0.06) 1.58rem 1.64rem);
+    content: '';
+    mix-blend-mode: multiply;
+  }
+
+  .work-choice__paper--software {
+    transform: rotate(-4deg) translateY(0.8rem);
+  }
+
+  .work-choice__paper--games {
+    transform: rotate(3deg) translateY(-0.7rem);
+  }
+
+  .work-choice__fold {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    width: 20%;
+    aspect-ratio: 1;
+    border-left: 1px solid rgba(32, 32, 30, 0.2);
+    border-bottom: 1px solid rgba(32, 32, 30, 0.2);
+    background: rgba(209, 196, 165, 0.8);
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+  }
+
+  .work-choice__label,
+  .work-choice__note {
+    position: relative;
+    z-index: 3;
+  }
+
+  .work-choice__label {
+    font-family: var(--font-distinctive);
+    font-size: clamp(2rem, 3.4vw, 2.8rem);
+    line-height: 1;
+  }
+
+  .work-choice__note {
+    max-width: 24ch;
+    margin-inline: auto;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .work-choice__paper:focus-visible {
+    outline-color: var(--color-focus);
+    outline-offset: 0.65rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .work-choice__paper--software:hover {
+      filter: drop-shadow(0 1.35rem 1.5rem rgba(0, 0, 0, 0.25));
+      transform: rotate(-2deg) translateY(0.15rem);
+    }
+
+    .work-choice__paper--games:hover {
+      filter: drop-shadow(0 1.35rem 1.5rem rgba(0, 0, 0, 0.25));
+      transform: rotate(1deg) translateY(-1.35rem);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .work-choice__papers {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .work-choice__paper {
+      min-height: 9.5rem;
+      padding: 1.5rem 0.6rem 1rem;
+    }
+
+    .work-choice__label {
+      font-size: clamp(1.55rem, 9vw, 2rem);
+    }
+
+    .work-choice__note {
+      font-size: 0.78rem;
+    }
+  }
+</style>

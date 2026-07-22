@@ -1,0 +1,85 @@
+---
+import { sitePath } from '../../config/site';
+
+interface Props {
+  current: 'software' | 'games';
+}
+
+const { current } = Astro.props;
+---
+
+<nav class="work-mode-nav" aria-label="Work areas">
+  <a class="work-mode-nav__index" href={`${sitePath('/')}#work`}>choose paper</a>
+  <a
+    class:list={['work-mode-nav__paper', 'work-mode-nav__paper--software', { 'is-current': current === 'software' }]}
+    href={sitePath('/work/software/')}
+    aria-current={current === 'software' ? 'page' : undefined}
+  >
+    Software
+  </a>
+  <a
+    class:list={['work-mode-nav__paper', 'work-mode-nav__paper--games', { 'is-current': current === 'games' }]}
+    href={sitePath('/work/games/')}
+    aria-current={current === 'games' ? 'page' : undefined}
+  >
+    Games
+  </a>
+</nav>
+
+<style>
+  .work-mode-nav {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    margin: -1.4rem 0 clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .work-mode-nav a {
+    color: var(--color-ink);
+  }
+
+  .work-mode-nav__index {
+    min-height: 2.75rem;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.95rem;
+    text-underline-offset: 0.2em;
+    transform: rotate(-2deg);
+  }
+
+  .work-mode-nav__paper {
+    display: inline-grid;
+    min-width: 7.5rem;
+    min-height: 3.25rem;
+    place-items: center;
+    padding: 0.55rem 1.1rem;
+    background: #ddd1b4;
+    font-size: 1.1rem;
+    text-decoration: none;
+    clip-path: polygon(3% 6%, 94% 0, 100% 87%, 7% 100%, 0 20%);
+    opacity: 0.72;
+    transform: rotate(1.5deg);
+  }
+
+  .work-mode-nav__paper--games {
+    transform: rotate(-1.5deg);
+  }
+
+  .work-mode-nav__paper.is-current {
+    background: var(--color-paper);
+    box-shadow: inset 0 -0.16rem 0 rgba(32, 32, 30, 0.7);
+    opacity: 1;
+  }
+
+  @media (max-width: 36rem) {
+    .work-mode-nav {
+      margin-top: -0.75rem;
+    }
+
+    .work-mode-nav__index {
+      width: 100%;
+    }
+  }
+</style>

@@ -1,9 +1,8 @@
 ---
 title: Discourses by Campfire
 summary: A survival suspense game about a traveler stranded in a mountain forest.
-featured: true
-status: published
-externalUrl: https://kidpudel.itch.io/
+prominence: featured
+status: complete
 engine: Godot
 ---
 

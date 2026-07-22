@@ -9,6 +9,7 @@ interface Props {
   href?: string;
   class?: string;
   connectToggle?: boolean;
+  workToggle?: boolean;
   ariaControls?: string;
   ariaExpanded?: boolean;
   tilt?: string;
@@ -22,6 +23,7 @@ const {
   href,
   class: className,
   connectToggle = false,
+  workToggle = false,
   ariaControls,
   ariaExpanded,
   tilt = '0deg',
@@ -38,6 +40,7 @@ const Element = href ? 'a' : 'button';
   aria-controls={ariaControls}
   aria-expanded={ariaExpanded}
   data-connect-toggle={connectToggle ? '' : undefined}
+  data-work-toggle={workToggle ? '' : undefined}
   data-label-placement={labelPlacement}
   style={`--choice-tilt: ${tilt}; --choice-art-scale: ${artScale}`}
 >

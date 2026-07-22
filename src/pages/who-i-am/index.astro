@@ -1,18 +1,158 @@
 ---
-import DevelopmentPlaceholder from '../../components/shell/DevelopmentPlaceholder.astro';
+import { Image } from 'astro:assets';
+
+import birdDoodle from '../../assets/art/doodles/Doodles_bird_1.png';
+import cameraDoodle from '../../assets/art/doodles/Doodles_camera.png';
+import robotDoodle from '../../assets/art/doodles/Doodles_robot.png';
 import HomeReturn from '../../components/shell/HomeReturn.astro';
 import PaperSurface from '../../components/shell/PaperSurface.astro';
 import WorldField from '../../components/shell/WorldField.astro';
+import ColorWord from '../../components/who/ColorWord.astro';
+import CraftValues from '../../components/who/CraftValues.astro';
+import PlayfulWord from '../../components/who/PlayfulWord.astro';
+import PortraitInteraction from '../../components/who/PortraitInteraction.astro';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 ---
 
 <BaseDocument title="Who I am | Igor Kupchinenko" description="An introduction to Igor Kupchinenko and his craft values.">
-  <WorldField>
+  <WorldField destination>
     <HomeReturn />
     <main id="main-content">
-      <PaperSurface>
-        <DevelopmentPlaceholder title="Who I am" />
+      <PaperSurface variant="notebook">
+        <article class="who-page" aria-labelledby="who-title">
+          <div class="who-page__doodles" aria-hidden="true">
+            <Image class="who-page__bird" src={birdDoodle} alt="" width={190} />
+            <Image class="who-page__camera" src={cameraDoodle} alt="" width={190} />
+            <Image class="who-page__robot" src={robotDoodle} alt="" width={190} />
+          </div>
+
+          <section class="who-introduction">
+            <div class="who-introduction__copy">
+              <p class="who-introduction__hello">hello, I am Igor</p>
+              <h1 id="who-title">I build <PlayfulWord word="experiences" />, then the systems that make them real.</h1>
+              <p>
+                I design and build interactive products and gameplay systems. I take someone's desire, carry it
+                across technical boundaries, and fulfil it through something <ColorWord word="joyful" /> to interact with.
+              </p>
+            </div>
+
+            <PortraitInteraction />
+          </section>
+
+          <CraftValues />
+        </article>
       </PaperSurface>
     </main>
   </WorldField>
 </BaseDocument>
+
+<style>
+  .who-page {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .who-introduction {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+    align-items: center;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    min-height: 39rem;
+  }
+
+  .who-introduction__copy {
+    display: grid;
+    gap: 1.35rem;
+    max-width: 38rem;
+  }
+
+  .who-introduction__hello {
+    width: fit-content;
+    font-size: 1.05rem;
+    transform: rotate(-1.5deg);
+  }
+
+  .who-introduction h1 {
+    max-width: 16ch;
+    font-family: var(--font-distinctive);
+    font-size: clamp(2.4rem, 4.7vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.02;
+  }
+
+  .who-introduction__copy > p:not(.who-introduction__hello) {
+    max-width: 52ch;
+    font-size: clamp(1.1rem, 1.8vw, 1.3rem);
+    line-height: 1.6;
+  }
+
+  .who-page__doodles {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .who-page__doodles :global(img) {
+    position: absolute;
+    width: clamp(5.25rem, 9vw, 8rem);
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.17;
+  }
+
+  .who-page__bird {
+    top: -2rem;
+    right: 37%;
+    transform: rotate(-9deg);
+  }
+
+  .who-page__camera {
+    right: -2.5rem;
+    bottom: 28%;
+    transform: rotate(8deg);
+  }
+
+  .who-page__robot {
+    bottom: -3.5rem;
+    left: -2rem;
+    transform: rotate(-6deg);
+  }
+
+  @media (max-width: 50rem) {
+    .who-introduction {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3.5rem;
+    }
+
+    .who-introduction__copy {
+      max-width: 42rem;
+    }
+
+    .who-page__bird {
+      top: 28%;
+      right: -2rem;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .who-introduction {
+      min-height: auto;
+    }
+
+    .who-introduction h1 {
+      font-size: clamp(2.4rem, 12.5vw, 3.7rem);
+    }
+
+    .who-page__doodles :global(img) {
+      opacity: 0.12;
+    }
+
+    .who-page__camera {
+      right: -2.8rem;
+    }
+  }
+</style>

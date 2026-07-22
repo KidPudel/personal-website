@@ -1,17 +1,33 @@
 ---
-import DevelopmentPlaceholder from '../../../components/shell/DevelopmentPlaceholder.astro';
+import { getCollection } from 'astro:content';
+
 import HomeReturn from '../../../components/shell/HomeReturn.astro';
 import PaperSurface from '../../../components/shell/PaperSurface.astro';
 import WorldField from '../../../components/shell/WorldField.astro';
+import WorkInventory from '../../../components/work/WorkInventory.astro';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
+
+const order = [
+  'discourses-by-campfire',
+  'santa-foundation',
+  'card-system-study',
+  'snake-raylib',
+  'tic-tac-toe-opengl',
+];
+const entries = (await getCollection('games')).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 ---
 
 <BaseDocument title="Games | Igor Kupchinenko" description="Games made by Igor Kupchinenko.">
-  <WorldField>
+  <WorldField destination>
     <HomeReturn />
     <main id="main-content">
-      <PaperSurface>
-        <DevelopmentPlaceholder title="Games" />
+      <PaperSurface variant="work">
+        <WorkInventory
+          current="games"
+          title="Games"
+          introduction="Games let behavior, atmosphere, systems, art, sound, and player understanding meet in one experience. Finished work leads here, with unfinished and early artifacts kept in honest view."
+          entries={entries}
+        />
       </PaperSurface>
     </main>
   </WorldField>

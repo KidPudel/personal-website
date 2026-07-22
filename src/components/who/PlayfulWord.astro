@@ -1,0 +1,137 @@
+---
+interface Props {
+  word: string;
+}
+
+const { word } = Astro.props;
+const letters = Array.from(word);
+---
+
+<playful-word class="playful-word">
+  <button
+    type="button"
+    data-playful-word
+    aria-label={word}
+    aria-description="Add colour to its letters"
+    aria-pressed="false"
+    disabled
+  >
+    {letters.map((letter, index) => (
+      <span class="playful-word__letter" style={`--letter-index: ${index}`} aria-hidden="true">{letter}</span>
+    ))}
+  </button>
+</playful-word>
+
+<script>
+  class PlayfulWord extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.enhanced) return;
+
+      const button = this.querySelector<HTMLButtonElement>('[data-playful-word]');
+      if (!button) return;
+
+      this.dataset.enhanced = 'true';
+      button.disabled = false;
+      button.addEventListener('click', () => {
+        const isColoured = button.toggleAttribute('data-coloured');
+        button.setAttribute('aria-pressed', String(isColoured));
+      });
+    }
+  }
+
+  if (!customElements.get('playful-word')) {
+    customElements.define('playful-word', PlayfulWord);
+  }
+</script>
+
+<style>
+  .playful-word {
+    display: inline;
+  }
+
+  .playful-word button {
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    vertical-align: baseline;
+  }
+
+  .playful-word button:not(:disabled) {
+    cursor: pointer;
+  }
+
+  .playful-word button:disabled {
+    opacity: 1;
+  }
+
+  .playful-word__letter {
+    display: inline-block;
+    color: inherit;
+    animation: playful-word-color-cue 820ms ease-in-out calc(350ms + (var(--letter-index) * 55ms)) backwards;
+    transition: color 100ms ease, transform 100ms ease;
+  }
+
+  .playful-word__letter:nth-child(5n + 1) {
+    --letter-color: #8f3f38;
+    --letter-tilt: -2deg;
+  }
+
+  .playful-word__letter:nth-child(5n + 2) {
+    --letter-color: #315f85;
+    --letter-tilt: 2deg;
+  }
+
+  .playful-word__letter:nth-child(5n + 3) {
+    --letter-color: #4f6c3a;
+    --letter-tilt: -1deg;
+  }
+
+  .playful-word__letter:nth-child(5n + 4) {
+    --letter-color: #6c4f7a;
+    --letter-tilt: 1.5deg;
+  }
+
+  .playful-word__letter:nth-child(5n + 5) {
+    --letter-color: #8a5a24;
+    --letter-tilt: -1.5deg;
+  }
+
+  .playful-word button[data-coloured] .playful-word__letter,
+  .playful-word button:focus-visible .playful-word__letter {
+    color: var(--letter-color);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .playful-word button:not(:disabled) .playful-word__letter:hover {
+      color: var(--letter-color);
+      transform: translateY(-0.08em) rotate(var(--letter-tilt));
+    }
+  }
+
+  @keyframes playful-word-color-cue {
+    0%,
+    100% {
+      color: inherit;
+    }
+    38%,
+    68% {
+      color: var(--letter-color);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .playful-word__letter {
+      animation: none;
+      transition: none;
+    }
+
+    .playful-word button:not(:disabled) .playful-word__letter:hover {
+      transform: none;
+    }
+  }
+</style>

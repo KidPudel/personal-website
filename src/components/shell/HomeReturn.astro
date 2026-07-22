@@ -1,5 +1,12 @@
 ---
+import { Image } from 'astro:assets';
+
+import homeDrawing from '../../assets/art/icons/Doodles_home.png';
 import { sitePath } from '../../config/site';
 ---
 
-<a class="home-return" href={sitePath('/')} aria-label="Home">Home</a>
+<a class="home-return" href={sitePath('/')} aria-label="Home">
+  <span class="home-return__drawing" aria-hidden="true">
+    <Image src={homeDrawing} alt="" width={512} format="png" />
+  </span>
+</a>

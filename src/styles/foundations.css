@@ -75,25 +75,262 @@
     min-height: calc(100vh - (2 * var(--field-gutter)));
   }
 
-  .paper-surface {
+  .world-field__doodles {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    overflow: clip;
+    pointer-events: none;
+  }
+
+  .world-field__content > :not(.world-field__doodles) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .world-field:not(.world-field--destination) .world-field__content > main {
+    pointer-events: none;
+  }
+
+  .world-field__doodle {
+    position: absolute;
+    width: clamp(7rem, 13vw, 12rem);
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(1) invert(1);
+    opacity: 0.09;
+    transition: opacity 140ms ease;
+  }
+
+  .world-field__doodle--disk {
+    top: 5%;
+    left: 3%;
+    width: clamp(6rem, 10vw, 9rem);
+    transform: rotate(-5deg);
+  }
+
+  .world-field__doodle--burger {
+    top: 4%;
+    right: 5%;
+    transform: rotate(7deg);
+  }
+
+  .world-field__doodle--bird {
+    bottom: 5%;
+    left: 7%;
+    width: clamp(6rem, 10vw, 9rem);
+    transform: rotate(-9deg);
+  }
+
+  .world-field__doodle--fish {
+    right: 15%;
+    bottom: -2rem;
+    transform: rotate(4deg);
+  }
+
+  .world-field__doodle--dead-fish {
+    bottom: 5%;
+    left: 43%;
+    width: clamp(6rem, 11vw, 10rem);
+    transform: rotate(5deg);
+  }
+
+  .world-field--destination .world-field__doodle {
+    pointer-events: none;
+    opacity: 0.055;
+  }
+
+  .world-field--destination .world-field__doodle--disk {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .world-field:not(.world-field--destination) .world-field__doodle {
+      pointer-events: auto;
+    }
+
+    .world-field:not(.world-field--destination) .world-field__doodle:hover {
+      opacity: 0.13;
+    }
+  }
+
+  .world-field--destination .world-field__content {
+    display: grid;
+    grid-template-columns: minmax(4rem, 1fr) minmax(0, var(--paper-width)) minmax(4rem, 1fr);
+    align-items: start;
+  }
+
+  .world-field--destination main {
+    min-width: 0;
+    grid-column: 2;
+  }
+
+  .paper-surface-frame {
     width: min(100%, var(--paper-width));
     min-height: 75vh;
     margin-inline: auto;
+    filter: drop-shadow(0 1.1rem 1.4rem rgba(7, 7, 6, 0.18));
+  }
+
+  .paper-surface {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    min-height: inherit;
     padding: clamp(2rem, 6vw, 5rem);
     border: 1px solid var(--color-paper-edge);
     background: var(--color-paper);
     color: var(--color-ink);
   }
 
+  .paper-surface--notebook {
+    overflow: clip;
+    border: 0;
+    background:
+      linear-gradient(rgba(242, 232, 207, 0.86), rgba(242, 232, 207, 0.92)),
+      url('../assets/art/paper-crumpled.webp') center top / cover;
+    clip-path: polygon(
+      0.25% 0.4%,
+      8% 0.12%,
+      18% 0.34%,
+      31% 0.08%,
+      44% 0.28%,
+      58% 0.06%,
+      71% 0.3%,
+      84% 0.1%,
+      99.7% 0.36%,
+      99.88% 9%,
+      99.62% 21%,
+      99.92% 35%,
+      99.68% 49%,
+      99.9% 63%,
+      99.64% 77%,
+      99.82% 91%,
+      99.55% 99.68%,
+      88% 99.9%,
+      73% 99.62%,
+      57% 99.88%,
+      42% 99.65%,
+      27% 99.92%,
+      13% 99.64%,
+      0.32% 99.82%,
+      0.12% 88%,
+      0.38% 73%,
+      0.08% 58%,
+      0.34% 43%,
+      0.1% 28%,
+      0.36% 14%
+    );
+  }
+
+  .paper-surface--notebook::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: url('../assets/art/paper-grain.svg') 0 0 / 180px 180px;
+    content: '';
+    mix-blend-mode: multiply;
+    opacity: 0.12;
+  }
+
+  .paper-surface--work {
+    overflow: clip;
+    border: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 1.55rem, rgba(54, 102, 122, 0.12) 1.58rem 1.64rem),
+      repeating-linear-gradient(90deg, transparent 0 1.55rem, rgba(54, 102, 122, 0.1) 1.58rem 1.64rem),
+      linear-gradient(rgba(242, 232, 207, 0.86), rgba(242, 232, 207, 0.91)),
+      url('../assets/art/paper-crumpled.webp') center top / cover;
+    clip-path: polygon(
+      0.18% 0.25%,
+      15% 0.08%,
+      33% 0.22%,
+      49% 0.04%,
+      68% 0.24%,
+      84% 0.06%,
+      99.8% 0.3%,
+      99.65% 19%,
+      99.92% 39%,
+      99.68% 61%,
+      99.88% 82%,
+      99.56% 99.72%,
+      80% 99.9%,
+      59% 99.65%,
+      38% 99.9%,
+      18% 99.62%,
+      0.3% 99.84%,
+      0.08% 77%,
+      0.34% 54%,
+      0.1% 31%
+    );
+  }
+
+  .paper-surface--work::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    background: url('../assets/art/paper-grain.svg') 0 0 / 180px 180px;
+    content: '';
+    mix-blend-mode: multiply;
+    opacity: 0.13;
+  }
+
   .home-return {
+    position: sticky;
+    z-index: 3;
+    top: var(--field-gutter);
     display: inline-flex;
-    min-width: 2.75rem;
-    min-height: 2.75rem;
+    width: 5.625rem;
+    min-height: 4.125rem;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1rem;
+    align-self: start;
+    grid-column: 1;
+    justify-self: end;
+    margin-right: 0.5rem;
+    padding: 0;
     color: var(--color-field-ink);
-    text-underline-offset: 0.2em;
+    text-decoration: none;
+  }
+
+  .home-return__drawing {
+    display: block;
+    width: 5.625rem;
+    height: 4.125rem;
+    overflow: hidden;
+  }
+
+  .home-return__drawing img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(1) invert(1);
+    transform: translateY(-24px);
+  }
+
+  @media (max-width: 60rem) {
+    .world-field--destination .world-field__doodles {
+      display: none;
+    }
+
+    .world-field--destination .world-field__content {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .world-field--destination main {
+      grid-column: 1;
+    }
+
+    .home-return {
+      position: relative;
+      top: auto;
+      grid-column: 1;
+      justify-self: start;
+      margin-bottom: 0.75rem;
+      margin-right: 0;
+    }
   }
 
   .development-placeholder {
@@ -136,9 +373,41 @@
       min-height: calc(100vh - 1.75rem);
     }
 
+    .world-field__doodle--burger {
+      top: 1%;
+      right: -1.5rem;
+    }
+
+    .world-field__doodle--bird {
+      bottom: 2%;
+      left: -1.5rem;
+    }
+
+    .world-field__doodle--fish {
+      right: -1.5rem;
+      bottom: 1%;
+      width: 7rem;
+    }
+
+    .world-field__doodle--disk {
+      top: 1%;
+      left: -1rem;
+      width: 6.5rem;
+    }
+
+    .world-field__doodle--dead-fish {
+      top: 3%;
+      bottom: auto;
+      left: 39%;
+      width: 6rem;
+    }
+
     .paper-surface {
-      min-height: calc(100vh - 5.5rem);
       padding: 2rem 1.25rem;
+    }
+
+    .paper-surface-frame {
+      min-height: calc(100vh - 5.5rem);
     }
 
     .development-placeholder--field {

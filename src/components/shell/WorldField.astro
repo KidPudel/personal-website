@@ -1,5 +1,28 @@
-<div class="world-field">
+---
+import { Image } from 'astro:assets';
+
+import birdDoodle from '../../assets/art/doodles/Doodles_bird_1.png';
+import burgerDoodle from '../../assets/art/doodles/Doodles_burger.png';
+import deadFishDoodle from '../../assets/art/doodles/Doodles_dead_fish.png';
+import diskDoodle from '../../assets/art/doodles/Doodles_disk.png';
+import fishDoodle from '../../assets/art/doodles/Doodles_fish_1.png';
+
+interface Props {
+  destination?: boolean;
+}
+
+const { destination = false } = Astro.props;
+---
+
+<div class:list={['world-field', { 'world-field--destination': destination }]}>
   <div class="world-field__content">
+    <div class="world-field__doodles" aria-hidden="true">
+      <Image class="world-field__doodle world-field__doodle--disk" src={diskDoodle} alt="" width={220} />
+      <Image class="world-field__doodle world-field__doodle--burger" src={burgerDoodle} alt="" width={256} />
+      <Image class="world-field__doodle world-field__doodle--bird" src={birdDoodle} alt="" width={220} />
+      <Image class="world-field__doodle world-field__doodle--fish" src={fishDoodle} alt="" width={240} />
+      <Image class="world-field__doodle world-field__doodle--dead-fish" src={deadFishDoodle} alt="" width={230} />
+    </div>
     <slot />
   </div>
 </div>

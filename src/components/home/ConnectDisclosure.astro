@@ -1,16 +1,7 @@
 ---
 import connectIcon from '../../assets/art/icons/Doodles_connect.png';
-import { publicLinks, sitePath } from '../../config/site';
+import { connectLinks } from '../../config/site';
 import NavigationDrawing from './NavigationDrawing.astro';
-
-const links = [
-  { label: 'Email', href: publicLinks.email },
-  { label: 'LinkedIn', href: publicLinks.linkedin },
-  { label: 'GitHub', href: publicLinks.github },
-  { label: 'itch.io', href: publicLinks.itch },
-  { label: 'X', href: publicLinks.x },
-  { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-resume.pdf') },
-] as const;
 ---
 
 <connect-disclosure id="connect">
@@ -27,7 +18,7 @@ const links = [
   />
 
   <div id="connect-links" class="connect-links">
-    {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
   </div>
 </connect-disclosure>
 
@@ -55,6 +46,10 @@ const links = [
         const expanded = button.getAttribute('aria-expanded') !== 'true';
         setExpanded(expanded);
 
+        if (expanded) {
+          window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: 'connect' } }));
+        }
+
         const nextURL = expanded
           ? `${window.location.pathname}${window.location.search}#connect`
           : `${window.location.pathname}${window.location.search}`;
@@ -62,6 +57,11 @@ const links = [
       });
 
       window.addEventListener('hashchange', syncFromHash);
+      window.addEventListener('home-disclosure-open', (event) => {
+        const disclosureEvent = event as CustomEvent<{ id?: string }>;
+        if (disclosureEvent.detail?.id === 'connect') return;
+        setExpanded(false);
+      });
     }
   }
 
@@ -83,7 +83,7 @@ const links = [
     bottom: 3.5rem;
     left: calc(100% + 1.5rem);
     display: flex;
-    width: min(25rem, 42vw);
+    width: min(18rem, 30vw);
     flex-wrap: wrap;
     gap: 0.25rem 1.15rem;
     padding-left: 1.2rem;

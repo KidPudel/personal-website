@@ -36,9 +36,9 @@ Routes are statically generated and directly addressable.
 
 | Route | Responsibility |
 | --- | --- |
-| `/` | Home and the Connect disclosure |
+| `/` | Home with the Work and Connect disclosures |
 | `/who-i-am/` | Personal introduction and craft values |
-| `/work/` | Work choice |
+| `/work/` | Compatibility redirect to `/#work` |
 | `/work/software/` | Software work index |
 | `/work/software/[slug]/` | Software detail |
 | `/work/games/` | Games work index |
@@ -48,7 +48,7 @@ Routes are statically generated and directly addressable.
 | `/connect/` | Compatibility redirect to `/#connect` |
 | `/games/` | Compatibility redirect to `/work/games/` |
 
-Nested Work routes are preferred to hidden tab state or hash-only modes because they provide durable URLs, browser history, static generation, and JavaScript-free access.
+The Work disclosure is directly addressable as `/#work`; the Software and Games destinations remain nested routes so they retain durable URLs, browser history, static generation, and JavaScript-free access.
 
 ## Shared document structure
 
@@ -107,6 +107,7 @@ components/
 ├── home/
 │   ├── HomeMap.astro
 │   ├── NavigationDrawing.astro
+│   ├── WorkDisclosure.astro
 │   └── ConnectDisclosure.astro
 ├── who/
 │   ├── PortraitInteraction.astro
@@ -133,6 +134,7 @@ There is no global application store.
 | --- | --- |
 | Current destination | URL path |
 | Software or Games choice | Nested Work route |
+| Work disclosure | `#work` plus local disclosure state |
 | Connect disclosure | `#connect` plus local disclosure state |
 | Craft-value word choice | CraftValues component |
 | Portrait state | PortraitInteraction component |

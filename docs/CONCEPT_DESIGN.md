@@ -73,15 +73,17 @@ Home loads directly with four Igor-drawn, visibly labeled choices:
 3. `Connect`
 4. `Blog`
 
-Who I am, Work, and Blog open real routes. Selecting one summons its destination material into the field. The material unfolds from the selected drawing, settles as an inset page, and leaves the unchanged Home field visible around it.
+Who I am and Blog open real routes. Selecting one summons its destination material into the field. The material unfolds from the selected drawing, settles as an inset page, and leaves the unchanged Home field visible around it.
 
-Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, itch.io, X, and résumé.
+Work remains on Home and expands locally to reveal two folded-paper links for Software and Games. Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, itch.io, X, and résumé.
 
 
 ### Navigation model
 
-- `Who I am`, `Work`, and `Blog` are semantic links.
-- `Connect` is a semantic disclosure button with `aria-expanded` and `aria-controls`.
+- `Who I am` and `Blog` are semantic links.
+- `Work` and `Connect` are semantic disclosure buttons with `aria-expanded` and `aria-controls`.
+- The Work state is directly linkable through `/#work`.
+- `/work/` forwards to `/#work`.
 - The Connect state is directly linkable through `/#connect`.
 - `/connect/` forwards to `/#connect`.
 - Work exposes directly linkable `Software` and `Games` modes.
@@ -101,7 +103,7 @@ The field should feel composed rather than unfinished. Spacing, annotation paths
 
 Reading and keyboard order remains Who I am, Work, Connect, Blog regardless of visual placement.
 
-The homepage is an empty interactive field rather than a notebook page or conventional hero. It loads directly with four Igor-drawn icon clusters labeled Who I am, Work, Connect, and Blog. There is no wrapper, desk scene, paper container, or entry animation. Who I am opens warm notebook paper containing Igor's introduction, portrait, doodles, and values. Work opens graph paper and tracing layers. Blog opens a calmer writing sheet. Connect alone expands the external contact links in place.
+The homepage is an empty interactive field rather than a notebook page or conventional hero. It loads directly with four Igor-drawn icon clusters labeled Who I am, Work, Connect, and Blog. There is no wrapper, desk scene, paper container, or entry animation. Who I am opens warm notebook paper containing Igor's introduction, portrait, doodles, and values. Work expands two folded-paper choices in place, and either choice opens its graph-paper destination. Blog opens a calmer writing sheet. Connect expands the external contact links in place.
 
 
 
@@ -152,15 +154,14 @@ These values should be in a handrawn checklist and also the text itself should b
 
 ### Work
 
-when opening there should be two simple folded papers with words on them:
+Selecting Work on Home expands two simple folded papers with words on them:
 
 1. Software
 2. Games
 
-When clicking on them user chooses to open either software or games "paper"
+Selecting either folded paper opens the Software or Games destination. After enhancement, clicking anywhere outside the Work cluster closes the folded choices. Escape also closes them and returns focus to Work.
 
-
-Work is one index with `Software` and `Games` modes.
+Work uses a Home disclosure as its index and keeps `Software` and `Games` as directly linkable routes. The folded links remain visible without JavaScript.
 
 Show every verified artifact Igor chooses to include at an honest level of prominence:
 

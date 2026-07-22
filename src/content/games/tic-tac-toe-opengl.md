@@ -1,8 +1,8 @@
 ---
 title: Tic-Tac-Toe with C++ and OpenGL
 summary: An early self-directed graphics and game experiment built with C++14, GLFW, GLAD, and GLM.
-featured: false
-status: published
+prominence: trajectory
+status: early-work
 externalUrl: https://github.com/KidPudel/TicTacToe
 engine: C++ and OpenGL
 ---

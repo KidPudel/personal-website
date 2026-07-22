@@ -45,7 +45,7 @@ Exit condition: the clean shell builds successfully at `/` and `/personal-websit
 ### 2. Home
 
 - Implement Home from `docs/CONCEPT_DESIGN.md` and the overview storyboard.
-- Add the real semantic navigation and progressively enhanced Connect disclosure.
+- Add the real semantic navigation and progressively enhanced disclosures.
 - Establish desktop and mobile resting, focus, expanded, reduced-motion, and JavaScript-free states.
 
 Exit condition: Home is complete enough for Igor to review as the site's resting space.
@@ -61,7 +61,7 @@ Exit condition: Home and Who I am form a complete, responsive, accessible vertic
 
 ### 4. Work
 
-- Build the Work entry and its directly linkable Software and Games states.
+- Build the Work disclosure on Home and its directly linkable Software and Games states.
 - Rebuild the content model around verified artifacts and honest prominence.
 - Implement the featured and supporting work using claims from `docs/CONTEXT_ABOUT_IGOR.md`.
 - Preserve compatibility for existing public URLs where useful.
@@ -79,11 +79,12 @@ Exit condition: every primary destination and public link is complete.
 ### 6. Interaction, responsive behavior, and accessibility
 
 - Add only the interaction behaviors approved by the concept and the reviewed working pages.
+- Audit the complete site against the `Intended feeling`, `Art direction and visual language and interaction design`, `Typography`, `Composition`, `Interaction rules`, `Responsive and accessible behavior` sections of `docs/CONCEPT_DESIGN.md`.
 - Resolve the mobile composition through real viewport testing with Igor.
 - Verify keyboard, touch, focus, reduced motion, contrast, semantics, direct links, history, and no-JavaScript access.
 - Optimize fonts, images, motion, and client code.
 
-Exit condition: the complete experience works across desktop and mobile without interaction or accessibility regressions.
+Exit condition: the complete experience works across desktop and mobile without interaction or accessibility regressions, and a section-by-section review confirms that it expresses the authored concept rather than merely satisfying the route and content requirements.
 
 ### 7. Release
 

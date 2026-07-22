@@ -1,8 +1,8 @@
 ---
 title: Bypassing unnecessary OCR for PDF receipts
 summary: A receipt-processing investigation that reduced an approximately 6-to-10-second path to approximately 600 to 650 milliseconds.
-featured: true
-status: published
+prominence: featured
+status: complete
 result: approximately 6 to 10 seconds to approximately 600 to 650 milliseconds
 capabilities:
   - Go

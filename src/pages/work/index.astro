@@ -1,18 +1,20 @@
 ---
-import DevelopmentPlaceholder from '../../components/shell/DevelopmentPlaceholder.astro';
-import HomeReturn from '../../components/shell/HomeReturn.astro';
-import PaperSurface from '../../components/shell/PaperSurface.astro';
-import WorldField from '../../components/shell/WorldField.astro';
-import BaseDocument from '../../layouts/BaseDocument.astro';
+import { sitePath } from '../../config/site';
+
+const redirectTarget = `${sitePath('/')}#work`;
+const canonicalURL = new URL(redirectTarget, Astro.site);
 ---
 
-<BaseDocument title="Work | Igor Kupchinenko" description="Software and game work by Igor Kupchinenko.">
-  <WorldField>
-    <HomeReturn />
-    <main id="main-content">
-      <PaperSurface>
-        <DevelopmentPlaceholder title="Work" />
-      </PaperSurface>
-    </main>
-  </WorldField>
-</BaseDocument>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${redirectTarget}`} />
+    <link rel="canonical" href={canonicalURL} />
+    <title>Redirecting to Work</title>
+  </head>
+  <body>
+    <p><a href={redirectTarget}>Continue to Work</a></p>
+  </body>
+</html>

@@ -1,8 +1,8 @@
 ---
 title: Snake with Go and raylib
 summary: A compact game experiment that connected Go, raylib, visible game behavior, and public sharing.
-featured: false
-status: published
+prominence: trajectory
+status: early-work
 externalUrl: https://x.com/kidpudel/status/1781656147990020293?s=20
 engine: raylib with Go
 ---
