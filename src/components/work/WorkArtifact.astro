@@ -3,19 +3,18 @@ interface Props {
   title: string;
   prominence: 'featured' | 'supporting' | 'trajectory';
   status: 'complete' | 'ongoing' | 'unfinished' | 'early-work';
-  annotations?: string[];
+  learnings?: string[];
   result?: string;
   externalUrl?: string;
 }
 
-const { title, prominence, status, annotations = [], result, externalUrl } = Astro.props;
+const { title, prominence, status, learnings = [], result, externalUrl } = Astro.props;
 const statusLabel = {
   complete: 'complete',
   ongoing: 'still changing',
   unfinished: 'unfinished',
   'early-work': 'early experiment',
 }[status];
-const projectAnnotations = status === 'complete' ? annotations : [statusLabel, ...annotations];
 ---
 
 <article class:list={['work-artifact', `work-artifact--${prominence}`, `work-artifact--${status}`]}>
@@ -32,12 +31,13 @@ const projectAnnotations = status === 'complete' ? annotations : [statusLabel, .
   <div class="work-artifact__copy">
     <h3>{title}</h3>
     {result && <p class="work-artifact__result">{result}</p>}
+    {status !== 'complete' && <p class="work-artifact__status">{statusLabel}</p>}
     {
-      projectAnnotations.length > 0 && (
-        <aside class="work-artifact__learnings" aria-label="Learned along an artifact">
-          <p>Learned along an artifact</p>
+      learnings.length > 0 && (
+        <aside class="work-artifact__learnings" aria-label="What I've learned">
+          <p>What I've learned</p>
           <ul>
-            {projectAnnotations.map((annotation) => <li>{annotation}</li>)}
+            {learnings.map((learning) => <li>{learning}</li>)}
           </ul>
         </aside>
       )
@@ -134,8 +134,10 @@ const projectAnnotations = status === 'complete' ? annotations : [statusLabel, .
   }
 
   .work-artifact--trajectory h3 {
+    max-width: none;
     font-family: var(--font-reading);
     font-size: clamp(1.45rem, 2.35vw, 2rem);
+    text-wrap: balance;
   }
 
   .work-artifact__result {
@@ -144,6 +146,14 @@ const projectAnnotations = status === 'complete' ? annotations : [statusLabel, .
     font-family: var(--font-distinctive);
     font-size: clamp(1.55rem, 2.6vw, 2.35rem);
     line-height: 1.05;
+    transform: rotate(-1deg);
+  }
+
+  .work-artifact__status {
+    width: fit-content;
+    color: rgba(243, 239, 228, 0.62);
+    font-size: 0.95rem;
+    font-style: italic;
     transform: rotate(-1deg);
   }
 
@@ -180,8 +190,8 @@ const projectAnnotations = status === 'complete' ? annotations : [statusLabel, .
 
   .work-artifact__learnings li {
     color: rgba(243, 239, 228, 0.7);
-    font-size: 0.95rem;
-    line-height: 1.3;
+    font-size: 1.05rem;
+    line-height: 1.45;
   }
 
   .work-artifact__learnings li::before {

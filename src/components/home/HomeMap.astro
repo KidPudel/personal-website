@@ -57,12 +57,18 @@ import WorkDisclosure from './WorkDisclosure.astro';
     align-items: center;
     gap: 1rem clamp(1rem, 4vw, 3rem);
     padding: 1rem;
+    pointer-events: none;
+  }
+
+  .home-map__choices :global(.home-choice),
+  .home-map__choices :global(work-disclosure),
+  .home-map__choices :global(connect-disclosure) {
     pointer-events: auto;
   }
 
   @media (max-width: 76rem) and (min-width: 40.001rem) {
     .home-map__choices:has(work-disclosure[data-open]),
-    .home-map__choices:has(work-disclosure:not([data-enhanced])) {
+    :global(html:not(.js)) .home-map__choices:has(work-disclosure:not([data-enhanced])) {
       min-height: min(92vh, 54rem);
     }
   }
@@ -121,9 +127,9 @@ import WorkDisclosure from './WorkDisclosure.astro';
     }
 
     .home-map__choices :global(connect-disclosure[data-open]),
-    .home-map__choices :global(connect-disclosure:not([data-enhanced])),
     .home-map__choices :global(work-disclosure[data-open]),
-    .home-map__choices :global(work-disclosure:not([data-enhanced])) {
+    :global(html:not(.js)) .home-map__choices :global(connect-disclosure:not([data-enhanced])),
+    :global(html:not(.js)) .home-map__choices :global(work-disclosure:not([data-enhanced])) {
       grid-column: 1 / -1;
       grid-row: auto;
       justify-self: stretch;

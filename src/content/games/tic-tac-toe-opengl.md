@@ -5,6 +5,8 @@ prominence: trajectory
 status: early-work
 externalUrl: https://github.com/KidPudel/TicTacToe
 engine: C++ and OpenGL
+learnings:
+  - graphics programming
 ---
 
 This project is part of my earlier path through C++, graphics, and game experiments. It recreates Tic-Tac-Toe using a small OpenGL-oriented stack rather than a game engine.

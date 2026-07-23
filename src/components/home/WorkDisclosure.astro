@@ -17,7 +17,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     tilt="2deg"
   />
 
-  <div id="work-choices" class="work-disclosure__panel">
+  <div id="work-choices" class="work-disclosure__panel" hidden>
     <WorkChoice />
   </div>
 </work-disclosure>
@@ -58,7 +58,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
       window.history.replaceState(null, '', nextURL);
     };
 
-    private handleOutsidePointer = (event: PointerEvent) => {
+    private handleOutsideActivation = (event: MouseEvent) => {
       if (!this.hasAttribute('data-open') || this.contains(event.target as Node)) return;
       this.setExpanded(false);
       this.clearWorkHash();
@@ -89,7 +89,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
       this.syncFromHash();
 
       this.button.addEventListener('click', this.handleToggle);
-      document.addEventListener('pointerdown', this.handleOutsidePointer);
+      document.addEventListener('click', this.handleOutsideActivation);
       document.addEventListener('keydown', this.handleEscape);
       window.addEventListener('hashchange', this.syncFromHash);
       window.addEventListener('home-disclosure-open', this.handleOtherDisclosure);
@@ -97,7 +97,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
 
     disconnectedCallback() {
       this.button?.removeEventListener('click', this.handleToggle);
-      document.removeEventListener('pointerdown', this.handleOutsidePointer);
+      document.removeEventListener('click', this.handleOutsideActivation);
       document.removeEventListener('keydown', this.handleEscape);
       window.removeEventListener('hashchange', this.syncFromHash);
       window.removeEventListener('home-disclosure-open', this.handleOtherDisclosure);
@@ -137,7 +137,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     display: none;
   }
 
-  work-disclosure:not([data-enhanced]) .work-disclosure__panel {
+  :global(html:not(.js)) work-disclosure:not([data-enhanced]) .work-disclosure__panel {
     display: block;
   }
 
@@ -157,13 +157,13 @@ import NavigationDrawing from './NavigationDrawing.astro';
     }
 
     work-disclosure[data-open],
-    work-disclosure:not([data-enhanced]) {
+    :global(html:not(.js)) work-disclosure:not([data-enhanced]) {
       grid-column: 1 / -1;
       justify-items: stretch;
     }
 
     .work-disclosure__panel,
-    work-disclosure:not([data-enhanced]) .work-disclosure__panel {
+    :global(html:not(.js)) work-disclosure:not([data-enhanced]) .work-disclosure__panel {
       position: static;
       box-sizing: border-box;
       width: 100%;
@@ -173,7 +173,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     }
 
     work-disclosure[data-open] :global(.work-choice-toggle),
-    work-disclosure:not([data-enhanced]) :global(.work-choice-toggle) {
+    :global(html:not(.js)) work-disclosure:not([data-enhanced]) :global(.work-choice-toggle) {
       justify-self: center;
     }
   }

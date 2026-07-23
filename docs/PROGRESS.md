@@ -4,9 +4,9 @@ Last updated: 2026-07-23
 
 ## Status
 
-The clean foundation, approved Home base, shared destination field architecture, and Who I am vertical slice are complete. Software and Games have now been rebuilt as hand-drawn long-form routes on the persistent field and are ready for Igor's review. The Blog index, local article presentation, and Home Connect disclosure already use the same language. Work expands connected Igor-drawn Software and Games icon links.
+The clean foundation, approved Home base, shared destination field architecture, Who I am, Work, Blog index, and Connect disclosure are complete. The complete current public experience has passed the milestone 6 interaction, responsive, accessibility, and performance review. The local adaptation of `Identity Cage` still awaits approved article copy.
 
-Current milestone: **4. Work ready for review; milestone 5 local essay copy remains**
+Current milestone: **6. Interaction, responsive behavior, and accessibility complete; milestone 5 local essay copy remains**
 
 ## Milestones
 
@@ -16,9 +16,9 @@ Current milestone: **4. Work ready for review; milestone 5 local essay copy rema
 | 1. Clean foundation | Complete |
 | 2. Home | Complete |
 | 3. Destination composition and Who I am | Complete |
-| 4. Work | Ready for review |
+| 4. Work | Complete |
 | 5. Blog and contact completion | Blog and Connect complete; article copy pending |
-| 6. Interaction, responsive behavior, and accessibility | Pending |
+| 6. Interaction, responsive behavior, and accessibility | Complete |
 | 7. Release | Pending |
 
 Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
@@ -47,13 +47,13 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Hovering or keyboard-focusing any primary drawn navigation control, including the destination Home icon, now plays a restrained stepped wobble around that drawing's individual resting angle. Its shared duration token controls the four Home choices and destination Home icon together, while the shared reduced-motion rule limits the effect to one near-instant frame.
 - The persistent field uses a warm graphite base with restrained grain, faded tonal variation, and softened imperfect edges. It is the route surface itself on Home and every destination.
 - Nine existing Igor-authored doodles now form one shell-owned background layer shared by Home and every destination route. Their placements are unified in `WorldField`, with lower destination opacity so they remain behind the route composition. Who I am no longer duplicates bird, camera, or robot drawings locally.
-- Connect is collapsed after enhancement and opens a vertical six-link list above its Home drawing, with a short hand-drawn line connecting the list to the cluster. It keeps `aria-expanded` synchronized, maps its open state to `#connect`, closes on outside activation or Escape, and restores focus after Escape. Without JavaScript, all six links remain visible and the button accurately starts expanded.
+- Connect is collapsed after enhancement and opens a vertical six-link list above its Home drawing, with a short hand-drawn line connecting the list to the cluster. Each destination uses a different existing chalk accent on hover and keyboard focus. The disclosure keeps `aria-expanded` synchronized, maps its open state to `#connect`, closes on outside activation or Escape, and restores focus after Escape. Without JavaScript, all six links remain visible and the button accurately starts expanded.
 - The mobile review draft uses a two-by-two resting index. Expanded Connect takes a full row, wraps the links horizontally above its drawing, and moves Blog below it rather than compressing the links.
 - Destination routes use the persistent field directly, with route-owned hand-drawn borders, spines, paths, annotations, and responsive safe areas. Who I am, Software, Games, and Blog now use this language.
 - The destination Home control uses Igor's latest `Doodles_home.png` drawing while retaining the semantic link and accessible name `Home`. It now occupies the shared sticky edge track on desktop and the reserved field band above content on mobile, independent of any paper edge.
 - The obsolete legacy destination paper surface has been removed.
 - Who I am uses public first-person copy grounded in `docs/CONTEXT_ABOUT_IGOR.md`. It introduces Igor through experience-driven product and gameplay systems work without adding private context or stronger specialization claims.
-- The drawn and real portraits are both present in the static document. Their frames are now open hand-drawn outlines without paper backing or tape. The `drawn me` caption sits on the left edge and `real me` stays on the right so the stacked labels remain distinct; the caption belonging to the portrait underneath is darker than the active caption. Enhancement turns them into a locally owned portrait selector with synchronized `aria-pressed` and inactive-panel state. The real portrait is selected by default, and hovering the stack, focusing its controls, or switching portraits starts a fresh restrained card-shuffle motion.
+- The drawn and real portraits are both present in the static document. Their frames are now open hand-drawn outlines without paper backing or tape. The `real me` caption sits on the left edge and `drawn me` stays on the right so the stacked labels match the selector order and remain distinct; the caption belonging to the portrait underneath is darker than the active caption. Enhancement turns them into a locally owned portrait selector with synchronized `aria-pressed` and inactive-panel state. The real portrait is selected by default, and hovering the stack, focusing its controls, or switching portraits starts a fresh restrained card-shuffle motion.
 - The unified three-line craft-values checklist exposes every approved word in the static document. Enhancement turns the changing word in each line into a conventional button that cycles its approved alternatives.
 - The craft values form a compact three-note composition connected by hand-drawn paths to a dashed secret area. Their checkbox targets align in one readable column, while each visible box uses a distinct irregular SVG pencil contour and a curved tick that draws into place. The native inputs, 48-pixel targets, and visible keyboard focus remain valid. Completing all three reveals the explicitly approved paper invitation directly over the secret area.
 - The word `experiences` in the Who I am statement runs a brief staggered color wave after page load and then returns to the headline color. It continues to react letter by letter on precise-pointer hover. Keyboard focus and touch activation expose the same restrained color play without making the headline depend on JavaScript.
@@ -63,9 +63,9 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The content model now separates `software` and `games`, records honest `featured`, `supporting`, or `trajectory` prominence, and distinguishes complete, ongoing, unfinished, and early work.
 - Each concept-approved artifact is presented directly on its Software or Games index. The separate evidence routes remain absent to keep Work simple. Featured work receives the most visual space, while Snake with Go and raylib plus C++ and OpenGL Tic-Tac-Toe remain compact trajectory artifacts.
 - Software contains the complete Flutter product, Chinese Bee, and the receipt-processing investigation. The supplied food-delivery and Chinese Bee showcases appear directly with those projects, including the Chinese Bee mascot. The verified receipt result appears only on its index record.
-- Games contains `Discourses by Campfire`, `Santa Foundation`, Snake with Go and raylib, and C++ with OpenGL Tic-Tac-Toe. Retained media supports the two finished games. The generic itch.io profile is not presented as the Discourses project URL while its final public destination remains unconfirmed.
+- Games contains `Discourses by Campfire`, `Santa Foundation`, Snake with Go and raylib, and C++ with OpenGL Tic-Tac-Toe. Retained media supports the two finished games. Discourses links directly to its confirmed itch.io game page.
 - The verified payment and expiration entry and unfinished card-system entry remain in the typed content collection but are not published on these indexes because the current concept names the exact public selections.
-- Work project records no longer display promotional summaries, visible category headings, status badges, or hashtag rows. Real media and project names lead each composition; tools, capabilities, engines, jam context, and non-complete status appear in a quiet handwritten list titled `Learned along an artifact`.
+- Work project records no longer display promotional summaries, visible category headings, status badges, or hashtag rows. Real media and project names lead each composition; explicit learning notes appear in a quiet handwritten list titled `What I've learned`.
 - Every Work destination is complete static HTML without a component script. Only the Home disclosure adds local behavior. Software offers both the existing résumé PDF and the matching DOCX as direct downloads. Public game links remain available directly from their index records.
 - Blog uses a calm field composition with incomplete hand-drawn boundaries, generous spacing, and a concise writing list rather than a paper surface or card grid.
 - The verified `Identity Cage` entry remains a draft for local publication, so the Blog index links to the existing Medium publication instead of exposing placeholder copy as a finished local article.
@@ -136,7 +136,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Inspected routes have one `main`, one `h1`, a Home target 90 by 66 pixels, direct mode links with synchronized `aria-current`, and no browser console warnings or errors.
 - Work opens from its button and direct `/#work` loading. Outside pointer activation closes it and removes the hash; Escape closes it, removes the hash, and restores focus to Work. Opening Work and Connect closes the other disclosure.
 - Keyboard inspection confirms a visible three-pixel focus outline with a ten-pixel offset on the folded Software choice. The shared reduced-motion rule shortens all Work transitions without removing content.
-- Public source copy contains no em dashes. The unconfirmed generic Discourses profile URL is omitted, while unfinished and early artifacts remain explicitly labeled.
+- Public source copy contains no em dashes. Discourses uses its confirmed direct itch.io URL, while unfinished and early artifacts remain explicitly labeled.
 
 ## Milestone 4 hand-drawn rework verification
 
@@ -147,13 +147,14 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Desktop inspection at 1440 by 900 confirms readable opening compositions, exposed shared doodles, contained project media, a 90 by 66 pixel sticky Home control, and no horizontal overflow.
 - Mobile inspection at 390 by 844 confirms the reserved Home band, single-column project flow, readable route switcher and headings, intact media, and no horizontal overflow. The Software route also remains contained at the 320-pixel minimum width.
 - Both inspected indexes have one `main`, one `h1`, semantic section and project headings, synchronized `aria-current`, complete images, and static access to all published links and résumé downloads.
-- Public Work source copy contains no em dashes. The unconfirmed Discourses destination remains omitted.
+- Public Work source copy contains no em dashes. The confirmed Discourses destination appears as a direct project link.
 
 ## Milestone 4 loose-composition refinement
 
 - The selected Flutter summary and every equivalent project summary were removed from the rendered Work indexes while their verified source records remain intact.
 - Visible portfolio group labels, enclosing project frames, repeated completion labels, and hashtag styling were removed.
-- Software capability notes and Games engine, jam, and early-work notes now appear as one concise `Learned along an artifact` list beside each project.
+- Software capability notes and explicit Games learning notes appear as one concise `What I've learned` list beside each project.
+- Games no longer treats engine, jam, status metadata, or end-to-end ownership as learning. Discourses records player experience, technical game design, environment aesthetics and dialogue, FL Studio music, Blender 3D art, behaviour modeling, and system structuring. Santa Foundation records interaction design, game-jam development, player experience, technical game design, and behaviour modeling. The user-confirmed early experiment notes record game development using raylib for Snake and graphics programming for Tic-Tac-Toe.
 - Desktop inspection at 1440 by 900 and the comment viewport at 860 by 943 confirms each list remains secondary to its project title and media.
 - Mobile inspection at 390 by 844 places the list beneath the project title. The 320-pixel minimum remains free of horizontal overflow.
 
@@ -164,6 +165,34 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The Games drawing was reduced within its node so its full contour remains visible rather than touching or clipping the crop.
 - Desktop inspection at 1440 by 900, tablet inspection at 792 by 900, mobile inspection at 390 by 844, and the 320-pixel minimum confirm complete icons, readable names, and no horizontal overflow.
 - Activating Software reaches `/work/software/`; activating Games reaches `/work/games/`. Both retain the shared drawn-icon wobble for hover and keyboard focus.
+
+## Games media refinement
+
+- Discourses uses an optimized animated derivative of the supplied teaser GIF, with its prior winter still selected when reduced motion is requested. It does not reuse Santa Foundation snow.
+- Santa Foundation now crops its two-frame sleigh sheet to one visible elf, places it left of center, animates those authored frames with a pronounced vertical flight range, and distributes eighteen varied instances of the original snowflake sprite across the scene. The sleigh animation stops and the snowfall is hidden under reduced motion.
+- Snake uses the video from Igor's linked X post with local poster artwork and native playback controls.
+- Tic-Tac-Toe replaces the drawn placeholder with the real screenshot published in its repository README.
+- Inspection at 1007 by 943 confirms the snow is distributed throughout the Santa scene and the sleigh travels substantially farther vertically. At 390 by 844, the Snake and Tic-Tac-Toe learning notes remain contained without horizontal overflow.
+- Earlier experiments use one full-width route sequence instead of two narrow desktop columns. At 1440 by 900, 601 by 943, and 390 by 844, project media and titles remain contained without horizontal overflow.
+
+## Software opening refinement
+
+- The wide-screen opening uses a shorter composition instead of a tall vertically centered title area.
+- `My professional work and what I have learned from it.` appears beneath the Software title.
+- The résumé PDF and DOCX downloads now share the opening composition with the title on desktop and stack beneath it at narrower widths.
+- Desktop inspection at 1440 by 900 brings the first artifact into the opening viewport with no horizontal overflow. Mobile inspection at 390 by 844 and the 320-pixel minimum confirms the framing copy and both résumé links remain contained and readable.
+- Games uses an additionally compact wide-screen intro so its title and first artifact sit higher without changing the established mobile composition.
+
+## Home shared-doodle refinement
+
+- The shared scribble doodle sits farther right at desktop and tablet widths so its lower edge no longer overlaps the `Who I am` navigation drawing.
+- Empty areas of the Home navigation grid pass pointer input through to the shared doodles, while all four navigation controls retain their complete interactive targets.
+- The existing mobile placement remains unchanged.
+
+## Home disclosure load-state refinement
+
+- Work and Connect now render their panels hidden for JavaScript-enabled visits, preventing their expanded layouts from flashing before the disclosure components initialize.
+- A pre-paint document marker scopes the existing expanded fallback to JavaScript-free visits, where all Work and Connect destinations remain statically accessible and the buttons retain their accurate expanded state.
 
 ## Milestone 5 Blog implementation verification
 
@@ -182,13 +211,26 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Mobile inspection at 390 by 844 confirms the full-row disclosure wraps all six links horizontally above the Connect drawing, moves Blog below it, and introduces no horizontal or vertical overflow.
 - The generated Home document exposes all six links in the approved order with `aria-expanded="true"` before enhancement, including the base-aware résumé destination.
 - Direct loading of `/#connect`, toggle activation, outside activation, and Escape keep the hash, expanded state, panel visibility, and focus behavior synchronized.
+- The six Connect links each receive a distinct chalk accent on hover and keyboard focus while retaining the shared visible focus outline.
+
+## Milestone 6 verification
+
+- A section-by-section review of Home, Who I am, Software, Games, and Blog confirms that each current public composition still expresses the authored persistent-field and hand-drawn route language.
+- Desktop inspection at 1440 by 900, mobile inspection at 390 by 844, and minimum-width inspection at 320 by 800 confirm readable recomposition, reserved Home areas, intact media, and no horizontal overflow.
+- Switching directly between open Work and Connect disclosures now succeeds with one mouse or touch activation. Outside activation, Escape focus restoration, direct `#work` and `#connect` loading, compatibility redirects, ordinary route history, and synchronized expanded states pass.
+- Hover-only wobble is limited to precise pointers. Keyboard focus retains the same response and visible three-pixel focus outline, while touch activation no longer risks a persistent hover animation.
+- Every visible interactive target is at least 44 by 44 CSS pixels, including short inline word controls, single-character contact links, and the links in the revealed Who I am invitation.
+- Each reviewed route has one `main`, one `h1`, a skip link, semantic navigation and section structure, hidden decorative drawings, descriptive evidence-image alternatives, readable text contrast, and no browser console warnings or errors.
+- The generated JavaScript-free documents expose both Home disclosures and their destinations, both portraits, every craft-word option, every published project and link, and accurate expanded fallback states. Software, Games, and Blog remain static without component scripts.
+- Reduced-motion handling removes travel and repeated animation, makes completion scrolling immediate, substitutes the static Discourses scene, stops the Santa sleigh, and hides its snowfall without removing content.
+- Locally hosted WOFF2 fonts, the single reading-font preload, responsive Astro image derivatives, the optimized Discourses animation, native lazy loading, bounded video preload, and route-local enhancement keep the current client and media work proportionate.
+- `astro check`, root and `/personal-website/` production builds, generated-document checks, public-copy checks, and `git diff --check` pass.
 
 ## Open inputs and blockers
 
 - Bright Chalk and Cartoon Relief files are present and integrated. Web-embedding rights still need confirmation before release.
-- The final public URL for `Discourses by Campfire` still needs confirmation before release.
 - The local adaptation of `Identity Cage` still needs approved article copy. Until then, the Blog index links to the existing Medium publication.
 
 ## Next action
 
-Review the rebuilt Software and Games compositions with Igor at desktop and mobile sizes. Blog, Connect, and Who I am also remain available for review, while the local `Identity Cage` adaptation still needs approved copy.
+Resolve the approved local `Identity Cage` copy and confirm webfont embedding rights before milestone 7 release work.

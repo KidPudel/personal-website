@@ -25,6 +25,7 @@ const games = defineCollection({
     ...sharedProjectFields,
     engine: z.string().optional(),
     jam: z.string().optional(),
+    learnings: z.array(z.string()).default([]),
   }),
 });
 

@@ -164,13 +164,24 @@ const choices = [
     transition: transform 140ms ease;
   }
 
-  .work-choice__link:is(:hover, :focus-visible) .work-choice__art {
+  .work-choice__link:focus-visible .work-choice__art {
     animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
   }
 
-  .work-choice__link:is(:hover, :focus-visible) .work-choice__label::after {
+  .work-choice__link:focus-visible .work-choice__label::after {
     transform: scaleX(1) rotate(-1deg);
     transform-origin: left;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .work-choice__link:hover .work-choice__art {
+      animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
+    }
+
+    .work-choice__link:hover .work-choice__label::after {
+      transform: scaleX(1) rotate(-1deg);
+      transform-origin: left;
+    }
   }
 
   .work-choice__link:focus-visible {

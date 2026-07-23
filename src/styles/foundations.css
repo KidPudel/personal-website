@@ -158,7 +158,7 @@
 
   .world-field__doodle--scribble {
     top: 12%;
-    left: 48%;
+    left: 57%;
     width: clamp(7rem, 13vw, 11rem);
     transform: rotate(-4deg);
   }
@@ -229,8 +229,14 @@
     transform: translate(-29.4%, -33%);
   }
 
-  .home-return:is(:hover, :focus-visible) .home-return__drawing {
+  .home-return:focus-visible .home-return__drawing {
     animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .home-return:hover .home-return__drawing {
+      animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
+    }
   }
 
   @keyframes drawn-icon-wobble {

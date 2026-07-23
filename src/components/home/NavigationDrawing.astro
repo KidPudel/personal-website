@@ -132,13 +132,24 @@ const Element = href ? 'a' : 'button';
     transition: transform 140ms ease;
   }
 
-  .home-choice:is(:hover, :focus-visible) .home-choice__art {
+  .home-choice:focus-visible .home-choice__art {
     animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
   }
 
-  .home-choice:is(:hover, :focus-visible) .home-choice__label::after {
+  .home-choice:focus-visible .home-choice__label::after {
     transform: scaleX(1) rotate(-1deg);
     transform-origin: left;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .home-choice:hover .home-choice__art {
+      animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
+    }
+
+    .home-choice:hover .home-choice__label::after {
+      transform: scaleX(1) rotate(-1deg);
+      transform-origin: left;
+    }
   }
 
   @media (max-width: 40rem) {

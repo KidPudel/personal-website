@@ -67,6 +67,9 @@ Exit condition: Home and Who I am form a complete, responsive, accessible vertic
 - Build the Work disclosure on Home with connected Igor-drawn Software and Games icon links, a slightly offset vertical wide-screen arrangement, and their shared wobble behavior.
 - Build the directly linkable Software and Games routes as hand-drawn long-form compositions on the persistent field.
 - Rebuild the content model around verified artifacts and honest prominence.
+- Keep both Work openings compact on wide screens. Place the Software professional-work framing and résumé downloads in its opening composition.
+- Keep each `What I've learned` list sourced from explicit project learnings, not engine, jam, or status metadata.
+- Prefer authentic project media over diagrammatic placeholders. Keep explicitly requested game animation bounded and provide a static reduced-motion state.
 - Implement the featured and supporting work using claims from `docs/CONTEXT_ABOUT_IGOR.md`.
 - Preserve compatibility for existing public URLs where useful.
 
@@ -82,8 +85,6 @@ Exit condition: every primary destination and public link is complete.
 
 ### 6. Interaction, responsive behavior, and accessibility
 
-- Add only the interaction behaviors approved by the concept and the reviewed working pages.
-- Audit the complete site against the `Intended feeling`, `Art direction and visual language and interaction design`, `Typography`, `Composition`, `Interaction rules`, `Responsive and accessible behavior` sections of `docs/CONCEPT_DESIGN.md`.
 - Resolve the mobile composition through real viewport testing with Igor.
 - Verify keyboard, touch, focus, reduced motion, contrast, semantics, direct links, history, and no-JavaScript access.
 - Optimize fonts, images, motion, and client code.

@@ -27,9 +27,11 @@ const groups = (['featured', 'supporting', 'trajectory'] as const)
   }))
   .filter((group) => group.entries.length > 0);
 
-const entryAnnotations = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) => {
-  if ('capabilities' in entry.data) return entry.data.capabilities;
-  return [entry.data.engine, entry.data.jam].filter((value): value is string => Boolean(value));
+const entryLearnings = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) => {
+  if (current === 'software') {
+    return (entry as CollectionEntry<'software'>).data.capabilities;
+  }
+  return (entry as CollectionEntry<'games'>).data.learnings;
 };
 
 const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
@@ -46,11 +48,29 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
 
   <WorkModeNav current={current} />
 
-  <header class="work-inventory__introduction">
+  <header
+    class:list={[
+      'work-inventory__introduction',
+      { 'work-inventory__introduction--with-resume': current === 'software' },
+    ]}
+  >
     <div class="work-inventory__title">
       <p>work / {current}</p>
       <h1>{title}</h1>
+      {current === 'software' && <p class="work-inventory__lede">My professional work and what I have learned from it.</p>}
     </div>
+
+    {
+      current === 'software' && (
+        <aside class="work-inventory__resume" aria-labelledby="resume-label">
+          <p id="resume-label">résumé</p>
+          <div>
+            <a href={sitePath('/resume/igor-kupchinenko-resume.pdf')} download>résumé PDF</a>
+            <a href={sitePath('/resume/igor-kupchinenko-resume.docx')} download>résumé DOCX</a>
+          </div>
+        </aside>
+      )
+    }
   </header>
 
   {
@@ -63,7 +83,7 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
               title={entry.data.title}
               prominence={entry.data.prominence}
               status={entry.data.status}
-              annotations={entryAnnotations(entry)}
+              learnings={entryLearnings(entry)}
               result={entryResult(entry)}
               externalUrl={entry.data.externalUrl}
             >
@@ -75,17 +95,6 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
     ))
   }
 
-  {
-    current === 'software' && (
-      <aside class="work-inventory__resume" aria-labelledby="resume-label">
-        <p id="resume-label">résumé</p>
-        <div>
-          <a href={sitePath('/resume/igor-kupchinenko-resume.pdf')} download>résumé PDF</a>
-          <a href={sitePath('/resume/igor-kupchinenko-resume.docx')} download>résumé DOCX</a>
-        </div>
-      </aside>
-    )
-  }
 </div>
 
 <style>
@@ -135,22 +144,45 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
   .work-inventory__introduction {
     position: relative;
     z-index: 1;
-    display: flex;
-    min-height: clamp(17rem, 32vw, 25rem);
-    align-items: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: clamp(11rem, 18vw, 15rem);
+    align-items: end;
+    gap: clamp(2rem, 5vw, 5rem);
+    margin-top: clamp(-5rem, -5vw, -2.5rem);
     padding-left: clamp(0rem, 4vw, 3rem);
+  }
+
+  .work-inventory__introduction--with-resume {
+    grid-template-columns: minmax(20rem, 1.25fr) minmax(17rem, 0.75fr);
+  }
+
+  @media (min-width: 60rem) {
+    .work-inventory--games .work-inventory__introduction {
+      min-height: clamp(8rem, 12vw, 10rem);
+      margin-top: clamp(-6rem, -6vw, -3.5rem);
+    }
   }
 
   .work-inventory__title {
     display: grid;
-    gap: 0.25rem;
+    gap: 0.4rem;
   }
 
-  .work-inventory__title > p {
+  .work-inventory__title > p:first-child {
     width: fit-content;
     color: rgba(243, 239, 228, 0.58);
     font-size: 0.95rem;
     transform: rotate(-2deg);
+  }
+
+  .work-inventory__lede {
+    max-width: 32rem;
+    margin-top: 0.55rem;
+    color: rgba(243, 239, 228, 0.76);
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    line-height: 1.45;
+    transform: rotate(-0.8deg);
   }
 
   .work-inventory__introduction h1 {
@@ -173,27 +205,26 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
   }
 
   .work-inventory__group--trajectory .work-inventory__artifacts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(1.5rem, 4vw, 4rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
   }
 
   .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact) {
-    grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.45fr);
+    grid-template-columns: minmax(18rem, 1fr) minmax(20rem, 1fr);
   }
 
   .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact:nth-child(2)) {
-    margin-top: clamp(4rem, 9vw, 8rem);
+    margin-top: 0;
   }
 
   .work-inventory__resume {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 0.7fr) minmax(16rem, 1.3fr);
-    gap: 1.5rem;
-    width: min(100%, 43rem);
-    align-items: center;
+    gap: 0.75rem;
+    width: min(100%, 24rem);
+    align-self: center;
     justify-self: end;
-    padding: 1.5rem 1.75rem;
+    padding: 1.25rem 0.5rem 0.35rem 1.25rem;
     border-top: 0.12rem dashed rgba(243, 239, 228, 0.3);
     transform: rotate(-1deg);
   }
@@ -218,8 +249,14 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
   }
 
   @media (max-width: 48rem) {
+    .work-inventory__introduction--with-resume {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
     .work-inventory__resume {
       grid-template-columns: minmax(0, 1fr);
+      width: min(100%, 30rem);
+      justify-self: start;
     }
 
     .work-inventory__introduction {
@@ -252,6 +289,7 @@ const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games
 
     .work-inventory__introduction {
       gap: 1.5rem;
+      margin-top: -2.5rem;
     }
 
     .work-inventory__introduction h1 {

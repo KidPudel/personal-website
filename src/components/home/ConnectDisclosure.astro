@@ -17,7 +17,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
     tilt="-2deg"
   />
 
-  <div id="connect-links" class="connect-links">
+  <div id="connect-links" class="connect-links" hidden>
     {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
   </div>
 </connect-disclosure>
@@ -58,7 +58,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
       window.history.replaceState(null, '', nextURL);
     };
 
-    private handleOutsidePointer = (event: PointerEvent) => {
+    private handleOutsideActivation = (event: MouseEvent) => {
       if (!this.hasAttribute('data-open') || this.contains(event.target as Node)) return;
       this.setExpanded(false);
       this.clearConnectHash();
@@ -89,7 +89,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
       this.syncFromHash();
 
       this.button.addEventListener('click', this.handleToggle);
-      document.addEventListener('pointerdown', this.handleOutsidePointer);
+      document.addEventListener('click', this.handleOutsideActivation);
       document.addEventListener('keydown', this.handleEscape);
       window.addEventListener('hashchange', this.syncFromHash);
       window.addEventListener('home-disclosure-open', this.handleOtherDisclosure);
@@ -97,7 +97,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
 
     disconnectedCallback() {
       this.button?.removeEventListener('click', this.handleToggle);
-      document.removeEventListener('pointerdown', this.handleOutsidePointer);
+      document.removeEventListener('click', this.handleOutsideActivation);
       document.removeEventListener('keydown', this.handleEscape);
       window.removeEventListener('hashchange', this.syncFromHash);
       window.removeEventListener('home-disclosure-open', this.handleOtherDisclosure);
@@ -147,16 +147,55 @@ import NavigationDrawing from './NavigationDrawing.astro';
   }
 
   .connect-links a {
+    --connect-link-accent: var(--color-field-ink);
+
     position: relative;
     display: inline-flex;
+    min-width: 2.75rem;
     min-height: 2.75rem;
     align-items: center;
+    justify-content: center;
     color: var(--color-field-ink);
     font-size: clamp(1rem, 1.55vw, 1.15rem);
     text-underline-offset: 0.22em;
+    transition: color 140ms ease;
   }
 
-  connect-disclosure:not([data-enhanced]) .connect-links {
+  .connect-links a:nth-child(1) {
+    --connect-link-accent: #f08d83;
+  }
+
+  .connect-links a:nth-child(2) {
+    --connect-link-accent: #77a8dc;
+  }
+
+  .connect-links a:nth-child(3) {
+    --connect-link-accent: #8ebf71;
+  }
+
+  .connect-links a:nth-child(4) {
+    --connect-link-accent: #b394c5;
+  }
+
+  .connect-links a:nth-child(5) {
+    --connect-link-accent: #d7aa62;
+  }
+
+  .connect-links a:nth-child(6) {
+    --connect-link-accent: #86aebd;
+  }
+
+  .connect-links a:focus-visible {
+    color: var(--connect-link-accent);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .connect-links a:hover {
+      color: var(--connect-link-accent);
+    }
+  }
+
+  :global(html:not(.js)) connect-disclosure:not([data-enhanced]) .connect-links {
     display: grid;
   }
 
@@ -169,12 +208,12 @@ import NavigationDrawing from './NavigationDrawing.astro';
     }
 
     connect-disclosure[data-open],
-    connect-disclosure:not([data-enhanced]) {
+    :global(html:not(.js)) connect-disclosure:not([data-enhanced]) {
       grid-column: 1 / -1;
     }
 
     .connect-links,
-    connect-disclosure:not([data-enhanced]) .connect-links {
+    :global(html:not(.js)) connect-disclosure:not([data-enhanced]) .connect-links {
       position: static;
       display: flex;
       width: min(100%, 24rem);
