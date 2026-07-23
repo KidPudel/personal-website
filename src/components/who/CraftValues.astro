@@ -96,6 +96,7 @@ const { completionId } = Astro.props;
       const checkboxes = Array.from(this.querySelectorAll<HTMLInputElement>('.craft-values__input'));
       const completion = document.getElementById(this.dataset.completionId ?? '');
       if (!controls.length || !checkboxes.length || !completion) return;
+      const completionTarget = completion.parentElement ?? completion;
 
       this.dataset.enhanced = 'true';
 
@@ -140,7 +141,7 @@ const { completionId } = Astro.props;
           completionScrollTimer = window.setTimeout(() => {
             if (!this.hasAttribute('data-complete')) return;
 
-            completion.scrollIntoView({
+            completionTarget.scrollIntoView({
               behavior: reduceMotion ? 'auto' : 'smooth',
               block: 'nearest',
             });
@@ -181,7 +182,7 @@ const { completionId } = Astro.props;
   }
 
   .craft-values__heading span {
-    color: rgba(32, 32, 30, 0.68);
+    color: rgba(243, 239, 228, 0.68);
     font-size: 0.82rem;
     transform: rotate(1.5deg);
   }
@@ -289,7 +290,7 @@ const { completionId } = Astro.props;
   }
 
   .craft-values__input:checked + .craft-values__check-control .craft-values__outline {
-    fill: rgba(134, 69, 56, 0.045);
+    fill: rgba(243, 239, 228, 0.05);
   }
 
   .craft-values__input:checked + .craft-values__check-control .craft-values__tick {
@@ -319,7 +320,7 @@ const { completionId } = Astro.props;
     width: calc(100% + 0.24em);
     height: 0.09em;
     border-radius: 999px 35% 999px 45%;
-    background: linear-gradient(90deg, currentColor, rgba(32, 32, 30, 0.72) 46%, currentColor);
+    background: linear-gradient(90deg, currentColor, rgba(243, 239, 228, 0.72) 46%, currentColor);
     opacity: 0;
     pointer-events: none;
     transform: rotate(-0.7deg) scaleX(0);
@@ -343,13 +344,13 @@ const { completionId } = Astro.props;
     border: 0;
     border-bottom: 0.14rem solid currentColor;
     background: transparent;
-    color: #864538;
+    color: #f08d83;
     font: inherit;
     cursor: default;
   }
 
   .word-cycle__option + .word-cycle__option::before {
-    color: var(--color-ink);
+    color: var(--color-field-ink);
     content: ' / ';
   }
 
@@ -367,7 +368,7 @@ const { completionId } = Astro.props;
 
   @media (hover: hover) and (pointer: fine) {
     .craft-values__check-control:hover {
-      background: rgba(134, 69, 56, 0.045);
+      background: rgba(243, 239, 228, 0.05);
     }
 
     .craft-values__input:not(:checked) + .craft-values__check-control:hover .craft-values__check {
@@ -375,7 +376,7 @@ const { completionId } = Astro.props;
     }
 
     .craft-values__input:not(:checked) + .craft-values__check-control:hover .craft-values__outline {
-      fill: rgba(134, 69, 56, 0.025);
+      fill: rgba(243, 239, 228, 0.025);
       stroke-width: 1.85;
     }
   }
@@ -451,7 +452,7 @@ const { completionId } = Astro.props;
 
     .craft-values__input:checked ~ p .craft-values__copy,
     .craft-values__input:checked ~ p .word-cycle {
-      text-decoration-color: rgba(32, 32, 30, 0.62);
+      text-decoration-color: rgba(243, 239, 228, 0.62);
       transition-delay: 110ms;
     }
   }

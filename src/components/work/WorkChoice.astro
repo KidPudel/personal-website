@@ -1,151 +1,266 @@
 ---
+import { Image } from 'astro:assets';
+
+import gamesIcon from '../../assets/art/icons/Doodles_games.png';
+import softwareIcon from '../../assets/art/icons/Doodles_software.png';
 import { sitePath } from '../../config/site';
 
 const choices = [
   {
     label: 'Software',
-    note: 'products, services, investigations',
+    art: softwareIcon,
     href: sitePath('/work/software/'),
-    className: 'work-choice__paper--software',
+    className: 'work-choice__link--software',
+    tilt: '-3deg',
+    labelTilt: '1deg',
+    connectorPath: 'M 0 47 C 34 44, 77 18, 120 25',
+    mobileConnectorPath: 'M 100 1 C 84 12, 62 29, 50 50',
   },
   {
     label: 'Games',
-    note: 'finished games, systems, early experiments',
+    art: gamesIcon,
     href: sitePath('/work/games/'),
-    className: 'work-choice__paper--games',
+    className: 'work-choice__link--games',
+    tilt: '3deg',
+    labelTilt: '-1deg',
+    connectorPath: 'M 0 3 C 35 8, 78 31, 120 25',
+    mobileConnectorPath: 'M 0 1 C 17 12, 38 30, 50 50',
   },
 ] as const;
 ---
 
-<section class="work-choice" aria-label="Choose a kind of work">
-  <div class="work-choice__papers">
-    {
-      choices.map((choice) => (
-        <a class:list={['work-choice__paper', choice.className]} href={choice.href}>
-          <span class="work-choice__fold" aria-hidden="true" />
-          <span class="work-choice__label">{choice.label}</span>
-          <span class="work-choice__note">{choice.note}</span>
-        </a>
-      ))
-    }
-  </div>
-</section>
+<nav class="work-choice" aria-label="Choose a kind of work">
+  {
+    choices.map((choice) => (
+      <a
+        class:list={['work-choice__link', choice.className]}
+        href={choice.href}
+        style={`--work-choice-tilt: ${choice.tilt}; --work-choice-label-tilt: ${choice.labelTilt}`}
+      >
+        <svg
+          class="work-choice__connector work-choice__connector--side"
+          viewBox="0 0 120 50"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d={choice.connectorPath} />
+        </svg>
+        <svg
+          class="work-choice__connector work-choice__connector--mobile"
+          viewBox="0 0 100 50"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path d={choice.mobileConnectorPath} />
+        </svg>
+        <span class="work-choice__art" aria-hidden="true">
+          <Image src={choice.art} alt="" width={512} />
+        </span>
+        <span class="work-choice__label">{choice.label}</span>
+      </a>
+    ))
+  }
+</nav>
 
 <style>
   .work-choice {
-    display: block;
-  }
-
-  .work-choice__papers {
     display: grid;
-    grid-template-columns: minmax(13rem, 18rem);
-    justify-content: center;
-    gap: 1.25rem;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: clamp(0.55rem, 2vw, 1.25rem);
   }
 
-  .work-choice__paper {
+  .work-choice__link {
     position: relative;
     display: grid;
-    min-height: 10.5rem;
+    min-width: 0;
+    min-height: 8.5rem;
+    place-items: center;
     align-content: center;
-    gap: 0.65rem;
-    padding: 2rem 1.25rem 1.35rem;
-    background:
-      linear-gradient(rgba(242, 232, 207, 0.9), rgba(242, 232, 207, 0.95)),
-      url('../../assets/art/paper-crumpled.webp') center / cover;
-    color: var(--color-ink);
-    text-align: center;
+    gap: 0.1rem;
+    padding: 0.4rem 0.2rem;
+    color: var(--color-field-ink);
     text-decoration: none;
-    filter: drop-shadow(0 1.1rem 1.2rem rgba(0, 0, 0, 0.2));
-    clip-path: polygon(3% 2%, 84% 0, 100% 18%, 98% 97%, 8% 100%, 0 86%);
-    transition: filter 150ms ease, transform 150ms ease;
   }
 
-  .work-choice__paper::after {
+  .work-choice__connector {
     position: absolute;
-    inset: 0;
+    z-index: 0;
+    display: block;
+    overflow: visible;
     pointer-events: none;
-    background:
-      repeating-linear-gradient(0deg, transparent 0 1.55rem, rgba(52, 95, 113, 0.09) 1.58rem 1.64rem),
-      repeating-linear-gradient(90deg, transparent 0 1.55rem, rgba(52, 95, 113, 0.06) 1.58rem 1.64rem);
-    content: '';
-    mix-blend-mode: multiply;
   }
 
-  .work-choice__paper--software {
-    transform: rotate(-4deg) translateY(0.8rem);
+  .work-choice__connector path {
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-width: 1.8;
+    vector-effect: non-scaling-stroke;
+    opacity: 0.58;
   }
 
-  .work-choice__paper--games {
-    transform: rotate(3deg) translateY(-0.7rem);
+  .work-choice__connector--side {
+    display: none;
   }
 
-  .work-choice__fold {
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    right: 0;
-    width: 20%;
-    aspect-ratio: 1;
-    border-left: 1px solid rgba(32, 32, 30, 0.2);
-    border-bottom: 1px solid rgba(32, 32, 30, 0.2);
-    background: rgba(209, 196, 165, 0.8);
-    clip-path: polygon(0 0, 100% 100%, 0 100%);
+  .work-choice__connector--mobile {
+    bottom: calc(100% - 1.3rem);
+    left: 50%;
+    width: 5rem;
+    height: 3.4rem;
+    transform: translateX(-50%);
   }
 
-  .work-choice__label,
-  .work-choice__note {
+  .work-choice__art {
+    --drawn-icon-resting-tilt: var(--work-choice-tilt);
+
     position: relative;
-    z-index: 3;
+    z-index: 1;
+    display: block;
+    width: clamp(5.5rem, 8vw, 7rem);
+    aspect-ratio: 1;
+    overflow: hidden;
+    transform: rotate(var(--work-choice-tilt));
+  }
+
+  .work-choice__art :global(img) {
+    display: block;
+    width: 320%;
+    max-width: none;
+    height: auto;
+    filter: grayscale(1) invert(1);
+    transform-origin: top left;
+  }
+
+  .work-choice__link--software .work-choice__art :global(img) {
+    width: 300%;
+    transform: translate(-29%, -36%);
+  }
+
+  .work-choice__link--games .work-choice__art :global(img) {
+    width: 270%;
+    transform: translate(-29.5%, -33%);
   }
 
   .work-choice__label {
-    font-family: var(--font-distinctive);
-    font-size: clamp(2rem, 3.4vw, 2.8rem);
-    line-height: 1;
+    position: relative;
+    z-index: 1;
+    font-size: clamp(1rem, 1.7vw, 1.25rem);
+    line-height: 1.2;
+    transform: rotate(var(--work-choice-label-tilt));
   }
 
-  .work-choice__note {
-    max-width: 24ch;
-    margin-inline: auto;
-    font-size: 0.9rem;
-    line-height: 1.35;
+  .work-choice__label::after {
+    position: absolute;
+    right: -0.15em;
+    bottom: -0.3rem;
+    left: -0.15em;
+    border-top: 0.11rem solid currentColor;
+    content: '';
+    transform: scaleX(0) rotate(-1deg);
+    transform-origin: right;
+    transition: transform 140ms ease;
   }
 
-  .work-choice__paper:focus-visible {
-    outline-color: var(--color-focus);
-    outline-offset: 0.65rem;
+  .work-choice__link:is(:hover, :focus-visible) .work-choice__art {
+    animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
   }
 
-  @media (hover: hover) and (pointer: fine) {
-    .work-choice__paper--software:hover {
-      filter: drop-shadow(0 1.35rem 1.5rem rgba(0, 0, 0, 0.25));
-      transform: rotate(-2deg) translateY(0.15rem);
+  .work-choice__link:is(:hover, :focus-visible) .work-choice__label::after {
+    transform: scaleX(1) rotate(-1deg);
+    transform-origin: left;
+  }
+
+  .work-choice__link:focus-visible {
+    outline-offset: 0.3rem;
+  }
+
+  @media (min-width: 40.001rem) {
+    .work-choice {
+      grid-template-columns: minmax(8rem, 11rem);
+      justify-content: center;
+      gap: 0.1rem;
     }
 
-    .work-choice__paper--games:hover {
-      filter: drop-shadow(0 1.35rem 1.5rem rgba(0, 0, 0, 0.25));
-      transform: rotate(1deg) translateY(-1.35rem);
+    .work-choice__link {
+      min-height: 7.15rem;
+    }
+
+    .work-choice__link--software {
+      transform: translateX(-0.4rem);
+    }
+
+    .work-choice__link--games {
+      transform: translateX(0.5rem);
+    }
+
+    .work-choice__connector--mobile {
+      display: none;
+    }
+
+    .work-choice__connector--side {
+      top: 50%;
+      right: calc(50% + 2.15rem);
+      display: block;
+      width: clamp(5.4rem, 8vw, 7.2rem);
+      height: 3.15rem;
+      transform: translateY(-50%);
+    }
+
+    .work-choice__art {
+      width: clamp(5rem, 6vw, 6.25rem);
+    }
+
+    .work-choice__link--games .work-choice__art {
+      width: clamp(4.45rem, 5.35vw, 5.55rem);
+    }
+  }
+
+  @media (max-width: 76rem) and (min-width: 40.001rem) {
+    .work-choice__link {
+      min-height: 6.75rem;
+    }
+
+    .work-choice__connector--side {
+      right: auto;
+      left: calc(50% + 2rem);
+      width: clamp(3.2rem, 5.8vw, 4.5rem);
+      transform: translateY(-50%) scaleX(-1);
+    }
+
+    .work-choice__art {
+      width: clamp(4.6rem, 6.7vw, 5.35rem);
+    }
+
+    .work-choice__link--games .work-choice__art {
+      width: clamp(4.1rem, 6vw, 4.8rem);
     }
   }
 
   @media (max-width: 40rem) {
-    .work-choice__papers {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.75rem;
+    .work-choice {
+      width: min(100%, 18rem);
+      justify-self: center;
+      gap: 1rem;
+      margin-inline: auto;
     }
 
-    .work-choice__paper {
-      min-height: 9.5rem;
-      padding: 1.5rem 0.6rem 1rem;
+    .work-choice__link {
+      min-height: 7.5rem;
+    }
+
+    .work-choice__art {
+      width: clamp(5.25rem, 22vw, 6.25rem);
+    }
+
+    .work-choice__link--games .work-choice__art {
+      width: clamp(4.75rem, 19.5vw, 5.6rem);
     }
 
     .work-choice__label {
-      font-size: clamp(1.55rem, 9vw, 2rem);
-    }
-
-    .work-choice__note {
-      font-size: 0.78rem;
+      font-size: clamp(1rem, 5vw, 1.2rem);
     }
   }
 </style>

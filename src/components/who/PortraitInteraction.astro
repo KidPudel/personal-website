@@ -8,7 +8,6 @@ import realPortrait from '../../assets/art/avatar_irl.png';
 <portrait-interaction class="portrait-interaction">
   <div class="portrait-interaction__stack">
     <figure class="portrait-card portrait-card--drawn" data-portrait-panel>
-      <span class="portrait-card__tape" aria-hidden="true"></span>
       <Image
         src={drawnPortrait}
         alt="A black-and-white hand-drawn portrait of Igor with large dark eyes and curly hair"
@@ -21,7 +20,6 @@ import realPortrait from '../../assets/art/avatar_irl.png';
     </figure>
 
     <figure class="portrait-card portrait-card--real" data-portrait-panel data-active>
-      <span class="portrait-card__tape" aria-hidden="true"></span>
       <Image
         src={realPortrait}
         alt="Igor smiling in a cap and orange life jacket while sitting in a boat"
@@ -118,10 +116,29 @@ import realPortrait from '../../assets/art/avatar_irl.png';
   .portrait-card {
     position: relative;
     margin: 0;
-    padding: 0.65rem 0.65rem 2.2rem;
-    background: #f7f0df;
-    box-shadow: 0.45rem 0.6rem 1.1rem rgba(55, 45, 27, 0.2);
-    color: #292720;
+    padding: 0.55rem 0.55rem 2.15rem;
+    color: var(--color-field-ink);
+    filter: drop-shadow(0.3rem 0.45rem 0.35rem rgba(3, 3, 3, 0.3));
+  }
+
+  .portrait-card::before,
+  .portrait-card::after {
+    position: absolute;
+    pointer-events: none;
+    content: '';
+  }
+
+  .portrait-card::before {
+    inset: 0.06rem 0.1rem 1.65rem 0.02rem;
+    border: 0.12rem solid rgba(243, 239, 228, 0.86);
+    clip-path: polygon(1% 2%, 33% 0.5%, 67% 1.5%, 99% 0%, 98.4% 34%, 100% 68%, 98.5% 99%, 65% 98%, 32% 100%, 0.5% 98%, 1.5% 64%, 0% 31%);
+    transform: rotate(-0.45deg);
+  }
+
+  .portrait-card::after {
+    inset: 0.32rem 0.24rem 1.82rem 0.3rem;
+    border: 0.07rem solid rgba(243, 239, 228, 0.42);
+    transform: rotate(0.6deg);
   }
 
   .portrait-card--drawn {
@@ -134,6 +151,8 @@ import realPortrait from '../../assets/art/avatar_irl.png';
   }
 
   .portrait-card :global(img) {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: auto;
     aspect-ratio: 1;
@@ -152,15 +171,10 @@ import realPortrait from '../../assets/art/avatar_irl.png';
     transform: rotate(-1deg);
   }
 
-  .portrait-card__tape {
-    position: absolute;
-    z-index: 2;
-    top: -0.8rem;
-    left: 50%;
-    width: 4.5rem;
-    height: 1.55rem;
-    background: rgba(210, 187, 128, 0.62);
-    transform: translateX(-50%) rotate(1.5deg);
+  .portrait-card--drawn figcaption {
+    right: auto;
+    left: 0.8rem;
+    transform: rotate(1deg);
   }
 
   .portrait-interaction[data-enhanced] .portrait-interaction__stack {
@@ -193,6 +207,14 @@ import realPortrait from '../../assets/art/avatar_irl.png';
     margin: 0;
     opacity: 1;
     transform: rotate(-1.5deg);
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-card:not([data-active]) figcaption {
+    color: rgba(243, 239, 228, 0.5);
+  }
+
+  .portrait-interaction[data-enhanced] .portrait-card[data-active] figcaption {
+    color: rgba(243, 239, 228, 0.96);
   }
 
   .portrait-interaction[data-enhanced][data-replaying] .portrait-card--drawn {
@@ -234,7 +256,7 @@ import realPortrait from '../../assets/art/avatar_irl.png';
       translate: 0 0;
     }
     42% {
-      filter: drop-shadow(0.2rem 0.35rem 0.2rem rgba(55, 45, 27, 0.13));
+      filter: drop-shadow(0.2rem 0.35rem 0.2rem rgba(0, 0, 0, 0.28));
       rotate: -1.8deg;
       translate: -0.35rem -0.65rem;
     }
@@ -256,7 +278,7 @@ import realPortrait from '../../assets/art/avatar_irl.png';
       translate: 0 0;
     }
     38% {
-      filter: drop-shadow(0.25rem 0.4rem 0.22rem rgba(55, 45, 27, 0.14));
+      filter: drop-shadow(0.25rem 0.4rem 0.22rem rgba(0, 0, 0, 0.3));
       rotate: 1.5deg;
       translate: 0.35rem -0.75rem;
     }

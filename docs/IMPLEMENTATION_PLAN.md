@@ -1,6 +1,6 @@
 # Website rebuild plan
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 ## Purpose
 
@@ -50,18 +50,22 @@ Exit condition: the clean shell builds successfully at `/` and `/personal-websit
 
 Exit condition: Home is complete enough for Igor to review as the site's resting space.
 
-### 3. Destination shell and Who I am
+### 3. Destination composition and Who I am
 
-- Build the reusable destination-page shell and direct-route behavior.
+- Build the shared persistent-field behavior, including the common shell-owned doodle layer, and direct-route behavior without introducing a separate destination surface.
+- Establish the responsive safe areas and the smallest reusable primitives needed for open hand-drawn borders, spines, paths, and annotations.
 - Implement Who I am with approved content and original assets.
+- Compose Who I am directly on the field using the hand-drawn route language in `docs/CONCEPT_DESIGN.md`.
 - Implement its text interaction without making essential meaning depend on JavaScript.
-- Evaluate the optional paper-arrival motion only after the static page is approved.
+- Preserve the explicitly approved paper invitation that appears over the dashed secret area after all three craft values are checked.
+- Do not introduce any other paper unless Igor has explicitly identified the exact special element and its purpose.
 
 Exit condition: Home and Who I am form a complete, responsive, accessible vertical slice.
 
 ### 4. Work
 
-- Build the Work disclosure on Home and its directly linkable Software and Games states.
+- Build the Work disclosure on Home with connected Igor-drawn Software and Games icon links, a slightly offset vertical wide-screen arrangement, and their shared wobble behavior.
+- Build the directly linkable Software and Games routes as hand-drawn long-form compositions on the persistent field.
 - Rebuild the content model around verified artifacts and honest prominence.
 - Implement the featured and supporting work using claims from `docs/CONTEXT_ABOUT_IGOR.md`.
 - Preserve compatibility for existing public URLs where useful.
@@ -70,7 +74,7 @@ Exit condition: all approved work is discoverable, factual, and usable with or w
 
 ### 5. Blog and contact completion
 
-- Build the Blog index and local article presentation.
+- Build the Blog index and local article presentation as calm hand-drawn compositions on the persistent field.
 - Complete the Home Connect experience and compatibility route.
 - Verify contact, social, and résumé destinations.
 

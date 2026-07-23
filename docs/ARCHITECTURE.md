@@ -1,6 +1,6 @@
 # Website architecture
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 ## Purpose
 
@@ -55,9 +55,10 @@ Every page uses the same outer document and field structure.
 ```text
 BaseDocument
 └── WorldField
+    ├── shared background doodle layer
     ├── HomeReturn, on destination routes
-    └── route content
-        └── PaperSurface, when the route uses paper
+    └── route-owned hand-drawn composition
+        └── explicitly approved special objects
 ```
 
 ### BaseDocument
@@ -73,23 +74,25 @@ Owns only document-level concerns:
 
 ### WorldField
 
-Owns the persistent viewport field, stacking context, field margins, and the main-content slot. It must not own route-specific content.
+Owns the persistent viewport field, shared background doodle layer, stacking context, responsive safe areas, and the main-content slot. The same doodle set and shell-owned placements remain present on Home and destination routes. It must not own route-specific content or impose a separate destination surface.
 
-### PaperSurface
+### Route compositions
 
-Owns reusable paper behavior:
+Each destination route owns its semantic document flow and its hand-drawn spatial composition. Route styles may use:
 
-- width and responsive bounds;
-- long-page behavior;
-- material variant;
-- texture and edge treatment;
-- content slot.
+- incomplete borders and open frames;
+- vertical spines and connecting paths;
+- dividers, brackets, arrows, and annotations;
+- authored drawings and bounded attachments;
+- responsive recomposition for narrow viewports.
 
-Route components decide the composition inside the surface.
+Do not create one universal destination container that makes every route look structurally identical. Extract only repeated technical behavior such as responsive safe-area alignment or a reusable authored boundary.
+
+Paper is not a shell primitive. An explicitly approved paper object owns only its own material, edge, size, and content behavior. The current approved paper object is the Who I am invitation revealed after completing all three craft values. Do not infer a paper object from content type or reuse an existing paper component as a route surface.
 
 ## Component boundaries
 
-Components should represent meaningful objects in the concept, such as a drawing, paper surface, portrait, folded choice, attached artifact, or tracing layer.
+Components should represent meaningful objects in the concept, such as a drawing, linked icon node, hand-drawn boundary, portrait, explicitly approved paper object, attached artifact, or tracing layer.
 
 Avoid generic portfolio abstractions such as `Hero`, `Card`, `FeatureGrid`, `PrimaryButton`, or a universal section-heading component. Those abstractions encourage the conventional layout the concept rejects.
 
@@ -100,12 +103,14 @@ components/
 ├── shell/
 │   ├── DocumentHead.astro
 │   ├── WorldField.astro
-│   ├── PaperSurface.astro
 │   └── HomeReturn.astro
+├── drawing/
+│   └── DrawnBoundary.astro
 ├── home/
 │   ├── HomeMap.astro
 │   ├── NavigationDrawing.astro
 │   ├── WorkDisclosure.astro
+│   ├── WorkChoice.astro
 │   └── ConnectDisclosure.astro
 ├── who/
 │   ├── PortraitInteraction.astro
@@ -117,7 +122,6 @@ components/
 │   └── WritingEntry.astro
 └── interactive/
     ├── WordCycle.astro
-    ├── PaperArrival.astro
     └── ScrollDrawing.astro
 ```
 
@@ -156,7 +160,7 @@ Do not install one global click-effect script or one controller that queries and
 
 ## Navigation and transition escalation
 
-Start with ordinary multi-page navigation. The repeated field and page shell provide continuity without requiring client-side routing.
+Start with ordinary multi-page navigation. The repeated field and hand-drawn route compositions provide continuity without requiring client-side routing.
 
 Use this escalation order only when reviewed interaction requires more:
 
@@ -172,7 +176,8 @@ The legacy global `ClientRouter` is not part of the clean baseline.
 
 - CSS keyframes and the Web Animations API are the default motion tools.
 - Low-frame-rate behavior uses authored frames, discrete keyframes, or `steps()` timing.
-- Optional paper-arrival animation finishes on the real DOM page surface.
+- Paper-specific motion is added only when Igor explicitly assigns motion to an already approved paper object.
+- Route arrival may reveal or draw bounded decorative strokes, but the semantic content remains available without waiting for that motion.
 - Primary content never lives only in canvas, video, or an animation overlay.
 - Scroll effects observe specific components and alter only decorative or supplementary layers.
 - No draggable system is implemented until the concept identifies a useful draggable object.

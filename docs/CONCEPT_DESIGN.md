@@ -48,15 +48,16 @@ The main style of a website should follow these properties:
 
 The feeling of minimalist style with youthful, handmade vitality and adolescent sincerity.
 
-Use actual personal hand-drawn elements to maximum rather than relying only on ai generated as much as possible.
+Use actual personal hand-drawn (by Igor) elements to maximum rather than relying only on ai generated as much as possible.
 
-If an Igor-authored artifact is required but missing, insert a clearly labeled development placeholder rather than inventing finished personal material. References for the hand-drawn language are stored in `/Users/iggysleepy/dev/web/frontend/personal-website/handmade-style-reference` and on `/Users/iggysleepy/dev/web/frontend/personal-website/src/assets/art/doodles`. Use reference sites for quality analysis, not copied compositions or assets.
+If an hand-drawn artifact is required but missing, insert a clearly labeled development placeholder rather than inventing finished personal material. References for the hand-drawn language are stored in `/Users/iggysleepy/dev/web/frontend/personal-website/handmade-style-reference` and on `/Users/iggysleepy/dev/web/frontend/personal-website/src/assets/art/doodles`. Use reference sites for quality analysis, not copied compositions or assets.
 
 
 ### Details
 
-- selected personal doodles scattered across the pages. On home page it should be transparent so its not very attention grabbing. on the other pages on paper it should be more visible.
+- A shared background layer of selected personal doodles belongs to the persistent field and remains present on Home and every destination route. Keep this common set and its placements unified in the shell rather than duplicating it inside routes. It stays transparent enough not to compete with content; route-specific drawings are additional authored composition only when explicitly needed.
 - elements could be either hand-drawn or pictures
+- paper appear as a special spatial element when explicitly said. Do not infer or introduce paper from the type of content, route, interaction, or existing implementation.
 
 
 
@@ -64,7 +65,7 @@ If an Igor-authored artifact is required but missing, insert a clearly labeled d
 
 For my vision refer to the `/Users/iggysleepy/dev/web/frontend/personal-website/storyboards` folder, it contains my drawings explaining the structure of the website
 
-Home is minimalistic a nearly empty with monochromatic background and extensive negative space field. This field is also the persistent space around every destination page.
+Home is minimalistic, nearly empty, with a monochromatic background and extensive negative-space field. This same field continues through every destination route.
 
 Home loads directly with four Igor-drawn, visibly labeled choices:
 
@@ -73,9 +74,10 @@ Home loads directly with four Igor-drawn, visibly labeled choices:
 3. `Connect`
 4. `Blog`
 
-Who I am and Blog open real routes. Selecting one summons its destination material into the field. The material unfolds from the selected drawing, settles as an inset page, and leaves the unchanged Home field visible around it.
+Who I am and Blog open real routes. Each route continues the unchanged Home field and composes its content with hand-drawn boundaries, paths, marks, and artifacts.
 
-Work remains on Home and expands locally to reveal two folded-paper links for Software and Games. Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, itch.io, X, and résumé.
+Work remains on Home and expands locally to reveal two Igor-drawn icon links for Software and Games.
+Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, itch.io, X, and résumé.
 
 
 ### Navigation model
@@ -88,9 +90,8 @@ Work remains on Home and expands locally to reveal two folded-paper links for So
 - `/connect/` forwards to `/#connect`.
 - Work exposes directly linkable `Software` and `Games` modes.
  Games mode.
-- Every destination has a hand-drawn Home control in the exposed field margin outside the page.
+- Every destination has a hand-drawn Home control in a reserved edge area outside the main content composition.
 - The Home drawing is a semantic link to `/`, has an accessible name of `Home`, a visible focus state, and at least a 44 by 44 pixel target. A small visible `Home` label may accompany it when the house drawing is not self-evident.
-- Do not repeat all four Home choices on destination pages. The single Home control is the stable way back to the index.
 - The four Home navigation clusters are never draggable.
 
 Every drawing keeps its conventional text label at rest. An annotation may add personality or clarification, but it never replaces the label.
@@ -103,28 +104,30 @@ The field should feel composed rather than unfinished. Spacing, annotation paths
 
 Reading and keyboard order remains Who I am, Work, Connect, Blog regardless of visual placement.
 
-The homepage is an empty interactive field rather than a notebook page or conventional hero. It loads directly with four Igor-drawn icon clusters labeled Who I am, Work, Connect, and Blog. There is no wrapper, desk scene, paper container, or entry animation. Who I am opens warm notebook paper containing Igor's introduction, portrait, doodles, and values. Work expands two folded-paper choices in place, and either choice opens its graph-paper destination. Blog opens a calmer writing sheet. Connect expands the external contact links in place.
+The homepage is an empty interactive field rather than a notebook page or conventional hero. It loads directly with four Igor-drawn icon clusters labeled Who I am, Work, Connect, and Blog. There is no wrapper, desk scene, route container, or entry animation. Who I am opens a hand-drawn destination composition containing Igor's introduction, portrait, doodles, and values. Work expands two linked icon nodes in place, one labeled Software and one labeled Games, and either opens its hand-drawn destination in the same field. Blog opens a calmer hand-drawn writing composition. Connect expands the external contact links in place.
 
 
 
 ### Pages and transitions
 
-Every destination page sits inside the same persistent field used by Home. On desktop, leave a deliberate band of that field visible around the paper. The page should feel placed or summoned into an existing space, not like a new full-screen theme.
+Every destination route uses the same persistent field as Home. The field is the page itself, not a margin around another surface. A destination should feel drawn into an existing space, not like a new full-screen theme.
 
-The exposed field is functional negative space. It holds the Home drawing and establishes continuity, but it is not a second canvas for decoration, navigation clusters, or project content.
+Compose destination content through hand-drawn borders, spines, dividers, frames, paths, brackets, arrows, and broken strokes. These marks establish relationships and reading rhythm without turning the route into conventional interface chrome. Borders may be partial, asymmetrical, and open. Do not automatically enclose the whole route or every content block in a rectangle.
 
-Use the exact same solid background token on Home and in these margins. The latest sketch establishes spatial behavior, not a final black-and-white palette.
+Negative space remains functional. It establishes continuity, gives the composition room to breathe, and reserves a stable area for the Home drawing. It may also hold restrained authored doodles when they support the composition, but it should not become a second navigation canvas.
 
-For long pages, the paper may continue vertically while the field remains visible as side rails. Place the Home drawing in the upper-left field margin by default and keep it reachable during long reading without allowing it to overlap the paper. On mobile, move it into the reserved field band above the paper.
+Use the exact same background token throughout Home and destination routes. The latest sketch establishes spatial behavior, not a final black-and-white palette.
 
-For pages use warm, slightly rough notebook paper.
+For long routes, let the hand-drawn composition continue vertically through recurring lines, marks, and spatial relationships. Place the Home drawing in the upper-left reserved edge area by default and keep it reachable during long reading without allowing it to overlap destination content. On mobile, move it into a reserved field band above the content.
 
-Transition to the page should just simply load a page and since the background on the sides is the same as on home it should feel like the paper appears
+Paper is exceptional rather than structural. Use it only for an exact element that Igor personally specifies. Until that instruction exists, keep the route and its content on the persistent field using the hand-drawn language.
 
-> *OPTIONALLY*: If its possible would be cool to make an low-frame-rate animation of the paper appear unwrapping looking like in The Paper Ball Toss gmae to the unwrapped page with content. Maybe it can be made with transitioning to the blank background and then playing the animation. But im not sure.
+Route transitions should be simple. The unchanged field provides continuity while the destination's hand-drawn composition appears. Do not add a paper-arrival or paper-unwrapping transition unless Igor explicitly assigns paper to that destination element and separately requests the motion.
 
 
 ### Who I am
+
+Who I am is an open hand-drawn composition directly on the persistent field. Incomplete borders, connecting lines, annotations, and spacing organize the introduction, portraits, and values without placing the route inside a separate surface.
 
 It contains:
 
@@ -132,6 +135,7 @@ It contains:
 - the real and drawn portrait interaction;
 - the unified craft-values composition.
 
+Paper element is "id love to chat with you" that appears when all checkboxes are clicked it appears on top of the outlined area (dashed lines) with question marks indicating that a *secret* element should appear there.
 
 #### Craft values
 
@@ -154,33 +158,34 @@ These values should be in a handrawn checklist and also the text itself should b
 
 ### Work
 
-Selecting Work on Home expands two simple folded papers with words on them:
+Selecting Work on Home expands two Igor-drawn icon nodes with visible names:
 
 1. Software
 2. Games
 
-Selecting either folded paper opens the Software or Games destination. After enhancement, clicking anywhere outside the Work cluster closes the folded choices. Escape also closes them and returns focus to Work.
+Each icon-and-name pair is one semantic link to the corresponding Software or Games destination. Hand-drawn connector strokes branch from the Work node to both icon links. On wide screens, arrange the two destination nodes vertically with a small authored horizontal offset so the stack feels placed by hand rather than mechanically aligned. Both icons use the same restrained hover and keyboard-focus wobble as the primary Home drawings. After enhancement, clicking anywhere outside the Work cluster closes the choices. Escape also closes them and returns focus to Work.
 
-Work uses a Home disclosure as its index and keeps `Software` and `Games` as directly linkable routes. The folded links remain visible without JavaScript.
+Work uses a Home disclosure as its index and keeps `Software` and `Games` as directly linkable routes. Both icon links remain visible without JavaScript.
 
-Show every verified artifact Igor chooses to include at an honest level of prominence:
+Software and Games are hand-drawn long-form routes on the persistent field. Organize projects through open borders, recurring spines, connecting paths, annotations, and authored artifacts. Do not turn the routes or their project records into sheets or a conventional card grid.
 
-1. featured cases;
-2. supporting work;
-3. experiments, early work, and unfinished work.
+Keep the Work compositions loose rather than dividing them into visible portfolio categories. Lead with the real artifact, its name, and a verified result or destination when one matters. Do not add promotional summaries, marketing introductions, tag rows, badges, or visible group headings that repeat what the artifact already communicates. Present capabilities, tools, engines, and honest status notes as a simple handwritten list titled `Learned along an artifact`.
 
-Lead Software with:
+The content should be simple, project, what I have learned aka end-to-end ownership, interaction design, environment aesthetic & dialogues, rapid development in a game jam environment, player experience, system behaviour modeling, system structuring.
+
+Software has:
 
 1. the complete Flutter product;
 2. Chinese Bee;
 3. the receipt-processing investigation;
 
-Lead Games with:
+Games has:
 
 1. `Discourses by Campfire`;
-2. `Secret Santa Foundation`.
+2. `Secret Santa Foundation`;
+3. Snake with Go and raylib;
+4. C++ and OpenGL Tic-Tac-Toe.
 
-Show Snake with Go and raylib and C++ and OpenGL Tic-Tac-Toe as smaller trajectory artifacts. Keep unfinished work visibly unfinished and practical art or audio as supporting capability.
 
 Use `docs/CONTEXT_ABOUT_IGOR.md` for all claims and evidence boundaries.
 
@@ -188,9 +193,10 @@ The résumé should be offered in pdf or docx. (the visitior should be able to e
 
 
 
+
 ### Blog
 
-This is a simple paper that lists written articles (links to it) and what are they about very concisely.
+This is a calm hand-drawn route that lists written articles as links and explains what each is about very concisely. Use drawn lines, spacing, annotations, and incomplete borders to organize the writing without turning the whole route into a sheet or conventional card list.
 
 ### Connect
 
@@ -289,9 +295,9 @@ Proposed by AI:
 - recompose Home as a readable two-by-two or vertically meandering index;
 - do not shrink the desktop free-form composition;
 - expand Connect as a wrapped or vertical list rather than a cramped radial constellation;
-- preserve a narrow visible field around the destination material and a usable field band for the Home control;
-- allow the paper to occupy most of the width, but do not let it become visually indistinguishable from a full-screen page;
-- keep the Home control outside the paper and reachable without horizontal scrolling;
+- preserve generous field space around destination content and a usable field band for the Home control;
+- simplify desktop border compositions into one or two strong hand-drawn spines, dividers, or open boundaries rather than shrinking the full desktop drawing;
+- keep the Home control outside the main content composition and reachable without horizontal scrolling;
 - touch targets remain at least 44 by 44 pixels;
 - important drawings never crowd text.
 
@@ -309,7 +315,7 @@ Always preserve:
 - direct linking and browser history;
 - JavaScript-free access to every route and essential item.
 
-With reduced motion, skip material travel, parallax, and drag animation. Navigate immediately or use a very short fade and show the completed inset page in the persistent field.
+With reduced motion, skip material travel, parallax, and drag animation. Navigate immediately or use a very short fade and show the completed hand-drawn destination composition in the persistent field.
 
 
 This document translates that source into website strategy.

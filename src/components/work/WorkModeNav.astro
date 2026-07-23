@@ -9,77 +9,114 @@ const { current } = Astro.props;
 ---
 
 <nav class="work-mode-nav" aria-label="Work areas">
-  <a class="work-mode-nav__index" href={`${sitePath('/')}#work`}>choose paper</a>
-  <a
-    class:list={['work-mode-nav__paper', 'work-mode-nav__paper--software', { 'is-current': current === 'software' }]}
-    href={sitePath('/work/software/')}
-    aria-current={current === 'software' ? 'page' : undefined}
-  >
-    Software
+  <a class="work-mode-nav__index" href={`${sitePath('/')}#work`}>
+    <span aria-hidden="true">←</span> work choices
   </a>
-  <a
-    class:list={['work-mode-nav__paper', 'work-mode-nav__paper--games', { 'is-current': current === 'games' }]}
-    href={sitePath('/work/games/')}
-    aria-current={current === 'games' ? 'page' : undefined}
-  >
-    Games
-  </a>
+  <span class="work-mode-nav__trail" aria-hidden="true"></span>
+  <div class="work-mode-nav__modes">
+    <a
+      class:list={['work-mode-nav__mode', { 'is-current': current === 'software' }]}
+      href={sitePath('/work/software/')}
+      aria-current={current === 'software' ? 'page' : undefined}
+    >
+      Software
+    </a>
+    <span aria-hidden="true">/</span>
+    <a
+      class:list={['work-mode-nav__mode', { 'is-current': current === 'games' }]}
+      href={sitePath('/work/games/')}
+      aria-current={current === 'games' ? 'page' : undefined}
+    >
+      Games
+    </a>
+  </div>
 </nav>
 
 <style>
   .work-mode-nav {
     position: relative;
-    z-index: 4;
-    display: flex;
-    flex-wrap: wrap;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: max-content minmax(2rem, 1fr) max-content;
     align-items: center;
-    gap: 0.65rem;
-    margin: -1.4rem 0 clamp(2.5rem, 6vw, 5rem);
+    gap: 0.8rem;
   }
 
   .work-mode-nav a {
-    color: var(--color-ink);
+    color: var(--color-field-ink);
   }
 
   .work-mode-nav__index {
+    display: inline-flex;
     min-height: 2.75rem;
-    padding: 0.55rem 0.7rem;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 0.25rem;
     font-size: 0.95rem;
     text-underline-offset: 0.2em;
     transform: rotate(-2deg);
   }
 
-  .work-mode-nav__paper {
-    display: inline-grid;
-    min-width: 7.5rem;
-    min-height: 3.25rem;
-    place-items: center;
-    padding: 0.55rem 1.1rem;
-    background: #ddd1b4;
-    font-size: 1.1rem;
-    text-decoration: none;
-    clip-path: polygon(3% 6%, 94% 0, 100% 87%, 7% 100%, 0 20%);
-    opacity: 0.72;
-    transform: rotate(1.5deg);
+  .work-mode-nav__trail {
+    width: 100%;
+    height: 0.75rem;
+    border-top: 0.1rem solid rgba(243, 239, 228, 0.34);
+    border-radius: 50%;
+    transform: translateY(0.25rem) rotate(-0.8deg);
   }
 
-  .work-mode-nav__paper--games {
+  .work-mode-nav__modes {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: rgba(243, 239, 228, 0.38);
+  }
+
+  .work-mode-nav__mode {
+    position: relative;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    padding: 0.55rem 0.3rem;
+    font-size: 1.05rem;
+    text-decoration: none;
+    opacity: 0.58;
+  }
+
+  .work-mode-nav__mode::after {
+    position: absolute;
+    right: 0.1rem;
+    bottom: 0.38rem;
+    left: 0.05rem;
+    height: 0.12rem;
+    border-radius: 50%;
+    background: var(--work-accent);
+    content: '';
+    opacity: 0;
     transform: rotate(-1.5deg);
   }
 
-  .work-mode-nav__paper.is-current {
-    background: var(--color-paper);
-    box-shadow: inset 0 -0.16rem 0 rgba(32, 32, 30, 0.7);
+  .work-mode-nav__mode.is-current {
     opacity: 1;
+  }
+
+  .work-mode-nav__mode.is-current::after {
+    opacity: 0.9;
   }
 
   @media (max-width: 36rem) {
     .work-mode-nav {
-      margin-top: -0.75rem;
+      grid-template-columns: max-content minmax(0, 1fr);
+      gap: 0.45rem 0.8rem;
     }
 
-    .work-mode-nav__index {
-      width: 100%;
+    .work-mode-nav__trail {
+      min-width: 0;
+    }
+
+    .work-mode-nav__modes {
+      grid-column: 1 / -1;
+      justify-self: end;
     }
   }
 </style>

@@ -27,6 +27,8 @@
     --font-distinctive: 'Cartoon Relief', 'Bright Chalk', 'Segoe Print', cursive;
 
     --field-gutter: clamp(1rem, 4vw, 4rem);
+    --destination-width: 76rem;
+    --destination-home-track: clamp(4.75rem, 7vw, 6rem);
     --paper-width: 72rem;
     --reading-width: 58ch;
 

@@ -113,17 +113,24 @@ import NavigationDrawing from './NavigationDrawing.astro';
   work-disclosure {
     position: relative;
     z-index: 5;
+    box-sizing: border-box;
     display: block;
     width: max-content;
+    max-width: 100%;
   }
 
   .work-disclosure__panel {
     position: absolute;
     z-index: 6;
     top: 50%;
-    left: calc(100% + 2rem);
-    width: min(18rem, 25vw);
+    left: calc(100% + 3.75rem);
+    width: min(17rem, 22vw);
     transform: translateY(-50%);
+  }
+
+  work-disclosure :global(.work-choice-toggle) {
+    position: relative;
+    z-index: 7;
   }
 
   .work-disclosure__panel[hidden] {
@@ -134,11 +141,11 @@ import NavigationDrawing from './NavigationDrawing.astro';
     display: block;
   }
 
-  @media (max-width: 52rem) and (min-width: 40.001rem) {
+  @media (max-width: 76rem) and (min-width: 40.001rem) {
     .work-disclosure__panel {
-      right: calc(100% + 1.25rem);
+      right: calc(100% + 1rem);
       left: auto;
-      width: min(19rem, 45vw);
+      width: min(13rem, 36vw);
     }
   }
 
@@ -158,7 +165,9 @@ import NavigationDrawing from './NavigationDrawing.astro';
     .work-disclosure__panel,
     work-disclosure:not([data-enhanced]) .work-disclosure__panel {
       position: static;
+      box-sizing: border-box;
       width: 100%;
+      max-width: 100%;
       margin-top: 1rem;
       transform: none;
     }

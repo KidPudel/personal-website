@@ -24,44 +24,83 @@ import NavigationDrawing from './NavigationDrawing.astro';
 
 <script>
   class ConnectDisclosureElement extends HTMLElement {
+    private button?: HTMLButtonElement;
+    private panel?: HTMLElement;
+
+    private setExpanded = (expanded: boolean, announce = false) => {
+      if (!this.button || !this.panel) return;
+
+      this.button.setAttribute('aria-expanded', String(expanded));
+      this.panel.hidden = !expanded;
+      this.toggleAttribute('data-open', expanded);
+
+      if (expanded && announce) {
+        window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: 'connect' } }));
+      }
+    };
+
+    private clearConnectHash = () => {
+      if (window.location.hash !== '#connect') return;
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+    };
+
+    private syncFromHash = () => this.setExpanded(window.location.hash === '#connect');
+
+    private handleToggle = () => {
+      if (!this.button) return;
+
+      const expanded = this.button.getAttribute('aria-expanded') !== 'true';
+      this.setExpanded(expanded, expanded);
+
+      const nextURL = expanded
+        ? `${window.location.pathname}${window.location.search}#connect`
+        : `${window.location.pathname}${window.location.search}`;
+      window.history.replaceState(null, '', nextURL);
+    };
+
+    private handleOutsidePointer = (event: PointerEvent) => {
+      if (!this.hasAttribute('data-open') || this.contains(event.target as Node)) return;
+      this.setExpanded(false);
+      this.clearConnectHash();
+    };
+
+    private handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !this.hasAttribute('data-open')) return;
+      this.setExpanded(false);
+      this.clearConnectHash();
+      this.button?.focus();
+    };
+
+    private handleOtherDisclosure = (event: Event) => {
+      const disclosureEvent = event as CustomEvent<{ id?: string }>;
+      if (disclosureEvent.detail?.id === 'connect') return;
+      this.setExpanded(false);
+      this.clearConnectHash();
+    };
+
     connectedCallback() {
       if (this.hasAttribute('data-enhanced')) return;
 
-      const button = this.querySelector<HTMLButtonElement>('[data-connect-toggle]');
-      const panel = this.querySelector<HTMLElement>('#connect-links');
-      if (!button || !panel) return;
+      this.button = this.querySelector<HTMLButtonElement>('[data-connect-toggle]') ?? undefined;
+      this.panel = this.querySelector<HTMLElement>('#connect-links') ?? undefined;
+      if (!this.button || !this.panel) return;
 
       this.setAttribute('data-enhanced', '');
+      this.syncFromHash();
 
-      const setExpanded = (expanded: boolean) => {
-        button.setAttribute('aria-expanded', String(expanded));
-        panel.hidden = !expanded;
-        this.toggleAttribute('data-open', expanded);
-      };
+      this.button.addEventListener('click', this.handleToggle);
+      document.addEventListener('pointerdown', this.handleOutsidePointer);
+      document.addEventListener('keydown', this.handleEscape);
+      window.addEventListener('hashchange', this.syncFromHash);
+      window.addEventListener('home-disclosure-open', this.handleOtherDisclosure);
+    }
 
-      const syncFromHash = () => setExpanded(window.location.hash === '#connect');
-      syncFromHash();
-
-      button.addEventListener('click', () => {
-        const expanded = button.getAttribute('aria-expanded') !== 'true';
-        setExpanded(expanded);
-
-        if (expanded) {
-          window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: 'connect' } }));
-        }
-
-        const nextURL = expanded
-          ? `${window.location.pathname}${window.location.search}#connect`
-          : `${window.location.pathname}${window.location.search}`;
-        window.history.replaceState(null, '', nextURL);
-      });
-
-      window.addEventListener('hashchange', syncFromHash);
-      window.addEventListener('home-disclosure-open', (event) => {
-        const disclosureEvent = event as CustomEvent<{ id?: string }>;
-        if (disclosureEvent.detail?.id === 'connect') return;
-        setExpanded(false);
-      });
+    disconnectedCallback() {
+      this.button?.removeEventListener('click', this.handleToggle);
+      document.removeEventListener('pointerdown', this.handleOutsidePointer);
+      document.removeEventListener('keydown', this.handleEscape);
+      window.removeEventListener('hashchange', this.syncFromHash);
+      window.removeEventListener('home-disclosure-open', this.handleOtherDisclosure);
     }
   }
 
@@ -73,21 +112,34 @@ import NavigationDrawing from './NavigationDrawing.astro';
 <style>
   connect-disclosure {
     position: relative;
+    z-index: 5;
     display: block;
     width: max-content;
+    max-width: 100%;
   }
 
   .connect-links {
     position: absolute;
-    z-index: 4;
-    bottom: 3.5rem;
-    left: calc(100% + 1.5rem);
-    display: flex;
-    width: min(18rem, 30vw);
-    flex-wrap: wrap;
-    gap: 0.25rem 1.15rem;
-    padding-left: 1.2rem;
-    border-left: 1px dashed color-mix(in srgb, var(--color-field-ink) 42%, transparent);
+    z-index: 6;
+    right: 3rem;
+    bottom: calc(100% + 1rem);
+    display: grid;
+    width: max-content;
+    justify-items: start;
+    gap: 0.15rem;
+  }
+
+  .connect-links::after {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    left: 1rem;
+    width: 2rem;
+    height: 3.5rem;
+    border-left: 0.14rem solid color-mix(in srgb, var(--color-field-ink) 58%, transparent);
+    border-radius: 50%;
+    content: '';
+    transform: rotate(-11deg);
+    transform-origin: top;
   }
 
   .connect-links[hidden] {
@@ -100,39 +152,44 @@ import NavigationDrawing from './NavigationDrawing.astro';
     min-height: 2.75rem;
     align-items: center;
     color: var(--color-field-ink);
-    font-size: 0.95rem;
+    font-size: clamp(1rem, 1.55vw, 1.15rem);
     text-underline-offset: 0.22em;
   }
 
   connect-disclosure:not([data-enhanced]) .connect-links {
-    position: static;
-    width: min(28rem, 75vw);
-    margin-top: 1rem;
+    display: grid;
   }
 
   @media (max-width: 40rem) {
     connect-disclosure {
-      display: grid;
+      display: flex;
       width: 100%;
-      justify-items: center;
+      flex-direction: column-reverse;
+      align-items: center;
     }
 
     connect-disclosure[data-open],
     connect-disclosure:not([data-enhanced]) {
       grid-column: 1 / -1;
-      justify-items: start;
     }
 
     .connect-links,
     connect-disclosure:not([data-enhanced]) .connect-links {
       position: static;
-      width: 100%;
-      margin-top: 1rem;
-      padding: 0.65rem 0 0 1rem;
+      display: flex;
+      width: min(100%, 24rem);
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.15rem 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    .connect-links::after {
+      display: none;
     }
 
     .connect-links a {
-      font-size: 0.9rem;
+      font-size: 1rem;
     }
   }
 </style>

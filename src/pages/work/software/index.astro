@@ -2,27 +2,33 @@
 import { getCollection } from 'astro:content';
 
 import HomeReturn from '../../../components/shell/HomeReturn.astro';
-import PaperSurface from '../../../components/shell/PaperSurface.astro';
 import WorldField from '../../../components/shell/WorldField.astro';
 import WorkInventory from '../../../components/work/WorkInventory.astro';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 
 const order = ['flutter-product', 'chinese-bee', 'receipt-processing', 'ordering-platform'];
-const entries = (await getCollection('software')).sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+const entries = (await getCollection('software'))
+  .filter((entry) => order.slice(0, 3).includes(entry.id))
+  .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 ---
 
 <BaseDocument title="Software | Igor Kupchinenko" description="Software work by Igor Kupchinenko.">
   <WorldField destination>
     <HomeReturn />
-    <main id="main-content">
-      <PaperSurface variant="work">
-        <WorkInventory
-          current="software"
-          title="Software"
-          introduction="I like following a real need across the boundaries it refuses to respect: interface, behavior, data, services, and delivery. These are the artifacts that best show how I do that."
-          entries={entries}
-        />
-      </PaperSurface>
+    <main id="main-content" class="work-main">
+      <WorkInventory
+        current="software"
+        title="Software"
+        entries={entries}
+      />
     </main>
   </WorldField>
 </BaseDocument>
+
+<style>
+  .work-main {
+    width: 100%;
+    max-width: var(--destination-width);
+    color: var(--color-field-ink);
+  }
+</style>

@@ -1,18 +1,153 @@
 ---
-import DevelopmentPlaceholder from '../../components/shell/DevelopmentPlaceholder.astro';
+import { getCollection } from 'astro:content';
+
+import WritingEntry from '../../components/blog/WritingEntry.astro';
 import HomeReturn from '../../components/shell/HomeReturn.astro';
-import PaperSurface from '../../components/shell/PaperSurface.astro';
 import WorldField from '../../components/shell/WorldField.astro';
 import BaseDocument from '../../layouts/BaseDocument.astro';
+
+const entries = (await getCollection('writing'))
+  .filter((entry) => !entry.data.draft || entry.data.canonicalUrl)
+  .sort((a, b) => {
+    const aDate = a.data.publishedAt?.getTime() ?? 0;
+    const bDate = b.data.publishedAt?.getTime() ?? 0;
+
+    return bDate - aDate || a.data.title.localeCompare(b.data.title);
+  });
 ---
 
 <BaseDocument title="Blog | Igor Kupchinenko" description="Writing by Igor Kupchinenko.">
   <WorldField destination>
     <HomeReturn />
-    <main id="main-content">
-      <PaperSurface variant="notebook">
-        <DevelopmentPlaceholder title="Blog" />
-      </PaperSurface>
+    <main id="main-content" class="blog-main">
+      <section class="blog-page" aria-labelledby="blog-title">
+        <svg class="blog-page__boundary" viewBox="0 0 1000 900" preserveAspectRatio="none" aria-hidden="true">
+          <path class="blog-page__boundary-left" d="M38 24 C27 135 45 252 32 365 C21 489 42 608 28 724 C23 784 33 838 26 881" />
+          <path class="blog-page__boundary-left-echo" d="M48 35 C40 144 54 258 43 374 C34 479 50 573 42 665" />
+          <path class="blog-page__boundary-top" d="M51 30 C193 17 318 37 464 24 C612 11 739 33 884 21" />
+        </svg>
+
+        <header class="blog-header">
+          <p>writing</p>
+          <h1 id="blog-title">Blog</h1>
+        </header>
+
+        {
+          entries.length > 0 ? (
+            <ol class="writing-list">
+              {entries.map((entry, index) => <WritingEntry entry={entry} index={index + 1} />)}
+            </ol>
+          ) : (
+            <p class="blog-empty">No writing is published yet.</p>
+          )
+        }
+      </section>
     </main>
   </WorldField>
 </BaseDocument>
+
+<style>
+  .blog-main {
+    width: 100%;
+    max-width: var(--destination-width);
+    color: var(--color-field-ink);
+    isolation: isolate;
+  }
+
+  .blog-page {
+    position: relative;
+    isolation: isolate;
+    min-height: calc(100vh - (2 * var(--field-gutter)));
+    padding: clamp(2.5rem, 6vw, 5.5rem) clamp(2rem, 7vw, 6.5rem) clamp(3rem, 7vw, 6rem);
+    overflow: clip;
+  }
+
+  .blog-page__boundary {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .blog-page__boundary path {
+    fill: none;
+    stroke: rgba(243, 239, 228, 0.72);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .blog-page__boundary .blog-page__boundary-left-echo {
+    stroke: rgba(243, 239, 228, 0.22);
+    stroke-width: 1.1;
+  }
+
+  .blog-page__boundary .blog-page__boundary-top {
+    stroke: rgba(243, 239, 228, 0.36);
+    stroke-width: 1.3;
+  }
+
+  .blog-header,
+  .writing-list,
+  .blog-empty {
+    position: relative;
+    z-index: 1;
+  }
+
+  .blog-header {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0 0 clamp(2.5rem, 7vw, 6rem) clamp(0rem, 6vw, 4rem);
+  }
+
+  .blog-header p {
+    width: fit-content;
+    color: rgba(243, 239, 228, 0.62);
+    font-size: 1rem;
+    transform: rotate(-2deg);
+  }
+
+  .blog-header h1 {
+    font-family: var(--font-distinctive);
+    font-size: clamp(3.8rem, 9vw, 7.5rem);
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .writing-list {
+    max-width: 55rem;
+    margin: 0 0 0 clamp(0rem, 4vw, 2.5rem);
+    list-style: none;
+  }
+
+  .blog-empty {
+    margin-left: clamp(0rem, 4vw, 2.5rem);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 36rem) {
+    .blog-page {
+      padding: 2rem 1.1rem 2.5rem 1.35rem;
+    }
+
+    .blog-page__boundary-left {
+      transform: translateX(-0.45rem);
+    }
+
+    .blog-page__boundary-left-echo {
+      transform: translateX(-0.65rem);
+    }
+
+    .blog-header {
+      margin-left: 0.7rem;
+    }
+
+    .blog-header h1 {
+      font-size: clamp(3.8rem, 20vw, 5.4rem);
+    }
+  }
+</style>

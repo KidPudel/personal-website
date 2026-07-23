@@ -1,11 +1,5 @@
 ---
-import { Image } from 'astro:assets';
-
-import birdDoodle from '../../assets/art/doodles/Doodles_bird_1.png';
-import cameraDoodle from '../../assets/art/doodles/Doodles_camera.png';
-import robotDoodle from '../../assets/art/doodles/Doodles_robot.png';
 import HomeReturn from '../../components/shell/HomeReturn.astro';
-import PaperSurface from '../../components/shell/PaperSurface.astro';
 import WorldField from '../../components/shell/WorldField.astro';
 import ColorWord from '../../components/who/ColorWord.astro';
 import CraftValues from '../../components/who/CraftValues.astro';
@@ -19,64 +13,105 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
   <WorldField destination>
     <HomeReturn />
     <main id="main-content" class="who-main">
-      <PaperSurface variant="notebook" compact>
-        <article class="who-page" aria-labelledby="who-title">
-          <div class="who-page__doodles" aria-hidden="true">
-            <Image class="who-page__bird" src={birdDoodle} alt="" width={190} />
-            <Image class="who-page__camera" src={cameraDoodle} alt="" width={190} />
-            <Image class="who-page__robot" src={robotDoodle} alt="" width={190} />
+      <article class="who-page" aria-labelledby="who-title">
+        <svg class="who-page__boundary" viewBox="0 0 1000 1200" preserveAspectRatio="none" aria-hidden="true">
+          <path class="who-page__boundary-left" d="M30 18 C23 153 38 278 27 412 C18 565 37 696 25 840 C18 971 32 1088 22 1180" />
+          <path class="who-page__boundary-left-echo" d="M39 24 C34 164 44 289 36 425 C29 563 44 708 34 842" />
+          <path class="who-page__boundary-right" d="M974 8 C983 135 966 264 979 397 C988 531 968 674 981 813 C989 951 973 1071 984 1186" />
+          <path class="who-page__boundary-right-echo" d="M965 22 C973 151 958 279 970 408 C978 536 963 666 972 799" />
+        </svg>
+
+        <section class="who-introduction">
+          <div class="who-introduction__copy">
+            <p class="who-introduction__hello">hello, I am Igor</p>
+            <h1 id="who-title">I build <PlayfulWord word="experiences" />, then the systems that make them real.</h1>
+            <p>
+              I design and build interactive products and gameplay systems. I take someone's desire, carry it
+              across technical boundaries, and fulfil it through something <ColorWord word="joyful" /> to interact with.
+            </p>
           </div>
 
-          <section class="who-introduction">
-            <div class="who-introduction__copy">
-              <p class="who-introduction__hello">hello, I am Igor</p>
-              <h1 id="who-title">I build <PlayfulWord word="experiences" />, then the systems that make them real.</h1>
-              <p>
-                I design and build interactive products and gameplay systems. I take someone's desire, carry it
-                across technical boundaries, and fulfil it through something <ColorWord word="joyful" /> to interact with.
-              </p>
-            </div>
+          <PortraitInteraction />
+        </section>
 
-            <PortraitInteraction />
-          </section>
+        <section class="who-values-scene" aria-label="Craft values and a hidden invitation">
+          <svg class="who-values-scene__arrow" viewBox="0 0 100 36" aria-hidden="true">
+            <path d="M96 17 C74 15 49 20 10 19" />
+            <path d="M10 19 L27 7 M10 19 L27 30" />
+          </svg>
 
-          <CraftValues completionId="who-contact-sheet" />
-        </article>
-      </PaperSurface>
+          <CraftValues completionId="who-contact-paper" />
 
-      <aside id="who-contact-sheet" class="who-contact-sheet" aria-live="polite" hidden>
-        <p>I'd love to chat with you.</p>
-        <div class="who-contact-sheet__links" aria-label="Connect options">
-          {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-        </div>
-      </aside>
+          <div class="who-secret-zone">
+            <svg class="who-secret-zone__outline" viewBox="0 0 420 220" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M18 31 C86 13 146 26 209 18 C270 10 344 19 399 37 C409 84 392 134 405 184 C332 207 267 192 205 202 C140 211 71 199 21 180 C8 128 25 82 18 31" />
+            </svg>
+            <span class="who-secret-zone__question who-secret-zone__question--one" aria-hidden="true">?</span>
+            <span class="who-secret-zone__question who-secret-zone__question--two" aria-hidden="true">?</span>
+            <span class="who-secret-zone__question who-secret-zone__question--three" aria-hidden="true">?</span>
+
+            <aside id="who-contact-paper" class="who-contact-paper" aria-live="polite" hidden>
+              <p>I'd love to chat with you.</p>
+              <div class="who-contact-paper__links" aria-label="Connect options">
+                {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+              </div>
+            </aside>
+          </div>
+        </section>
+      </article>
     </main>
   </WorldField>
 </BaseDocument>
 
 <style>
   .who-main {
+    width: 100%;
+    max-width: var(--destination-width);
+    color: var(--color-field-ink);
     isolation: isolate;
-  }
-
-  .who-main :global(.paper-surface-frame) {
-    position: relative;
-    z-index: 2;
   }
 
   .who-page {
     position: relative;
     isolation: isolate;
+    min-height: calc(100vh - (2 * var(--field-gutter)));
+    padding: clamp(2rem, 5.5vw, 5rem) clamp(2rem, 5.2vw, 4.75rem) clamp(2.5rem, 5vw, 4.5rem);
+    overflow: clip;
+  }
+
+  .who-page__boundary {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .who-page__boundary path {
+    fill: none;
+    stroke: rgba(243, 239, 228, 0.78);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2.2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .who-page__boundary .who-page__boundary-left-echo,
+  .who-page__boundary .who-page__boundary-right-echo {
+    stroke: rgba(243, 239, 228, 0.24);
+    stroke-width: 1.15;
   }
 
   .who-introduction {
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.8fr);
+    grid-template-columns: minmax(0, 1.3fr) minmax(17rem, 0.7fr);
     align-items: center;
     gap: clamp(2rem, 4vw, 3.75rem);
-    min-height: 31.5rem;
+    min-height: 34rem;
   }
 
   .who-introduction__copy {
@@ -94,7 +129,7 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
   .who-introduction h1 {
     max-width: 16ch;
     font-family: var(--font-distinctive);
-    font-size: clamp(2.4rem, 4.7vw, 4.5rem);
+    font-size: clamp(2.5rem, 4.8vw, 4.65rem);
     font-weight: 400;
     line-height: 1.02;
   }
@@ -105,107 +140,183 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
     line-height: 1.6;
   }
 
-  .who-page__doodles {
+  .who-values-scene {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.75fr) minmax(0, 1.25fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
+    min-height: 20rem;
+    margin-top: clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .who-values-scene :global(.craft-values) {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+  }
+
+  .who-values-scene__arrow {
+    z-index: -1;
+    width: clamp(3rem, 5vw, 5.5rem);
+    height: auto;
+    grid-column: 2;
+    grid-row: 1;
+    place-self: center start;
+    overflow: visible;
+    pointer-events: none;
+    transform: translateX(calc(-100% - 0.5rem)) rotate(-1deg);
+  }
+
+  .who-values-scene__arrow path {
+    fill: none;
+    stroke: rgba(243, 239, 228, 0.47);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .who-secret-zone {
+    position: relative;
+    display: grid;
+    min-height: 15rem;
+    grid-column: 1;
+    grid-row: 1;
+    place-items: center;
+  }
+
+  .who-secret-zone__outline {
     position: absolute;
-    z-index: 1;
     inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
     pointer-events: none;
   }
 
-  .who-page__doodles :global(img) {
+  .who-secret-zone__outline path {
+    fill: rgba(243, 239, 228, 0.015);
+    stroke: rgba(243, 239, 228, 0.55);
+    stroke-dasharray: 7 10 3 8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.65;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .who-secret-zone__question {
     position: absolute;
-    width: clamp(5.25rem, 9vw, 8rem);
-    height: auto;
-    object-fit: contain;
-    filter: grayscale(1);
-    opacity: 0.17;
-  }
-
-  .who-page__bird {
-    top: -2rem;
-    right: 37%;
-    transform: rotate(-9deg);
-  }
-
-  .who-page__camera {
-    right: -2.5rem;
-    bottom: 28%;
-    transform: rotate(8deg);
-  }
-
-  .who-page__robot {
-    bottom: -3.5rem;
-    left: -2rem;
-    transform: rotate(-6deg);
-  }
-
-  .who-contact-sheet {
-    position: relative;
     z-index: 1;
-    width: min(74%, 42rem);
-    max-width: calc(100% - 2rem);
-    margin: -1.35rem auto 1rem;
-    padding: 2.5rem 1.5rem 1.15rem;
+    color: rgba(243, 239, 228, 0.66);
+    font-family: var(--font-distinctive);
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    line-height: 1;
+  }
+
+  .who-secret-zone__question--one {
+    top: 23%;
+    left: 29%;
+    transform: rotate(-12deg);
+  }
+
+  .who-secret-zone__question--two {
+    top: 45%;
+    right: 28%;
+    transform: rotate(9deg);
+  }
+
+  .who-secret-zone__question--three {
+    right: 45%;
+    bottom: 15%;
+    transform: rotate(-4deg);
+  }
+
+  .who-secret-zone:has(.who-contact-paper:not([hidden])) .who-secret-zone__question {
+    visibility: hidden;
+  }
+
+  .who-contact-paper {
+    position: absolute;
+    z-index: 2;
+    inset: 2.35rem 1.5rem 1.6rem;
+    display: grid;
+    align-content: center;
+    padding: 1.4rem 1.25rem 1rem;
     overflow: clip;
     background:
-      linear-gradient(rgba(237, 225, 196, 0.9), rgba(242, 232, 207, 0.96)),
+      linear-gradient(rgba(237, 225, 196, 0.72), rgba(242, 232, 207, 0.82)),
+      url('../../assets/art/paper-crumpled.webp') center / cover,
       var(--color-paper);
-    box-shadow: 0 0.85rem 1.1rem rgba(7, 7, 6, 0.2);
+    filter: drop-shadow(0.25rem 0.7rem 0.65rem rgba(7, 7, 6, 0.3));
     color: var(--color-ink);
     clip-path: polygon(
-      0.4% 0.8%,
-      15% 0.2%,
-      33% 0.65%,
-      51% 0.15%,
-      69% 0.55%,
-      86% 0.18%,
-      99.6% 0.7%,
-      99.85% 31%,
-      99.55% 68%,
-      99.7% 99.35%,
-      79% 99.8%,
-      58% 99.45%,
-      37% 99.85%,
-      16% 99.4%,
-      0.3% 99.65%,
-      0.1% 55%
+      1.4% 4%,
+      9% 1%,
+      20% 3.2%,
+      32% 0.4%,
+      44% 2.8%,
+      56% 0%,
+      69% 3.5%,
+      81% 0.8%,
+      93% 3.1%,
+      99% 1.5%,
+      97.6% 16%,
+      100% 31%,
+      98% 47%,
+      99.6% 64%,
+      97.2% 82%,
+      99% 97%,
+      90% 96.2%,
+      78% 99.3%,
+      64% 96.4%,
+      50% 99.5%,
+      36% 96%,
+      22% 99%,
+      8% 96.5%,
+      1% 98%,
+      2.5% 82%,
+      0.4% 66%,
+      2% 49%,
+      0% 31%,
+      2.2% 15%
     );
-    scroll-margin-block: 1.5rem;
-    transform-origin: top center;
+    scroll-margin-block: 2rem;
+    transform-origin: center;
   }
 
-  .who-contact-sheet::before {
+  .who-contact-paper::before {
     position: absolute;
     z-index: -1;
     inset: 0;
     background: url('../../assets/art/paper-grain.svg') 0 0 / 180px 180px;
     content: '';
     mix-blend-mode: multiply;
-    opacity: 0.12;
+    opacity: 0.18;
     pointer-events: none;
   }
 
-  .who-contact-sheet[hidden] {
+  .who-contact-paper[hidden] {
     display: none;
   }
 
-  .who-contact-sheet:not([hidden]) {
-    animation: contact-sheet-emerges 420ms cubic-bezier(0.2, 0.72, 0.28, 1) both;
+  .who-contact-paper:not([hidden]) {
+    animation: contact-paper-appears 360ms steps(3, end) both;
   }
 
-  .who-contact-sheet > p {
+  .who-contact-paper > p {
     font-size: clamp(1.2rem, 2vw, 1.55rem);
   }
 
-  .who-contact-sheet__links {
+  .who-contact-paper__links {
     display: flex;
-    max-width: 34rem;
     flex-wrap: wrap;
     gap: 0.1rem 1rem;
     margin-top: 0.35rem;
   }
 
-  .who-contact-sheet__links a {
+  .who-contact-paper__links a {
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
@@ -215,14 +326,14 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
     text-underline-offset: 0.24em;
   }
 
-  @keyframes contact-sheet-emerges {
+  @keyframes contact-paper-appears {
     from {
-      opacity: 0.45;
-      transform: translateY(-4.5rem) rotate(1.2deg) scale(0.985);
+      opacity: 0;
+      transform: translateY(0.5rem) rotate(1.6deg) scale(0.96);
     }
     to {
       opacity: 1;
-      transform: translateY(0) rotate(-0.65deg) scale(1);
+      transform: translateY(0) rotate(-0.8deg) scale(1);
     }
   }
 
@@ -236,13 +347,41 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
       max-width: 42rem;
     }
 
-    .who-page__bird {
-      top: 28%;
-      right: -2rem;
+    .who-values-scene {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3rem;
+    }
+
+    .who-values-scene :global(.craft-values),
+    .who-secret-zone {
+      grid-column: 1;
+      grid-row: auto;
+    }
+
+    .who-secret-zone {
+      width: min(100%, 25rem);
+      justify-self: center;
+    }
+
+    .who-values-scene__arrow {
+      display: none;
     }
   }
 
   @media (max-width: 36rem) {
+    .who-page {
+      padding: 1.5rem 1.1rem 2rem;
+    }
+
+    .who-page__boundary-left {
+      transform: translateX(-0.45rem);
+    }
+
+    .who-page__boundary-left-echo,
+    .who-page__boundary-right-echo {
+      display: none;
+    }
+
     .who-introduction {
       min-height: auto;
     }
@@ -251,24 +390,22 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
       font-size: clamp(2.4rem, 12.5vw, 3.7rem);
     }
 
-    .who-page__doodles :global(img) {
-      opacity: 0.12;
+    .who-values-scene {
+      margin-top: 4rem;
     }
 
-    .who-page__camera {
-      right: -2.8rem;
+    .who-secret-zone {
+      min-height: 16rem;
     }
 
-    .who-contact-sheet {
-      width: calc(100% - 1rem);
-      max-width: none;
-      margin-top: -1rem;
-      padding: 2rem 1rem 0.9rem;
+    .who-contact-paper {
+      inset: 2.5rem 1.5rem 1.7rem;
+      padding: 1.3rem 1rem 0.8rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .who-contact-sheet:not([hidden]) {
+    .who-contact-paper:not([hidden]) {
       animation-duration: 0.01ms;
     }
   }

@@ -48,6 +48,7 @@ import WorkDisclosure from './WorkDisclosure.astro';
   .home-map__choices {
     position: relative;
     z-index: 2;
+    box-sizing: border-box;
     display: grid;
     width: min(100%, 50rem);
     min-height: min(66vh, 36rem);
@@ -57,6 +58,13 @@ import WorkDisclosure from './WorkDisclosure.astro';
     gap: 1rem clamp(1rem, 4vw, 3rem);
     padding: 1rem;
     pointer-events: auto;
+  }
+
+  @media (max-width: 76rem) and (min-width: 40.001rem) {
+    .home-map__choices:has(work-disclosure[data-open]),
+    .home-map__choices:has(work-disclosure:not([data-enhanced])) {
+      min-height: min(92vh, 54rem);
+    }
   }
 
   .home-map__choices :global(.choice-who) {

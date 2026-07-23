@@ -9,16 +9,15 @@ import WorkModeNav from './WorkModeNav.astro';
 interface Props {
   current: 'software' | 'games';
   title: string;
-  introduction: string;
   entries: Array<CollectionEntry<'software'> | CollectionEntry<'games'>>;
 }
 
-const { current, title, introduction, entries } = Astro.props;
+const { current, title, entries } = Astro.props;
 
 const sectionLabels = {
-  featured: current === 'software' ? 'Products and investigations I would begin with' : 'Games I would begin with',
-  supporting: current === 'software' ? 'Supporting systems work' : 'Unfinished and supporting work',
-  trajectory: 'Earlier trajectory',
+  featured: current === 'software' ? 'Software projects' : 'Finished games',
+  supporting: 'Supporting work',
+  trajectory: 'Earlier experiments',
 } as const;
 
 const groups = (['featured', 'supporting', 'trajectory'] as const)
@@ -28,40 +27,44 @@ const groups = (['featured', 'supporting', 'trajectory'] as const)
   }))
   .filter((group) => group.entries.length > 0);
 
-const entryCapabilities = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
-  'capabilities' in entry.data ? entry.data.capabilities : [];
+const entryAnnotations = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) => {
+  if ('capabilities' in entry.data) return entry.data.capabilities;
+  return [entry.data.engine, entry.data.jam].filter((value): value is string => Boolean(value));
+};
 
 const entryResult = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
   'result' in entry.data ? entry.data.result : undefined;
 
-const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) => {
-  if (!('engine' in entry.data)) return undefined;
-  return [entry.data.engine, entry.data.jam].filter(Boolean).join(' · ');
-};
 ---
 
 <div class:list={['work-inventory', `work-inventory--${current}`]}>
+  <svg class="work-inventory__boundary" viewBox="0 0 1000 1800" preserveAspectRatio="none" aria-hidden="true">
+    <path class="work-inventory__boundary-left" d="M25 18 C12 188 35 342 21 516 C9 681 34 833 20 1003 C8 1170 33 1324 18 1493 C12 1599 26 1690 20 1778" />
+    <path class="work-inventory__boundary-left-echo" d="M37 43 C28 201 44 356 32 521 C21 684 46 846 31 1008" />
+    <path class="work-inventory__boundary-right" d="M979 37 C990 193 967 360 981 527 C990 695 971 851 984 1021 C992 1180 971 1337 984 1507" />
+  </svg>
+
   <WorkModeNav current={current} />
 
   <header class="work-inventory__introduction">
-    <h1>{title}</h1>
-    <p>{introduction}</p>
+    <div class="work-inventory__title">
+      <p>work / {current}</p>
+      <h1>{title}</h1>
+    </div>
   </header>
 
   {
     groups.map((group) => (
       <section class:list={['work-inventory__group', `work-inventory__group--${group.prominence}`]} aria-labelledby={`${current}-${group.prominence}`}>
-        <p class="work-inventory__group-label" id={`${current}-${group.prominence}`}>{sectionLabels[group.prominence]}</p>
+        <h2 class="sr-only" id={`${current}-${group.prominence}`}>{sectionLabels[group.prominence]}</h2>
         <div class="work-inventory__artifacts">
           {group.entries.map((entry) => (
             <WorkArtifact
               title={entry.data.title}
-              summary={entry.data.summary}
               prominence={entry.data.prominence}
               status={entry.data.status}
-              capabilities={entryCapabilities(entry)}
+              annotations={entryAnnotations(entry)}
               result={entryResult(entry)}
-              meta={entryMeta(entry)}
               externalUrl={entry.data.externalUrl}
             >
               <ArtifactSketch slot="sketch" category={current} slug={entry.id} />
@@ -75,7 +78,7 @@ const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>
   {
     current === 'software' && (
       <aside class="work-inventory__resume" aria-labelledby="resume-label">
-        <p id="resume-label">Need the practical version?</p>
+        <p id="resume-label">résumé</p>
         <div>
           <a href={sitePath('/resume/igor-kupchinenko-resume.pdf')} download>résumé PDF</a>
           <a href={sitePath('/resume/igor-kupchinenko-resume.docx')} download>résumé DOCX</a>
@@ -87,95 +90,111 @@ const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>
 
 <style>
   .work-inventory {
+    --work-accent: #86aebd;
+
     position: relative;
+    isolation: isolate;
     display: grid;
-    gap: clamp(4rem, 8vw, 7rem);
+    gap: clamp(4rem, 9vw, 8rem);
+    min-height: calc(100vh - (2 * var(--field-gutter)));
+    padding: clamp(1.25rem, 4vw, 3.75rem) clamp(1.75rem, 5vw, 5rem) clamp(3rem, 7vw, 6rem);
   }
 
-  .work-inventory::after {
+  .work-inventory--games {
+    --work-accent: #d98b7f;
+  }
+
+  .work-inventory__boundary {
     position: absolute;
     z-index: -1;
-    top: 5rem;
-    right: -3rem;
-    width: clamp(10rem, 26vw, 20rem);
-    aspect-ratio: 0.72;
-    border: 1px solid rgba(54, 102, 122, 0.2);
-    background: rgba(226, 235, 225, 0.2);
-    content: '';
-    transform: rotate(6deg);
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .work-inventory__boundary path {
+    fill: none;
+    stroke: rgba(243, 239, 228, 0.68);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .work-inventory__boundary .work-inventory__boundary-left-echo {
+    stroke: color-mix(in srgb, var(--work-accent) 45%, transparent);
+    stroke-width: 1.2;
+  }
+
+  .work-inventory__boundary-right {
+    stroke: rgba(243, 239, 228, 0.24) !important;
   }
 
   .work-inventory__introduction {
     position: relative;
     z-index: 1;
+    display: flex;
+    min-height: clamp(17rem, 32vw, 25rem);
+    align-items: center;
+    padding-left: clamp(0rem, 4vw, 3rem);
+  }
+
+  .work-inventory__title {
     display: grid;
-    grid-template-columns: minmax(0, 0.8fr) minmax(18rem, 1.2fr);
-    align-items: end;
-    gap: clamp(1.5rem, 5vw, 5rem);
-    min-height: 14rem;
+    gap: 0.25rem;
+  }
+
+  .work-inventory__title > p {
+    width: fit-content;
+    color: rgba(243, 239, 228, 0.58);
+    font-size: 0.95rem;
+    transform: rotate(-2deg);
   }
 
   .work-inventory__introduction h1 {
     font-family: var(--font-distinctive);
-    font-size: clamp(3.2rem, 8vw, 7rem);
+    font-size: clamp(3.4rem, 8vw, 7.25rem);
     font-weight: 400;
     line-height: 0.9;
     transform: rotate(-2deg);
   }
 
-  .work-inventory__introduction p {
-    max-width: 49ch;
-    padding: 1.25rem 1.5rem;
-    border: 0.1rem solid rgba(32, 32, 30, 0.35);
-    background: rgba(247, 239, 218, 0.55);
-    font-size: clamp(1.08rem, 1.7vw, 1.25rem);
-    line-height: 1.55;
-    transform: rotate(1deg);
-  }
-
   .work-inventory__group {
+    position: relative;
     display: grid;
-    gap: 1.5rem;
-  }
-
-  .work-inventory__group-label {
-    width: fit-content;
-    max-width: 34ch;
-    padding: 0.35rem 0.7rem;
-    background: rgba(221, 209, 180, 0.7);
-    font-size: clamp(1.05rem, 1.7vw, 1.2rem);
-    line-height: 1.3;
-    transform: rotate(-1deg);
-  }
-
-  .work-inventory__group--supporting .work-inventory__group-label {
-    transform: rotate(1.3deg);
+    padding-left: clamp(0rem, 1vw, 0.75rem);
   }
 
   .work-inventory__artifacts {
     display: grid;
-    gap: clamp(2.5rem, 6vw, 5rem);
+    gap: clamp(0rem, 2vw, 1.5rem);
   }
 
   .work-inventory__group--trajectory .work-inventory__artifacts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem;
+    gap: clamp(1.5rem, 4vw, 4rem);
   }
 
   .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact) {
-    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
+    grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.45fr);
+  }
+
+  .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact:nth-child(2)) {
+    margin-top: clamp(4rem, 9vw, 8rem);
   }
 
   .work-inventory__resume {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 0.7fr) minmax(16rem, 1.3fr);
     gap: 1.5rem;
     width: min(100%, 43rem);
     align-items: center;
     justify-self: end;
-    padding: 1.5rem;
-    border: 0.12rem dashed rgba(32, 32, 30, 0.45);
-    background: rgba(247, 239, 218, 0.66);
+    padding: 1.5rem 1.75rem;
+    border-top: 0.12rem dashed rgba(243, 239, 228, 0.3);
     transform: rotate(-1deg);
   }
 
@@ -194,12 +213,11 @@ const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>
   .work-inventory__resume a {
     min-height: 2.75rem;
     padding-block: 0.55rem;
-    color: var(--color-ink);
+    color: var(--color-field-ink);
     text-underline-offset: 0.2em;
   }
 
   @media (max-width: 48rem) {
-    .work-inventory__introduction,
     .work-inventory__resume {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -214,6 +232,38 @@ const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>
 
     .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact) {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .work-inventory__group--trajectory .work-inventory__artifacts :global(.work-artifact:nth-child(2)) {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .work-inventory {
+      gap: 4.5rem;
+      padding: 1.25rem 1rem 3rem 1.4rem;
+    }
+
+    .work-inventory__boundary-left-echo,
+    .work-inventory__boundary-right {
+      display: none;
+    }
+
+    .work-inventory__introduction {
+      gap: 1.5rem;
+    }
+
+    .work-inventory__introduction h1 {
+      font-size: clamp(3.2rem, 20vw, 5.1rem);
+    }
+
+    .work-inventory__group {
+      padding-left: 0;
+    }
+
+    .work-inventory__resume {
+      padding-inline: 0.8rem;
     }
   }
 </style>
