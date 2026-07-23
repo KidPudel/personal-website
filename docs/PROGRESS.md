@@ -1,6 +1,6 @@
 # Website rebuild progress
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 ## Status
 
@@ -36,6 +36,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Home navigation uses ordinary links for Who I am and Blog, plus disclosure buttons for Work and Connect. Reading and keyboard order is Who I am, Work, Connect, Blog.
 - Desktop Home follows the overview storyboard's cross-shaped placement: Who I am above, Connect left, Work right, and Blog below. The visual arrangement does not change the semantic source order.
 - Home uses Igor's four hand-drawn navigation icons for Who I am, Work, Connect, and Blog. Each visible label has its own loose, drawing-relative placement while remaining the accessible navigation name.
+- Hovering or keyboard-focusing any primary drawn navigation control, including the destination Home icon, now plays a restrained stepped wobble around that drawing's individual resting angle. Its shared duration token controls the four Home choices and destination Home icon together, while the shared reduced-motion rule limits the effect to one near-instant frame.
 - The persistent field uses a warm graphite base with restrained paper grain, faded tonal variation, and softened imperfect edges. Home and destination margins share the same field treatment.
 - Five existing Igor-authored doodles now belong to the shared field rather than Home alone: bird, fish, disk, burger, and dead fish. They preserve their intrinsic proportions and fixed field coordinates. On Home they render at 9% opacity and rise gently to 13% on precise-pointer hover. On desktop destinations the paper naturally covers the same layer, uncovered fragments render at 5.5% and remain non-interactive, and the top-left disk stays hidden to keep the Home control clear. The destination layer is hidden below the desktop shell breakpoint so the narrow Home band remains uncluttered.
 - Connect is collapsed after enhancement, expands locally, keeps `aria-expanded` synchronized, and maps its open state to `#connect`. Without JavaScript, all six links remain visible and the button accurately starts expanded.

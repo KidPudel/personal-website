@@ -306,11 +306,12 @@
   }
 
   .home-return__drawing {
+    --drawn-icon-resting-tilt: 0deg;
+
     display: block;
     width: 5.625rem;
     height: 4.125rem;
     overflow: hidden;
-    transition: transform 140ms ease;
   }
 
   .home-return__drawing img {
@@ -322,7 +323,30 @@
   }
 
   .home-return:is(:hover, :focus-visible) .home-return__drawing {
-    transform: translateY(-0.2rem) rotate(-1deg);
+    animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
+  }
+
+  @keyframes drawn-icon-wobble {
+    0%,
+    100% {
+      transform: translate(-0.13rem, -0.2rem)
+        rotate(calc(var(--drawn-icon-resting-tilt) - 3.8deg));
+    }
+
+    25% {
+      transform: translate(0.12rem, -0.18rem)
+        rotate(calc(var(--drawn-icon-resting-tilt) + 1.7deg));
+    }
+
+    50% {
+      transform: translate(-0.12rem, -0.14rem)
+        rotate(calc(var(--drawn-icon-resting-tilt) - 2.45deg));
+    }
+
+    75% {
+      transform: translate(0.03rem, -0.35em)
+        rotate(calc(var(--drawn-icon-resting-tilt) + 0.9deg));
+    }
   }
 
   @media (max-width: 60rem) {

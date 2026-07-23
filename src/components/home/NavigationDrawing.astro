@@ -66,12 +66,13 @@ const Element = href ? 'a' : 'button';
   }
 
   .home-choice__art {
+    --drawn-icon-resting-tilt: var(--choice-tilt);
+
     display: grid;
     width: 100%;
     aspect-ratio: 1;
     place-items: center;
     transform: rotate(var(--choice-tilt));
-    transition: transform 140ms ease;
   }
 
   .home-choice__art :global(img) {
@@ -132,7 +133,7 @@ const Element = href ? 'a' : 'button';
   }
 
   .home-choice:is(:hover, :focus-visible) .home-choice__art {
-    transform: translateY(-0.2rem) rotate(calc(var(--choice-tilt) - 1deg));
+    animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
   }
 
   .home-choice:is(:hover, :focus-visible) .home-choice__label::after {
