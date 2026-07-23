@@ -2,15 +2,15 @@
 interface Props {
   title: string;
   summary: string;
-  href: string;
   prominence: 'featured' | 'supporting' | 'trajectory';
   status: 'complete' | 'ongoing' | 'unfinished' | 'early-work';
   capabilities?: string[];
   result?: string;
   meta?: string;
+  externalUrl?: string;
 }
 
-const { title, summary, href, prominence, status, capabilities = [], result, meta } = Astro.props;
+const { title, summary, prominence, status, capabilities = [], result, meta, externalUrl } = Astro.props;
 const statusLabel = {
   complete: 'complete',
   ongoing: 'ongoing',
@@ -25,7 +25,7 @@ const statusLabel = {
   </div>
   <div class="work-artifact__copy">
     <p class="work-artifact__status">{statusLabel}{meta ? ` · ${meta}` : ''}</p>
-    <h2><a href={href}>{title}</a></h2>
+    <h2>{title}</h2>
     <p class="work-artifact__summary">{summary}</p>
     {result && <p class="work-artifact__result">{result}</p>}
     {
@@ -35,7 +35,13 @@ const statusLabel = {
         </ul>
       )
     }
-    <a class="work-artifact__open" href={href}>open the evidence <span aria-hidden="true">→</span></a>
+    {
+      externalUrl && (
+        <a class="work-artifact__open" href={externalUrl} rel="noreferrer">
+          visit the project <span aria-hidden="true">↗</span>
+        </a>
+      )
+    }
   </div>
 </article>
 
@@ -112,7 +118,6 @@ const statusLabel = {
     line-height: 1.08;
   }
 
-  .work-artifact h2 a,
   .work-artifact__open {
     color: var(--color-ink);
     text-decoration-thickness: 0.09rem;

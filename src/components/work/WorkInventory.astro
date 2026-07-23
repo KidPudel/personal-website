@@ -28,9 +28,6 @@ const groups = (['featured', 'supporting', 'trajectory'] as const)
   }))
   .filter((group) => group.entries.length > 0);
 
-const entryHref = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
-  sitePath(`/work/${current}/${entry.id}/`);
-
 const entryCapabilities = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>) =>
   'capabilities' in entry.data ? entry.data.capabilities : [];
 
@@ -60,12 +57,12 @@ const entryMeta = (entry: CollectionEntry<'software'> | CollectionEntry<'games'>
             <WorkArtifact
               title={entry.data.title}
               summary={entry.data.summary}
-              href={entryHref(entry)}
               prominence={entry.data.prominence}
               status={entry.data.status}
               capabilities={entryCapabilities(entry)}
               result={entryResult(entry)}
               meta={entryMeta(entry)}
+              externalUrl={entry.data.externalUrl}
             >
               <ArtifactSketch slot="sketch" category={current} slug={entry.id} />
             </WorkArtifact>

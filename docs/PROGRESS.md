@@ -53,10 +53,10 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Work expands locally on Home as two folded-paper links for Software and Games. Enhancement starts it collapsed, maps its open state to `#work`, closes it on outside activation or Escape, and keeps `aria-expanded` synchronized. Without JavaScript, both links remain visible and the button accurately starts expanded.
 - `/work/` now redirects to `/#work`. Software and Games remain ordinary nested routes on a warm graph-paper material, and their small paper navigation returns directly to the open Home disclosure.
 - The content model now separates `software` and `games`, records honest `featured`, `supporting`, or `trajectory` prominence, and distinguishes complete, ongoing, unfinished, and early work.
-- Each approved artifact has a statically generated detail route. Featured work receives the most visual space, the unfinished card-system study is visibly unfinished, and Snake with Go and raylib plus C++ and OpenGL Tic-Tac-Toe remain compact trajectory artifacts.
-- Software leads with the complete Flutter product, Chinese Bee, and the receipt-processing investigation. The payment and expiration work appears as supporting systems evidence. The verified receipt result is repeated only on its artifact and detail record.
+- Each approved artifact is presented directly on its Software or Games index. The separate evidence routes have been removed to keep Work simple. Featured work receives the most visual space, the unfinished card-system study is visibly unfinished, and Snake with Go and raylib plus C++ and OpenGL Tic-Tac-Toe remain compact trajectory artifacts.
+- Software leads with the complete Flutter product, Chinese Bee, and the receipt-processing investigation. The supplied food-delivery and Chinese Bee showcases now appear directly with those projects, including the Chinese Bee mascot. The payment and expiration work appears as supporting systems work. The verified receipt result appears only on its index record.
 - Games leads with `Discourses by Campfire` and `Santa Foundation`, using retained project media. The generic itch.io profile is not presented as the Discourses project URL while its final public destination remains unconfirmed.
-- Every Work destination is complete static HTML without a component script. Only the Home disclosure adds local behavior. Software offers both the existing résumé PDF and the matching DOCX as direct downloads.
+- Every Work destination is complete static HTML without a component script. Only the Home disclosure adds local behavior. Software offers both the existing résumé PDF and the matching DOCX as direct downloads. Public game links remain available directly from their index records.
 
 ## Foundation audit
 
@@ -65,7 +65,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 | Keep | Astro and TypeScript configuration, package and lock files, GitHub Pages workflow, local development script, strict content schemas, verified content entries, public-link configuration, résumé files, favicon, authored portraits and doodles, paper materials, game media, storyboards, and source documents. |
 | Replace | Legacy route compositions, `BaseLayout`, shared header and footer, generic interaction and doodle components, the monolithic global stylesheet, and the old Games-specific presentation. |
 | Remove | Global `ClientRouter`, shared paper transition configuration, global pointer impact effect, legacy notebook and desk styling, and the separate pixel-interface theme. |
-| Defer | Destination compositions, the `work` to `software` content-model alignment, detail routes, interaction enhancements, and release metadata. |
+| Defer | Remaining interaction enhancements and release metadata. |
 
 ## Milestone 1 verification
 
@@ -103,9 +103,9 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 ## Milestone 4 implementation verification
 
 - `astro check` and the production build pass with zero diagnostics for both `/` and `/personal-website/` base paths.
-- Seventeen pages generate successfully, including the `/work/` compatibility redirect, two work indexes, four Software detail routes, five Games detail routes, and the base-aware `/games/` compatibility redirect.
+- Eight pages generate successfully, including the `/work/` compatibility redirect, two Work indexes, and the base-aware `/games/` compatibility redirect. Individual Software and Games evidence routes are intentionally absent.
 - The generated Home document exposes both folded Work links with `aria-expanded="true"` before enhancement. The generated Work destinations use base-aware internal links and contain no client-side scripts, so every artifact, mode, résumé format, and public artifact link remains reachable without JavaScript.
-- Desktop inspection at 1440 by 900 confirms the Home Work disclosure, folded choices, exposed destination rails, graph-paper indexes and details, honest prominence hierarchy, contained project media, and no horizontal overflow.
+- Desktop inspection at 1440 by 900 confirms the Home Work disclosure, folded choices, exposed destination rails, graph-paper indexes, honest prominence hierarchy, contained project media, and no horizontal overflow.
 - Mobile inspection at 390 by 844 confirms the recomposed Work disclosure, readable folded choices, single-column artifact records, full-width game media, contained headings, and no horizontal overflow.
 - Inspected routes have one `main`, one `h1`, a Home target 90 by 66 pixels, direct mode links with synchronized `aria-current`, and no browser console warnings or errors.
 - Work opens from its button and direct `/#work` loading. Outside pointer activation closes it and removes the hash; Escape closes it, removes the hash, and restores focus to Work. Opening Work and Connect closes the other disclosure.

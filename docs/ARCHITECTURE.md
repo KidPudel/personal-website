@@ -40,15 +40,13 @@ Routes are statically generated and directly addressable.
 | `/who-i-am/` | Personal introduction and craft values |
 | `/work/` | Compatibility redirect to `/#work` |
 | `/work/software/` | Software work index |
-| `/work/software/[slug]/` | Software detail |
 | `/work/games/` | Games work index |
-| `/work/games/[slug]/` | Game detail |
 | `/blog/` | Writing index |
 | `/blog/[slug]/` | Local article |
 | `/connect/` | Compatibility redirect to `/#connect` |
 | `/games/` | Compatibility redirect to `/work/games/` |
 
-The Work disclosure is directly addressable as `/#work`; the Software and Games destinations remain nested routes so they retain durable URLs, browser history, static generation, and JavaScript-free access.
+The Work disclosure is directly addressable as `/#work`; Software and Games remain nested routes so they retain durable URLs, browser history, static generation, and JavaScript-free access. Individual artifacts live directly on those indexes rather than opening separate evidence pages.
 
 ## Shared document structure
 
@@ -114,8 +112,7 @@ components/
 │   └── CraftValues.astro
 ├── work/
 │   ├── WorkChoice.astro
-│   ├── WorkArtifact.astro
-│   └── ProjectEvidence.astro
+│   └── WorkArtifact.astro
 ├── blog/
 │   └── WritingEntry.astro
 └── interactive/

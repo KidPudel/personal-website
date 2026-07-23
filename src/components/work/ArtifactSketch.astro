@@ -1,6 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 
+import chineseBeeIcon from '../../assets/software-showcases/chinesebe_icon.png';
+import chineseBeeShowcase from '../../assets/software-showcases/chinesebe_showcase.png';
+import foodDeliveryShowcase from '../../assets/software-showcases/food_app_delivery_showcase.png';
 import discoursesCover from '../../assets/games/discourses/cover.png';
 import discoursesScene from '../../assets/games/discourses/winter-scene.jpeg';
 import santaCity from '../../assets/games/santa/city.png';
@@ -35,11 +38,48 @@ const softwareFlows: Record<string, { note: string; steps: string[] }> = {
 };
 
 const softwareFlow = softwareFlows[slug];
+const hasSoftwareShowcase = slug === 'flutter-product' || slug === 'chinese-bee';
 ---
 
-<div class:list={['artifact-sketch', `artifact-sketch--${category}`, `artifact-sketch--${slug}`]} aria-hidden="true">
+<div
+  class:list={['artifact-sketch', `artifact-sketch--${category}`, `artifact-sketch--${slug}`]}
+  aria-hidden={hasSoftwareShowcase ? undefined : 'true'}
+>
   {
-    category === 'software' && softwareFlow && (
+    slug === 'flutter-product' && (
+      <div class="artifact-sketch__software-showcase artifact-sketch__software-showcase--food">
+        <Image
+          src={foodDeliveryShowcase}
+          alt="Six screens from the food-ordering application, including browsing, basket, checkout, orders, address selection, and delivery tracking."
+          widths={[520, 760, 1050]}
+          sizes="(max-width: 700px) 90vw, 42vw"
+        />
+      </div>
+    )
+  }
+
+  {
+    slug === 'chinese-bee' && (
+      <div class="artifact-sketch__software-showcase artifact-sketch__software-showcase--bee">
+        <Image
+          class="artifact-sketch__bee-screens"
+          src={chineseBeeShowcase}
+          alt="Chinese Bee screens showing Telegram learning conversations, quizzes, handwriting practice, and recognition feedback."
+          widths={[520, 760, 1100]}
+          sizes="(max-width: 700px) 90vw, 42vw"
+        />
+        <Image
+          class="artifact-sketch__bee-icon"
+          src={chineseBeeIcon}
+          alt="Chinese Bee mascot."
+          width={180}
+        />
+      </div>
+    )
+  }
+
+  {
+    category === 'software' && softwareFlow && !hasSoftwareShowcase && (
       <div class="artifact-sketch__trace">
         <p>{softwareFlow.note}</p>
         <ol>
@@ -100,6 +140,47 @@ const softwareFlow = softwareFlows[slug];
 <style>
   .artifact-sketch {
     width: 100%;
+  }
+
+  .artifact-sketch__software-showcase {
+    position: relative;
+    width: 100%;
+  }
+
+  .artifact-sketch__software-showcase :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .artifact-sketch__software-showcase--food {
+    overflow: hidden;
+    border: 0.16rem solid rgba(32, 32, 30, 0.35);
+    background: #f5f0e7;
+    box-shadow: 0 0.65rem 1rem rgba(32, 32, 30, 0.13);
+    transform: rotate(-1.2deg);
+  }
+
+  .artifact-sketch__software-showcase--bee {
+    padding: 0.45rem;
+    background: rgba(193, 193, 164, 0.28);
+    transform: rotate(1.2deg);
+  }
+
+  .artifact-sketch__bee-screens {
+    border: 0.14rem solid rgba(32, 32, 30, 0.3);
+    box-shadow: 0 0.65rem 1rem rgba(32, 32, 30, 0.14);
+  }
+
+  .artifact-sketch__software-showcase .artifact-sketch__bee-icon {
+    position: absolute;
+    right: -1.2rem;
+    bottom: -1.6rem;
+    width: clamp(5.5rem, 24%, 9rem);
+    border: 0.18rem solid var(--color-paper);
+    border-radius: 50%;
+    box-shadow: 0 0.4rem 0.8rem rgba(32, 32, 30, 0.18);
+    transform: rotate(-7deg);
   }
 
   .artifact-sketch__trace {
