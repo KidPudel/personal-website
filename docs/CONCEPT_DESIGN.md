@@ -35,6 +35,7 @@ The site should feel:
 - imperfect in an intentional way;
 - technically credible;
 - professional in an artistic rather than corporate way. (hand-drawn, sketchbook aesthetic elements)
+- exploring the world navigiting through it by unfolding the path as you go.
 
 
 ## Art direction and visual language and interaction design
@@ -63,7 +64,7 @@ If an hand-drawn artifact is required but missing, insert a clearly labeled deve
 
 ## Structure and content
 
-For my vision refer to the `/Users/iggysleepy/dev/web/frontend/personal-website/storyboards` folder, it contains my drawings explaining the structure of the website
+For my vision refer to the `/Users/iggysleepy/dev/web/frontend/personal-website/storyboards` folder, it contains my drawings explaining the structure of the website. The spatial route unfolding direction is explored in `storyboards/spatial_route_unfolding_brainstorming`.
 
 Home is minimalistic, nearly empty, with a monochromatic background and extensive negative-space field. This same field continues through every destination route.
 
@@ -74,7 +75,7 @@ Home loads directly with four Igor-drawn, visibly labeled choices:
 3. `Connect`
 4. `Blog`
 
-Who I am and Blog open real routes. Each route continues the unchanged Home field and composes its content with hand-drawn boundaries, paths, marks, and artifacts.
+Who I am, Software, Games, and the Blog index are fragment-addressed expanded states of the Home document. They use `/#who-i-am`, `/#work/software`, `/#work/games`, and `/#blog`. Activating one of their Home links expands real destination content from its respective cluster, keeps that cluster as the spatial anchor, and updates browser history without replacing the document. Loading a fragment URL directly renders Home with that destination already expanded.
 
 Work remains on Home and expands locally to reveal two Igor-drawn icon links for Software and Games.
 Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, itch.io, X, and résumé.
@@ -88,10 +89,18 @@ Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, i
 - `/work/` forwards to `/#work`.
 - The Connect state is directly linkable through `/#connect`.
 - `/connect/` forwards to `/#connect`.
-- Work exposes directly linkable `Software` and `Games` modes.
- Games mode.
-- Every destination has a hand-drawn Home control in a reserved edge area outside the main content composition.
-- The Home drawing is a semantic link to `/`, has an accessible name of `Home`, a visible focus state, and at least a 44 by 44 pixel target. A small visible `Home` label may accompany it when the house drawing is not self-evident.
+- Who I am is directly linkable through `/#who-i-am`; `/who-i-am/` forwards to it after the fragment model is accepted.
+- Work exposes directly linkable `/#work/software` and `/#work/games` states.
+- `/work/software/`, `/work/games/`, and `/games/` forward to their matching Work fragments after the full migration.
+- The Blog index is directly linkable through `/#blog`; `/blog/` forwards to it after the full migration.
+- Individual published Blog articles may remain separate document routes.
+- On suitable wide screens, activating Who I am, Software, Games, or Blog expands that destination in place from the selected Home cluster. The unfolding is persistent layout state like Connect and Work, not merely a transition between documents.
+- Only one destination is expanded at a time. Its fragment is the authoritative address for that expanded state; `/` represents the collapsed Home state.
+- Browser Back and Home restore the corresponding previous or collapsed field state rather than treating the destination as an unrelated page.
+- While a destination is open on a wide screen, the other Home clusters remain only as faint spatial traces. They do not compete with the destination as a complete second navigation composition.
+- On mobile and other narrow viewports, the targeted destination section uses a full-screen composition rather than a compressed version of the desktop unfolding.
+- Every expanded destination has a reachable hand-drawn way to restore the collapsed Home state.
+- Who I am reuses its selected cluster as that control: activating Who I am again collapses the disclosure, so a separate Home drawing would be redundant. When a destination uses a separate Home drawing, it remains a semantic link to `/`, has an accessible name of `Home`, a visible focus state, and at least a 44 by 44 pixel target.
 - The four Home navigation clusters are never draggable.
 
 Every drawing keeps its conventional text label at rest. An annotation may add personality or clarification, but it never replaces the label.
@@ -104,25 +113,33 @@ The field should feel composed rather than unfinished. Spacing, annotation paths
 
 Reading and keyboard order remains Who I am, Work, Connect, Blog regardless of visual placement.
 
-The homepage is an empty interactive field rather than a notebook page or conventional hero. It loads directly with four Igor-drawn icon clusters labeled Who I am, Work, Connect, and Blog. There is no wrapper, desk scene, route container, or entry animation. Who I am opens a hand-drawn destination composition containing Igor's introduction, portrait, doodles, and values. Work expands two linked icon nodes in place, one labeled Software and one labeled Games, and either opens its hand-drawn destination in the same field. Blog opens a calmer hand-drawn writing composition. Connect expands the external contact links in place.
+The homepage is an empty interactive field rather than a notebook page or conventional hero. It loads directly with four Igor-drawn icon clusters labeled Who I am, Work, Connect, and Blog. There is no wrapper, desk scene, route container, or entry animation. Who I am expands a hand-drawn destination composition containing Igor's introduction, portrait, doodles, and values directly from its cluster. Work expands two linked icon nodes in place, one labeled Software and one labeled Games, and either expands its hand-drawn destination from that child node in the same field. Blog expands a calmer hand-drawn writing composition. Connect expands the external contact links in place.
 
 
 
 ### Pages and transitions
 
-Every destination route uses the same persistent field as Home. The field is the page itself, not a margin around another surface. A destination should feel drawn into an existing space, not like a new full-screen theme.
+Every destination fragment uses the same persistent field and document as Home. The field is the page itself, not a margin around another surface. On suitable wide screens, the selected cluster and its expanded destination coexist in that field. The destination content takes up real layout space and remains expanded until another state is selected or Home is restored.
+
+Spatial route unfolding is a fragment-addressed disclosure model, not a literal canvas, pannable plane, collection of destination pages, or replacement for document scrolling. It must not be implemented only as a cross-document arrival animation. Who I am, Software, Games, and Blog remain complete semantic sections inside Home and are directly addressable through fragments.
+
+The unfolding direction and the reading direction are separate. On suitable wide screens, a destination's opening composition may emerge sideways, upward, downward, or diagonally from its selected Home cluster. After that bounded opening, long content bends into ordinary vertical document flow. Use hand-drawn paths, spines, and loosely alternating placements to connect the spatial entrance to the downward reading journey. Do not make a destination horizontally scrolling.
 
 Compose destination content through hand-drawn borders, spines, dividers, frames, paths, brackets, arrows, and broken strokes. These marks establish relationships and reading rhythm without turning the route into conventional interface chrome. Borders may be partial, asymmetrical, and open. Do not automatically enclose the whole route or every content block in a rectangle.
 
-Negative space remains functional. It establishes continuity, gives the composition room to breathe, and reserves a stable area for the Home drawing. It may also hold restrained authored doodles when they support the composition, but it should not become a second navigation canvas.
+Negative space remains functional. It establishes continuity, gives the composition room to breathe, and reserves a stable area for the selected origin or separate Home drawing when used. It may also hold restrained authored doodles and faint traces of the other Home clusters when they support spatial continuity, but it should not become a complete second navigation composition. Those traces belong near the destination opening and recede as the visitor scrolls into long content.
 
 Use the exact same background token throughout Home and destination routes. The latest sketch establishes spatial behavior, not a final black-and-white palette.
 
-For long routes, let the hand-drawn composition continue vertically through recurring lines, marks, and spatial relationships. Place the Home drawing in the upper-left reserved edge area by default and keep it reachable during long reading without allowing it to overlap destination content. On mobile, move it into a reserved field band above the content.
+For long destinations, let the hand-drawn composition continue vertically through recurring lines, marks, and spatial relationships. The first viewport carries the spatial unfolding; later sections do not need to repeat or extend that entrance sideways. Keep the destination's return or collapse control reachable during long reading without allowing it to overlap destination content. The destination's visual origin and faint navigation traces must not interrupt reading or create horizontal scrolling. On mobile, place the same control in a reserved field band above the full-screen targeted content.
 
 Paper is exceptional rather than structural. Use it only for an exact element that Igor personally specifies. Until that instruction exists, keep the route and its content on the persistent field using the hand-drawn language.
 
-Route transitions should be simple. The unchanged field provides continuity while the destination's hand-drawn composition appears. Do not add a paper-arrival or paper-unwrapping transition unless Igor explicitly assigns paper to that destination element and separately requests the motion.
+The unfolding itself is the interaction. Activating a destination expands its content from the selected cluster within the existing document and updates the fragment to address that open state. Browser history restores previous expanded or collapsed states. Direct fragment loads start with the matching content expanded. Other Home clusters recede into faint spatial traces so the open destination remains the focus.
+
+JavaScript is required for the intended expressive behavior. It owns the unfolding motion, synchronized disclosure state, focus movement, scroll restoration, history response, and media activation within the persistent field. Semantic HTML, fragment links, and `:target` remain the resilient baseline for direct access and script failure; they do not define the visual or interaction ceiling.
+
+On mobile, the same fragment state presents its destination as a full-screen composition while remaining in the Home document. JavaScript-free fragment navigation must still reveal the targeted semantic section. Reduced motion keeps the enhanced disclosure behavior and completed expanded state but removes spatial travel. Do not add a paper-arrival or paper-unwrapping transition unless Igor explicitly assigns paper to that destination element and separately requests the motion.
 
 
 ### Who I am
@@ -257,7 +274,7 @@ Do not build pages around a visible H1, H2, H3 landing-page ladder. Composition 
 
 Semantic structure remains required. Use a visually hidden H1 when no natural visible page title exists, and label regions through visible fragments or accessible labels.
 
-Avoid repeating eyebrow, enormous heading, explanatory paragraph, and card grid on every route.
+Avoid repeating eyebrow, enormous heading, explanatory paragraph, and card grid for every destination.
 
 Free-form composition over Structured composition.
 
@@ -294,10 +311,11 @@ Proposed by AI:
 
 - recompose Home as a readable two-by-two or vertically meandering index;
 - do not shrink the desktop free-form composition;
+- present Who I am, Software, Games, and Blog as full-screen targeted sections on mobile rather than applying the desktop spatial composition;
 - expand Connect as a wrapped or vertical list rather than a cramped radial constellation;
-- preserve generous field space around destination content and a usable field band for the Home control;
+- preserve generous field space around destination content and a usable field band for the return or collapse control;
 - simplify desktop border compositions into one or two strong hand-drawn spines, dividers, or open boundaries rather than shrinking the full desktop drawing;
-- keep the Home control outside the main content composition and reachable without horizontal scrolling;
+- keep the return or collapse control outside the main content composition and reachable without horizontal scrolling;
 - touch targets remain at least 44 by 44 pixels;
 - important drawings never crowd text.
 
@@ -313,7 +331,7 @@ Always preserve:
 - keyboard and touch access;
 - readable contrast;
 - direct linking and browser history;
-- JavaScript-free access to every route and essential item.
+- JavaScript-free access to every fragment state, independent article route, and essential item.
 
 With reduced motion, skip material travel, parallax, and drag animation. Navigate immediately or use a very short fade and show the completed hand-drawn destination composition in the persistent field.
 

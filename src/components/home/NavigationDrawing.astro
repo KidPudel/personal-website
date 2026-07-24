@@ -14,6 +14,7 @@ interface Props {
   ariaExpanded?: boolean;
   tilt?: string;
   artScale?: number;
+  destinationId?: string;
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   ariaExpanded,
   tilt = '0deg',
   artScale = 1,
+  destinationId,
 } = Astro.props;
 
 const Element = href ? 'a' : 'button';
@@ -41,6 +43,7 @@ const Element = href ? 'a' : 'button';
   aria-expanded={ariaExpanded}
   data-connect-toggle={connectToggle ? '' : undefined}
   data-work-toggle={workToggle ? '' : undefined}
+  data-destination-link={destinationId}
   data-label-placement={labelPlacement}
   style={`--choice-tilt: ${tilt}; --choice-art-scale: ${artScale}`}
 >

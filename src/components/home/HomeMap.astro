@@ -17,7 +17,9 @@ import WorkDisclosure from './WorkDisclosure.astro';
       class="choice-who"
       label="Who I am"
       labelPlacement="upper-right"
-      href={sitePath('/who-i-am/')}
+      href={`${sitePath('/')}#who-i-am`}
+      ariaControls="who-i-am"
+      destinationId="who-i-am"
       tilt="-2deg"
     />
     <WorkDisclosure />

@@ -1,12 +1,12 @@
 # Website rebuild progress
 
-Last updated: 2026-07-23
+Last updated: 2026-07-24
 
 ## Status
 
-The clean foundation, approved Home base, shared destination field architecture, Who I am, Work, Blog index, and Connect disclosure are complete. The complete current public experience has passed the milestone 6 interaction, responsive, accessibility, and performance review. The local adaptation of `Identity Cage` still awaits approved article copy.
+The clean foundation, approved Home base, shared destination field architecture, Who I am, Work, Blog index, and Connect disclosure are complete. The current public experience passed the milestone 6 interaction, responsive, accessibility, and performance review. Igor approved the implemented and verified milestone 7 Who I am fragment-addressed spatial disclosure as the model for the remaining destinations. Milestone 8 is now active. The local adaptation of `Identity Cage` still awaits approved article copy.
 
-Current milestone: **6. Interaction, responsive behavior, and accessibility complete; milestone 5 local essay copy remains**
+Current milestone: **8. Complete fragment-addressed spatial field**
 
 ## Milestones
 
@@ -19,12 +19,26 @@ Current milestone: **6. Interaction, responsive behavior, and accessibility comp
 | 4. Work | Complete |
 | 5. Blog and contact completion | Blog and Connect complete; article copy pending |
 | 6. Interaction, responsive behavior, and accessibility | Complete |
-| 7. Release | Pending |
+| 7. Who I am fragment-unfolding prototype | Complete; approved by Igor on 2026-07-24 |
+| 8. Complete fragment-addressed spatial field | In progress |
+| 9. Release | Pending |
 
 Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Active direction change
 
+- On 2026-07-24, Igor approved the completed Who I am unfolding prototype as the model for milestone 8.
+- On 2026-07-24, Igor approved spatial route unfolding for Who I am, Software, Games, and Blog on suitable wide screens.
+- The unfolding must behave like the existing Connect and Work disclosures. It is actual expanded layout state within the persistent Home field, not a visual transition between separate page compositions.
+- The intended states use fragments of the Home document rather than separate destination paths: `/#who-i-am`, `/#work`, `/#work/software`, `/#work/games`, `/#connect`, and `/#blog`.
+- Direct fragment loads reveal the corresponding disclosure. In-session activation changes the hash without replacing the Home document, and Back or Forward restores the previous expanded or collapsed state.
+- Milestone 7 tests only `/#who-i-am`. Milestone 8 applies the validated model to Software, Games, and the Blog index.
+- The spatial entrance may use two-dimensional movement, but the long-form reading axis remains vertical. Horizontal document scrolling is not part of the direction.
+- Hand-drawn paths, spines, and loose alternating placements should connect each bounded opening composition to its downward content sequence.
+- While a destination is open, the other Home clusters recede into faint spatial traces rather than remaining as a complete competing navigation composition.
+- Those faint traces belong near the opening composition and should recede as the visitor scrolls deeper.
+- Mobile and other narrow viewports present the targeted fragment section as a full-screen composition.
+- The current milestone 6 implementation remains the verified functional and content baseline until the prototype and any accepted full migration are implemented and reviewed.
 - On 2026-07-23, Igor established the persistent graphite field and hand-drawn borders, spines, paths, and annotations as the default language for destination routes.
 - Paper is now exceptional rather than structural. It may appear only where Igor explicitly identifies the exact element and purpose.
 - The paper invitation revealed after completing all three Who I am craft values is also an explicitly approved paper use.
@@ -39,6 +53,11 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Astro is updated to 7.1.3. TypeScript remains on the newest supported 6.x release because Astro Check does not yet support TypeScript 7.
 - `BaseDocument`, `WorldField`, and `HomeReturn` remain the shared shell primitives. `WorldField` provides a responsive destination content track and a separate sticky Home track without imposing a route surface. The unused `LegacyPaperSurface` component was removed after the final route migration.
 - The clean shell has no global client router, page-transition controller, global click effect, UI framework, or client-side state.
+- JavaScript is a first-class requirement for the intended spatial interaction. The planned TypeScript SpatialRouteShell will own unfolding motion, fragment-state synchronization, accessibility state, focus, scroll restoration, history response, and lazy media activation.
+- Semantic destination sections and generic `:target` visibility provide direct-link and no-JavaScript resilience; they are not the intended finished interaction by themselves.
+- A cross-document View Transition alone does not satisfy the direction because it replaces one route presentation with another instead of expanding destination content inside the persistent field.
+- Destination openings may unfold in two dimensions, but long content will keep ordinary vertical page scrolling without horizontal overflow or nested scrolling panels.
+- Who I am is the only milestone 7 disclosure. Software, Games, and Blog follow in milestone 8 only after its real expansion, direct-fragment, history, focus, scroll, reduced-motion, mobile, lazy-media, and JavaScript-free behavior pass.
 - `/work/`, `/connect/`, and `/games/` are base-aware compatibility redirects to `/#work`, `/#connect`, and `/work/games/`.
 - Bright Chalk is the locally hosted reading and interface family. Cartoon Relief is the locally hosted distinctive-display family. Both ship as WOFF2 generated from the supplied TrueType sources.
 - Home navigation uses ordinary links for Who I am and Blog, plus disclosure buttons for Work and Connect. Reading and keyboard order is Who I am, Work, Connect, Blog.
@@ -53,7 +72,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The destination Home control uses Igor's latest `Doodles_home.png` drawing while retaining the semantic link and accessible name `Home`. It now occupies the shared sticky edge track on desktop and the reserved field band above content on mobile, independent of any paper edge.
 - The obsolete legacy destination paper surface has been removed.
 - Who I am uses public first-person copy grounded in `docs/CONTEXT_ABOUT_IGOR.md`. It introduces Igor through experience-driven product and gameplay systems work without adding private context or stronger specialization claims.
-- The drawn and real portraits are both present in the static document. Their frames are now open hand-drawn outlines without paper backing or tape. The `real me` caption sits on the left edge and `drawn me` stays on the right so the stacked labels match the selector order and remain distinct; the caption belonging to the portrait underneath is darker than the active caption. Enhancement turns them into a locally owned portrait selector with synchronized `aria-pressed` and inactive-panel state. The real portrait is selected by default, and hovering the stack, focusing its controls, or switching portraits starts a fresh restrained card-shuffle motion.
+- The drawn and real portraits are both present in the static document. Their frames are now open hand-drawn outlines without paper backing or tape. The `real me` caption sits on the left edge and `drawn me` stays on the right; the caption belonging to the portrait underneath is darker than the active caption. Enhancement makes the image stack itself the portrait switch, with a changing accessible action label and synchronized inactive-panel state instead of a redundant text-control row. The real portrait is selected by default, and hovering, focusing, or activating the stack starts a fresh restrained card-shuffle motion.
 - The unified three-line craft-values checklist exposes every approved word in the static document. Enhancement turns the changing word in each line into a conventional button that cycles its approved alternatives.
 - The craft values form a compact three-note composition connected by hand-drawn paths to a dashed secret area. Their checkbox targets align in one readable column, while each visible box uses a distinct irregular SVG pencil contour and a curved tick that draws into place. The native inputs, 48-pixel targets, and visible keyboard focus remain valid. Completing all three reveals the explicitly approved paper invitation directly over the secret area.
 - The word `experiences` in the Who I am statement runs a brief staggered color wave after page load and then returns to the headline color. It continues to react letter by letter on precise-pointer hover. Keyboard focus and touch activation expose the same restrained color play without making the headline depend on JavaScript.
@@ -78,7 +97,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 | Keep | Astro and TypeScript configuration, package and lock files, GitHub Pages workflow, local development script, strict content schemas, verified content entries, public-link configuration, résumé files, favicon, authored portraits and doodles, paper materials, game media, storyboards, and source documents. |
 | Replace | Legacy route compositions, `BaseLayout`, shared header and footer, generic interaction and doodle components, the monolithic global stylesheet, and the old Games-specific presentation. |
 | Remove | Global `ClientRouter`, shared paper transition configuration, global pointer impact effect, legacy notebook and desk styling, and the separate pixel-interface theme. |
-| Defer | Remaining interaction enhancements and release metadata. |
+| Defer | Full fragment-field migration and release metadata until the Who I am prototype is accepted. |
 
 ## Milestone 1 verification
 
@@ -226,6 +245,22 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Locally hosted WOFF2 fonts, the single reading-font preload, responsive Astro image derivatives, the optimized Discourses animation, native lazy loading, bounded video preload, and route-local enhancement keep the current client and media work proportionate.
 - `astro check`, root and `/personal-website/` production builds, generated-document checks, public-copy checks, and `git diff --check` pass.
 
+## Milestone 7 verification
+
+- `/#who-i-am` now reveals the complete Who I am content inside the Home document. The authored Home map remains mounted, the selected cluster stays as the literal wide-screen hinge, and the other clusters recede as faint traces confined to the opening composition.
+- The wide-screen opening is a new constellation rather than a retained destination-page frame: the portrait sits upper-left, the introduction upper-right, the craft notes continue below the origin, and the secret area completes the lower-left branch. There is no enclosing route border, old hero split, horizontal document scrolling, or nested scrolling surface.
+- Every enhanced connector path is calculated from the selected Who drawing's rendered center to its current content target, so all four branches stay attached to the origin across responsive layout changes.
+- Activation stages the connector strokes, introduction, craft notes, portrait stack, and secret area individually. Direct fragment loads expose the settled composition immediately, and reduced-motion rules preserve all content while removing spatial travel.
+- The separate Home drawing is removed from this disclosure. The selected Who cluster remains reachable as a 96 by 96 pixel control on narrow screens and collapses the disclosure with one activation on both direct loads and in-session openings.
+- Desktop inspection at 1440 by 900 and the 1084 by 943 browser-pane width confirms readable separation around the selected origin and no horizontal overflow.
+- Mobile at 390 by 844 and the 320-pixel minimum width presents Who I am as a full-screen vertical composition with the selected Who control in its reserved top band, readable content, functional portrait and craft-value controls, and no horizontal overflow.
+- Activation, direct `/#who-i-am` loading, reload, Back, Forward, selected-cluster collapse, and Escape keep the fragment, disclosure visibility, document title, `aria-expanded`, Home-map availability, scroll position, and focus synchronized without replacing the Home document.
+- The enhanced disclosure's visible state follows its synchronized `hidden` attribute rather than relying on `:target` to react to `pushState`; `:target` remains the direct-fragment and JavaScript-free fallback.
+- The generated static Home document contains the complete semantic Who I am section without a `hidden` attribute, and the production stylesheet exposes it through `:target` before enhancement. The old `/who-i-am/` document is now a base-aware, `noindex` compatibility redirect to `/#who-i-am`.
+- Both portrait images remain in the static document with descriptive alternatives and `loading="lazy"`. Completing all three craft values still reveals the approved paper invitation, and the active disclosure no longer allows shared decorative doodles to intercept its controls.
+- The portrait stack itself switches between real and drawn views by pointer or keyboard activation. The redundant selector row below the cards is removed while the in-frame captions remain.
+- Visible Who I am interaction targets are at least 44 by 44 CSS pixels. Root and `/personal-website/` production builds, `astro check`, generated-fragment checks, compatibility redirect checks, public-copy checks, and `git diff --check` pass.
+
 ## Open inputs and blockers
 
 - Bright Chalk and Cartoon Relief files are present and integrated. Web-embedding rights still need confirmation before release.
@@ -233,4 +268,4 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Next action
 
-Resolve the approved local `Identity Cage` copy and confirm webfont embedding rights before milestone 7 release work.
+Apply the approved fragment-disclosure model to Software, Games, and the Blog index while preserving the verified Who I am, Work, and Connect behavior. The approved local `Identity Cage` copy and webfont embedding-rights confirmation remain required before milestone 9 release work.

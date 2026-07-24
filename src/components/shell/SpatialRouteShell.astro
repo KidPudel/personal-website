@@ -1,0 +1,366 @@
+---
+import HomeMap from '../home/HomeMap.astro';
+import WhoDisclosure from '../who/WhoDisclosure.astro';
+---
+
+<spatial-route-shell data-base-title="Igor Kupchinenko">
+  <div class="spatial-route-shell__home" data-spatial-home-map>
+    <HomeMap />
+  </div>
+
+  <WhoDisclosure />
+</spatial-route-shell>
+
+<script>
+  class SpatialRouteShellElement extends HTMLElement {
+    private homeMap?: HTMLElement;
+    private whoDisclosure?: HTMLElement;
+    private whoTrigger?: HTMLAnchorElement;
+    private connections?: SVGSVGElement;
+    private collapsedScrollY = 0;
+    private previousHash = '';
+    private enteredByActivation = false;
+    private focusTimer?: number;
+    private connectionFrame?: number;
+
+    private isWhoHash = () => window.location.hash === '#who-i-am';
+
+    private setHomeAvailability = (destinationActive: boolean) => {
+      if (!this.homeMap) return;
+
+      const homeTitle = this.homeMap.querySelector<HTMLElement>('#home-title');
+      const otherChoices = this.homeMap.querySelectorAll<HTMLElement>(
+        '.home-map__choices > :not(.choice-who)',
+      );
+
+      if (destinationActive) {
+        homeTitle?.setAttribute('aria-hidden', 'true');
+      } else {
+        homeTitle?.removeAttribute('aria-hidden');
+      }
+
+      otherChoices.forEach((choice) => {
+        choice.toggleAttribute('inert', destinationActive);
+        if (destinationActive) {
+          choice.setAttribute('aria-hidden', 'true');
+        } else {
+          choice.removeAttribute('aria-hidden');
+        }
+      });
+    };
+
+    private updateConnectionPaths = () => {
+      if (!this.connections || !this.whoTrigger || !this.isWhoHash()) return;
+
+      const fieldRect = this.connections.getBoundingClientRect();
+      const originRect =
+        this.whoTrigger.querySelector<HTMLElement>('.home-choice__art')?.getBoundingClientRect() ??
+        this.whoTrigger.getBoundingClientRect();
+      if (!fieldRect.width || !fieldRect.height || !originRect.width || !originRect.height) return;
+
+      this.connections.setAttribute('viewBox', `0 0 ${fieldRect.width} ${fieldRect.height}`);
+
+      const origin = {
+        x: originRect.left + originRect.width / 2 - fieldRect.left,
+        y: originRect.top + originRect.height / 2 - fieldRect.top,
+      };
+
+      this.connections.querySelectorAll<SVGPathElement>('[data-connection-to]').forEach((path) => {
+        const targetName = path.dataset.connectionTo;
+        const target = this.querySelector<HTMLElement>(`[data-connection-target="${targetName}"]`);
+        if (!target) return;
+
+        const targetRect = target.getBoundingClientRect();
+        const center = {
+          x: targetRect.left + targetRect.width / 2 - fieldRect.left,
+          y: targetRect.top + targetRect.height / 2 - fieldRect.top,
+        };
+        const towardOrigin = {
+          x: origin.x - center.x,
+          y: origin.y - center.y,
+        };
+        const halfWidth = Math.max(targetRect.width / 2 + 10, 1);
+        const halfHeight = Math.max(targetRect.height / 2 + 10, 1);
+        const edgeScale = 1 / Math.max(
+          Math.abs(towardOrigin.x) / halfWidth,
+          Math.abs(towardOrigin.y) / halfHeight,
+          1,
+        );
+        const end = {
+          x: center.x + towardOrigin.x * edgeScale,
+          y: center.y + towardOrigin.y * edgeScale,
+        };
+
+        const dx = end.x - origin.x;
+        const dy = end.y - origin.y;
+        const curve = Number(path.dataset.curve ?? 0);
+        const controlOffset = Math.hypot(dx, dy) * curve;
+        const length = Math.max(Math.hypot(dx, dy), 1);
+        const normal = { x: -dy / length, y: dx / length };
+        const firstControl = {
+          x: origin.x + dx * 0.34 + normal.x * controlOffset,
+          y: origin.y + dy * 0.34 + normal.y * controlOffset,
+        };
+        const secondControl = {
+          x: origin.x + dx * 0.72 + normal.x * controlOffset,
+          y: origin.y + dy * 0.72 + normal.y * controlOffset,
+        };
+
+        path.setAttribute(
+          'd',
+          `M ${origin.x} ${origin.y} C ${firstControl.x} ${firstControl.y}, ${secondControl.x} ${secondControl.y}, ${end.x} ${end.y}`,
+        );
+      });
+    };
+
+    private queueConnectionUpdate = () => {
+      if (this.connectionFrame) window.cancelAnimationFrame(this.connectionFrame);
+      this.connectionFrame = window.requestAnimationFrame(() => {
+        this.connectionFrame = undefined;
+        this.updateConnectionPaths();
+      });
+    };
+
+    private focusAfterEntry = () => {
+      if (!this.whoDisclosure) return;
+
+      if (this.focusTimer) window.clearTimeout(this.focusTimer);
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this.focusTimer = window.setTimeout(() => {
+        this.whoDisclosure?.querySelector<HTMLElement>('#who-title')?.focus({ preventScroll: true });
+      }, reduceMotion ? 0 : 280);
+    };
+
+    private syncFromLocation = (initial = false) => {
+      if (!this.homeMap || !this.whoDisclosure || !this.whoTrigger) return;
+
+      const active = this.isWhoHash();
+      const wasActive = this.previousHash === '#who-i-am';
+
+      this.whoDisclosure.hidden = !active;
+      this.whoTrigger.setAttribute('aria-expanded', String(active));
+      this.whoTrigger.setAttribute('aria-label', active ? 'Who I am, close' : 'Who I am');
+      this.toggleAttribute('data-destination-active', active);
+      this.setHomeAvailability(active);
+
+      if (active) {
+        this.dataset.activeDestination = 'who-i-am';
+        document.title = `Who I am | ${this.dataset.baseTitle ?? 'Igor Kupchinenko'}`;
+        window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: 'who-i-am' } }));
+        this.queueConnectionUpdate();
+
+        if (!initial) {
+          this.toggleAttribute('data-entering', this.enteredByActivation);
+          window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }));
+          this.focusAfterEntry();
+        }
+      } else {
+        delete this.dataset.activeDestination;
+        this.removeAttribute('data-entering');
+        document.title = this.dataset.baseTitle ?? 'Igor Kupchinenko';
+
+        if (wasActive && !initial) {
+          window.requestAnimationFrame(() => {
+            window.scrollTo({ top: this.collapsedScrollY, behavior: 'auto' });
+            this.whoTrigger?.focus({ preventScroll: true });
+          });
+        }
+      }
+
+      this.previousHash = window.location.hash;
+      this.enteredByActivation = false;
+    };
+
+    private handleWhoActivation = (event: MouseEvent) => {
+      if (
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      if (this.isWhoHash()) {
+        this.enteredByActivation = false;
+
+        if (window.history.state?.spatialDestination === 'who-i-am') {
+          window.history.back();
+        } else {
+          window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
+          this.syncFromLocation();
+        }
+        return;
+      }
+
+      this.collapsedScrollY = window.scrollY;
+      this.enteredByActivation = true;
+      window.history.pushState(
+        { ...window.history.state, spatialDestination: 'who-i-am' },
+        '',
+        `${window.location.pathname}${window.location.search}#who-i-am`,
+      );
+      this.syncFromLocation();
+    };
+
+    private handleHashChange = () => this.syncFromLocation();
+
+    private handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape' || !this.isWhoHash() || !this.whoTrigger) return;
+      this.whoTrigger.click();
+    };
+
+    connectedCallback() {
+      if (this.hasAttribute('data-enhanced')) return;
+
+      this.homeMap = this.querySelector<HTMLElement>('[data-spatial-home-map]') ?? undefined;
+      this.whoDisclosure = this.querySelector<HTMLElement>('#who-i-am') ?? undefined;
+      this.whoTrigger = this.querySelector<HTMLAnchorElement>('[data-destination-link="who-i-am"]') ?? undefined;
+      this.connections = this.querySelector<SVGSVGElement>('[data-who-connections]') ?? undefined;
+      if (!this.homeMap || !this.whoDisclosure || !this.whoTrigger || !this.connections) return;
+
+      this.setAttribute('data-enhanced', '');
+      this.collapsedScrollY = window.location.hash ? 0 : window.scrollY;
+      this.previousHash = window.location.hash;
+      this.syncFromLocation(true);
+
+      this.whoTrigger.addEventListener('click', this.handleWhoActivation);
+      window.addEventListener('hashchange', this.handleHashChange);
+      window.addEventListener('resize', this.queueConnectionUpdate);
+      document.addEventListener('keydown', this.handleEscape);
+    }
+
+    disconnectedCallback() {
+      this.whoTrigger?.removeEventListener('click', this.handleWhoActivation);
+      window.removeEventListener('hashchange', this.handleHashChange);
+      window.removeEventListener('resize', this.queueConnectionUpdate);
+      document.removeEventListener('keydown', this.handleEscape);
+      if (this.focusTimer) window.clearTimeout(this.focusTimer);
+      if (this.connectionFrame) window.cancelAnimationFrame(this.connectionFrame);
+    }
+  }
+
+  if (!customElements.get('spatial-route-shell')) {
+    customElements.define('spatial-route-shell', SpatialRouteShellElement);
+  }
+</script>
+
+<style>
+  spatial-route-shell {
+    position: relative;
+    display: block;
+    min-height: calc(100vh - (2 * var(--field-gutter)));
+    isolation: isolate;
+  }
+
+  :global(.world-field:has(spatial-route-shell[data-destination-active]) .world-field__content > main),
+  :global(.world-field:has(#who-i-am:target) .world-field__content > main) {
+    pointer-events: auto;
+  }
+
+  :global(.world-field:has(spatial-route-shell[data-destination-active]) .world-field__doodle),
+  :global(.world-field:has(#who-i-am:target) .world-field__doodle) {
+    pointer-events: none;
+    opacity: 0.055;
+  }
+
+  .spatial-route-shell__home {
+    position: relative;
+    z-index: 1;
+  }
+
+  spatial-route-shell[data-destination-active] .spatial-route-shell__home,
+  spatial-route-shell:has(#who-i-am:target) .spatial-route-shell__home {
+    position: absolute;
+    inset: 0 0 auto;
+    height: max(48rem, calc(100vh - (2 * var(--field-gutter))));
+    overflow: clip;
+    pointer-events: none;
+  }
+
+  spatial-route-shell[data-destination-active] :global(.home-map__choices > :not(.choice-who)),
+  spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > :not(.choice-who)) {
+    opacity: 0.055;
+    transform: scale(0.86);
+    transform-origin: center;
+  }
+
+  spatial-route-shell[data-destination-active] :global(.home-map__choices > .choice-who),
+  spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who) {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    transform-origin: center;
+  }
+
+  spatial-route-shell[data-entering] :global(.choice-who .home-choice__art) {
+    animation: who-origin-pulse 520ms steps(4, end) both;
+  }
+
+  @keyframes who-origin-pulse {
+    0%,
+    100% {
+      filter: none;
+      transform: rotate(var(--drawn-icon-resting-tilt));
+    }
+
+    35% {
+      filter: drop-shadow(0 0 0.35rem rgba(243, 239, 228, 0.38));
+      transform: translateY(-0.15rem) rotate(calc(var(--drawn-icon-resting-tilt) - 2deg)) scale(1.04);
+    }
+
+    68% {
+      filter: none;
+      transform: translateY(0.05rem) rotate(calc(var(--drawn-icon-resting-tilt) + 1deg)) scale(0.99);
+    }
+  }
+
+  @media (max-width: 64rem) {
+    spatial-route-shell[data-destination-active] .spatial-route-shell__home,
+    spatial-route-shell:has(#who-i-am:target) .spatial-route-shell__home {
+      display: block;
+      height: 6.5rem;
+      overflow: visible;
+    }
+
+    spatial-route-shell[data-destination-active] :global(.home-map),
+    spatial-route-shell:has(#who-i-am:target) :global(.home-map) {
+      display: block;
+      min-height: 0;
+      overflow: visible;
+    }
+
+    spatial-route-shell[data-destination-active] :global(.home-map__choices),
+    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices) {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: auto;
+      min-height: 0;
+      padding: 0;
+    }
+
+    spatial-route-shell[data-destination-active] :global(.home-map__choices > :not(.choice-who)),
+    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > :not(.choice-who)) {
+      display: none;
+    }
+
+    spatial-route-shell[data-destination-active] :global(.home-map__choices > .choice-who),
+    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6rem;
+      margin: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    spatial-route-shell[data-entering] :global(.choice-who .home-choice__art) {
+      animation-duration: 0.01ms;
+    }
+  }
+</style>
