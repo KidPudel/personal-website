@@ -316,9 +316,11 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
   .software-stop {
     position: relative;
     z-index: 1;
-    display: flex;
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
     min-width: 0;
-    flex-direction: column;
     gap: clamp(1.5rem, 3vw, 2.5rem);
     padding: clamp(3rem, 6vw, 5rem) clamp(0.75rem, 2vw, 1.5rem);
     scroll-margin-top: 2rem;
@@ -399,11 +401,25 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
   }
 
   .software-stop--bee .software-stop__media {
+    grid-column: 1;
+    grid-row: 1;
     transform: rotate(1.2deg);
   }
 
+  .software-stop--bee .software-stop__copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
   .software-stop--receipts .software-stop__media {
+    grid-column: 2;
+    grid-row: 1;
     transform: rotate(-1deg);
+  }
+
+  .software-stop--receipts .software-stop__copy {
+    grid-column: 1;
+    grid-row: 1;
   }
 
   :global(.js) unfolding-trail[data-enhanced] .software-stop__media {
@@ -514,8 +530,12 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
     }
 
     .software-stop {
+      display: flex;
+      grid-column: auto;
+      grid-template-columns: none;
       gap: 2.2rem;
       min-height: 0;
+      flex-direction: column;
       padding: 4.5rem 1rem 3rem 1.5rem;
     }
 

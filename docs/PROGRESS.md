@@ -307,6 +307,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 ## Software project-heading refinement
 
 - The Flutter and Chinese Bee records now lead with the concrete experience each artifact brought to users rather than a construction-oriented phrase or product name alone.
+- On wide screens, Chinese Bee now forms one horizontal row with its image on the left and its title and learning notes on the right. The receipt-processing project continues below in the opposite direction, with its details on the left and image on the right. Narrow screens retain the media-first single-column flow.
 
 ## Résumé rewrite
 

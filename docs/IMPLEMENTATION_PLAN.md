@@ -66,6 +66,7 @@ Exit condition: Home and Who I am form a complete, responsive, accessible vertic
 
 - Build the Work disclosure on Home with connected Igor-drawn Software and Games icon links, a slightly offset vertical wide-screen arrangement, and their shared wobble behavior.
 - Build the directly linkable Software and Games routes as hand-drawn long-form compositions on the persistent field.
+- On wide Software layouts, compose the second project as media left with its title and learning notes to the right, then alternate the third project below with its details left and media right. Preserve the single-column reading flow on narrower screens.
 - Rebuild the content model around verified artifacts and honest prominence.
 - Keep both Work openings compact on wide screens. Place the Software professional-work framing and interactive-product résumé downloads in its opening composition, and place the game-development résumé downloads in Games.
 - Keep each `What I've learned` list sourced from explicit project learnings, not engine, jam, or status metadata.
