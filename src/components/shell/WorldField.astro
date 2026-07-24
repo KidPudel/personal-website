@@ -13,24 +13,29 @@ import scribbleDoodle from '../../assets/art/doodles/Doodles_scribble.png';
 
 interface Props {
   destination?: boolean;
+  doodles?: boolean;
 }
 
-const { destination = false } = Astro.props;
+const { destination = false, doodles = true } = Astro.props;
 ---
 
 <div class:list={['world-field', { 'world-field--destination': destination }]}>
   <div class="world-field__content">
-    <div class="world-field__doodles" aria-hidden="true">
-      <Image class="world-field__doodle world-field__doodle--disk" src={diskDoodle} alt="" width={220} />
-      <Image class="world-field__doodle world-field__doodle--burger" src={burgerDoodle} alt="" width={256} />
-      <Image class="world-field__doodle world-field__doodle--bird" src={birdDoodle} alt="" width={220} />
-      <Image class="world-field__doodle world-field__doodle--fish" src={fishDoodle} alt="" width={240} />
-      <Image class="world-field__doodle world-field__doodle--dead-fish" src={deadFishDoodle} alt="" width={230} />
-      <Image class="world-field__doodle world-field__doodle--camera" src={cameraDoodle} alt="" width={220} />
-      <Image class="world-field__doodle world-field__doodle--campfire" src={campfireDoodle} alt="" width={220} />
-      <Image class="world-field__doodle world-field__doodle--robot" src={robotDoodle} alt="" width={220} />
-      <Image class="world-field__doodle world-field__doodle--scribble" src={scribbleDoodle} alt="" width={240} />
-    </div>
+    {
+      doodles && (
+        <div class="world-field__doodles" aria-hidden="true">
+          <Image class="world-field__doodle world-field__doodle--disk" src={diskDoodle} alt="" width={220} />
+          <Image class="world-field__doodle world-field__doodle--burger" src={burgerDoodle} alt="" width={256} />
+          <Image class="world-field__doodle world-field__doodle--bird" src={birdDoodle} alt="" width={220} />
+          <Image class="world-field__doodle world-field__doodle--fish" src={fishDoodle} alt="" width={240} />
+          <Image class="world-field__doodle world-field__doodle--dead-fish" src={deadFishDoodle} alt="" width={230} />
+          <Image class="world-field__doodle world-field__doodle--camera" src={cameraDoodle} alt="" width={220} />
+          <Image class="world-field__doodle world-field__doodle--campfire" src={campfireDoodle} alt="" width={220} />
+          <Image class="world-field__doodle world-field__doodle--robot" src={robotDoodle} alt="" width={220} />
+          <Image class="world-field__doodle world-field__doodle--scribble" src={scribbleDoodle} alt="" width={240} />
+        </div>
+      )
+    }
     <slot />
   </div>
 </div>

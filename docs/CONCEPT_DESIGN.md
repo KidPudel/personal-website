@@ -81,6 +81,13 @@ Work remains on Home and expands locally to reveal two Igor-drawn icon links for
 Connect remains on Home and expands locally to reveal email, LinkedIn, GitHub, itch.io, X, and résumé.
 
 
+Before home there should be a url page `/secret-box`
+
+This page is an animated box that the user clicks on, it animates and then iris out (or a circle iris wipe) transition effect happens and it loads the `home` page.
+
+You can find animation frames there `/Users/iggysleepy/dev/web/frontend/personal-website/src/assets/art/secret-box-animation-frames`
+
+
 ### Navigation model
 
 - `Who I am` and `Blog` are semantic links.

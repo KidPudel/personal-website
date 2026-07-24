@@ -44,6 +44,7 @@ The primary experience is one statically generated Home document with fragment-a
 | `/#work/games` | Games expanded from its Work child |
 | `/#connect` | Connect expanded |
 | `/#blog` | Blog index expanded |
+| `/secret-box/` | Self-contained secret-box animation that returns to Home |
 | `/blog/[slug]/` | Independent published article document |
 
 Fragments are not sent to the server, so every fragment address receives the same Home HTML. The document contains the semantic content required by every disclosure. CSS `:target` provides direct fragment and JavaScript-free visibility; enhancement synchronizes animation, focus, scroll, and disclosure attributes with `hashchange`.
@@ -51,6 +52,8 @@ Fragments are not sent to the server, so every fragment address receives the sam
 The existing `/who-i-am/`, `/work/`, `/work/software/`, `/work/games/`, `/blog/`, `/connect/`, and `/games/` documents become base-aware compatibility redirects to the corresponding Home fragments after their destination has migrated. Milestone 7 migrates only Who I am. Milestone 8 performs the remaining redirects after the complete fragment model passes review.
 
 Home owns the canonical URL and default social metadata for all fragment states because fragments cannot select server-rendered metadata. Enhancement may update `document.title` for orientation, but it must not imply that fragments are independent documents. Published Blog articles retain their own metadata and canonical paths.
+
+The Secret box is a separate entry document outside the spatial disclosure shell. It reuses the field material without the shared doodle layer, owns its authored frame sequence and iris transition locally, and links directly to Home when JavaScript is unavailable.
 
 ## Shared document structure
 

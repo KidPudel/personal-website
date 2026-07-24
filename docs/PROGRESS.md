@@ -4,9 +4,9 @@ Last updated: 2026-07-24
 
 ## Status
 
-The clean foundation, approved Home base, shared destination field architecture, Who I am, Work, Blog index, and Connect disclosure are complete. The current public experience passed the milestone 6 interaction, responsive, accessibility, and performance review. Igor approved the implemented and verified milestone 7 Who I am fragment-addressed spatial disclosure as the model for the remaining destinations. Igor approved the completed milestone 8 Software, Games, and Blog route-owned unfoldings on 2026-07-24. The local adaptation of `Identity Cage` still awaits approved article copy.
+The clean foundation, approved Home base, shared destination field architecture, Who I am, Work, Blog index, and Connect disclosure are complete. The current public experience passed the milestone 6 interaction, responsive, accessibility, and performance review. Igor approved the implemented and verified milestone 7 Who I am fragment-addressed spatial disclosure as the model for the remaining destinations. Igor approved the completed milestone 8 Software, Games, and Blog route-owned unfoldings on 2026-07-24. Igor approved the completed milestone 9 Secret box on 2026-07-24. The local adaptation of `Identity Cage` still awaits approved article copy.
 
-Current milestone: **9. secret box page**
+Current milestone: **10. Release**
 
 ## Milestones
 
@@ -21,7 +21,7 @@ Current milestone: **9. secret box page**
 | 6. Interaction, responsive behavior, and accessibility | Complete |
 | 7. Who I am fragment-unfolding prototype | Complete; approved by Igor on 2026-07-24 |
 | 8. Complete fragment-addressed spatial field | Complete; approved by Igor on 2026-07-24 |
-| 9. secret box page | In progress |
+| 9. secret box page | Complete; approved by Igor on 2026-07-24 |
 | 10. Release | Pending |
 
 Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
@@ -282,6 +282,22 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - `/work/software/`, `/work/games/`, `/games/`, and `/blog/` are base-aware, `noindex` compatibility redirects to their matching Home fragments. Published Blog articles remain independent routes.
 - Root and `/personal-website/` production builds, `astro check`, public-copy checks, direct-fragment and selected-origin checks, minimum-width checks, and `git diff --check` pass. Igor approved milestone 8 on 2026-07-24.
 
+## Milestone 9 verification
+
+- `/secret-box/` is a separate, directly addressable entry document. `/` remains the dependable Home URL, and the Secret box links to Home without JavaScript.
+- The page reuses the Home field color, grain, tonal variation, and softened edges while omitting every shared background doodle.
+- The supplied nine authored frames are eagerly available in one centered, keyboard-accessible link. Activation advances the sequence at 3 FPS, holds the final frame, closes a circular iris, and then navigates to Home.
+- A subdued Bright Chalk warning below the box's right edge says `Do not open`, tilts left, and underlines `not`.
+- Activating the box keeps `not` visible but replaces its underline with a strikethrough during the opening sequence.
+- The lower-right reflection `Curiosity killed the cat, but satisfaction brought it back.` remains absent until the visitor chooses to open the Secret box, then appears during the authored frame sequence.
+- On precise pointers, hovering the box applies a restrained stepped shake to the drawing only. Leaving hover stops it, and activation disables it before the authored opening sequence begins.
+- The warning remains visually attached below the box but sits outside the semantic Home link, so only the box area activates the sequence.
+- Repeated activation is suppressed while the sequence is playing. The interaction announces its state to assistive technology, retains a semantic Home fallback, and skips the stepped sequence when reduced motion is requested.
+- Desktop inspection at 1440 by 900 and mobile inspection at 390 by 844 confirm a centered box, complete authored drawing, no doodles, no horizontal overflow, and all nine frames loaded.
+- Browser interaction inspection confirms an intermediate frame appears during playback, the ninth frame is active when the iris begins, and navigation completes at `/`.
+- The generated document has one `main`, one `h1`, a named link, a skip link, and base-aware Home and asset URLs. Root and `/personal-website/` production builds, `astro check`, public-copy checks, and `git diff --check` pass.
+- Igor approved the completed milestone 9 Secret box on 2026-07-24.
+
 ## Open inputs and blockers
 
 - Bright Chalk and Cartoon Relief files are present and integrated. Web-embedding rights still need confirmation before release.
@@ -289,4 +305,4 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Next action
 
-Implement milestone 9's approved secret-box page when requested. The approved local `Identity Cage` copy and webfont embedding-rights confirmation remain required before milestone 10 release work.
+Resolve the approved local `Identity Cage` copy and webfont embedding-rights confirmation, then begin milestone 10 release work.

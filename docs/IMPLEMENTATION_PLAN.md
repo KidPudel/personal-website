@@ -118,7 +118,7 @@ Exit condition: Home behaves as one coherent fragment-addressed spatial field wh
 
 ### 9. secret box page
 
-- Simple `/secret-box` page with a box at the center.
+- Simple `/secret-box` page with a box at the center. `/Users/iggysleepy/dev/web/frontend/personal-website/src/assets/art/secret-box-animation-frames`
 - user clicks on it, it gets animated to the other frames (3 FPS)
 - animation ends, transition effect happens
 - transition effect ends and user gets directed to the home page
@@ -132,8 +132,7 @@ Exit condition: Secret box page, animation, and transition effect and the transi
 
 - Complete metadata, social preview, sitemap, RSS, and `404.html`.
 - Run clean checks and production builds.
-- Deploy through GitHub Pages and inspect the public result.
-- Fix deployment-only issues and record the final state.
+- After Igor deployed website through the GitHub Pages himself fix deployment-only issues and record the final state.
 
 Exit condition: the public site is complete, verified, and deployable from a clean checkout.
 
