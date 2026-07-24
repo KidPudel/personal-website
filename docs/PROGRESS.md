@@ -328,6 +328,10 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Browsers can ignore image texture when painting the native elastic-scroll gap. Vertical overscroll bounce is therefore disabled on the root document and body across every route, while ordinary vertical page scrolling remains unchanged.
 - The Secret box retains its no-scroll viewport behavior while consuming the global surface rather than carrying a duplicate background recipe.
 
+## Browser-tab icon
+
+- Every route now uses the authored `avatar.png` artwork as its PNG favicon instead of the previous standalone SVG icon.
+
 ## Open inputs and blockers
 
 - Bright Chalk and Cartoon Relief files are present and integrated. Web-embedding rights still need confirmation before release.
