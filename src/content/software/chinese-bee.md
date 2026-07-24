@@ -1,5 +1,5 @@
 ---
-title: Chinese Bee
+title: A convenient Chinese-learning tool for chat and handwriting practice
 summary: An end-to-end Chinese-learning product joining a Telegram experience, a database-backed API, saved vocabulary, practice, handwriting, and recognition scoring.
 prominence: featured
 status: complete

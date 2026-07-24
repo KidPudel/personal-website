@@ -87,7 +87,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Games contains `Discourses by Campfire`, `Santa Foundation`, Snake with Go and raylib, and C++ with OpenGL Tic-Tac-Toe. Retained media supports the two finished games. Discourses links directly to its confirmed itch.io game page.
 - The verified payment and expiration entry and unfinished card-system entry remain in the typed content collection but are not published on these indexes because the current concept names the exact public selections.
 - Work project records no longer display promotional summaries, visible category headings, status badges, or hashtag rows. Real media and project names lead each composition; explicit learning notes appear in a quiet handwritten list titled `Learned along an artifact`.
-- Every Work destination remains complete static HTML inside Home and is coordinated only by the scoped SpatialRouteShell. Software offers both the existing résumé PDF and the matching DOCX as direct downloads. Public game links remain available directly from their index records.
+- Every Work destination remains complete static HTML inside Home and is coordinated only by the scoped SpatialRouteShell. Software offers the interactive-product résumé as PDF and DOCX downloads. Games offers the game-development résumé in both formats. Public game links remain available directly from their index records.
 - Blog unfolds at `/#blog` as a calm field composition with incomplete hand-drawn boundaries, generous spacing, and a concise writing list rather than a paper surface or card grid.
 - The verified `Identity Cage` entry remains a draft for local publication, so the Blog index links to the existing Medium publication instead of exposing placeholder copy as a finished local article.
 - `/blog/[slug]/` is a static, JavaScript-free local article presentation generated only for writing entries whose `draft` field is false. It includes base-aware Blog and Home navigation, readable long-form typography, and an optional canonical publication link.
@@ -297,6 +297,29 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Browser interaction inspection confirms an intermediate frame appears during playback, the ninth frame is active when the iris begins, and navigation completes at `/`.
 - The generated document has one `main`, one `h1`, a named link, a skip link, and base-aware Home and asset URLs. Root and `/personal-website/` production builds, `astro check`, public-copy checks, and `git diff --check` pass.
 - Igor approved the completed milestone 9 Secret box on 2026-07-24.
+
+## Who I am copy refinement
+
+- The craft-values heading now reads `3 things important to me`.
+- The introduction now describes bringing a desire to life as something joyful to interact with.
+
+## Software project-heading refinement
+
+- The Flutter and Chinese Bee records now lead with the concrete experience each artifact brought to users rather than a construction-oriented phrase or product name alone.
+
+## Résumé rewrite
+
+- Two two-page Word résumés now target interactive product design and engineering, and game design and gameplay systems development.
+- Both lead with designing experiences and behavior, then building the systems that make those designs real. The interactive-product version now presents product work first and moves fintech systems work to additional professional experience.
+- PizzaSushiWok is positioned as `Mobile Product Designer & Developer`, with concrete evidence covering the product consolidation proposal, ordering journey, interaction behavior, production delivery, and supporting system decisions.
+- A short-term `Mobile Game Designer & Prototype Developer` engagement was added for November 2022 through January 2023. It covers rapid Android game prototyping in Unity and Jetpack Compose, plus ownership of player experience, interaction flow, feedback, presentation, and scope decisions.
+- The broader evidence includes product shaping, interaction and mechanic design, end-to-end implementation, investigation, feedback-driven iteration, multidisciplinary creation, teaching, and mentoring.
+- The two fintech roles use the accurate title `Developer`, describe startup autonomy and decision-making, and no longer imply officially held backend-engineering positions.
+- Both use the verified capability and evidence boundaries in `docs/CONTEXT_ABOUT_IGOR.md`. Unsupported specialization claims and unverified metrics from the previous résumé were removed.
+- Both use a single-column, table-free, graphic-free structure with semantic headings, real list numbering, visible contact links, and privacy-scrubbed metadata.
+- Final render inspection, text extraction, and accessibility audits pass for both files.
+- The site’s existing generic résumé PDF and DOCX now contain the interactive-product version, preserving the established download URLs used by Connect and Software. Games now presents dedicated game-development PDF and DOCX downloads in its opening composition.
+- The production build passes. The Games download object was inspected at 1440 by 900, 390 by 844, and the 320-pixel minimum with no horizontal overflow, readable placement, and 44-pixel minimum download targets.
 
 ## Open inputs and blockers
 

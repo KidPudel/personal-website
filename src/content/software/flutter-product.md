@@ -1,5 +1,5 @@
 ---
-title: Building a complete food-ordering application
+title: One complete food-ordering experience, from browsing to delivery
 summary: Shaping an incomplete mobile-product need and carrying a new Flutter application from proposal through production readiness.
 prominence: featured
 status: complete
