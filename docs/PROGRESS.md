@@ -297,6 +297,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Browser interaction inspection confirms an intermediate frame appears during playback, the ninth frame is active when the iris begins, and navigation completes at `/`.
 - The generated document has one `main`, one `h1`, a named link, a skip link, and base-aware Home and asset URLs. Root and `/personal-website/` production builds, `astro check`, public-copy checks, and `git diff --check` pass.
 - Igor approved the completed milestone 9 Secret box on 2026-07-24.
+- A mobile follow-up keeps `/secret-box/` locked to the visible dynamic viewport, scales the box for unusually short screens, keeps the revealed cat reflection visible, and prevents hard edge scrolling from exposing an untextured root surface.
 
 ## Who I am copy refinement
 
@@ -320,6 +321,12 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Final render inspection, text extraction, and accessibility audits pass for both files.
 - The site’s existing generic résumé PDF and DOCX now contain the interactive-product version, preserving the established download URLs used by Connect and Software. Games now presents dedicated game-development PDF and DOCX downloads in its opening composition.
 - The production build passes. The Games download object was inspected at 1440 by 900, 390 by 844, and the 320-pixel minimum with no horizontal overflow, readable placement, and 44-pixel minimum download targets.
+
+## Global overscroll surface
+
+- The document canvas uses the same shared field texture tokens as every `WorldField`, with an equivalent softened composite over the field color.
+- Browsers can ignore image texture when painting the native elastic-scroll gap. Vertical overscroll bounce is therefore disabled on the root document and body across every route, while ordinary vertical page scrolling remains unchanged.
+- The Secret box retains its no-scroll viewport behavior while consuming the global surface rather than carrying a duplicate background recipe.
 
 ## Open inputs and blockers
 

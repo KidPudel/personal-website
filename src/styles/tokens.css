@@ -23,6 +23,15 @@
     --color-field-ink: #f3efe4;
     --color-focus: #7db7ff;
 
+    --field-texture-images:
+      radial-gradient(circle at 18% 14%, rgba(255, 248, 224, 0.08), transparent 34%),
+      radial-gradient(circle at 82% 76%, rgba(10, 10, 9, 0.19), transparent 44%),
+      url('../assets/art/paper-grain.svg');
+    --field-texture-positions: 0 0, 0 0, 0 0;
+    --field-texture-sizes: auto, auto, 180px 180px;
+    --field-texture-blend-modes: soft-light, multiply, soft-light;
+    --field-texture-root-overlay: rgba(23, 23, 22, 0.48);
+
     --font-reading: 'Bright Chalk', 'Segoe Print', 'Bradley Hand', cursive;
     --font-distinctive: 'Cartoon Relief', 'Bright Chalk', 'Segoe Print', cursive;
 

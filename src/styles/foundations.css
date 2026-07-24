@@ -5,10 +5,17 @@
 
 @layer foundations {
   html {
-    background: var(--color-field);
+    background-color: var(--color-field);
+    background-image:
+      linear-gradient(var(--field-texture-root-overlay), var(--field-texture-root-overlay)),
+      var(--field-texture-images);
+    background-position: 0 0, var(--field-texture-positions);
+    background-size: auto, var(--field-texture-sizes);
+    background-blend-mode: normal, var(--field-texture-blend-modes);
     color: var(--color-field-ink);
     font-family: var(--font-reading);
     line-height: 1.5;
+    overscroll-behavior-y: none;
     text-rendering: optimizeLegibility;
   }
 
@@ -16,6 +23,7 @@
     min-width: 20rem;
     min-height: 100vh;
     background: var(--color-field);
+    overscroll-behavior-y: none;
   }
 
   :focus-visible {
@@ -56,11 +64,10 @@
     z-index: 0;
     inset: 0;
     pointer-events: none;
-    background:
-      radial-gradient(circle at 18% 14%, rgba(255, 248, 224, 0.08), transparent 34%),
-      radial-gradient(circle at 82% 76%, rgba(10, 10, 9, 0.19), transparent 44%),
-      url('../assets/art/paper-grain.svg') 0 0 / 180px 180px;
-    background-blend-mode: soft-light, multiply, soft-light;
+    background-image: var(--field-texture-images);
+    background-position: var(--field-texture-positions);
+    background-size: var(--field-texture-sizes);
+    background-blend-mode: var(--field-texture-blend-modes);
     box-shadow:
       inset 0 0 0.45rem rgba(247, 236, 205, 0.05),
       inset 0 0 8rem rgba(8, 8, 7, 0.18);

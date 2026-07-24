@@ -123,6 +123,7 @@ Exit condition: Home behaves as one coherent fragment-addressed spatial field wh
 - animation ends, transition effect happens
 - transition effect ends and user gets directed to the home page
 - background is the same color and grain as the home, but without doodles
+- Keep the complete mobile composition inside the visible dynamic viewport, including the revealed cat reflection, without document scrolling or a mismatched overscroll edge.
 
 Exit condition: Secret box page, animation, and transition effect and the transition itself after the delay happens correctly. and Igor approved it.
 
@@ -133,6 +134,7 @@ Exit condition: Secret box page, animation, and transition effect and the transi
 - Complete metadata, social preview, sitemap, RSS, and `404.html`.
 - Run clean checks and production builds.
 - After Igor deployed website through the GitHub Pages himself fix deployment-only issues and record the final state.
+- Paint the browser canvas with the shared field surface and suppress elastic overscroll globally so browsers cannot expose a visually different edge.
 
 Exit condition: the public site is complete, verified, and deployable from a clean checkout.
 
