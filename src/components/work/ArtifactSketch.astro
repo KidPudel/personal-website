@@ -77,6 +77,7 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
           alt="Six screens from the food-ordering application, including browsing, basket, checkout, orders, address selection, and delivery tracking."
           widths={[520, 760, 1050]}
           sizes="(max-width: 700px) 90vw, 42vw"
+          loading="lazy"
         />
       </div>
     )
@@ -91,12 +92,14 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
           alt="Chinese Bee screens showing Telegram learning conversations, quizzes, handwriting practice, and recognition feedback."
           widths={[520, 760, 1100]}
           sizes="(max-width: 700px) 90vw, 42vw"
+          loading="lazy"
         />
         <Image
           class="artifact-sketch__bee-icon"
           src={chineseBeeIcon}
           alt="Chinese Bee mascot."
           width={180}
+          loading="lazy"
         />
       </div>
     )
@@ -127,7 +130,7 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
             decoding="async"
           />
         </picture>
-        <Image class="artifact-sketch__cover" src={discoursesCover} alt="" width={390} />
+        <Image class="artifact-sketch__cover" src={discoursesCover} alt="" width={390} loading="lazy" />
       </div>
     )
   }
@@ -135,11 +138,11 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
   {
     slug === 'santa-foundation' && (
       <div class="artifact-sketch__santa">
-        <Image class="artifact-sketch__santa-sky" src={santaSky} alt="" width={640} />
-        <Image class="artifact-sketch__santa-mountains" src={santaMountains} alt="" width={640} />
-        <Image class="artifact-sketch__santa-city" src={santaCity} alt="" width={640} />
+        <Image class="artifact-sketch__santa-sky" src={santaSky} alt="" width={640} loading="lazy" />
+        <Image class="artifact-sketch__santa-mountains" src={santaMountains} alt="" width={640} loading="lazy" />
+        <Image class="artifact-sketch__santa-city" src={santaCity} alt="" width={640} loading="lazy" />
         <div class="artifact-sketch__santa-sleigh">
-          <Image class="artifact-sketch__santa-sleigh-sheet" src={santaSleigh} alt="" width={128} />
+          <Image class="artifact-sketch__santa-sleigh-sheet" src={santaSleigh} alt="" width={128} loading="lazy" />
         </div>
         <div class="artifact-sketch__santa-snow" aria-hidden="true">
           {snowflakes.map((snowflake) => (
@@ -148,6 +151,7 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
               src={santaSnowflake}
               alt=""
               width={16}
+              loading="lazy"
               data-snowflake={snowflake.index}
               style={`--snow-delay: ${snowflake.delay.toFixed(2)}s; --snow-drift: ${snowflake.drift.toFixed(2)}rem; --snow-duration: ${snowflake.duration.toFixed(2)}s; --snow-left: ${snowflake.left}%; --snow-opacity: ${snowflake.opacity.toFixed(2)}; --snow-size: ${snowflake.size.toFixed(2)}rem;`}
             />
@@ -174,7 +178,8 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
           poster={snakePoster.src}
           controls
           playsinline
-          preload="metadata"
+          preload="none"
+          data-lazy-video
           aria-label="Snake built with Go and raylib."
         >
           Your browser does not support embedded video.
@@ -191,6 +196,7 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
           alt="The C++ and OpenGL Tic-Tac-Toe game showing a completed three-by-three board."
           widths={[360, 520, 687]}
           sizes="(max-width: 700px) 88vw, 38vw"
+          loading="lazy"
         />
       </div>
     )

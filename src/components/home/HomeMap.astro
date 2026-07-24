@@ -30,7 +30,9 @@ import WorkDisclosure from './WorkDisclosure.astro';
       class="choice-blog"
       label="Blog"
       labelPlacement="below-right"
-      href={sitePath('/blog/')}
+      href={`${sitePath('/')}#blog`}
+      ariaControls="blog"
+      destinationId="blog"
       tilt="-1deg"
     />
   </nav>

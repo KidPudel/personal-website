@@ -1,6 +1,9 @@
 ---
+import BlogDisclosure from '../blog/BlogDisclosure.astro';
 import HomeMap from '../home/HomeMap.astro';
 import WhoDisclosure from '../who/WhoDisclosure.astro';
+import GamesDisclosure from '../work/GamesDisclosure.astro';
+import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
 ---
 
 <spatial-route-shell data-base-title="Igor Kupchinenko">
@@ -9,108 +12,162 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
   </div>
 
   <WhoDisclosure />
+  <SoftwareDisclosure />
+  <GamesDisclosure />
+  <BlogDisclosure />
 </spatial-route-shell>
 
 <script>
   class SpatialRouteShellElement extends HTMLElement {
     private homeMap?: HTMLElement;
-    private whoDisclosure?: HTMLElement;
-    private whoTrigger?: HTMLAnchorElement;
-    private connections?: SVGSVGElement;
+    private destinationLinks: HTMLAnchorElement[] = [];
+    private disclosures = new Map<string, HTMLElement>();
     private collapsedScrollY = 0;
-    private previousHash = '';
+    private previousDestination?: string;
     private enteredByActivation = false;
     private focusTimer?: number;
     private connectionFrame?: number;
+    private connectionObserver?: ResizeObserver;
+    private entryFrame?: number;
+    private entryTimer?: number;
+    private entryCleanupTimer?: number;
+    private entrySequence = 0;
 
-    private isWhoHash = () => window.location.hash === '#who-i-am';
+    private destinationTitles: Record<string, string> = {
+      'who-i-am': 'Who I am',
+      'work/software': 'Software',
+      'work/games': 'Games',
+      blog: 'Blog',
+    };
 
-    private setHomeAvailability = (destinationActive: boolean) => {
+    private getDestinationId = () => {
+      const id = window.location.hash.slice(1);
+      return this.disclosures.has(id) ? id : undefined;
+    };
+
+    private getHomeTrigger = (destinationId?: string) => {
+      if (!destinationId || !this.homeMap) return undefined;
+      return this.homeMap.querySelector<HTMLAnchorElement>(
+        `[data-destination-link="${destinationId}"]`,
+      ) ?? undefined;
+    };
+
+    private setHomeAvailability = (destinationId?: string) => {
       if (!this.homeMap) return;
 
       const homeTitle = this.homeMap.querySelector<HTMLElement>('#home-title');
-      const otherChoices = this.homeMap.querySelectorAll<HTMLElement>(
-        '.home-map__choices > :not(.choice-who)',
+      const controls = this.homeMap.querySelectorAll<HTMLElement>(
+        '[data-destination-link], [data-work-toggle], [data-connect-toggle]',
       );
 
-      if (destinationActive) {
+      if (destinationId) {
         homeTitle?.setAttribute('aria-hidden', 'true');
       } else {
         homeTitle?.removeAttribute('aria-hidden');
       }
 
-      otherChoices.forEach((choice) => {
-        choice.toggleAttribute('inert', destinationActive);
-        if (destinationActive) {
-          choice.setAttribute('aria-hidden', 'true');
+      controls.forEach((control) => {
+        const isSelected = control.dataset.destinationLink === destinationId;
+        const unavailable = Boolean(destinationId) && !isSelected;
+
+        control.toggleAttribute('inert', unavailable);
+        if (unavailable) {
+          control.setAttribute('aria-hidden', 'true');
         } else {
-          choice.removeAttribute('aria-hidden');
+          control.removeAttribute('aria-hidden');
         }
       });
     };
 
+    private syncWorkOrigin = (destinationId?: string) => {
+      if (!this.homeMap) return;
+
+      const workDisclosure = this.homeMap.querySelector<HTMLElement>('work-disclosure');
+      const workPanel = workDisclosure?.querySelector<HTMLElement>('#work-choices');
+      const workToggle = workDisclosure?.querySelector<HTMLElement>('[data-work-toggle]');
+      if (!workDisclosure || !workPanel || !workToggle) return;
+
+      const shouldOpen =
+        window.location.hash === '#work' || Boolean(destinationId?.startsWith('work/'));
+
+      workDisclosure.toggleAttribute('data-open', shouldOpen);
+      workPanel.hidden = !shouldOpen;
+      workToggle.setAttribute('aria-expanded', String(shouldOpen));
+    };
+
     private updateConnectionPaths = () => {
-      if (!this.connections || !this.whoTrigger || !this.isWhoHash()) return;
+      const destinationId = this.getDestinationId();
+      const disclosure = destinationId ? this.disclosures.get(destinationId) : undefined;
+      const trigger = this.getHomeTrigger(destinationId);
+      if (!destinationId || !disclosure || !trigger) return;
 
-      const fieldRect = this.connections.getBoundingClientRect();
       const originRect =
-        this.whoTrigger.querySelector<HTMLElement>('.home-choice__art')?.getBoundingClientRect() ??
-        this.whoTrigger.getBoundingClientRect();
-      if (!fieldRect.width || !fieldRect.height || !originRect.width || !originRect.height) return;
+        trigger.querySelector<HTMLElement>('.home-choice__art, .work-choice__art')?.getBoundingClientRect() ??
+        trigger.getBoundingClientRect();
+      if (!originRect.width || !originRect.height) return;
 
-      this.connections.setAttribute('viewBox', `0 0 ${fieldRect.width} ${fieldRect.height}`);
+      disclosure
+        .querySelectorAll<SVGSVGElement>('[data-who-connections], [data-route-connections]')
+        .forEach((connections) => {
+          const fieldRect = connections.getBoundingClientRect();
+          if (!fieldRect.width || !fieldRect.height) return;
 
-      const origin = {
-        x: originRect.left + originRect.width / 2 - fieldRect.left,
-        y: originRect.top + originRect.height / 2 - fieldRect.top,
-      };
+          connections.setAttribute('viewBox', `0 0 ${fieldRect.width} ${fieldRect.height}`);
 
-      this.connections.querySelectorAll<SVGPathElement>('[data-connection-to]').forEach((path) => {
-        const targetName = path.dataset.connectionTo;
-        const target = this.querySelector<HTMLElement>(`[data-connection-target="${targetName}"]`);
-        if (!target) return;
+          const origin = {
+            x: originRect.left + originRect.width / 2 - fieldRect.left,
+            y: originRect.top + originRect.height / 2 - fieldRect.top,
+          };
 
-        const targetRect = target.getBoundingClientRect();
-        const center = {
-          x: targetRect.left + targetRect.width / 2 - fieldRect.left,
-          y: targetRect.top + targetRect.height / 2 - fieldRect.top,
-        };
-        const towardOrigin = {
-          x: origin.x - center.x,
-          y: origin.y - center.y,
-        };
-        const halfWidth = Math.max(targetRect.width / 2 + 10, 1);
-        const halfHeight = Math.max(targetRect.height / 2 + 10, 1);
-        const edgeScale = 1 / Math.max(
-          Math.abs(towardOrigin.x) / halfWidth,
-          Math.abs(towardOrigin.y) / halfHeight,
-          1,
-        );
-        const end = {
-          x: center.x + towardOrigin.x * edgeScale,
-          y: center.y + towardOrigin.y * edgeScale,
-        };
+          connections.querySelectorAll<SVGPathElement>('[data-connection-to]').forEach((path) => {
+            const targetName = path.dataset.connectionTo;
+            const target = disclosure.querySelector<HTMLElement>(
+              `[data-connection-target="${targetName}"]`,
+            );
+            if (!target) return;
 
-        const dx = end.x - origin.x;
-        const dy = end.y - origin.y;
-        const curve = Number(path.dataset.curve ?? 0);
-        const controlOffset = Math.hypot(dx, dy) * curve;
-        const length = Math.max(Math.hypot(dx, dy), 1);
-        const normal = { x: -dy / length, y: dx / length };
-        const firstControl = {
-          x: origin.x + dx * 0.34 + normal.x * controlOffset,
-          y: origin.y + dy * 0.34 + normal.y * controlOffset,
-        };
-        const secondControl = {
-          x: origin.x + dx * 0.72 + normal.x * controlOffset,
-          y: origin.y + dy * 0.72 + normal.y * controlOffset,
-        };
+            const targetRect = target.getBoundingClientRect();
+            const center = {
+              x: targetRect.left + targetRect.width / 2 - fieldRect.left,
+              y: targetRect.top + targetRect.height / 2 - fieldRect.top,
+            };
+            const towardOrigin = {
+              x: origin.x - center.x,
+              y: origin.y - center.y,
+            };
+            const halfWidth = Math.max(targetRect.width / 2 + 10, 1);
+            const halfHeight = Math.max(targetRect.height / 2 + 10, 1);
+            const edgeScale = 1 / Math.max(
+              Math.abs(towardOrigin.x) / halfWidth,
+              Math.abs(towardOrigin.y) / halfHeight,
+              1,
+            );
+            const end = {
+              x: center.x + towardOrigin.x * edgeScale,
+              y: center.y + towardOrigin.y * edgeScale,
+            };
 
-        path.setAttribute(
-          'd',
-          `M ${origin.x} ${origin.y} C ${firstControl.x} ${firstControl.y}, ${secondControl.x} ${secondControl.y}, ${end.x} ${end.y}`,
-        );
-      });
+            const dx = end.x - origin.x;
+            const dy = end.y - origin.y;
+            const curve = Number(path.dataset.curve ?? 0);
+            const controlOffset = Math.hypot(dx, dy) * curve;
+            const length = Math.max(Math.hypot(dx, dy), 1);
+            const normal = { x: -dy / length, y: dx / length };
+            const firstControl = {
+              x: origin.x + dx * 0.34 + normal.x * controlOffset,
+              y: origin.y + dy * 0.34 + normal.y * controlOffset,
+            };
+            const secondControl = {
+              x: origin.x + dx * 0.72 + normal.x * controlOffset,
+              y: origin.y + dy * 0.72 + normal.y * controlOffset,
+            };
+
+            path.setAttribute(
+              'd',
+              `M ${origin.x} ${origin.y} C ${firstControl.x} ${firstControl.y}, ${secondControl.x} ${secondControl.y}, ${end.x} ${end.y}`,
+            );
+          });
+        });
     };
 
     private queueConnectionUpdate = () => {
@@ -121,57 +178,175 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
       });
     };
 
-    private focusAfterEntry = () => {
-      if (!this.whoDisclosure) return;
+    private observeConnectionGeometry = () => {
+      if (!('ResizeObserver' in window)) return;
+
+      this.connectionObserver = new ResizeObserver(this.queueConnectionUpdate);
+      this.connectionObserver.observe(this);
+      this.destinationLinks.forEach((link) => this.connectionObserver?.observe(link));
+      this.querySelectorAll<HTMLElement>(
+        '[data-destination-disclosure], [data-connection-target]',
+      ).forEach((element) => this.connectionObserver?.observe(element));
+    };
+
+    private prepareEntryAnimation = (destinationId: string, shouldAnimate: boolean) => {
+      const sequence = ++this.entrySequence;
+      if (this.entryFrame) {
+        window.cancelAnimationFrame(this.entryFrame);
+        this.entryFrame = undefined;
+      }
+      if (this.entryTimer) {
+        window.clearTimeout(this.entryTimer);
+        this.entryTimer = undefined;
+      }
+      if (this.entryCleanupTimer) {
+        window.clearTimeout(this.entryCleanupTimer);
+        this.entryCleanupTimer = undefined;
+      }
+
+      this.removeAttribute('data-entry-preparing');
+      this.removeAttribute('data-entering');
+      if (!shouldAnimate) {
+        this.queueConnectionUpdate();
+        return;
+      }
+
+      this.setAttribute('data-entry-preparing', '');
+
+      const fontsReady = document.fonts?.ready ?? Promise.resolve();
+      const layoutReady = Promise.race([
+        fontsReady,
+        new Promise<void>((resolve) => {
+          this.entryTimer = window.setTimeout(resolve, 350);
+        }),
+      ]);
+
+      void layoutReady.then(() => {
+        if (this.entryTimer) {
+          window.clearTimeout(this.entryTimer);
+          this.entryTimer = undefined;
+        }
+        if (sequence !== this.entrySequence || this.getDestinationId() !== destinationId) return;
+
+        this.entryFrame = window.requestAnimationFrame(() => {
+          this.entryFrame = window.requestAnimationFrame(() => {
+            this.entryFrame = undefined;
+            if (sequence !== this.entrySequence || this.getDestinationId() !== destinationId) return;
+
+            this.updateConnectionPaths();
+            this.removeAttribute('data-entry-preparing');
+            this.setAttribute('data-entering', '');
+            this.entryCleanupTimer = window.setTimeout(() => {
+              if (sequence !== this.entrySequence || this.getDestinationId() !== destinationId) return;
+
+              this.removeAttribute('data-entering');
+              this.entryCleanupTimer = undefined;
+            }, 950);
+          });
+        });
+      });
+    };
+
+    private cancelEntryAnimation = () => {
+      this.entrySequence += 1;
+      if (this.entryFrame) {
+        window.cancelAnimationFrame(this.entryFrame);
+        this.entryFrame = undefined;
+      }
+      if (this.entryTimer) {
+        window.clearTimeout(this.entryTimer);
+        this.entryTimer = undefined;
+      }
+      if (this.entryCleanupTimer) {
+        window.clearTimeout(this.entryCleanupTimer);
+        this.entryCleanupTimer = undefined;
+      }
+      this.removeAttribute('data-entry-preparing');
+      this.removeAttribute('data-entering');
+    };
+
+    private focusAfterEntry = (disclosure: HTMLElement) => {
 
       if (this.focusTimer) window.clearTimeout(this.focusTimer);
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       this.focusTimer = window.setTimeout(() => {
-        this.whoDisclosure?.querySelector<HTMLElement>('#who-title')?.focus({ preventScroll: true });
+        disclosure.querySelector<HTMLElement>('[data-destination-title]')?.focus({ preventScroll: true });
       }, reduceMotion ? 0 : 280);
     };
 
+    private syncMedia = (destinationId?: string) => {
+      this.disclosures.forEach((disclosure, id) => {
+        disclosure.querySelectorAll<HTMLVideoElement>('[data-lazy-video]').forEach((video) => {
+          if (id === destinationId) {
+            if (video.preload !== 'metadata') {
+              video.preload = 'metadata';
+              video.load();
+            }
+          } else {
+            video.pause();
+            video.preload = 'none';
+          }
+        });
+      });
+    };
+
     private syncFromLocation = (initial = false) => {
-      if (!this.homeMap || !this.whoDisclosure || !this.whoTrigger) return;
+      if (!this.homeMap) return;
 
-      const active = this.isWhoHash();
-      const wasActive = this.previousHash === '#who-i-am';
+      const destinationId = this.getDestinationId();
+      const disclosure = destinationId ? this.disclosures.get(destinationId) : undefined;
+      const wasDestinationActive = Boolean(this.previousDestination);
 
-      this.whoDisclosure.hidden = !active;
-      this.whoTrigger.setAttribute('aria-expanded', String(active));
-      this.whoTrigger.setAttribute('aria-label', active ? 'Who I am, close' : 'Who I am');
-      this.toggleAttribute('data-destination-active', active);
-      this.setHomeAvailability(active);
+      this.disclosures.forEach((candidate, id) => {
+        candidate.hidden = id !== destinationId;
+      });
+      this.destinationLinks.forEach((link) => {
+        const selected = link.dataset.destinationLink === destinationId;
+        link.setAttribute('aria-expanded', String(selected));
+        if (link.closest('[data-spatial-home-map]')) {
+          const label = link.querySelector<HTMLElement>('.home-choice__label, .work-choice__label')?.textContent?.trim();
+          if (selected && label) {
+            link.setAttribute('aria-label', `${label}, close`);
+          } else {
+            link.removeAttribute('aria-label');
+          }
+        }
+      });
+      this.toggleAttribute('data-destination-active', Boolean(destinationId));
+      this.syncWorkOrigin(destinationId);
+      this.setHomeAvailability(destinationId);
+      this.syncMedia(destinationId);
 
-      if (active) {
-        this.dataset.activeDestination = 'who-i-am';
-        document.title = `Who I am | ${this.dataset.baseTitle ?? 'Igor Kupchinenko'}`;
-        window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: 'who-i-am' } }));
+      if (destinationId && disclosure) {
+        this.dataset.activeDestination = destinationId;
+        document.title = `${this.destinationTitles[destinationId]} | ${this.dataset.baseTitle ?? 'Igor Kupchinenko'}`;
+        window.dispatchEvent(new CustomEvent('home-disclosure-open', { detail: { id: destinationId } }));
         this.queueConnectionUpdate();
+        this.prepareEntryAnimation(destinationId, initial || this.enteredByActivation);
 
         if (!initial) {
-          this.toggleAttribute('data-entering', this.enteredByActivation);
           window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'auto' }));
-          this.focusAfterEntry();
+          this.focusAfterEntry(disclosure);
         }
       } else {
         delete this.dataset.activeDestination;
-        this.removeAttribute('data-entering');
+        this.cancelEntryAnimation();
         document.title = this.dataset.baseTitle ?? 'Igor Kupchinenko';
 
-        if (wasActive && !initial) {
+        if (wasDestinationActive && !initial) {
+          const previousTrigger = this.getHomeTrigger(this.previousDestination);
           window.requestAnimationFrame(() => {
             window.scrollTo({ top: this.collapsedScrollY, behavior: 'auto' });
-            this.whoTrigger?.focus({ preventScroll: true });
+            previousTrigger?.focus({ preventScroll: true });
           });
         }
       }
 
-      this.previousHash = window.location.hash;
+      this.previousDestination = destinationId;
       this.enteredByActivation = false;
     };
 
-    private handleWhoActivation = (event: MouseEvent) => {
+    private handleDestinationActivation = (event: MouseEvent) => {
       if (
         event.button !== 0 ||
         event.metaKey ||
@@ -182,12 +357,17 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
         return;
       }
 
+      const link = (event.target as Element).closest<HTMLAnchorElement>('[data-destination-link]');
+      const destinationId = link?.dataset.destinationLink;
+      if (!link || !destinationId || !this.disclosures.has(destinationId)) return;
+
       event.preventDefault();
 
-      if (this.isWhoHash()) {
+      const activeDestination = this.getDestinationId();
+      if (activeDestination === destinationId) {
         this.enteredByActivation = false;
 
-        if (window.history.state?.spatialDestination === 'who-i-am') {
+        if (window.history.state?.spatialDestination === destinationId) {
           window.history.back();
         } else {
           window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
@@ -196,12 +376,14 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
         return;
       }
 
-      this.collapsedScrollY = window.scrollY;
+      if (!activeDestination) {
+        this.collapsedScrollY = window.scrollY;
+      }
       this.enteredByActivation = true;
       window.history.pushState(
-        { ...window.history.state, spatialDestination: 'who-i-am' },
+        { ...window.history.state, spatialDestination: destinationId },
         '',
-        `${window.location.pathname}${window.location.search}#who-i-am`,
+        `${window.location.pathname}${window.location.search}#${destinationId}`,
       );
       this.syncFromLocation();
     };
@@ -209,37 +391,50 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
     private handleHashChange = () => this.syncFromLocation();
 
     private handleEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape' || !this.isWhoHash() || !this.whoTrigger) return;
-      this.whoTrigger.click();
+      const destinationId = this.getDestinationId();
+      const trigger = this.getHomeTrigger(destinationId);
+      if (event.key !== 'Escape' || !destinationId || !trigger) return;
+      trigger.click();
     };
 
     connectedCallback() {
       if (this.hasAttribute('data-enhanced')) return;
 
       this.homeMap = this.querySelector<HTMLElement>('[data-spatial-home-map]') ?? undefined;
-      this.whoDisclosure = this.querySelector<HTMLElement>('#who-i-am') ?? undefined;
-      this.whoTrigger = this.querySelector<HTMLAnchorElement>('[data-destination-link="who-i-am"]') ?? undefined;
-      this.connections = this.querySelector<SVGSVGElement>('[data-who-connections]') ?? undefined;
-      if (!this.homeMap || !this.whoDisclosure || !this.whoTrigger || !this.connections) return;
+      this.destinationLinks = Array.from(
+        this.querySelectorAll<HTMLAnchorElement>('[data-destination-link]'),
+      );
+      this.querySelectorAll<HTMLElement>('[data-destination-disclosure]').forEach((disclosure) => {
+        const id = disclosure.dataset.destinationId ?? disclosure.id;
+        if (id) this.disclosures.set(id, disclosure);
+      });
+      if (!this.homeMap || this.disclosures.size === 0 || this.destinationLinks.length === 0) return;
 
       this.setAttribute('data-enhanced', '');
       this.collapsedScrollY = window.location.hash ? 0 : window.scrollY;
-      this.previousHash = window.location.hash;
+      this.observeConnectionGeometry();
       this.syncFromLocation(true);
+      void document.fonts?.ready.then(this.queueConnectionUpdate);
 
-      this.whoTrigger.addEventListener('click', this.handleWhoActivation);
+      this.addEventListener('click', this.handleDestinationActivation);
       window.addEventListener('hashchange', this.handleHashChange);
       window.addEventListener('resize', this.queueConnectionUpdate);
       document.addEventListener('keydown', this.handleEscape);
     }
 
     disconnectedCallback() {
-      this.whoTrigger?.removeEventListener('click', this.handleWhoActivation);
+      this.removeEventListener('click', this.handleDestinationActivation);
       window.removeEventListener('hashchange', this.handleHashChange);
       window.removeEventListener('resize', this.queueConnectionUpdate);
       document.removeEventListener('keydown', this.handleEscape);
+      this.connectionObserver?.disconnect();
+      this.connectionObserver = undefined;
+      this.entrySequence += 1;
       if (this.focusTimer) window.clearTimeout(this.focusTimer);
       if (this.connectionFrame) window.cancelAnimationFrame(this.connectionFrame);
+      if (this.entryFrame) window.cancelAnimationFrame(this.entryFrame);
+      if (this.entryTimer) window.clearTimeout(this.entryTimer);
+      if (this.entryCleanupTimer) window.clearTimeout(this.entryCleanupTimer);
     }
   }
 
@@ -257,12 +452,12 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
   }
 
   :global(.world-field:has(spatial-route-shell[data-destination-active]) .world-field__content > main),
-  :global(.world-field:has(#who-i-am:target) .world-field__content > main) {
+  :global(.world-field:has([data-destination-disclosure]:target) .world-field__content > main) {
     pointer-events: auto;
   }
 
   :global(.world-field:has(spatial-route-shell[data-destination-active]) .world-field__doodle),
-  :global(.world-field:has(#who-i-am:target) .world-field__doodle) {
+  :global(.world-field:has([data-destination-disclosure]:target) .world-field__doodle) {
     pointer-events: none;
     opacity: 0.055;
   }
@@ -273,31 +468,58 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
   }
 
   spatial-route-shell[data-destination-active] .spatial-route-shell__home,
-  spatial-route-shell:has(#who-i-am:target) .spatial-route-shell__home {
+  spatial-route-shell:has([data-destination-disclosure]:target) .spatial-route-shell__home {
     position: absolute;
+    z-index: 3;
     inset: 0 0 auto;
     height: max(48rem, calc(100vh - (2 * var(--field-gutter))));
     overflow: clip;
     pointer-events: none;
   }
 
-  spatial-route-shell[data-destination-active] :global(.home-map__choices > :not(.choice-who)),
-  spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > :not(.choice-who)) {
+  spatial-route-shell[data-destination-active] :global(.home-map__choices > *),
+  spatial-route-shell:has([data-destination-disclosure]:target) :global(.home-map__choices > *) {
     opacity: 0.055;
     transform: scale(0.86);
     transform-origin: center;
   }
 
-  spatial-route-shell[data-destination-active] :global(.home-map__choices > .choice-who),
-  spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who) {
+  spatial-route-shell[data-active-destination='who-i-am'] :global(.home-map__choices > .choice-who),
+  spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who),
+  spatial-route-shell[data-active-destination='blog'] :global(.home-map__choices > .choice-blog),
+  spatial-route-shell:has(#blog:target) :global(.home-map__choices > .choice-blog),
+  spatial-route-shell[data-active-destination^='work/'] :global(.home-map__choices > work-disclosure),
+  spatial-route-shell:has(#work\/software:target) :global(.home-map__choices > work-disclosure),
+  spatial-route-shell:has(#work\/games:target) :global(.home-map__choices > work-disclosure) {
     opacity: 1;
     pointer-events: auto;
     transform: none;
     transform-origin: center;
   }
 
-  spatial-route-shell[data-entering] :global(.choice-who .home-choice__art) {
-    animation: who-origin-pulse 520ms steps(4, end) both;
+  spatial-route-shell[data-active-destination^='work/']
+    :global(work-disclosure .work-choice-toggle),
+  spatial-route-shell[data-active-destination^='work/']
+    :global(work-disclosure .work-choice__link) {
+    opacity: 0.055;
+  }
+
+  spatial-route-shell[data-active-destination^='work/']
+    :global(work-disclosure .work-choice__link[aria-expanded='true']) {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  spatial-route-shell[data-entering]
+    :global([data-destination-link][aria-expanded='true'] .home-choice__art),
+  spatial-route-shell[data-entering]
+    :global([data-destination-link][aria-expanded='true'] .work-choice__art) {
+    animation: who-origin-pulse 900ms steps(1, end) both;
+  }
+
+  spatial-route-shell[data-entry-preparing]
+    :global([data-destination-disclosure]:not([hidden])) {
+    visibility: hidden;
   }
 
   @keyframes who-origin-pulse {
@@ -307,34 +529,48 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
       transform: rotate(var(--drawn-icon-resting-tilt));
     }
 
-    35% {
+    18% {
+      filter: drop-shadow(0 0 0.25rem rgba(243, 239, 228, 0.25));
+      transform: translate(-0.13rem, -0.2rem)
+        rotate(calc(var(--drawn-icon-resting-tilt) - 3.8deg)) scale(1.02);
+    }
+
+    42% {
       filter: drop-shadow(0 0 0.35rem rgba(243, 239, 228, 0.38));
-      transform: translateY(-0.15rem) rotate(calc(var(--drawn-icon-resting-tilt) - 2deg)) scale(1.04);
+      transform: translate(0.12rem, -0.18rem)
+        rotate(calc(var(--drawn-icon-resting-tilt) + 1.7deg)) scale(1.04);
     }
 
     68% {
       filter: none;
-      transform: translateY(0.05rem) rotate(calc(var(--drawn-icon-resting-tilt) + 1deg)) scale(0.99);
+      transform: translate(-0.12rem, -0.14rem)
+        rotate(calc(var(--drawn-icon-resting-tilt) - 2.45deg)) scale(1.02);
+    }
+
+    84% {
+      filter: drop-shadow(0 0 0.2rem rgba(243, 239, 228, 0.2));
+      transform: translate(0.03rem, -0.35em)
+        rotate(calc(var(--drawn-icon-resting-tilt) + 0.9deg)) scale(1.03);
     }
   }
 
   @media (max-width: 64rem) {
     spatial-route-shell[data-destination-active] .spatial-route-shell__home,
-    spatial-route-shell:has(#who-i-am:target) .spatial-route-shell__home {
+    spatial-route-shell:has([data-destination-disclosure]:target) .spatial-route-shell__home {
       display: block;
       height: 6.5rem;
       overflow: visible;
     }
 
     spatial-route-shell[data-destination-active] :global(.home-map),
-    spatial-route-shell:has(#who-i-am:target) :global(.home-map) {
+    spatial-route-shell:has([data-destination-disclosure]:target) :global(.home-map) {
       display: block;
       min-height: 0;
       overflow: visible;
     }
 
     spatial-route-shell[data-destination-active] :global(.home-map__choices),
-    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices) {
+    spatial-route-shell:has([data-destination-disclosure]:target) :global(.home-map__choices) {
       position: absolute;
       inset: 0;
       display: block;
@@ -343,23 +579,94 @@ import WhoDisclosure from '../who/WhoDisclosure.astro';
       padding: 0;
     }
 
-    spatial-route-shell[data-destination-active] :global(.home-map__choices > :not(.choice-who)),
-    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > :not(.choice-who)) {
+    spatial-route-shell[data-active-destination='who-i-am']
+      :global(.home-map__choices > :not(.choice-who)),
+    spatial-route-shell:has(#who-i-am:target)
+      :global(.home-map__choices > :not(.choice-who)),
+    spatial-route-shell[data-active-destination='blog']
+      :global(.home-map__choices > :not(.choice-blog)),
+    spatial-route-shell:has(#blog:target)
+      :global(.home-map__choices > :not(.choice-blog)),
+    spatial-route-shell[data-active-destination^='work/']
+      :global(.home-map__choices > :not(work-disclosure)),
+    spatial-route-shell:has(#work\/software:target)
+      :global(.home-map__choices > :not(work-disclosure)),
+    spatial-route-shell:has(#work\/games:target)
+      :global(.home-map__choices > :not(work-disclosure)) {
       display: none;
     }
 
-    spatial-route-shell[data-destination-active] :global(.home-map__choices > .choice-who),
-    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who) {
+    spatial-route-shell[data-active-destination='who-i-am'] :global(.home-map__choices > .choice-who),
+    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who),
+    spatial-route-shell[data-active-destination='blog'] :global(.home-map__choices > .choice-blog),
+    spatial-route-shell:has(#blog:target) :global(.home-map__choices > .choice-blog) {
       position: absolute;
       top: 0;
       left: 0;
       width: 6rem;
       margin: 0;
     }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(.home-map__choices > work-disclosure),
+    spatial-route-shell:has(#work\/software:target)
+      :global(.home-map__choices > work-disclosure),
+    spatial-route-shell:has(#work\/games:target)
+      :global(.home-map__choices > work-disclosure) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 6rem;
+      margin: 0;
+    }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(work-disclosure .work-choice-toggle) {
+      display: none;
+    }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(work-disclosure .work-disclosure__panel) {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 6rem;
+      margin: 0;
+      transform: none;
+    }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(work-disclosure .work-choice) {
+      display: block;
+      width: 6rem;
+      margin: 0;
+    }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(work-disclosure .work-choice__link) {
+      display: none;
+    }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(work-disclosure .work-choice__link[aria-expanded='true']) {
+      display: grid;
+      width: 6rem;
+      min-height: 6rem;
+      padding: 0;
+    }
+
+    spatial-route-shell[data-active-destination^='work/']
+      :global(work-disclosure .work-choice__connector) {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    spatial-route-shell[data-entering] :global(.choice-who .home-choice__art) {
+    spatial-route-shell[data-entering]
+      :global([data-destination-link][aria-expanded='true'] .home-choice__art),
+    spatial-route-shell[data-entering]
+      :global([data-destination-link][aria-expanded='true'] .work-choice__art) {
       animation-duration: 0.01ms;
     }
   }

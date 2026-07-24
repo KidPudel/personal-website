@@ -44,7 +44,10 @@ import NavigationDrawing from './NavigationDrawing.astro';
       window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`);
     };
 
-    private syncFromHash = () => this.setExpanded(window.location.hash === '#work');
+    private syncFromHash = () => {
+      const hash = window.location.hash;
+      this.setExpanded(hash === '#work' || hash.startsWith('#work/'));
+    };
 
     private handleToggle = () => {
       if (!this.button) return;
@@ -59,12 +62,14 @@ import NavigationDrawing from './NavigationDrawing.astro';
     };
 
     private handleOutsideActivation = (event: MouseEvent) => {
+      if (window.location.hash.startsWith('#work/')) return;
       if (!this.hasAttribute('data-open') || this.contains(event.target as Node)) return;
       this.setExpanded(false);
       this.clearWorkHash();
     };
 
     private handleEscape = (event: KeyboardEvent) => {
+      if (window.location.hash.startsWith('#work/')) return;
       if (event.key !== 'Escape' || !this.hasAttribute('data-open')) return;
       this.setExpanded(false);
       this.clearWorkHash();
@@ -73,7 +78,7 @@ import NavigationDrawing from './NavigationDrawing.astro';
 
     private handleOtherDisclosure = (event: Event) => {
       const disclosureEvent = event as CustomEvent<{ id?: string }>;
-      if (disclosureEvent.detail?.id === 'work') return;
+      if (disclosureEvent.detail?.id?.startsWith('work')) return;
       this.setExpanded(false);
       this.clearWorkHash();
     };

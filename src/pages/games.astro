@@ -1,7 +1,7 @@
 ---
 import { sitePath } from '../config/site';
 
-const redirectTarget = sitePath('/work/games/');
+const redirectTarget = `${sitePath('/')}#work/games`;
 const canonicalURL = new URL(redirectTarget, Astro.site);
 ---
 

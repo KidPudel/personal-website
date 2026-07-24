@@ -9,7 +9,8 @@ const choices = [
   {
     label: 'Software',
     art: softwareIcon,
-    href: sitePath('/work/software/'),
+    href: `${sitePath('/')}#work/software`,
+    destinationId: 'work/software',
     className: 'work-choice__link--software',
     tilt: '-3deg',
     labelTilt: '1deg',
@@ -19,7 +20,8 @@ const choices = [
   {
     label: 'Games',
     art: gamesIcon,
-    href: sitePath('/work/games/'),
+    href: `${sitePath('/')}#work/games`,
+    destinationId: 'work/games',
     className: 'work-choice__link--games',
     tilt: '3deg',
     labelTilt: '-1deg',
@@ -35,6 +37,9 @@ const choices = [
       <a
         class:list={['work-choice__link', choice.className]}
         href={choice.href}
+        aria-controls={choice.destinationId}
+        aria-expanded="false"
+        data-destination-link={choice.destinationId}
         style={`--work-choice-tilt: ${choice.tilt}; --work-choice-label-tilt: ${choice.labelTilt}`}
       >
         <svg

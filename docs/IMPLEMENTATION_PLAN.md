@@ -119,7 +119,7 @@ Exit condition: Home behaves as one coherent fragment-addressed spatial field wh
 ### 9. secret box page
 
 - Simple `/secret-box` page with a box at the center.
-- user clicks on it, it gets animated to the other frames (2 frames per second)
+- user clicks on it, it gets animated to the other frames (3 FPS)
 - animation ends, transition effect happens
 - transition effect ends and user gets directed to the home page
 - background is the same color and grain as the home, but without doodles

@@ -1,0 +1,393 @@
+---
+import { getCollection } from 'astro:content';
+
+import { sitePath } from '../../config/site';
+
+const entries = (await getCollection('writing'))
+  .filter((entry) => !entry.data.draft || entry.data.canonicalUrl)
+  .sort((a, b) => {
+    const aDate = a.data.publishedAt?.getTime() ?? 0;
+    const bDate = b.data.publishedAt?.getTime() ?? 0;
+
+    return bDate - aDate || a.data.title.localeCompare(b.data.title);
+  });
+---
+
+<section
+  id="blog"
+  class="blog-disclosure"
+  aria-labelledby="blog-title"
+  data-destination-disclosure
+  data-destination-id="blog"
+  hidden
+>
+  <article class="blog-unfolding">
+    <svg
+      class="blog-opening__connections"
+      viewBox="0 0 1200 760"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      data-route-connections
+    >
+      <path class="blog-opening__connection blog-opening__connection--title" data-connection-to="blog-title-piece" data-curve="-0.12" pathLength="1" d="M600 610 C620 500 690 390 770 285" />
+      <path class="blog-opening__connection blog-opening__connection--writing" data-connection-to="blog-first-writing" data-curve="0.1" pathLength="1" d="M600 610 C500 590 410 535 340 475" />
+    </svg>
+
+    <header class="blog-opening">
+      <div
+        class="blog-opening__title blog-opening__piece"
+        data-connection-target="blog-title-piece"
+        style="--piece-delay: 80ms; --piece-x: -2rem; --piece-y: 3.5rem;"
+      >
+        <p>writing</p>
+        <h1 id="blog-title" tabindex="-1" data-destination-title>Blog</h1>
+      </div>
+
+      {
+        entries.length > 0 ? (
+          <ol class="blog-writing">
+            {entries.map((entry, index) => {
+              const isLocal = !entry.data.draft;
+              const href = isLocal ? sitePath(`/blog/${entry.id}/`) : entry.data.canonicalUrl;
+              const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+              });
+
+              return (
+                <li
+                  class="blog-writing__entry blog-opening__piece"
+                  data-connection-target={index === 0 ? 'blog-first-writing' : undefined}
+                  style={`--piece-delay: ${160 + index * 70}ms; --piece-x: 2.5rem; --piece-y: -2rem;`}
+                >
+                  <article>
+                    <svg class="blog-writing__open-frame" viewBox="0 0 720 360" preserveAspectRatio="none" aria-hidden="true">
+                      <path d="M42 28 C170 14 291 36 418 22 C521 12 615 29 684 20" />
+                      <path d="M39 31 C26 105 45 173 31 247 C25 284 33 315 28 337" />
+                      <path d="M41 336 C181 348 319 325 454 340 C532 348 600 337 651 343" />
+                    </svg>
+                    <span class="blog-writing__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                    <div class="blog-writing__copy">
+                      <div class="blog-writing__meta">
+                        {publishedAt && <time datetime={entry.data.publishedAt?.toISOString()}>{publishedAt}</time>}
+                        {!isLocal && href && <span>Published on Medium</span>}
+                      </div>
+                      <h2>
+                        {href ? (
+                          <a href={href}>
+                            {entry.data.title}
+                            {!isLocal && <span aria-hidden="true">↗</span>}
+                          </a>
+                        ) : (
+                          entry.data.title
+                        )}
+                      </h2>
+                      <p>{entry.data.summary}</p>
+                    </div>
+                  </article>
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <p class="blog-opening__empty blog-opening__piece">No writing is published yet.</p>
+        )
+      }
+    </header>
+  </article>
+</section>
+
+<style>
+  .blog-disclosure {
+    position: relative;
+    z-index: 2;
+    display: none;
+    width: 100%;
+    min-width: 0;
+    color: var(--color-field-ink);
+    isolation: isolate;
+    pointer-events: none;
+  }
+
+  .blog-disclosure[hidden] {
+    display: none;
+  }
+
+  .blog-disclosure:target,
+  .blog-disclosure:not([hidden]) {
+    display: block;
+  }
+
+  .blog-unfolding {
+    position: relative;
+    pointer-events: auto;
+  }
+
+  .blog-opening {
+    position: relative;
+    display: grid;
+    min-height: max(48rem, calc(100vh - (2 * var(--field-gutter))));
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: repeat(8, minmax(0, 1fr));
+    overflow: clip;
+  }
+
+  .blog-opening__connections {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .blog-opening__connection {
+    fill: none;
+    stroke: rgba(243, 239, 228, 0.48);
+    stroke-dasharray: 0.018 0.027 0.07 0.028;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.65;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .blog-opening__piece {
+    position: relative;
+    z-index: 2;
+    min-width: 0;
+  }
+
+  .blog-opening__title {
+    display: grid;
+    grid-column: 8 / 12;
+    grid-row: 2 / 5;
+    align-self: center;
+    gap: 0.25rem;
+    padding: 1rem;
+  }
+
+  .blog-opening__title p {
+    width: fit-content;
+    color: rgba(243, 239, 228, 0.62);
+    transform: rotate(-2deg);
+  }
+
+  .blog-opening__title h1 {
+    font-family: var(--font-distinctive);
+    font-size: clamp(3.8rem, 8vw, 7rem);
+    font-weight: 400;
+    line-height: 0.92;
+    transform: rotate(1deg);
+  }
+
+  .blog-opening__title h1:focus {
+    outline: none;
+  }
+
+  .blog-writing {
+    display: grid;
+    grid-column: 2 / 8;
+    grid-row: 4 / 9;
+    align-self: center;
+    gap: 3rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .blog-writing__entry {
+    width: min(100%, 44rem);
+    transform: rotate(-0.5deg);
+  }
+
+  .blog-writing__entry article {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2rem);
+    min-height: 18rem;
+    align-content: center;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .blog-writing__open-frame {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .blog-writing__open-frame path {
+    fill: none;
+    stroke: rgba(243, 239, 228, 0.5);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .blog-writing__number {
+    padding-top: 0.3rem;
+    color: rgba(243, 239, 228, 0.45);
+    transform: rotate(-7deg);
+  }
+
+  .blog-writing__copy {
+    display: grid;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+
+  .blog-writing__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    color: rgba(243, 239, 228, 0.58);
+    font-size: 0.86rem;
+  }
+
+  .blog-writing h2 {
+    max-width: 18ch;
+    font-family: var(--font-distinctive);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 400;
+    line-height: 1.04;
+  }
+
+  .blog-writing h2 a {
+    color: inherit;
+    text-decoration-color: rgba(243, 239, 228, 0.5);
+    text-decoration-thickness: 0.1rem;
+    text-underline-offset: 0.17em;
+  }
+
+  .blog-writing h2 a span {
+    display: inline-block;
+    margin-left: 0.2em;
+    color: rgba(243, 239, 228, 0.58);
+    font-family: var(--font-reading);
+    font-size: 0.48em;
+    transform: translateY(-0.7em) rotate(5deg);
+  }
+
+  .blog-writing__copy > p {
+    max-width: 56ch;
+    color: rgba(243, 239, 228, 0.82);
+    font-size: clamp(1rem, 1.45vw, 1.16rem);
+    line-height: 1.6;
+  }
+
+  .blog-opening__empty {
+    grid-column: 3 / 8;
+    grid-row: 5;
+  }
+
+  :global(spatial-route-shell[data-entering]) .blog-opening__piece {
+    animation: blog-piece-unfolds 520ms cubic-bezier(0.18, 0.78, 0.25, 1)
+      var(--piece-delay) both;
+  }
+
+  :global(spatial-route-shell[data-entering]) .blog-opening__connection {
+    animation: blog-line-draws 560ms steps(7, end) both;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  :global(spatial-route-shell[data-entering]) .blog-opening__connection--writing {
+    animation-delay: 110ms;
+  }
+
+  :global(spatial-route-shell[data-entering]) .blog-writing__open-frame path {
+    animation: blog-frame-draws 620ms steps(8, end) 220ms both;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  @keyframes blog-piece-unfolds {
+    from {
+      opacity: 0;
+      transform: translate(var(--piece-x), var(--piece-y)) rotate(1deg) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0) scale(1);
+    }
+  }
+
+  @keyframes blog-line-draws {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes blog-frame-draws {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @media (max-width: 64rem) {
+    .blog-opening {
+      display: flex;
+      min-height: calc(100vh - 1.75rem);
+      flex-direction: column;
+      gap: 3rem;
+      padding: 7.25rem 0.75rem 4rem;
+    }
+
+    .blog-opening__connections {
+      display: none;
+    }
+
+    .blog-opening__title,
+    .blog-writing,
+    .blog-opening__empty {
+      width: min(100%, 42rem);
+      max-width: 100%;
+      align-self: center;
+      padding: 0;
+      margin: 0;
+    }
+
+    .blog-writing__entry {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .blog-opening {
+      padding-inline: 0.1rem;
+    }
+
+    .blog-opening__title {
+      padding-left: 0.8rem;
+    }
+
+    .blog-opening__title h1 {
+      font-size: clamp(3.8rem, 22vw, 5.4rem);
+    }
+
+    .blog-writing__entry article {
+      grid-template-columns: 2rem minmax(0, 1fr);
+      gap: 0.7rem;
+      padding: 2.2rem 1.15rem;
+    }
+
+    .blog-writing h2 {
+      font-size: clamp(2rem, 11vw, 2.8rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(spatial-route-shell[data-entering]) .blog-opening__piece,
+    :global(spatial-route-shell[data-entering]) .blog-opening__connection,
+    :global(spatial-route-shell[data-entering]) .blog-writing__open-frame path {
+      animation-duration: 0.01ms;
+      animation-delay: 0ms;
+    }
+  }
+</style>
