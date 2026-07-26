@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 
-import drawnPortrait from '../../assets/art/avatar.png';
+import drawnPortrait from '../../assets/art/Drawn_me.png';
 import realPortrait from '../../assets/art/avatar_irl.png';
 
 interface Props {
@@ -16,7 +16,7 @@ const { loading = 'eager' } = Astro.props;
     <figure class="portrait-card portrait-card--drawn" data-portrait-panel>
       <Image
         src={drawnPortrait}
-        alt="A black-and-white hand-drawn portrait of Igor with large dark eyes and curly hair"
+        alt="A hand-drawn portrait of Igor with large dark eyes and curly hair against a textured blue-gray background"
         width={620}
         height={620}
         loading={loading}

@@ -331,7 +331,8 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Browser-tab icon
 
-- Every route now uses the authored `avatar.png` artwork as its PNG favicon instead of the previous standalone SVG icon.
+- Every route now uses the replacement authored `Drawn_me.png` artwork as its PNG favicon. The same replacement artwork appears as the drawn portrait in Home’s Who I am disclosure.
+- The replacement portrait was inspected in Home’s active drawn state at 1440 by 900 and 390 by 844. It stays contained in the existing portrait frame with no horizontal overflow, and the production build completes without diagnostics.
 
 ## Open inputs and blockers
 

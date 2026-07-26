@@ -42,7 +42,7 @@
     --reading-width: 58ch;
 
     --focus-width: 0.2rem;
-    --focus-offset: 0.25rem;
+    --focus-offset: 0.25rem; 
 
     --drawn-icon-wobble-duration: 1600ms;
   }
