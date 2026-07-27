@@ -46,6 +46,7 @@ The main style of a website should follow these properties:
 - Analog sketch aesthetic: imperfict pencil lines, borken strokes, slight texture. Wabi Sabi part of the soul. It is present in doodles and all the elements on the website
 - Sketchbook-inspired elements as a mix with analog sketch aesthetic to create the feeling of youthful expressivness.
 - Restrained print texture: the background is not entirely sterile; subtle grain, faded tonal variation, and imperfect edges keep it from feeling like ordinary digital minimalism.
+- Anti-Polish & Raw Authenticity
 
 The feeling of minimalist style with youthful, handmade vitality and adolescent sincerity.
 
