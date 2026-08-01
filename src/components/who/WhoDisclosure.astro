@@ -88,7 +88,7 @@ import PortraitInteraction from './PortraitInteraction.astro';
     display: none;
   }
 
-  .who-disclosure:target {
+  :global(spatial-route-shell:not([data-enhanced]) .who-disclosure:target) {
     display: block;
   }
 

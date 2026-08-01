@@ -169,7 +169,7 @@ const [discourses, santa, snake, ticTacToe] = entries;
     display: none;
   }
 
-  .games-disclosure:target,
+  :global(spatial-route-shell:not([data-enhanced]) .games-disclosure:target),
   .games-disclosure:not([hidden]) {
     display: block;
   }

@@ -114,7 +114,7 @@ const entries = (await getCollection('writing'))
     display: none;
   }
 
-  .blog-disclosure:target,
+  :global(spatial-route-shell:not([data-enhanced]) .blog-disclosure:target),
   .blog-disclosure:not([hidden]) {
     display: block;
   }

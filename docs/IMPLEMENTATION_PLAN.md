@@ -134,6 +134,9 @@ Exit condition: Secret box page, animation, and transition effect and the transi
 
 - Complete metadata, social preview, sitemap, RSS, and `404.html`.
 - Use the authored avatar artwork as the browser-tab icon.
+- Resolve mobile page-process reloads by keeping animated game media decoder-friendly and releasing inactive destination video resources.
+- Keep the hand-drawn craft-value checkboxes visually complete in checked and unchecked browser-rendered states.
+- Keep the Software journey current by adding newly released, evidence-backed artifacts with their authored media and verified public destinations.
 - Run clean checks and production builds.
 - After Igor deployed website through the GitHub Pages himself fix deployment-only issues and record the final state.
 - Paint the browser canvas with the shared field surface and suppress elastic overscroll globally so browsers cannot expose a visually different edge.

@@ -1,6 +1,6 @@
 # Website rebuild progress
 
-Last updated: 2026-07-24
+Last updated: 2026-08-01
 
 ## Status
 
@@ -309,6 +309,16 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The Flutter and Chinese Bee records now lead with the concrete experience each artifact brought to users rather than a construction-oriented phrase or product name alone.
 - On wide screens, Chinese Bee now forms one horizontal row with its image on the left and its title and learning notes on the right. The receipt-processing project continues below in the opposite direction, with its details on the left and image on the right. Narrow screens retain the media-first single-column flow.
 
+## Observatory Software showcase
+
+- Observatory now leads the existing `/#work/software` journey. It does not create another top-level destination or change the Home navigation model.
+- The public record uses the released project repository, authored launch-film artwork, and Igor's public project descriptions as its evidence boundary. It states the product's application-level monitoring, controlled tests, saved comparisons, local storage, product direction, design, artwork, launch-film work, and AI-directed implementation without inventing metrics or responsibilities.
+- The opening links directly to the launch film, project and source, and current release. A quieter follow-on line preserves the supplied Instagram, X, Product Design, Motion Design, and LinkedIn posts.
+- The authored telescope icon and launch-film composition are stored with the site and optimized through the existing Astro image pipeline. No new dependency, route, or client-side media behavior was added.
+- The launch-film prompt sits in the media's upper-left corner, clear of the overlapping telescope icon at desktop and mobile widths.
+- The Flutter, Chinese Bee, and receipt-processing artifacts remain intact below Observatory and are renumbered along an extended hand-drawn trail.
+- Browser inspection at 1440 by 900, 1084 by 943, 390 by 844, and 320 by 800 confirms readable placement, 44-pixel link targets, intact selected-origin behavior, and no horizontal overflow. The production build and `git diff --check` pass without diagnostics.
+
 ## Résumé rewrite
 
 - Two two-page Word résumés now target interactive product design and engineering, and game design and gameplay systems development.
@@ -328,6 +338,20 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The document canvas uses the same shared field texture tokens as every `WorldField`, with an equivalent softened composite over the field color.
 - Browsers can ignore image texture when painting the native elastic-scroll gap. Vertical overscroll bounce is therefore disabled on the root document and body across every route, while ordinary vertical page scrolling remains unchanged.
 - The Secret box retains its no-scroll viewport behavior while consuming the global surface rather than carrying a duplicate background recipe.
+
+## Mobile browser stability refinement
+
+- The intermittent mobile failure is consistent with page-process pressure rather than a normal JavaScript exception: the deployed fragment states and compatibility redirects completed without console errors, while the Games disclosure retained a 77-frame, 960 by 540 animated WebP alongside other destination media in the persistent Home document.
+- Discourses now uses a 960 by 540 H.264 video derivative with native controls, inline muted looping, a fast-start header, and the existing winter still as both poster and reduced-motion content. This preserves the authored animation while avoiding the animated image's large multi-frame decode footprint.
+- `SpatialRouteShell` now keeps video URLs out of enhanced markup until their destination is active, removes sources and resets media elements when the destination closes, then restores only the next active destination's sources. JavaScript-free visits retain direct video links, and reduced-motion visits do not initialize the looping Discourses video.
+- Fragment `:target` rules now apply only before `SpatialRouteShell` enhances. The enhanced `hidden` and destination attributes remain authoritative, so a browser that retains stale `:target` state after `history.replaceState` cannot leave the old disclosure or its mobile origin icon visible after the hash is removed.
+- Mobile verification must cover direct Games reloads, repeated Games to Who I am and Software switching, Back and Forward, and pinch-zoom without a page-process reload before this refinement is considered complete.
+
+## Craft-value checkbox rendering refinement
+
+- The unchecked checkbox SVGs exposed the final diagonal segment of their hidden tick paths in browser rendering, making every box look partly checked or broken.
+- Unchecked ticks are now explicitly transparent in addition to using the draw offset, while checked ticks restore opacity and draw along the same irregular authored paths. The three distinct hand-drawn outlines, 48-pixel controls, checked settle motion, keyboard focus, and reduced-motion behavior remain unchanged.
+- The checked state no longer draws a long strike-through across each sentence. The complete hand-drawn tick is now the sole completion mark, with only a restrained text fade, so it does not collide with the lettering or the changing word's coral underline.
 
 ## Browser-tab icon
 

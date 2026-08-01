@@ -5,11 +5,11 @@ import { sitePath } from '../../config/site';
 import ArtifactSketch from './ArtifactSketch.astro';
 import UnfoldingTrail from './UnfoldingTrail.astro';
 
-const order = ['flutter-product', 'chinese-bee', 'receipt-processing'];
+const order = ['observatory', 'flutter-product', 'chinese-bee', 'receipt-processing'];
 const entries = (await getCollection('software'))
   .filter((entry) => order.includes(entry.id))
   .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
-const [flutterProduct, chineseBee, receiptProcessing] = entries;
+const [observatory, flutterProduct, chineseBee, receiptProcessing] = entries;
 ---
 
 <section
@@ -60,32 +60,56 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
       <section
         class="software-opening__artifact software-opening__piece"
         data-connection-target="software-first-artifact"
-        aria-labelledby="software-flutter-title"
+        aria-labelledby="software-observatory-title"
         style="--piece-delay: 220ms; --piece-x: 2rem; --piece-y: -3rem;"
       >
         <div class="software-opening__media">
-          <ArtifactSketch category="software" slug={flutterProduct.id} />
+          <ArtifactSketch category="software" slug={observatory.id} />
         </div>
         <div class="software-opening__copy">
           <span aria-hidden="true">01</span>
-          <h2 id="software-flutter-title">{flutterProduct.data.title}</h2>
+          <h2 id="software-observatory-title">{observatory.data.title}</h2>
+          <p class="software-opening__summary">{observatory.data.summary}</p>
+          <nav class="software-project-links" aria-label="Observatory project links">
+            {observatory.data.videoUrl && <a href={observatory.data.videoUrl}>Launch film</a>}
+            {observatory.data.externalUrl && <a href={observatory.data.externalUrl}>Project and source</a>}
+            {observatory.data.downloadUrl && <a href={observatory.data.downloadUrl}>Download</a>}
+          </nav>
           <aside aria-label="Learned along this artifact">
             <p>Learned along an artifact</p>
-            <ul>{flutterProduct.data.capabilities.map((learning) => <li>{learning}</li>)}</ul>
+            <ul>{observatory.data.capabilities.map((learning) => <li>{learning}</li>)}</ul>
           </aside>
+          <nav class="software-social-links" aria-label="Observatory posts">
+            <span>shared on</span>
+            {observatory.data.socialLinks.map((link) => <a href={link.url}>{link.label}</a>)}
+          </nav>
         </div>
       </section>
     </header>
 
     <UnfoldingTrail>
       <div class="software-trail">
-        <svg class="software-trail__spine" viewBox="0 0 1000 1600" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M500 8 C500 150 250 105 245 305 C240 505 753 380 756 610 C760 822 252 755 248 1010 C246 1230 472 1260 500 1592" pathLength="1" />
+        <svg class="software-trail__spine" viewBox="0 0 1000 2400" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M500 8 C500 150 250 105 245 305 C240 505 753 380 756 610 C760 822 252 755 248 1010 C246 1230 753 1130 756 1390 C760 1620 250 1555 248 1840 C246 2100 472 2200 500 2392" pathLength="1" />
         </svg>
+
+        <section id="software-flutter" class="software-stop software-stop--flutter" data-trail-stop aria-labelledby="software-flutter-title">
+          <div class="software-stop__copy">
+            <span class="software-stop__number" aria-hidden="true">02</span>
+            <h2 id="software-flutter-title">{flutterProduct.data.title}</h2>
+            <aside aria-label="Learned along this artifact">
+              <p>Learned along an artifact</p>
+              <ul>{flutterProduct.data.capabilities.map((learning) => <li>{learning}</li>)}</ul>
+            </aside>
+          </div>
+          <div class="software-stop__media">
+            <ArtifactSketch category="software" slug={flutterProduct.id} />
+          </div>
+        </section>
 
         <section id="software-chinese-bee" class="software-stop software-stop--bee" data-trail-stop aria-labelledby="software-bee-title">
           <div class="software-stop__copy">
-            <span class="software-stop__number" aria-hidden="true">02</span>
+            <span class="software-stop__number" aria-hidden="true">03</span>
             <h2 id="software-bee-title">{chineseBee.data.title}</h2>
             <aside aria-label="Learned along this artifact">
               <p>Learned along an artifact</p>
@@ -102,7 +126,7 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
             <ArtifactSketch category="software" slug={receiptProcessing.id} />
           </div>
           <div class="software-stop__copy">
-            <span class="software-stop__number" aria-hidden="true">03</span>
+            <span class="software-stop__number" aria-hidden="true">04</span>
             <h2 id="software-receipts-title">{receiptProcessing.data.title}</h2>
             {receiptProcessing.data.result && <p class="software-stop__result">{receiptProcessing.data.result}</p>}
             <aside aria-label="Learned along this artifact">
@@ -132,7 +156,7 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
     display: none;
   }
 
-  .software-disclosure:target,
+  :global(spatial-route-shell:not([data-enhanced]) .software-disclosure:target),
   .software-disclosure:not([hidden]) {
     display: block;
   }
@@ -281,6 +305,49 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
     line-height: 1.05;
   }
 
+  .software-opening__summary {
+    max-width: 43ch;
+    color: rgba(243, 239, 228, 0.82);
+    font-size: clamp(1rem, 1.35vw, 1.12rem);
+    line-height: 1.55;
+  }
+
+  .software-project-links,
+  .software-social-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 1rem;
+  }
+
+  .software-project-links a,
+  .software-social-links a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    text-decoration-thickness: 0.08rem;
+    text-decoration-color: color-mix(in srgb, var(--software-accent) 80%, transparent);
+    text-underline-offset: 0.22em;
+  }
+
+  .software-project-links a:focus-visible,
+  .software-social-links a:focus-visible {
+    border-radius: 0.1rem;
+    outline: 0.18rem solid var(--color-focus);
+    outline-offset: 0.15rem;
+  }
+
+  .software-social-links {
+    max-width: 30rem;
+    color: rgba(243, 239, 228, 0.66);
+    font-size: 0.95rem;
+  }
+
+  .software-social-links > span {
+    color: var(--software-accent);
+    transform: rotate(-2deg);
+  }
+
   .software-trail {
     position: relative;
     display: grid;
@@ -398,6 +465,17 @@ const [flutterProduct, chineseBee, receiptProcessing] = entries;
     position: relative;
     min-width: 0;
     transform-origin: center;
+  }
+
+  .software-stop--flutter .software-stop__copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .software-stop--flutter .software-stop__media {
+    grid-column: 2;
+    grid-row: 1;
+    transform: rotate(-1.2deg);
   }
 
   .software-stop--bee .software-stop__media {

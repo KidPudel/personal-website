@@ -4,9 +4,11 @@ import { Image } from 'astro:assets';
 import chineseBeeIcon from '../../assets/software-showcases/chinesebe_icon.png';
 import chineseBeeShowcase from '../../assets/software-showcases/chinesebe_showcase.png';
 import foodDeliveryShowcase from '../../assets/software-showcases/food_app_delivery_showcase.png';
+import observatoryIcon from '../../assets/software-showcases/observatory/icon.png';
+import observatoryLaunchFilm from '../../assets/software-showcases/observatory/launch-film.png';
 import discoursesCover from '../../assets/games/discourses/cover.png';
-import discoursesTeaser from '../../assets/games/discourses/discourses-teaser.webp';
 import discoursesScene from '../../assets/games/discourses/winter-scene.jpeg';
+import discoursesTeaser from '../../assets/games/discourses/discourses-teaser.mp4';
 import santaCity from '../../assets/games/santa/city.png';
 import santaMountains from '../../assets/games/santa/mountains.png';
 import santaSnowflake from '../../assets/games/santa/snowflake.png';
@@ -43,7 +45,7 @@ const softwareFlows: Record<string, { note: string; steps: string[] }> = {
 };
 
 const softwareFlow = softwareFlows[slug];
-const hasSoftwareShowcase = slug === 'flutter-product' || slug === 'chinese-bee';
+const hasSoftwareShowcase = ['observatory', 'flutter-product', 'chinese-bee'].includes(slug);
 const hasGameMedia = [
   'discourses-by-campfire',
   'santa-foundation',
@@ -69,6 +71,34 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
   class:list={['artifact-sketch', `artifact-sketch--${category}`, `artifact-sketch--${slug}`]}
   aria-hidden={hasSoftwareShowcase || hasGameMedia ? undefined : 'true'}
 >
+  {
+    slug === 'observatory' && (
+      <div class="artifact-sketch__observatory">
+        <a
+          class="artifact-sketch__observatory-film"
+          href="https://www.youtube.com/watch?v=6LWORcxVZmY&t=5s"
+          aria-label="Watch the Observatory launch film on YouTube"
+        >
+          <Image
+            src={observatoryLaunchFilm}
+            alt="Observatory launch film artwork with a telescope, numerical texture, and the project name."
+            widths={[640, 960, 1280]}
+            sizes="(max-width: 700px) 92vw, 50vw"
+            loading="lazy"
+          />
+          <span>watch the launch film <span aria-hidden="true">↗</span></span>
+        </a>
+        <Image
+          class="artifact-sketch__observatory-icon"
+          src={observatoryIcon}
+          alt=""
+          width={190}
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+
   {
     slug === 'flutter-product' && (
       <div class="artifact-sketch__software-showcase artifact-sketch__software-showcase--food">
@@ -119,17 +149,37 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
   {
     slug === 'discourses-by-campfire' && (
       <div class="artifact-sketch__discourses">
-        <picture class="artifact-sketch__scene">
-          <source media="(prefers-reduced-motion: reduce)" srcset={discoursesScene.src} />
-          <img
-            src={discoursesTeaser.src}
+        <div class="artifact-sketch__scene">
+          <video
+            data-media-source={discoursesTeaser}
+            poster={discoursesScene.src}
+            width="960"
+            height="540"
+            autoplay
+            controls
+            loop
+            muted
+            playsinline
+            preload="none"
+            data-autoplay-video
+            data-lazy-video
+            aria-label="Discourses by Campfire gameplay in a snowy mountain forest."
+          >
+            Your browser does not support embedded video.
+          </video>
+          <Image
+            class="artifact-sketch__scene-still"
+            src={discoursesScene}
             alt="Discourses by Campfire gameplay in a snowy mountain forest."
-            width={discoursesTeaser.width}
-            height={discoursesTeaser.height}
+            width={960}
             loading="lazy"
-            decoding="async"
           />
-        </picture>
+          <noscript>
+            <a class="artifact-sketch__media-fallback" href={discoursesTeaser}>
+              Open the Discourses gameplay video
+            </a>
+          </noscript>
+        </div>
         <Image class="artifact-sketch__cover" src={discoursesCover} alt="" width={390} loading="lazy" />
       </div>
     )
@@ -174,7 +224,7 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
     slug === 'snake-raylib' && (
       <div class="artifact-sketch__game-media artifact-sketch__snake-video">
         <video
-          src={snakeVideo}
+          data-media-source={snakeVideo}
           poster={snakePoster.src}
           controls
           playsinline
@@ -184,6 +234,9 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
         >
           Your browser does not support embedded video.
         </video>
+        <noscript>
+          <a class="artifact-sketch__media-fallback" href={snakeVideo}>Open the Snake gameplay video</a>
+        </noscript>
       </div>
     )
   }
@@ -206,6 +259,68 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
 <style>
   .artifact-sketch {
     width: 100%;
+  }
+
+  .artifact-sketch__observatory {
+    position: relative;
+    width: 100%;
+    padding: 0.35rem 0.8rem 1.25rem 0;
+  }
+
+  .artifact-sketch__observatory-film {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    min-height: 2.75rem;
+    border-top: 0.1rem solid rgba(243, 239, 228, 0.5);
+    border-right: 0.08rem solid rgba(243, 239, 228, 0.24);
+    border-bottom: 0.14rem solid var(--work-accent, #86aebd);
+    border-left: 0.16rem solid rgba(243, 239, 228, 0.38);
+    box-shadow: 0.4rem 0.55rem 0 rgba(7, 7, 6, 0.2);
+    color: var(--color-field-ink);
+    transform: rotate(-0.8deg);
+  }
+
+  .artifact-sketch__observatory-film :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: filter 160ms ease;
+  }
+
+  .artifact-sketch__observatory-film > span {
+    position: absolute;
+    top: 0.7rem;
+    left: 0.7rem;
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    padding: 0.45rem 0.8rem;
+    background: rgba(10, 13, 15, 0.88);
+    text-decoration: underline;
+    text-decoration-color: var(--work-accent, #86aebd);
+    text-underline-offset: 0.22em;
+  }
+
+  .artifact-sketch__observatory-film:hover :global(img),
+  .artifact-sketch__observatory-film:focus-visible :global(img) {
+    filter: brightness(1.12);
+  }
+
+  .artifact-sketch__observatory-film:focus-visible {
+    outline: 0.18rem solid var(--color-focus);
+    outline-offset: 0.25rem;
+  }
+
+  .artifact-sketch__observatory-icon {
+    position: absolute;
+    right: -0.15rem;
+    bottom: -0.1rem;
+    width: clamp(5.5rem, 18vw, 9.5rem);
+    height: auto;
+    filter: drop-shadow(0.3rem 0.45rem 0 rgba(7, 7, 6, 0.28));
+    pointer-events: none;
+    transform: rotate(3deg);
   }
 
   .artifact-sketch__software-showcase {
@@ -316,7 +431,7 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
   }
 
   .artifact-sketch__discourses :global(img),
-  .artifact-sketch__discourses picture {
+  .artifact-sketch__discourses video {
     position: absolute;
     display: block;
     height: auto;
@@ -333,10 +448,27 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
     transform: rotate(-3deg);
   }
 
-  .artifact-sketch__scene :global(img) {
+  .artifact-sketch__scene :global(img),
+  .artifact-sketch__scene video {
     inset: 0;
     width: 100%;
     height: 100%;
+    object-fit: cover;
+  }
+
+  .artifact-sketch__scene .artifact-sketch__scene-still {
+    display: none;
+  }
+
+  .artifact-sketch__media-fallback {
+    position: absolute;
+    z-index: 2;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(23, 23, 22, 0.88);
+    color: var(--color-field-ink);
   }
 
   .artifact-sketch__cover {
@@ -503,6 +635,14 @@ const snowflakes = Array.from({ length: 18 }, (_, index) => {
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .artifact-sketch__scene video {
+      display: none;
+    }
+
+    .artifact-sketch__scene .artifact-sketch__scene-still {
+      display: block;
+    }
+
     .artifact-sketch__santa-sleigh,
     .artifact-sketch__santa-sleigh-sheet {
       animation: none;

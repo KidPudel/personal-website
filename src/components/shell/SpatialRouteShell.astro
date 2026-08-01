@@ -275,16 +275,36 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
     };
 
     private syncMedia = (destinationId?: string) => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
       this.disclosures.forEach((disclosure, id) => {
         disclosure.querySelectorAll<HTMLVideoElement>('[data-lazy-video]').forEach((video) => {
-          if (id === destinationId) {
+          const source = video.dataset.mediaSource ?? video.getAttribute('src');
+          if (source && !video.dataset.mediaSource) {
+            video.dataset.mediaSource = source;
+          }
+
+          const shouldLoad =
+            id === destinationId && !(reduceMotion && video.hasAttribute('data-autoplay-video'));
+
+          if (shouldLoad) {
+            if (!video.getAttribute('src') && video.dataset.mediaSource) {
+              video.setAttribute('src', video.dataset.mediaSource);
+            }
             if (video.preload !== 'metadata') {
               video.preload = 'metadata';
               video.load();
             }
+            if (video.hasAttribute('data-autoplay-video')) {
+              void video.play().catch(() => undefined);
+            }
           } else {
             video.pause();
             video.preload = 'none';
+            if (video.getAttribute('src')) {
+              video.removeAttribute('src');
+              video.load();
+            }
           }
         });
       });
@@ -452,12 +472,12 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
   }
 
   :global(.world-field:has(spatial-route-shell[data-destination-active]) .world-field__content > main),
-  :global(.world-field:has([data-destination-disclosure]:target) .world-field__content > main) {
+  :global(.world-field:has(spatial-route-shell:not([data-enhanced]) [data-destination-disclosure]:target) .world-field__content > main) {
     pointer-events: auto;
   }
 
   :global(.world-field:has(spatial-route-shell[data-destination-active]) .world-field__doodle),
-  :global(.world-field:has([data-destination-disclosure]:target) .world-field__doodle) {
+  :global(.world-field:has(spatial-route-shell:not([data-enhanced]) [data-destination-disclosure]:target) .world-field__doodle) {
     pointer-events: none;
     opacity: 0.055;
   }
@@ -468,7 +488,7 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
   }
 
   spatial-route-shell[data-destination-active] .spatial-route-shell__home,
-  spatial-route-shell:has([data-destination-disclosure]:target) .spatial-route-shell__home {
+  spatial-route-shell:not([data-enhanced]):has([data-destination-disclosure]:target) .spatial-route-shell__home {
     position: absolute;
     z-index: 3;
     inset: 0 0 auto;
@@ -478,19 +498,19 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
   }
 
   spatial-route-shell[data-destination-active] :global(.home-map__choices > *),
-  spatial-route-shell:has([data-destination-disclosure]:target) :global(.home-map__choices > *) {
+  spatial-route-shell:not([data-enhanced]):has([data-destination-disclosure]:target) :global(.home-map__choices > *) {
     opacity: 0.055;
     transform: scale(0.86);
     transform-origin: center;
   }
 
   spatial-route-shell[data-active-destination='who-i-am'] :global(.home-map__choices > .choice-who),
-  spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who),
+  spatial-route-shell:not([data-enhanced]):has(#who-i-am:target) :global(.home-map__choices > .choice-who),
   spatial-route-shell[data-active-destination='blog'] :global(.home-map__choices > .choice-blog),
-  spatial-route-shell:has(#blog:target) :global(.home-map__choices > .choice-blog),
+  spatial-route-shell:not([data-enhanced]):has(#blog:target) :global(.home-map__choices > .choice-blog),
   spatial-route-shell[data-active-destination^='work/'] :global(.home-map__choices > work-disclosure),
-  spatial-route-shell:has(#work\/software:target) :global(.home-map__choices > work-disclosure),
-  spatial-route-shell:has(#work\/games:target) :global(.home-map__choices > work-disclosure) {
+  spatial-route-shell:not([data-enhanced]):has(#work\/software:target) :global(.home-map__choices > work-disclosure),
+  spatial-route-shell:not([data-enhanced]):has(#work\/games:target) :global(.home-map__choices > work-disclosure) {
     opacity: 1;
     pointer-events: auto;
     transform: none;
@@ -556,21 +576,21 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
 
   @media (max-width: 64rem) {
     spatial-route-shell[data-destination-active] .spatial-route-shell__home,
-    spatial-route-shell:has([data-destination-disclosure]:target) .spatial-route-shell__home {
+    spatial-route-shell:not([data-enhanced]):has([data-destination-disclosure]:target) .spatial-route-shell__home {
       display: block;
       height: 6.5rem;
       overflow: visible;
     }
 
     spatial-route-shell[data-destination-active] :global(.home-map),
-    spatial-route-shell:has([data-destination-disclosure]:target) :global(.home-map) {
+    spatial-route-shell:not([data-enhanced]):has([data-destination-disclosure]:target) :global(.home-map) {
       display: block;
       min-height: 0;
       overflow: visible;
     }
 
     spatial-route-shell[data-destination-active] :global(.home-map__choices),
-    spatial-route-shell:has([data-destination-disclosure]:target) :global(.home-map__choices) {
+    spatial-route-shell:not([data-enhanced]):has([data-destination-disclosure]:target) :global(.home-map__choices) {
       position: absolute;
       inset: 0;
       display: block;
@@ -581,25 +601,25 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
 
     spatial-route-shell[data-active-destination='who-i-am']
       :global(.home-map__choices > :not(.choice-who)),
-    spatial-route-shell:has(#who-i-am:target)
+    spatial-route-shell:not([data-enhanced]):has(#who-i-am:target)
       :global(.home-map__choices > :not(.choice-who)),
     spatial-route-shell[data-active-destination='blog']
       :global(.home-map__choices > :not(.choice-blog)),
-    spatial-route-shell:has(#blog:target)
+    spatial-route-shell:not([data-enhanced]):has(#blog:target)
       :global(.home-map__choices > :not(.choice-blog)),
     spatial-route-shell[data-active-destination^='work/']
       :global(.home-map__choices > :not(work-disclosure)),
-    spatial-route-shell:has(#work\/software:target)
+    spatial-route-shell:not([data-enhanced]):has(#work\/software:target)
       :global(.home-map__choices > :not(work-disclosure)),
-    spatial-route-shell:has(#work\/games:target)
+    spatial-route-shell:not([data-enhanced]):has(#work\/games:target)
       :global(.home-map__choices > :not(work-disclosure)) {
       display: none;
     }
 
     spatial-route-shell[data-active-destination='who-i-am'] :global(.home-map__choices > .choice-who),
-    spatial-route-shell:has(#who-i-am:target) :global(.home-map__choices > .choice-who),
+    spatial-route-shell:not([data-enhanced]):has(#who-i-am:target) :global(.home-map__choices > .choice-who),
     spatial-route-shell[data-active-destination='blog'] :global(.home-map__choices > .choice-blog),
-    spatial-route-shell:has(#blog:target) :global(.home-map__choices > .choice-blog) {
+    spatial-route-shell:not([data-enhanced]):has(#blog:target) :global(.home-map__choices > .choice-blog) {
       position: absolute;
       top: 0;
       left: 0;
@@ -609,9 +629,9 @@ import SoftwareDisclosure from '../work/SoftwareDisclosure.astro';
 
     spatial-route-shell[data-active-destination^='work/']
       :global(.home-map__choices > work-disclosure),
-    spatial-route-shell:has(#work\/software:target)
+    spatial-route-shell:not([data-enhanced]):has(#work\/software:target)
       :global(.home-map__choices > work-disclosure),
-    spatial-route-shell:has(#work\/games:target)
+    spatial-route-shell:not([data-enhanced]):has(#work\/games:target)
       :global(.home-map__choices > work-disclosure) {
       position: absolute;
       top: 0;
