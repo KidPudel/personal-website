@@ -321,6 +321,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Résumé rewrite
 
+- Software and Games résumé PDF links now open in the browser's PDF viewer, where visitors can preview or download them. DOCX links remain direct downloads.
 - Two two-page Word résumés now target interactive product design and engineering, and game design and gameplay systems development.
 - Both lead with designing experiences and behavior, then building the systems that make those designs real. The interactive-product version now presents product work first and moves fintech systems work to additional professional experience.
 - PizzaSushiWok is positioned as `Mobile Product Designer & Developer`, with concrete evidence covering the product consolidation proposal, ordering journey, interaction behavior, production delivery, and supporting system decisions.
@@ -332,6 +333,9 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Final render inspection, text extraction, and accessibility audits pass for both files.
 - The site’s existing generic résumé PDF and DOCX now contain the interactive-product version, preserving the established download URLs used by Connect and Software. Games now presents dedicated game-development PDF and DOCX downloads in its opening composition.
 - The production build passes. The Games download object was inspected at 1440 by 900, 390 by 844, and the 320-pixel minimum with no horizontal overflow, readable placement, and 44-pixel minimum download targets.
+- Observatory now leads the interactive-product résumé's Relevant Product Experience. Its record covers the working macOS product, product and behavior specifications, information architecture, UX/UI, original telescope artwork, visual identity, AI-directed application development, and the 2:11 launch film without implying that Igor personally wrote the application code.
+- The professional summary and capability lines now include the verified product-direction, information-architecture, visual-identity, motion-direction, and specification-led AI-development evidence. Chinese Bee moves intact to a labeled page-two continuation so the résumé remains two pages.
+- The generic site DOCX and PDF and the named interactive-product DOCX are synchronized. The game-development résumé remains unchanged. Final DOCX rendering, two-page PDF inspection, link and list verification, accessibility audit, privacy check, and production-download checks pass.
 
 ## Global overscroll surface
 

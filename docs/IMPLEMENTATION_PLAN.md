@@ -80,7 +80,7 @@ Exit condition: all approved work is discoverable, factual, and usable with or w
 
 - Build the Blog index and local article presentation as calm hand-drawn compositions on the persistent field.
 - Complete the Home Connect experience and compatibility route.
-- Verify contact, social, and résumé destinations.
+- Verify contact and social destinations, browser-viewable résumé PDFs, and direct-download résumé DOCX files.
 
 Exit condition: every primary destination and public link is complete.
 
@@ -137,6 +137,7 @@ Exit condition: Secret box page, animation, and transition effect and the transi
 - Resolve mobile page-process reloads by keeping animated game media decoder-friendly and releasing inactive destination video resources.
 - Keep the hand-drawn craft-value checkboxes visually complete in checked and unchecked browser-rendered states.
 - Keep the Software journey current by adding newly released, evidence-backed artifacts with their authored media and verified public destinations.
+- Keep the downloadable résumés synchronized with verified project evidence while preserving their focused audiences and two-page layouts.
 - Run clean checks and production builds.
 - After Igor deployed website through the GitHub Pages himself fix deployment-only issues and record the final state.
 - Paint the browser canvas with the shared field surface and suppress elastic overscroll globally so browsers cannot expose a visually different edge.
