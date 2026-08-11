@@ -164,11 +164,13 @@ Exit condition: the public site is complete, verified, and deployable from a cle
   reading column, with a centered wider column for evidence-led compositions.
 - Use locally embedded Crimson Text faces for body copy and Averia Serif Libre
   Bold for display headlines.
+- Use locally embedded Capriola for navigation, section indicators, metadata,
+  captions, and editorial labels while preserving their authored capitalization.
 - Keep narrative body copy on one shared Crimson Text reading size and line
   height across research, personas, principles, validation, and sticky stories.
 - Use a high-contrast black text-selection treatment within the case study.
-- Use a deep, saturated forest green for the case study's editorial accents so labels,
-  navigation state, and focus cues remain distinct without a browser-blue theme.
+- Use the case study's black ink color for editorial accents, navigation state,
+  and focus cues instead of introducing a separate accent hue.
 - Verify root and GitHub Pages builds, desktop and mobile layouts, internal base
   paths, image loading, and horizontal containment.
 

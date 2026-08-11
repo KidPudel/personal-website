@@ -517,6 +517,14 @@ const sketches = [
 
 <style is:global>
   @font-face {
+    font-family: 'Capriola';
+    src: url('../../../assets/fonts/Capriola-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
     font-family: 'Crimson Text';
     src: url('../../../assets/fonts/CrimsonText-Regular.ttf') format('truetype');
     font-style: normal;
@@ -562,10 +570,10 @@ const sketches = [
     --ink: #171714;
     --muted: #6e6b64;
     --line: #c8c4ba;
-    --accent: #0f5d3f;
+    --accent: var(--ink);
     --serif: 'Crimson Text', Georgia, serif;
     --display-serif: 'Averia Serif Libre', 'Iowan Old Style', Georgia, serif;
-    --sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --sans: 'Capriola', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     --reading-size: clamp(18px, 1.45vw, 20px);
     --reading-line: 1.6;
     color-scheme: light;
@@ -609,8 +617,8 @@ const sketches = [
     min-height: 78px;
     font-family: var(--sans);
     font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-transform: none;
   }
 
   .topbar span { color: var(--muted); text-align: center; }
@@ -631,9 +639,9 @@ const sketches = [
     font-family: var(--sans);
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.05em;
     line-height: 1.4;
-    text-transform: uppercase;
+    text-transform: none;
   }
 
   .eyebrow { margin: 0 0 28px; color: var(--muted); }
@@ -653,7 +661,7 @@ const sketches = [
 
   .facts div { max-width: 190px; padding: 0; }
   .facts div + div { padding-left: 0; border-left: 0; }
-  .facts dt { margin-bottom: 7px; color: var(--muted); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .facts dt { margin-bottom: 7px; color: var(--muted); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: none; }
   .facts dd { margin: 0; font-size: 15px; line-height: 1.4; }
 
   figure { margin: 0; }
@@ -710,9 +718,9 @@ const sketches = [
     font-family: var(--sans);
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.05em;
     line-height: 1.4;
-    text-transform: uppercase;
+    text-transform: none;
   }
   .research-aims {
     max-width: 610px;
@@ -728,7 +736,7 @@ const sketches = [
   .interview-structure > div > p:last-child { max-width: 610px; margin: 20px 0 0; font-size: var(--reading-size); line-height: var(--reading-line); }
   .interview-structure ol { max-width: 610px; margin: 32px 0 0; padding: 0; list-style: none; }
   .interview-structure li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 13px 0; }
-  .interview-structure li > span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; line-height: 1.5; }
+  .interview-structure li > span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; line-height: 1.5; }
   .interview-structure li p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
   .interview-structure strong { font-weight: 600; }
   .persona-intro { max-width: 610px; margin: 82px auto 0; }
@@ -836,7 +844,7 @@ const sketches = [
     padding: 110px 0 90px;
   }
   .case-footer p { margin: 0; font-size: 24px; line-height: 1.25; }
-  .case-footer nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 30px; align-content: start; font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .case-footer nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 30px; align-content: start; font-family: var(--sans); font-size: 11px; letter-spacing: 0.04em; text-transform: none; }
 
   @media (max-width: 900px) {
     .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 42px; max-width: 620px; }
@@ -910,9 +918,9 @@ const sketches = [
     color: #96928a;
     font-family: var(--sans);
     font-size: 9px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.04em;
     line-height: 1;
-    text-transform: uppercase;
+    text-transform: none;
     translate: 0 -50%;
   }
 
@@ -1016,7 +1024,7 @@ const sketches = [
   }
   .scroll-story__steps { margin: 0; padding: 0; list-style: none; }
   .scroll-story__steps li { margin: 0 0 90px; color: var(--muted); }
-  .scroll-story__steps span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .scroll-story__steps span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: none; }
   .scroll-story__steps h3 { margin: 18px 0 10px; color: var(--ink); font-size: clamp(24px, 2.4vw, 34px); font-weight: 900; line-height: 1.05; }
   .scroll-story__steps p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
 

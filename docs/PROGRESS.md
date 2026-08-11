@@ -453,7 +453,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Normalized narrative copy to one shared Crimson Text reading size and line
   height across the case study. Persona stories and observations no longer drop
   to 17 pixels, and validation explanations no longer switch to 14-pixel system
-  sans text. Metadata, captions, and uppercase navigation labels retain their
+  sans text. Metadata, captions, and navigation labels retain their
   smaller sans-serif treatment.
 - Removed the off-white presentation backgrounds behind the transparent early
   sketches and prototype sticky-story images. Both evidence types now sit
@@ -465,6 +465,14 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
   portraits. Both transparent 2048-pixel square sources load through the
   existing semantic image markup, remain fully visible in their 300-pixel
   desktop and phone frames, and keep accurate alternative text.
+- Embedded Capriola Regular locally and replaced the system sans-serif across
+  the Observatory case study. The side section indicator, top navigation,
+  chapter and research labels, metadata, captions, and sticky-story markers now
+  share Capriola while Crimson Text remains the reading face and Averia Serif
+  Libre remains the display face.
+- Removed forced uppercase from the Capriola UI layer and reduced its tracking.
+  Navigation, section indicators, metadata, captions, and editorial labels now
+  preserve the capitalization authored in the page copy.
 - Replaced the browser-blue text selection within the Observatory case study
   with a high-contrast black highlight and white selected text.
 - Replaced the saturated blue editorial accent with a deep forest green and
@@ -474,6 +482,10 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
   1054 by 943 and 390 by 844 confirmed the accent, clear console, and no
   horizontal overflow. Root and `/personal-website/` production builds pass
   without diagnostics.
+- Removed the remaining green accent from the Observatory case study. The
+  shared accent token now resolves to the page's black ink color, so labels,
+  research markers, sticky-story steps, navigation state, link hover, and
+  keyboard focus cues use a monochrome treatment.
 - Replaced both working-persona placeholders with Igor's authored square
   sketches. The drawings retain their transparent backgrounds and complete
   composition at desktop and phone sizes, and include descriptive alternative
