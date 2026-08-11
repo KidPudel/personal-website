@@ -6,7 +6,7 @@ Last updated: 2026-08-11
 
 The latest structural correction is implemented. The root page is now a focused personal document: box opening, identity reveal, three craft values, and writing. Contact lives in the persistent side disclosure rather than a repeated footer. The former oversized work and play stream has moved to a dedicated `/work/` page.
 
-The homepage still begins with the scroll-controlled box-opening sequence using the transparent frames in `src/assets/art/Doodles-box-opening/`. The wave reveals `Hello, I’m Igor.`, the existing portrait shuffle, colorful word interactions, a restrained type scale, and direct work and résumé paths. There is no separate `/secret-box/` route.
+The homepage still begins with the scroll-controlled box-opening sequence using the transparent frames in `src/assets/art/Doodles-box-opening/`. The current stable handoff opens onto `Hello, I’m Igor.`, the existing portrait shuffle, colorful word interactions, a restrained type scale, and direct work and résumé paths. There is no separate `/secret-box/` route.
 
 `/work/` now leads with Observatory, then presents the food product, Chinese Bee, receipt investigation, and payment-flow work. Finished games retain their authored presentation: Discourses uses its gameplay video, Santa uses its layered animated scene, and Snake keeps native video playback. Tic-Tac-Toe and the unfinished card-system study appear as real smaller artifacts rather than archive rows.
 
@@ -22,13 +22,13 @@ The latest visual iteration removes the formal full-name eyebrow in favor of `He
 
 The identity headline now uses a smaller scale and a wider measure. At the desktop review viewport it reads as a broader statement with fewer line breaks rather than an oversized poster block.
 
-The homepage now follows one centered content spine. The values section rises into the outgoing hero on wide screens to remove the approximately 400-pixel empty handoff, the redundant floating values cue is removed, and decorative doodles are confined to the side gutters. The redundant final contact block is removed because the persistent side disclosure already provides the complete contact path. The rejected overlapping-sphere background has been removed. Four saturated field colors cut with the box frames. Pink, yellow, and blue wave layers then wash over the final drawing and reveal the new warm off-white portfolio surface. Home and Work now use black ink on that light field; dark surfaces remain local to project media.
+The homepage now follows one centered content spine. The values section rises into the outgoing hero on wide screens to remove the approximately 400-pixel empty handoff, the redundant floating values cue is removed, and decorative doodles are confined to the side gutters. The redundant final contact block is removed because the persistent side disclosure already provides the complete contact path. The rejected overlapping-sphere background, nested splash forms, separate droplets, circular portal, closed canvas ribbon, and stacked rainbow wave are removed. Saturated field colors still cut with the box frames. The production handoff is temporarily a short crossfade into the off-white homepage while a better color-rush motion is authored separately. Home and Work use black ink on the warm off-white field; dark surfaces remain local to project media.
 
 | Milestone | Status |
 | --- | --- |
 | 0. Reconcile documentation and evidence | Complete on 2026-08-11 |
 | 1. Static continuous homepage foundation | Complete on 2026-08-11 |
-| 2. Scroll-controlled box opening and identity reveal | Complete first pass on 2026-08-11 |
+| 2. Scroll-controlled box opening and identity reveal | Stable baseline complete; final color-rush motion remains open |
 | 3. Dedicated work presentation | Complete structural pass on 2026-08-11 |
 | 4. Personal, play, writing, and contact sections | Complete first pass on 2026-08-11 |
 | 5. Observatory hiring-evidence pass | Complete on 2026-08-11 |
@@ -45,7 +45,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The opening uses normal page scroll, exposes a keyboard-reachable skip action, removes revealed content and navigation from interaction until visible, and bypasses the animation for reduced-motion preferences. Essential homepage content remains in the static HTML.
 - Desktop inspection at 998 by 943 found one main landmark and one h1 on both documents, no broken images, no horizontal overflow, live game media, and no server warnings or errors. The updated side control is hidden while the box is closed, enters with the reveal, stays inside the viewport on both homepage and work page, and expands all six contact links.
 - Responsive inspection used browser viewports at 390 by 844 and 320 by 800. The upright box, revealed hero, work introduction, project media, résumé path, and navigation remain contained without horizontal clipping.
-- The color-flipbook and layered-wave opening were checked at 1280 by 720 and 390 by 844. The lossless box frames paint correctly, the saturated field colors cut without muddy interpolation, the color crest washes over the final drawing, and the light Home and Work layouts remain horizontally contained.
+- The stabilized color-flipbook and crossfade handoff were checked at 1280 by 720. All eight authored frames remain in the sequence, the saturated field colors cut cleanly, and the final zoom frame now initiates the handoff instead of being held over the revealed homepage. Mobile re-verification remains required after the final timing pass.
 - The typography and spacing pass was inspected at 998 by 943 and 390 by 844. Averia Serif Libre headings, Bright Chalk copy and labels, the side navigation control, and the cropped section-marker drawings remain legible and contained.
 - The portrait shuffle and changing craft-value word remain operable. The Discourses video autoplays muted when visible, Santa's sleigh and snow animations run, and both embedded videos expose native controls.
 - Box frames use the original lossless 2048-pixel PNGs. The previous 1200-pixel lossy WebP conversion left only about 296 pixels across the visible box drawing and was visibly soft on high-density screens; the eight authored PNGs total about 756KB. Non-opening media stays responsive and lazy where it is not immediately needed.
@@ -85,7 +85,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - The separate `/secret-box/` route is removed in the redesign.
 - `/` begins with the box opening in the same continuous document as the homepage.
 - Ordinary scroll progress advances the new transparent frames in `src/assets/art/Doodles-box-opening/`.
-- A layered colorful wave washes over the box and reveals the warm off-white homepage beneath it.
+- The current production baseline crossfades from the normal-scale open box into the warm off-white homepage. The final expressive color-rush motion remains intentionally unresolved rather than shipping another rejected rainbow or blob treatment.
 - The transparent frames may be inverted or recolored for the final surfaces.
 - The opening reveals Igor's name, `Product designer`, an approved positioning statement, and immediate selected-work access.
 - The empty four-direction Home is removed.

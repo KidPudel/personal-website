@@ -97,10 +97,10 @@ The opening is the first section of `/`, not another route.
 - Frames have transparent backgrounds and may be inverted or recolored. Render the authored 2048-pixel PNGs losslessly; lossy resizing softens the relatively small line drawing inside each full-frame canvas.
 - The opening controller maps each frame to one saturated field color. Colors cut with the flipbook frame rather than running as a separate ambient animation or interpolating through muddy intermediate tones.
 - A short sticky section maps ordinary scroll progress to the eight frames.
-- Three decorative color layers and the actual homepage use a shared scroll-controlled wave boundary. The color layers pass over the box drawing first; the final off-white reveal layer leaves the real homepage in place.
+- The stable implementation uses all eight authored frames, saturated frame-bound field colors, and a short crossfade into the off-white homepage. The final zoom frame initiates the handoff immediately rather than being held over the destination composition. A richer color rush must be prototyped as a separate motion study before it replaces this baseline.
 - Scroll remains native. Do not cancel wheel or touch events, introduce forced smooth scrolling, or use mandatory snapping.
 - Fast scrolling may complete the sequence immediately.
-- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the wave reveals it.
+- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the pigment field reveals it.
 - The enhanced content layer remains inert while visually unavailable and becomes interactive once substantially revealed.
 - A skip link reaches the next personal-content section.
 - Reduced motion and no-JavaScript modes show the completed identity composition without requiring the sequence.

@@ -32,11 +32,11 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Make the box animation the opening section of `/`, in the same document as the continuous homepage.
 - Drive the authored frames in `src/assets/art/Doodles-box-opening/` from ordinary scroll progress.
 - Test a compact saturated palette as part of the frame sequence. Keep each moment flat and legible, cut colors with frame changes, and avoid decorative spheres or a separate ambient background animation.
-- Replace the former black circular portal with a layered colorful wave that washes over the box and reveals the light homepage.
+- Keep the verified frame-color changes, then prototype the final color rush separately from the production handoff. Reject stacked rainbow lines, closed blobs, spheres, droplets, and oversized frame outlines. Do not replace the stable crossfade until the new motion study has coherent timing, spatial connection to the box, and clean desktop and mobile states.
 - Treat the transparent frames as color-flexible assets that may be inverted or recolored for the chosen surfaces.
 - Replace the empty four-direction Home with a continuous homepage.
 - Make the box reveal Igor, not merely navigation.
-- Keep the unopened box free of name-and-role labels. Reveal `Hello, I’m Igor.`, `Product designer.`, the positioning statement, and direct work access through the wave as the box opens.
+- Keep the unopened box free of name-and-role labels. Reveal `Hello, I’m Igor.`, `Product designer.`, the positioning statement, and direct work access through the pigment field as the box opens.
 - Make product work one direct action from the first revealed viewport.
 - Keep deep case studies as separate documents.
 - Present all verified work on a dedicated `/work/` document. Product design leads; games and technical experiments follow with their authored media and honest prominence.
@@ -60,7 +60,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 
 The homepage is one document. It begins with the scroll-controlled box opening, then continues in ordinary vertical document flow. Its content appears in this order:
 
-1. Box opening and layered wave reveal.
+1. Box opening and centered homepage reveal.
 2. Identity and professional proposition.
 3. Three craft values directly beneath the introduction, without a separate About section or label.
 4. Writing.
@@ -244,7 +244,7 @@ Exit condition: the complete homepage is readable in correct order, buildable, a
 - Make Observatory visible in or at the first-viewport edge.
 - Replace the deleted legacy frames with `src/assets/art/Doodles-box-opening/`.
 - Map the eight box frames to a short sticky section driven by ordinary scroll progress.
-- Expand a circular mask from the box interior to reveal the real homepage layer beneath it.
+- Keep a clean crossfade as the production baseline while the final color-rush motion is unresolved. Prototype that motion independently and only integrate it after frame-by-frame review confirms that it does not produce rainbow bands, cheap closed shapes, or oversized box outlines.
 - Keep the scroll-controlled interval short enough to complete within less than one additional viewport of scrolling.
 - Allow fast forward and backward scrolling to advance or reverse the decorative sequence naturally.
 - Support skip, keyboard, touch, no-JavaScript, and reduced-motion behavior.

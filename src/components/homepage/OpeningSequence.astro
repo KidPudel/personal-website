@@ -13,11 +13,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
 
 <opening-sequence class="opening-sequence" data-frame-count={frames.length}>
     <div class="opening-sequence__sticky">
-        <div class="opening-sequence__wave opening-sequence__wave--pink" aria-hidden="true"></div>
-        <div class="opening-sequence__wave opening-sequence__wave--yellow" aria-hidden="true"></div>
-        <div class="opening-sequence__wave opening-sequence__wave--blue" aria-hidden="true"></div>
-        <div class="opening-sequence__wave opening-sequence__wave--paper" aria-hidden="true"></div>
-
         <div class="opening-sequence__reveal" data-opening-reveal>
             <slot />
         </div>
@@ -90,14 +85,14 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
             const clamp = (value: number) => Math.min(1, Math.max(0, value));
             const smooth = (value: number) => value * value * (3 - 2 * value);
             const openingColors = [
-                "#7186e8",
-                "#7186e8",
-                "#ef7188",
-                "#ef7188",
-                "#f0cd50",
-                "#f0cd50",
-                "#4fc3ad",
-                "#4fc3ad",
+                "#4265ff",
+                "#4265ff",
+                "#ff49c2",
+                "#ff49c2",
+                "#ffd83d",
+                "#ffd83d",
+                "#39b9a7",
+                "#39b9a7",
             ];
 
             const render = () => {
@@ -107,7 +102,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     reducedMotion.matches ||
                     window.location.hash === "#contact"
                 ) {
-                    this.style.setProperty("--wave-y", "-45vh");
+                    this.style.setProperty("--reveal-opacity", "1");
                     this.style.setProperty("--art-opacity", "0");
                     this.style.setProperty("--instruction-opacity", "0");
                     this.style.setProperty("--hero-content-opacity", "1");
@@ -115,6 +110,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     header.inert = false;
                     header.removeAttribute("aria-hidden");
                     reveal.inert = false;
+                    this.toggleAttribute("data-complete", true);
                     return;
                 }
 
@@ -124,20 +120,18 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     this.offsetHeight - window.innerHeight,
                 );
                 const progress = clamp(-rect.top / distance);
-                const frameProgress = clamp(progress / 0.5);
+                const frameProgress = clamp(progress / 0.56);
                 const frameIndex = Math.min(
                     frames.length - 1,
                     Math.floor(frameProgress * frames.length),
                 );
-                const waveProgress = smooth(clamp((progress - 0.38) / 0.5));
-                const artOpacity = 1 - smooth(clamp((progress - 0.58) / 0.2));
+                const revealProgress = smooth(clamp((progress - 0.49) / 0.16));
+                const artOpacity = 1 - smooth(clamp((progress - 0.49) / 0.12));
                 const instructionOpacity = 1 - smooth(clamp(progress / 0.16));
                 const headerVisibility = smooth(
-                    clamp((progress - 0.76) / 0.14),
+                    clamp((progress - 0.59) / 0.12),
                 );
-                const heroContentOpacity = smooth(
-                    clamp((progress - 0.71) / 0.14),
-                );
+                const heroContentOpacity = 1;
 
                 frames.forEach((frame, index) =>
                     frame.toggleAttribute("data-active", index === frameIndex),
@@ -146,7 +140,10 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     "--opening-color",
                     openingColors[frameIndex] ?? openingColors[0],
                 );
-                this.style.setProperty("--wave-y", `${135 - waveProgress * 180}vh`);
+                this.style.setProperty(
+                    "--reveal-opacity",
+                    String(revealProgress),
+                );
                 this.style.setProperty("--art-opacity", String(artOpacity));
                 this.style.setProperty(
                     "--instruction-opacity",
@@ -162,7 +159,11 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 );
                 header.inert = headerVisibility < 0.86;
                 header.toggleAttribute("aria-hidden", headerVisibility < 0.86);
-                reveal.inert = waveProgress < 0.9;
+                reveal.inert = revealProgress < 0.9;
+                this.toggleAttribute(
+                    "data-complete",
+                    revealProgress >= 0.995,
+                );
             };
 
             const requestRender = () => {
@@ -201,11 +202,11 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
 
 <style>
     .opening-sequence {
-        --wave-y: -45vh;
+        --reveal-opacity: 1;
         --art-opacity: 0;
         --instruction-opacity: 0;
         --hero-content-opacity: 1;
-        --opening-color: #7186e8;
+        --opening-color: #4265ff;
         position: relative;
         z-index: 2;
         display: block;
@@ -223,14 +224,11 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
 
     .opening-sequence__reveal {
         position: absolute;
-        z-index: 9;
+        z-index: 10;
         inset: 0;
         overflow: hidden;
         background: #f7f4ec;
-    }
-
-    .opening-sequence__wave {
-        display: none;
+        opacity: var(--reveal-opacity);
     }
 
     .opening-sequence__art {
@@ -247,75 +245,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
     }
 
     :global(.js) .opening-sequence__reveal {
-        --wave-offset: 0vh;
-        clip-path: polygon(
-            0 calc(var(--wave-y) + var(--wave-offset) + 6vh),
-            8% calc(var(--wave-y) + var(--wave-offset) + 5vh),
-            17% calc(var(--wave-y) + var(--wave-offset) + 3vh),
-            27% calc(var(--wave-y) + var(--wave-offset) - 1vh),
-            38% calc(var(--wave-y) + var(--wave-offset) - 5vh),
-            49% calc(var(--wave-y) + var(--wave-offset) - 8vh),
-            59% calc(var(--wave-y) + var(--wave-offset) - 8.5vh),
-            69% calc(var(--wave-y) + var(--wave-offset) - 6vh),
-            79% calc(var(--wave-y) + var(--wave-offset) - 2vh),
-            90% calc(var(--wave-y) + var(--wave-offset) + 3vh),
-            100% calc(var(--wave-y) + var(--wave-offset) + 5vh),
-            100% 100%,
-            0 100%
-        );
-        will-change: clip-path;
-    }
-
-    :global(.js) .opening-sequence__wave {
-        position: absolute;
-        inset: 0;
-        display: block;
-        clip-path: polygon(
-            0 calc(var(--wave-y) + var(--wave-offset) + 6vh),
-            8% calc(var(--wave-y) + var(--wave-offset) + 5vh),
-            17% calc(var(--wave-y) + var(--wave-offset) + 3vh),
-            27% calc(var(--wave-y) + var(--wave-offset) - 1vh),
-            38% calc(var(--wave-y) + var(--wave-offset) - 5vh),
-            49% calc(var(--wave-y) + var(--wave-offset) - 8vh),
-            59% calc(var(--wave-y) + var(--wave-offset) - 8.5vh),
-            69% calc(var(--wave-y) + var(--wave-offset) - 6vh),
-            79% calc(var(--wave-y) + var(--wave-offset) - 2vh),
-            90% calc(var(--wave-y) + var(--wave-offset) + 3vh),
-            100% calc(var(--wave-y) + var(--wave-offset) + 5vh),
-            100% 100%,
-            0 100%
-        );
-        pointer-events: none;
-        transform: scale(1.025);
-        will-change: clip-path;
-    }
-
-    :global(.js) .opening-sequence__wave--pink {
-        --wave-offset: -18vh;
-        z-index: 6;
-        background: #ff55d7;
-        filter: drop-shadow(0 -0.4rem 0.85rem rgba(255, 85, 215, 0.78));
-    }
-
-    :global(.js) .opening-sequence__wave--yellow {
-        --wave-offset: -11vh;
-        z-index: 7;
-        background: #ffd84f;
-        filter: drop-shadow(0 -0.35rem 0.75rem rgba(255, 216, 79, 0.72));
-    }
-
-    :global(.js) .opening-sequence__wave--blue {
-        --wave-offset: -5vh;
-        z-index: 8;
-        background: #2964ec;
-        filter: drop-shadow(0 -0.35rem 0.75rem rgba(41, 100, 236, 0.68));
-    }
-
-    :global(.js) .opening-sequence__wave--paper {
-        --wave-offset: -1.2vh;
-        z-index: 9;
-        background: #f7f4ec;
-        filter: drop-shadow(0 -0.3rem 0.75rem rgba(247, 244, 236, 0.9));
+        will-change: opacity;
     }
 
     :global(.js) .opening-sequence__art {
@@ -384,14 +314,10 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
             height: 100svh;
         }
 
-        :global(.js) .opening-sequence__reveal {
-            clip-path: none;
-        }
-
-        :global(.js) .opening-sequence__wave,
         :global(.js) .opening-sequence__art,
         :global(.js) .opening-sequence__instruction {
             display: none;
         }
+
     }
 </style>
