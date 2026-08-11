@@ -32,16 +32,16 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Make the box animation the opening section of `/`, in the same document as the continuous homepage.
 - Drive the authored frames in `src/assets/art/Doodles-box-opening/` from ordinary scroll progress.
 - Test a compact saturated palette as part of the frame sequence. Keep each moment flat and legible, cut colors with frame changes, and avoid decorative spheres or a separate ambient background animation.
-- Reveal the homepage through a black circular portal expanding from inside the box.
+- Replace the former black circular portal with a layered colorful wave that washes over the box and reveals the light homepage.
 - Treat the transparent frames as color-flexible assets that may be inverted or recolored for the chosen surfaces.
 - Replace the empty four-direction Home with a continuous homepage.
 - Make the box reveal Igor, not merely navigation.
-- Keep the unopened box free of name-and-role labels. Reveal `Hello, I’m Igor.`, `Product designer.`, the positioning statement, and direct work access through the portal as the box opens.
+- Keep the unopened box free of name-and-role labels. Reveal `Hello, I’m Igor.`, `Product designer.`, the positioning statement, and direct work access through the wave as the box opens.
 - Make product work one direct action from the first revealed viewport.
 - Keep deep case studies as separate documents.
 - Present all verified work on a dedicated `/work/` document. Product design leads; games and technical experiments follow with their authored media and honest prominence.
 - Remove the graphite field, persistent grain system, and complex shared-world treatment.
-- Use a clean black-and-warm-white surface system with at most one controlled accent at a time.
+- Use a warm off-white portfolio field with black ink and controlled joyful color. Keep dark treatments local to media that needs them.
 - Render personal doodles only as simple CSS background images that scroll normally with the page.
 - Preserve authentic drawings, portrait interaction, craft values, purposeful imperfections, and the approved paper invitation.
 - Remove hub-and-spoke compositions, long dotted connectors, repeated route labels, and excess background doodles.
@@ -60,7 +60,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 
 The homepage is one document. It begins with the scroll-controlled box opening, then continues in ordinary vertical document flow. Its content appears in this order:
 
-1. Box opening and circular portal reveal.
+1. Box opening and layered wave reveal.
 2. Identity and professional proposition.
 3. Three craft values directly beneath the introduction, without a separate About section or label.
 4. Writing.

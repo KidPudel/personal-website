@@ -14,7 +14,7 @@ interface Props {
   robots?: string;
 }
 
-const { title, description, pageClass, themeColor = '#171716', ogImage, robots } = Astro.props;
+const { title, description, pageClass, themeColor = '#f7f4ec', ogImage, robots } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 ---

@@ -10,9 +10,9 @@ This direction supersedes the later sections of this document wherever they requ
 
 - There is no separate `/secret-box/` route in the redesign.
 - `/` begins with the box as the opening section of the same continuous document.
-- Scrolling advances the authored frames in `src/assets/art/Doodles-box-opening/`, then a black circular portal expands from inside the box and reveals the homepage content beneath it.
+- Scrolling advances the authored frames in `src/assets/art/Doodles-box-opening/`, then a layered colorful wave rises across the box and leaves the warm off-white homepage beneath it.
 - The transparent frame assets may be inverted or recolored to fit the chosen opening and destination surfaces.
-- The unopened box carries no floating identity label. As the portal reveals the homepage, the resting hero opens conversationally with `Hello, I’m Igor.` and `Product designer.` The hero supplies a concise positioning statement and a direct path to the work page.
+- The unopened box carries no floating identity label. As the wave reveals the homepage, the resting hero opens conversationally with `Hello, I’m Igor.` and `Product designer.` The hero supplies a concise positioning statement and a direct path to the work page.
 - The empty four-direction Home is replaced by one continuous, authored homepage.
 - The homepage is deliberately personal and focused: box opening, identity, three craft values directly beneath the introduction, and writing. Contact lives in the persistent side disclosure rather than a repeated footer section. The page has no separate About section or About label and does not dump the full portfolio into the same stream.
 - `/work/` is a dedicated, high-quality work document reached directly from the hero and persistent navigation. It presents product design, systems work, finished games, earlier experiments, and unfinished work with honest hierarchy.
@@ -20,18 +20,18 @@ This direction supersedes the later sections of this document wherever they requ
 - Substantial case studies such as Observatory remain separate editorial documents.
 - Product design leads `/work/`. Games and technical experiments remain visibly authored supporting evidence with their real videos and motion rather than flattened archive rows.
 - Remove the graphite field and its grain-heavy persistent-world treatment.
-- Use a simpler, tasteful high-contrast surface system built from clean neutral fields, black and warm white, with at most one controlled accent at a time.
+- Use a simpler, tasteful high-contrast surface system built from a warm off-white field, black ink, and controlled joyful color. The portfolio is light themed; black remains the drawing and text color rather than the dominant page field.
 - Personal doodles appear only as simple CSS background images that scroll normally with the document. They are not interactive DOM objects, parallax layers, route state, or a separate shell feature.
 - Remove central hubs, diagram-like spokes, long decorative connectors, repeated route labels, and doodles that compete with content.
 - Use proximity, alignment, scale, and negative space to communicate most relationships. A short connector is allowed only when it explains a real local sequence.
 - Preserve authentic drawings, portrait interactions, craft values, the approved paper invitation, and purposeful imperfections.
 - The resulting visual principle is handmade minimalism, not hand-drawn maximalism.
 - Do not substitute a polished portfolio template for the old spatial interface. An oversized conventional hero followed by repeated cards, pill tags, a symmetrical project grid, and a standard CTA block is scaffolding at most, not an acceptable final composition. Clear navigation may remain, but the work compositions must feel authored for Igor's actual artifacts.
-- External portfolio references may inform usability analysis, but their visual language must not be copied or adopted unless Igor explicitly asks for that visual influence. Preserve Igor's established fonts, black-field minimalism, drawings, portraits, doodles, and handmade character.
+- External portfolio references may inform usability analysis, but their visual language must not be copied or adopted unless Igor explicitly asks for that visual influence. Preserve Igor's established fonts, drawings, portraits, doodles, minimalism, and handmade character.
 - Use Averia Serif Libre for portfolio headings and Bright Chalk for explanatory copy, labels, controls, captions, and interactions. Do not use Capriola or Cartoon Relief in the homepage and work-page hierarchy.
 - Do not impose a full-width desktop navigation bar on the handmade composition. Use a side-mounted Work and contact control that appears as the box opens. The contact action includes the existing Connect drawing and expands the contact links. Writing must be discoverable through the homepage sequence itself.
 - Use one centered content spine for the homepage. Keep intentional empty space in the left and right gutters, place decorative doodles only in those gutters, and keep successive sections close enough that scrolling never exposes a large unexplained hole between them.
-- Keep the opening field unmistakably colored rather than beige or neutral. The current experiment is a scroll-controlled color flipbook: a small set of saturated flat fields changes with the authored box frames, then the black portal replaces it. Use hard color cuts rather than interpolated gradients, ambient spheres, or unrelated abstract decoration.
+- Keep the opening field unmistakably colored rather than beige or neutral. A small set of saturated flat fields changes with the authored box frames. Near the end, pink, yellow, and blue layers gather into one irregular soft-edged crest that washes over the drawing and reveals the warm off-white homepage. Use hard field-color cuts rather than interpolated gradients, ambient spheres, or unrelated abstract decoration.
 - Reuse Igor's existing `Who I am`, `Blog`, `Connect`, `Work`, `Software`, and `Games` drawings as non-blocking section indicators. Keep their familiar hover wobble, but do not make visitors open or decode a section through them.
 
 The redesign sequence and verification gates live in `docs/IMPLEMENTATION_PLAN.md`.

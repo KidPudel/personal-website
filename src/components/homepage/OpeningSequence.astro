@@ -16,6 +16,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         <div class="opening-sequence__wave opening-sequence__wave--pink" aria-hidden="true"></div>
         <div class="opening-sequence__wave opening-sequence__wave--yellow" aria-hidden="true"></div>
         <div class="opening-sequence__wave opening-sequence__wave--blue" aria-hidden="true"></div>
+        <div class="opening-sequence__wave opening-sequence__wave--paper" aria-hidden="true"></div>
 
         <div class="opening-sequence__reveal" data-opening-reveal>
             <slot />
@@ -248,14 +249,17 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
     :global(.js) .opening-sequence__reveal {
         --wave-offset: 0vh;
         clip-path: polygon(
-            0 calc(var(--wave-y) + var(--wave-offset) + 7vh),
-            12% calc(var(--wave-y) + var(--wave-offset) + 4vh),
-            25% calc(var(--wave-y) + var(--wave-offset) - 1vh),
-            40% calc(var(--wave-y) + var(--wave-offset) - 8vh),
-            55% calc(var(--wave-y) + var(--wave-offset) - 11vh),
-            70% calc(var(--wave-y) + var(--wave-offset) - 7vh),
-            85% calc(var(--wave-y) + var(--wave-offset) + 1vh),
-            100% calc(var(--wave-y) + var(--wave-offset) + 6vh),
+            0 calc(var(--wave-y) + var(--wave-offset) + 6vh),
+            8% calc(var(--wave-y) + var(--wave-offset) + 5vh),
+            17% calc(var(--wave-y) + var(--wave-offset) + 3vh),
+            27% calc(var(--wave-y) + var(--wave-offset) - 1vh),
+            38% calc(var(--wave-y) + var(--wave-offset) - 5vh),
+            49% calc(var(--wave-y) + var(--wave-offset) - 8vh),
+            59% calc(var(--wave-y) + var(--wave-offset) - 8.5vh),
+            69% calc(var(--wave-y) + var(--wave-offset) - 6vh),
+            79% calc(var(--wave-y) + var(--wave-offset) - 2vh),
+            90% calc(var(--wave-y) + var(--wave-offset) + 3vh),
+            100% calc(var(--wave-y) + var(--wave-offset) + 5vh),
             100% 100%,
             0 100%
         );
@@ -267,18 +271,20 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         inset: 0;
         display: block;
         clip-path: polygon(
-            0 calc(var(--wave-y) + var(--wave-offset) + 7vh),
-            12% calc(var(--wave-y) + var(--wave-offset) + 4vh),
-            25% calc(var(--wave-y) + var(--wave-offset) - 1vh),
-            40% calc(var(--wave-y) + var(--wave-offset) - 8vh),
-            55% calc(var(--wave-y) + var(--wave-offset) - 11vh),
-            70% calc(var(--wave-y) + var(--wave-offset) - 7vh),
-            85% calc(var(--wave-y) + var(--wave-offset) + 1vh),
-            100% calc(var(--wave-y) + var(--wave-offset) + 6vh),
+            0 calc(var(--wave-y) + var(--wave-offset) + 6vh),
+            8% calc(var(--wave-y) + var(--wave-offset) + 5vh),
+            17% calc(var(--wave-y) + var(--wave-offset) + 3vh),
+            27% calc(var(--wave-y) + var(--wave-offset) - 1vh),
+            38% calc(var(--wave-y) + var(--wave-offset) - 5vh),
+            49% calc(var(--wave-y) + var(--wave-offset) - 8vh),
+            59% calc(var(--wave-y) + var(--wave-offset) - 8.5vh),
+            69% calc(var(--wave-y) + var(--wave-offset) - 6vh),
+            79% calc(var(--wave-y) + var(--wave-offset) - 2vh),
+            90% calc(var(--wave-y) + var(--wave-offset) + 3vh),
+            100% calc(var(--wave-y) + var(--wave-offset) + 5vh),
             100% 100%,
             0 100%
         );
-        filter: blur(clamp(0.45rem, 0.8vw, 0.85rem));
         pointer-events: none;
         transform: scale(1.025);
         will-change: clip-path;
@@ -288,18 +294,28 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         --wave-offset: -18vh;
         z-index: 6;
         background: #ff55d7;
+        filter: drop-shadow(0 -0.4rem 0.85rem rgba(255, 85, 215, 0.78));
     }
 
     :global(.js) .opening-sequence__wave--yellow {
         --wave-offset: -11vh;
         z-index: 7;
         background: #ffd84f;
+        filter: drop-shadow(0 -0.35rem 0.75rem rgba(255, 216, 79, 0.72));
     }
 
     :global(.js) .opening-sequence__wave--blue {
         --wave-offset: -5vh;
         z-index: 8;
         background: #2964ec;
+        filter: drop-shadow(0 -0.35rem 0.75rem rgba(41, 100, 236, 0.68));
+    }
+
+    :global(.js) .opening-sequence__wave--paper {
+        --wave-offset: -1.2vh;
+        z-index: 9;
+        background: #f7f4ec;
+        filter: drop-shadow(0 -0.3rem 0.75rem rgba(247, 244, 236, 0.9));
     }
 
     :global(.js) .opening-sequence__art {

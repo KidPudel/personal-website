@@ -80,7 +80,7 @@ The DOM order is also the reading order. CSS may create asymmetrical composition
 - the skip link;
 - shared reset and focus behavior.
 
-The root page owns its black-and-warm-white surface styles. The Observatory document retains its independent editorial typography and layout.
+The root and work pages own their warm off-white and black-ink surface styles. The Observatory document retains its independent editorial typography and layout.
 
 The portfolio presentation uses two local roles without changing Observatory:
 
@@ -97,10 +97,10 @@ The opening is the first section of `/`, not another route.
 - Frames have transparent backgrounds and may be inverted or recolored. Render the authored 2048-pixel PNGs losslessly; lossy resizing softens the relatively small line drawing inside each full-frame canvas.
 - The opening controller maps each frame to one saturated field color. Colors cut with the flipbook frame rather than running as a separate ambient animation or interpolating through muddy intermediate tones.
 - A short sticky section maps ordinary scroll progress to the eight frames.
-- A circular clip mask grows from the box interior and reveals the actual homepage layer beneath it.
+- Three decorative color layers and the actual homepage use a shared scroll-controlled wave boundary. The color layers pass over the box drawing first; the final off-white reveal layer leaves the real homepage in place.
 - Scroll remains native. Do not cancel wheel or touch events, introduce forced smooth scrolling, or use mandatory snapping.
 - Fast scrolling may complete the sequence immediately.
-- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the portal reveals it.
+- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the wave reveals it.
 - The enhanced content layer remains inert while visually unavailable and becomes interactive once substantially revealed.
 - A skip link reaches the next personal-content section.
 - Reduced motion and no-JavaScript modes show the completed identity composition without requiring the sequence.
@@ -111,7 +111,7 @@ Use a requestAnimationFrame-coalesced scroll listener or an equivalent small loc
 
 The redesign removes the graphite field, paper-grain overlay, and `WorldField` presentation shell.
 
-- Use clean black and warm-white surfaces.
+- Use a warm off-white portfolio field with black ink. Dark surfaces remain local to media that genuinely needs them.
 - Use no more than one controlled accent treatment at a time.
 - Doodles are decorative CSS background images on the root or individual sections.
 - Background images use normal scrolling and no separate state.
