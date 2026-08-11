@@ -35,6 +35,12 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
             }
         </div>
 
+        <canvas
+            class="opening-sequence__essence"
+            aria-hidden="true"
+            data-opening-essence
+        ></canvas>
+
         <p class="opening-sequence__instruction" data-opening-instruction>
             Scroll to open <span aria-hidden="true">↓</span>
         </p>
@@ -62,6 +68,9 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
             const instruction = this.querySelector<HTMLElement>(
                 "[data-opening-instruction]",
             );
+            const essence = this.querySelector<HTMLCanvasElement>(
+                "[data-opening-essence]",
+            );
             const frames = Array.from(
                 this.querySelectorAll<HTMLElement>("[data-opening-frame]"),
             );
@@ -76,11 +85,15 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 !reveal ||
                 !art ||
                 !instruction ||
+                !essence ||
                 !frames.length ||
                 !page ||
                 !header
             )
                 return;
+
+            const essenceContext = essence.getContext("2d");
+            if (!essenceContext) return;
 
             const clamp = (value: number) => Math.min(1, Math.max(0, value));
             const smooth = (value: number) => value * value * (3 - 2 * value);
@@ -94,6 +107,191 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 "#39b9a7",
                 "#39b9a7",
             ];
+            const essencePalette = [
+                { stop: 0, color: [38, 49, 109] },
+                { stop: 0.18, color: [47, 82, 178] },
+                { stop: 0.32, color: [47, 93, 213] },
+                { stop: 0.43, color: [102, 147, 208] },
+                { stop: 0.53, color: [226, 218, 230] },
+                { stop: 0.63, color: [242, 211, 97] },
+                { stop: 0.72, color: [241, 167, 73] },
+                { stop: 0.8, color: [234, 111, 61] },
+                { stop: 0.87, color: [233, 87, 90] },
+                { stop: 0.94, color: [232, 68, 165] },
+                { stop: 1, color: [235, 92, 225] },
+            ];
+
+            const paletteColor = (value: number) => {
+                const position = clamp(value);
+                const upperIndex = essencePalette.findIndex(
+                    ({ stop }) => stop >= position,
+                );
+
+                if (upperIndex <= 0) return essencePalette[0].color;
+                if (upperIndex < 0)
+                    return essencePalette[essencePalette.length - 1].color;
+
+                const lower = essencePalette[upperIndex - 1];
+                const upper = essencePalette[upperIndex];
+                const mix =
+                    (position - lower.stop) / (upper.stop - lower.stop);
+
+                return lower.color.map((channel, index) =>
+                    Math.round(channel + (upper.color[index] - channel) * mix),
+                );
+            };
+
+            const fieldDistance = (x: number, y: number) => {
+                const dx = x - 0.5;
+                const dy = y - 0.52;
+                const angle = Math.atan2(dy, dx);
+                const contour =
+                    1 +
+                    Math.sin(angle * 3 + 0.7) * 0.09 +
+                    Math.cos(angle * 5 - 0.45) * 0.055 +
+                    Math.sin(angle * 2 + 1.1) * 0.035;
+                const skewedX = dx + dy * 0.16;
+                const main =
+                    Math.hypot(skewedX / 0.57, dy / 0.49) / contour;
+                const upperLeft =
+                    Math.hypot((dx + 0.22) / 0.34, (dy + 0.14) / 0.3) *
+                        0.76 +
+                    0.23;
+                const lowerRight =
+                    Math.hypot((dx - 0.28) / 0.3, (dy - 0.13) / 0.37) *
+                        0.79 +
+                    0.26;
+
+                return Math.min(main, upperLeft, lowerRight);
+            };
+
+            const ellipseDistance = (
+                x: number,
+                y: number,
+                centerX: number,
+                centerY: number,
+                radiusX: number,
+                radiusY: number,
+                skew: number,
+            ) => {
+                const dx = x - centerX;
+                const dy = y - centerY;
+
+                return Math.hypot((dx + dy * skew) / radiusX, dy / radiusY);
+            };
+
+            const drawEssence = (progress: number) => {
+                const targetWidth = Math.max(
+                    64,
+                    Math.min(144, Math.round(window.innerWidth / 12)),
+                );
+                const targetHeight = Math.max(
+                    64,
+                    Math.min(144, Math.round(window.innerHeight / 12)),
+                );
+
+                if (
+                    essence.width !== targetWidth ||
+                    essence.height !== targetHeight
+                ) {
+                    essence.width = targetWidth;
+                    essence.height = targetHeight;
+                }
+
+                const growth = clamp((progress - 0.335) / 0.405);
+                const reveal = smooth(clamp((progress - 0.72) / 0.25));
+                const after = clamp((progress - 0.69) / 0.31);
+                const afterEnvelope = Math.sin(after * Math.PI) * 0.42;
+
+                essence.toggleAttribute(
+                    "data-visible",
+                    growth > 0 && (reveal < 1 || afterEnvelope > 0.001),
+                );
+
+                if (growth <= 0 || (reveal >= 1 && afterEnvelope <= 0.001)) {
+                    essenceContext.clearRect(
+                        0,
+                        0,
+                        essence.width,
+                        essence.height,
+                    );
+                    return;
+                }
+
+                const image = essenceContext.createImageData(
+                    essence.width,
+                    essence.height,
+                );
+                const overshoot =
+                    Math.sin(
+                        Math.PI * clamp((growth - 0.58) / 0.42),
+                    ) * 0.065;
+                const radius = 0.035 + (smooth(growth) + overshoot) * 1.48;
+                const baseOpacity = 1 - reveal;
+
+                for (let y = 0; y < essence.height; y += 1) {
+                    for (let x = 0; x < essence.width; x += 1) {
+                        const normalizedX = x / Math.max(1, essence.width - 1);
+                        const normalizedY = y / Math.max(1, essence.height - 1);
+                        const band =
+                            fieldDistance(normalizedX, normalizedY) / radius;
+                        const edge = 1 - smooth(clamp((band - 0.91) / 0.11));
+                        const baseAlpha = edge * baseOpacity;
+
+                        const trailOne = ellipseDistance(
+                            normalizedX,
+                            normalizedY,
+                            -0.06 + after * 0.62,
+                            0.86 - after * 0.72,
+                            0.3 + after * 0.14,
+                            0.2 + after * 0.1,
+                            -0.32,
+                        );
+                        const trailTwo = ellipseDistance(
+                            normalizedX,
+                            normalizedY,
+                            1.08 - after * 0.44,
+                            0.18 + after * 0.6,
+                            0.22 + after * 0.12,
+                            0.3 + after * 0.08,
+                            0.28,
+                        );
+                        const trailBand = Math.min(trailOne, trailTwo);
+                        const trailEdge =
+                            1 - smooth(clamp((trailBand - 0.72) / 0.3));
+                        const trailAlpha = trailEdge * afterEnvelope;
+                        const alpha = clamp(
+                            baseAlpha + trailAlpha * (1 - baseAlpha),
+                        );
+
+                        if (alpha <= 0.002) continue;
+
+                        const baseColor = paletteColor(band);
+                        const trailColor = paletteColor(
+                            0.58 + clamp(trailBand) * 0.4,
+                        );
+                        const trailMix =
+                            alpha > 0 ? trailAlpha / (baseAlpha + trailAlpha) : 0;
+                        const pixelIndex = (y * essence.width + x) * 4;
+
+                        image.data[pixelIndex] = Math.round(
+                            baseColor[0] +
+                                (trailColor[0] - baseColor[0]) * trailMix,
+                        );
+                        image.data[pixelIndex + 1] = Math.round(
+                            baseColor[1] +
+                                (trailColor[1] - baseColor[1]) * trailMix,
+                        );
+                        image.data[pixelIndex + 2] = Math.round(
+                            baseColor[2] +
+                                (trailColor[2] - baseColor[2]) * trailMix,
+                        );
+                        image.data[pixelIndex + 3] = Math.round(alpha * 255);
+                    }
+                }
+
+                essenceContext.putImageData(image, 0, 0);
+            };
 
             const render = () => {
                 this.frame = 0;
@@ -106,6 +304,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     this.style.setProperty("--art-opacity", "0");
                     this.style.setProperty("--instruction-opacity", "0");
                     this.style.setProperty("--hero-content-opacity", "1");
+                    drawEssence(1);
                     page.style.setProperty("--header-visibility", "1");
                     header.inert = false;
                     header.removeAttribute("aria-hidden");
@@ -120,16 +319,16 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     this.offsetHeight - window.innerHeight,
                 );
                 const progress = clamp(-rect.top / distance);
-                const frameProgress = clamp(progress / 0.56);
+                const frameProgress = clamp(progress / 0.54);
                 const frameIndex = Math.min(
                     frames.length - 1,
                     Math.floor(frameProgress * frames.length),
                 );
-                const revealProgress = smooth(clamp((progress - 0.49) / 0.16));
-                const artOpacity = 1 - smooth(clamp((progress - 0.49) / 0.12));
+                const revealProgress = smooth(clamp((progress - 0.68) / 0.17));
+                const artOpacity = 1 - smooth(clamp((progress - 0.51) / 0.16));
                 const instructionOpacity = 1 - smooth(clamp(progress / 0.16));
                 const headerVisibility = smooth(
-                    clamp((progress - 0.59) / 0.12),
+                    clamp((progress - 0.78) / 0.13),
                 );
                 const heroContentOpacity = 1;
 
@@ -153,6 +352,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     "--hero-content-opacity",
                     String(heroContentOpacity),
                 );
+                drawEssence(progress);
                 page.style.setProperty(
                     "--header-visibility",
                     String(headerVisibility),
@@ -162,7 +362,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 reveal.inert = revealProgress < 0.9;
                 this.toggleAttribute(
                     "data-complete",
-                    revealProgress >= 0.995,
+                    progress >= 0.995,
                 );
             };
 
@@ -211,7 +411,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         z-index: 2;
         display: block;
         height: 100svh;
-        background: #f7f4ec;
+        background: #F8F8F8;
     }
 
     .opening-sequence__sticky {
@@ -227,11 +427,15 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         z-index: 10;
         inset: 0;
         overflow: hidden;
-        background: #f7f4ec;
+        background: #F8F8F8;
         opacity: var(--reveal-opacity);
     }
 
     .opening-sequence__art {
+        display: none;
+    }
+
+    .opening-sequence__essence {
         display: none;
     }
 
@@ -241,7 +445,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
     }
 
     :global(.js) .opening-sequence {
-        height: 165svh;
+        height: 195svh;
     }
 
     :global(.js) .opening-sequence__reveal {
@@ -256,6 +460,24 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         opacity: var(--art-opacity);
         pointer-events: none;
         will-change: opacity;
+    }
+
+    :global(.js) .opening-sequence__essence {
+        position: absolute;
+        z-index: 15;
+        inset: -4vmax;
+        display: block;
+        width: calc(100% + 8vmax);
+        height: calc(100% + 8vmax);
+        filter: blur(clamp(0.8rem, 2.3vw, 2.1rem)) saturate(1.08);
+        image-rendering: pixelated;
+        opacity: 0;
+        pointer-events: none;
+        will-change: opacity;
+    }
+
+    :global(.js) .opening-sequence__essence[data-visible] {
+        opacity: 1;
     }
 
     .opening-sequence__frame {
@@ -315,6 +537,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         }
 
         :global(.js) .opening-sequence__art,
+        :global(.js) .opening-sequence__essence,
         :global(.js) .opening-sequence__instruction {
             display: none;
         }

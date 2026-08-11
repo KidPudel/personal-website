@@ -10,7 +10,7 @@ This direction supersedes the later sections of this document wherever they requ
 
 - There is no separate `/secret-box/` route in the redesign.
 - `/` begins with the box as the opening section of the same continuous document.
-- Scrolling advances the authored frames in `src/assets/art/Doodles-box-opening/`. The eventual handoff should feel like a joyful rush of color from the opened box before leaving the warm off-white homepage beneath it. The motion language remains to be authored and must not collapse into a stacked rainbow line or a cheap closed blob.
+- Scrolling advances the authored frames in `src/assets/art/Doodles-box-opening/`. The eventual handoff should feel like a joyful rush of color from the opened box before leaving the #F8F8F8 homepage beneath it. The motion language remains to be authored and must not collapse into a stacked rainbow line or a cheap closed blob.
 - The transparent frame assets may be inverted or recolored to fit the chosen opening and destination surfaces.
 - The unopened box carries no floating identity label. As the pigment field reveals the homepage, the resting hero opens conversationally with `Hello, I’m Igor.` and `Product designer.` The hero supplies a concise positioning statement and a direct path to the work page.
 - The empty four-direction Home is replaced by one continuous, authored homepage.
@@ -20,7 +20,7 @@ This direction supersedes the later sections of this document wherever they requ
 - Substantial case studies such as Observatory remain separate editorial documents.
 - Product design leads `/work/`. Games and technical experiments remain visibly authored supporting evidence with their real videos and motion rather than flattened archive rows.
 - Remove the graphite field and its grain-heavy persistent-world treatment.
-- Use a simpler, tasteful high-contrast surface system built from a warm off-white field, black ink, and controlled joyful color. The portfolio is light themed; black remains the drawing and text color rather than the dominant page field.
+- Use a simpler, tasteful high-contrast surface system built from a #F8F8F8 field, black ink, and controlled joyful color. The portfolio is light themed; black remains the drawing and text color rather than the dominant page field.
 - Personal doodles appear only as simple CSS background images that scroll normally with the document. They are not interactive DOM objects, parallax layers, route state, or a separate shell feature.
 - Remove central hubs, diagram-like spokes, long decorative connectors, repeated route labels, and doodles that compete with content.
 - Use proximity, alignment, scale, and negative space to communicate most relationships. A short connector is allowed only when it explains a real local sequence.
@@ -28,7 +28,7 @@ This direction supersedes the later sections of this document wherever they requ
 - The resulting visual principle is handmade minimalism, not hand-drawn maximalism.
 - Do not substitute a polished portfolio template for the old spatial interface. An oversized conventional hero followed by repeated cards, pill tags, a symmetrical project grid, and a standard CTA block is scaffolding at most, not an acceptable final composition. Clear navigation may remain, but the work compositions must feel authored for Igor's actual artifacts.
 - External portfolio references may inform usability analysis, but their visual language must not be copied or adopted unless Igor explicitly asks for that visual influence. Preserve Igor's established fonts, drawings, portraits, doodles, minimalism, and handmade character.
-- Use Averia Serif Libre for portfolio headings and Bright Chalk for explanatory copy, labels, controls, captions, and interactions. Do not use Capriola or Cartoon Relief in the homepage and work-page hierarchy.
+- Use Averia Serif Libre for portfolio headings and Delius for explanatory copy, labels, controls, captions, and interactions. Do not use Capriola or Cartoon Relief in the homepage and work-page hierarchy.
 - Do not impose a full-width desktop navigation bar on the handmade composition. Use a side-mounted Work and contact control that appears as the box opens. The contact action includes the existing Connect drawing and expands the contact links. Writing must be discoverable through the homepage sequence itself.
 - Use one centered content spine for the homepage. Keep intentional empty space in the left and right gutters, place decorative doodles only in those gutters, and keep successive sections close enough that scrolling never exposes a large unexplained hole between them.
 - Keep the opening field unmistakably colored rather than beige or neutral. A small set of saturated flat fields changes with the authored box frames. The final color rush should move through both luminous and dark values without reading as ordered rainbow stripes. It must feel continuous, intentional, and spatially connected to the box rather than like a separate graphic object. Nested blobs, spheres, confetti, rigid bands, and a generic bottom-to-top rainbow are rejected directions.
@@ -288,12 +288,12 @@ Connect does not create a full-screen page. Ink lines or another drawn connectio
 
 Use exactly two handwritten families across Home and destination materials:
 
-1. `Bright Chalk` for regular reading and interface text; 
+1. `Delius` for regular reading and interface text; 
 2. `Cartoon Relief` for a small number of large distinctive moments.
 
 
 
-Bright Chalk is used for:
+Delius is used for:
 
 - paragraphs;
 - navigation;

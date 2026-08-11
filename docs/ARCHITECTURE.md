@@ -80,12 +80,12 @@ The DOM order is also the reading order. CSS may create asymmetrical composition
 - the skip link;
 - shared reset and focus behavior.
 
-The root and work pages own their warm off-white and black-ink surface styles. The Observatory document retains its independent editorial typography and layout.
+The root and work pages own their #F8F8F8 and black-ink surface styles. The Observatory document retains its independent editorial typography and layout.
 
 The portfolio presentation uses two local roles without changing Observatory:
 
 - Averia Serif Libre for display headings;
-- Bright Chalk for explanatory copy, personal labels, controls, captions, and authored interactions.
+- Delius for explanatory copy, personal labels, controls, captions, and authored interactions.
 
 `PortfolioHeader` is a side-mounted Work and contact control rather than a full-width bar. It arrives with the opened box, uses the existing Connect drawing, and expands contact links locally. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
 
@@ -97,7 +97,7 @@ The opening is the first section of `/`, not another route.
 - Frames have transparent backgrounds and may be inverted or recolored. Render the authored 2048-pixel PNGs losslessly; lossy resizing softens the relatively small line drawing inside each full-frame canvas.
 - The opening controller maps each frame to one saturated field color. Colors cut with the flipbook frame rather than running as a separate ambient animation or interpolating through muddy intermediate tones.
 - A short sticky section maps ordinary scroll progress to the eight frames.
-- The stable implementation uses all eight authored frames, saturated frame-bound field colors, and a short crossfade into the off-white homepage. The final zoom frame initiates the handoff immediately rather than being held over the destination composition. A richer color rush must be prototyped as a separate motion study before it replaces this baseline.
+- The stable implementation uses all eight authored frames and begins the final pigment handoff at frame 6. A deliberately low-resolution canvas field grows from the open box, using blurred irregular contours and a sampled cobalt, ice, yellow, orange, coral, magenta, and violet palette. It briefly grows beyond full coverage, then clears into the off-white homepage with two restrained residual trails. The canvas is decorative, pointer-transparent, and redraws only with scroll, resize, or state changes.
 - Scroll remains native. Do not cancel wheel or touch events, introduce forced smooth scrolling, or use mandatory snapping.
 - Fast scrolling may complete the sequence immediately.
 - The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the pigment field reveals it.
@@ -111,7 +111,7 @@ Use a requestAnimationFrame-coalesced scroll listener or an equivalent small loc
 
 The redesign removes the graphite field, paper-grain overlay, and `WorldField` presentation shell.
 
-- Use a warm off-white portfolio field with black ink. Dark surfaces remain local to media that genuinely needs them.
+- Use a #F8F8F8 portfolio field with black ink. Dark surfaces remain local to media that genuinely needs them.
 - Use no more than one controlled accent treatment at a time.
 - Doodles are decorative CSS background images on the root or individual sections.
 - Background images use normal scrolling and no separate state.
@@ -144,7 +144,7 @@ Observatory receives a dedicated authored record because it has the strongest cu
 
 Allowed local enhancements include:
 
-- scroll-controlled box-frame and clip-mask progress;
+- scroll-controlled box-frame and pigment-field progress;
 - portrait switching;
 - craft-value word cycling and completion reveal;
 - the side-mounted contact disclosure;

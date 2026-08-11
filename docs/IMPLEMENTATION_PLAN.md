@@ -32,7 +32,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Make the box animation the opening section of `/`, in the same document as the continuous homepage.
 - Drive the authored frames in `src/assets/art/Doodles-box-opening/` from ordinary scroll progress.
 - Test a compact saturated palette as part of the frame sequence. Keep each moment flat and legible, cut colors with frame changes, and avoid decorative spheres or a separate ambient background animation.
-- Keep the verified frame-color changes, then prototype the final color rush separately from the production handoff. Reject stacked rainbow lines, closed blobs, spheres, droplets, and oversized frame outlines. Do not replace the stable crossfade until the new motion study has coherent timing, spatial connection to the box, and clean desktop and mobile states.
+- Keep the verified frame-color changes and the approved frame-6 pigment handoff. The color field must originate inside the opened box, grow past full coverage, and clear through restrained residual trails. Preserve the sampled cobalt, ice, yellow, orange, coral, magenta, and violet character without turning it into straight stripes, separate droplets, or an unrelated full-screen graphic.
 - Treat the transparent frames as color-flexible assets that may be inverted or recolored for the chosen surfaces.
 - Replace the empty four-direction Home with a continuous homepage.
 - Make the box reveal Igor, not merely navigation.
@@ -41,7 +41,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Keep deep case studies as separate documents.
 - Present all verified work on a dedicated `/work/` document. Product design leads; games and technical experiments follow with their authored media and honest prominence.
 - Remove the graphite field, persistent grain system, and complex shared-world treatment.
-- Use a warm off-white portfolio field with black ink and controlled joyful color. Keep dark treatments local to media that needs them.
+- Use a #F8F8F8 portfolio field with black ink and controlled joyful color. Keep dark treatments local to media that needs them.
 - Render personal doodles only as simple CSS background images that scroll normally with the page.
 - Preserve authentic drawings, portrait interaction, craft values, purposeful imperfections, and the approved paper invitation.
 - Remove hub-and-spoke compositions, long dotted connectors, repeated route labels, and excess background doodles.
@@ -49,7 +49,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Do not turn the redesign into a corporate portfolio template, card grid, or generic personal-brand landing page.
 - Replace the rigid full-width navigation bar with a side-mounted Work and contact control that arrives with the opened box. The contact action uses the existing Connect drawing and expands the contact links. Writing remains discoverable in the main document rather than duplicated in global navigation.
 - Use the existing hand-drawn destination icons as section indicators on both the homepage and work page. They retain hover character but no longer gate content.
-- Use Averia Serif Libre for portfolio headings and Bright Chalk for explanatory copy, personal labels, and controls.
+- Use Averia Serif Libre for portfolio headings and Delius for explanatory copy, personal labels, and controls.
 - Align the homepage to one centered content spine. Reserve the side gutters for sparse background doodles and tighten the hero-to-values handoff so negative space frames the content rather than separating related sections.
 
 ## Information architecture
@@ -194,7 +194,7 @@ The visual direction is handmade minimalism on a clean, high-contrast surface sy
 - Keep background images away from important text and product imagery.
 - Use negative space to separate groups, not to create unexplained distance.
 - Keep authentic imperfections in drawings and edges without making alignment or reading order ambiguous.
-- Use Bright Chalk for authored character, explanatory copy, labels, and controls. Use Averia Serif Libre for headings so the reading hierarchy does not depend on outlined display lettering.
+- Use Delius for authored character, explanatory copy, labels, and controls. Use Averia Serif Libre for headings so the reading hierarchy does not depend on outlined display lettering.
 - Keep one controlled accent treatment at a time.
 - Do not enclose every item or section in a card.
 - Motion must reveal hierarchy or state. It must not delay access to evidence.
@@ -244,7 +244,7 @@ Exit condition: the complete homepage is readable in correct order, buildable, a
 - Make Observatory visible in or at the first-viewport edge.
 - Replace the deleted legacy frames with `src/assets/art/Doodles-box-opening/`.
 - Map the eight box frames to a short sticky section driven by ordinary scroll progress.
-- Keep a clean crossfade as the production baseline while the final color-rush motion is unresolved. Prototype that motion independently and only integrate it after frame-by-frame review confirms that it does not produce rainbow bands, cheap closed shapes, or oversized box outlines.
+- Use the verified frame-6 pigment field as the production handoff. Keep its irregular low-resolution contour, short coverage overshoot, and residual edge trails connected to ordinary scroll progress.
 - Keep the scroll-controlled interval short enough to complete within less than one additional viewport of scrolling.
 - Allow fast forward and backward scrolling to advance or reverse the decorative sequence naturally.
 - Support skip, keyboard, touch, no-JavaScript, and reduced-motion behavior.

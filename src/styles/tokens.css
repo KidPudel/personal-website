@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Bright Chalk';
-  src: url('../assets/fonts/bright-chalk.regular.woff2') format('woff2');
+  font-family: 'Delius';
+  src: url('../assets/fonts/Delius-Regular.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -24,7 +24,7 @@
 
 @layer tokens {
   :root {
-    --color-field: #f7f4ec;
+    --color-field: #F8F8F8;
     --color-paper: #f2e8cf;
     --color-paper-edge: #d8ccb0;
     --color-ink: #20201e;
@@ -38,10 +38,10 @@
     --field-texture-positions: 0 0, 0 0, 0 0;
     --field-texture-sizes: auto, auto, 180px 180px;
     --field-texture-blend-modes: soft-light, multiply, soft-light;
-    --field-texture-root-overlay: rgba(247, 244, 236, 0.7);
+    --field-texture-root-overlay: rgba(248, 248, 248, 0.7);
 
-    --font-reading: 'Bright Chalk', 'Segoe Print', 'Bradley Hand', cursive;
-    --font-distinctive: 'Cartoon Relief', 'Bright Chalk', 'Segoe Print', cursive;
+    --font-reading: 'Delius', Arial, sans-serif;
+    --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
     --font-portfolio-display: 'Averia Serif Libre', Georgia, serif;
     --font-portfolio-body: var(--font-reading);
 
