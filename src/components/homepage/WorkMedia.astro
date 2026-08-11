@@ -1,0 +1,432 @@
+---
+import { Image } from 'astro:assets';
+
+import discoursesCover from '../../assets/games/discourses/cover.png';
+import discoursesScene from '../../assets/games/discourses/winter-scene.jpeg';
+import discoursesTeaser from '../../assets/games/discourses/discourses-teaser.mp4';
+import santaCity from '../../assets/games/santa/city.png';
+import santaMountains from '../../assets/games/santa/mountains.png';
+import santaSky from '../../assets/games/santa/sky-texture.png';
+import santaSleigh from '../../assets/games/santa/sleigh-with-elf.png';
+import santaSnowflake from '../../assets/games/santa/snowflake.png';
+import snakePoster from '../../assets/games/snake/poster.jpg';
+import snakeVideo from '../../assets/games/snake/snake-raylib.mp4';
+import ticTacToeGameplay from '../../assets/games/tic-tac-toe/gameplay.png';
+import chineseBeeIcon from '../../assets/software-showcases/chinesebe_icon.png';
+import chineseBeeShowcase from '../../assets/software-showcases/chinesebe_showcase.png';
+import foodShowcase from '../../assets/software-showcases/food_app_delivery_showcase.png';
+import observatoryIcon from '../../assets/software-showcases/observatory/icon.png';
+import observatoryShowcase from '../../assets/software-showcases/observatory/launch-film.png';
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+const snowflakes = Array.from({ length: 16 }, (_, index) => {
+  const duration = 4.7 + (index % 5) * 0.6;
+  return {
+    delay: -((index + 0.5) / 16) * duration,
+    drift: -1.3 + (index % 6) * 0.55,
+    duration,
+    left: 3 + ((index * 31) % 94),
+    opacity: 0.52 + (index % 4) * 0.11,
+    size: 0.43 + (index % 5) * 0.1,
+  };
+});
+---
+
+<div class:list={['work-media', `work-media--${slug}`]}>
+  {slug === 'observatory' && (
+    <div class="observatory-media">
+      <Image
+        src={observatoryShowcase}
+        alt="Observatory launch artwork with a telescope and numerical texture"
+        widths={[720, 1080, 1440]}
+        sizes="(max-width: 760px) 94vw, 58vw"
+        format="webp"
+        loading="eager"
+      />
+      <Image class="observatory-media__icon" src={observatoryIcon} alt="" width={150} loading="lazy" />
+    </div>
+  )}
+
+  {slug === 'flutter-product' && (
+    <Image
+      src={foodShowcase}
+      alt="Food-ordering interfaces for browsing, basket, checkout, addresses, and delivery"
+      widths={[560, 840, 1120]}
+      sizes="(max-width: 760px) 94vw, 45vw"
+      format="webp"
+      loading="lazy"
+    />
+  )}
+
+  {slug === 'chinese-bee' && (
+    <div class="bee-media">
+      <Image
+        src={chineseBeeShowcase}
+        alt="Chinese Bee chat, vocabulary, handwriting, and recognition interfaces"
+        widths={[560, 840, 1120]}
+        sizes="(max-width: 760px) 94vw, 45vw"
+        format="webp"
+        loading="lazy"
+      />
+      <Image class="bee-media__icon" src={chineseBeeIcon} alt="" width={128} loading="lazy" />
+    </div>
+  )}
+
+  {slug === 'receipt-processing' && (
+    <div class="metric-media" aria-label="Processing time reduced from 6 to 10 seconds to approximately 600 to 650 milliseconds">
+      <span>6–10 sec</span>
+      <span aria-hidden="true">→</span>
+      <strong>600–650 ms</strong>
+      <small>same receipt, simpler path</small>
+    </div>
+  )}
+
+  {slug === 'ordering-platform' && (
+    <div class="flow-media" aria-label="Order to payment and expiration to webhook delivery">
+      <span>order</span><i aria-hidden="true"></i><span>payment + expiration</span><i aria-hidden="true"></i><span>webhook delivery</span>
+    </div>
+  )}
+
+  {slug === 'discourses-by-campfire' && (
+    <div class="discourses-media">
+      <video
+        src={discoursesTeaser}
+        poster={discoursesScene.src}
+        width="960"
+        height="540"
+        autoplay
+        controls
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        aria-label="Discourses by Campfire gameplay in a snowy mountain forest"
+      >
+        Your browser does not support embedded video.
+      </video>
+      <Image class="discourses-media__cover" src={discoursesCover} alt="" width={360} loading="lazy" />
+    </div>
+  )}
+
+  {slug === 'santa-foundation' && (
+    <div class="santa-media" role="img" aria-label="Pixel art scene from Santa Foundation with a flying elf and falling snow">
+      <Image class="santa-media__layer" src={santaSky} alt="" width={800} loading="lazy" />
+      <Image class="santa-media__layer" src={santaMountains} alt="" width={800} loading="lazy" />
+      <Image class="santa-media__layer" src={santaCity} alt="" width={800} loading="lazy" />
+      <div class="santa-media__sleigh">
+        <Image src={santaSleigh} alt="" width={128} loading="lazy" />
+      </div>
+      <div class="santa-media__snow" aria-hidden="true">
+        {snowflakes.map((flake) => (
+          <Image
+            src={santaSnowflake}
+            alt=""
+            width={16}
+            loading="lazy"
+            style={`--snow-delay:${flake.delay.toFixed(2)}s;--snow-drift:${flake.drift.toFixed(2)}rem;--snow-duration:${flake.duration.toFixed(2)}s;--snow-left:${flake.left}%;--snow-opacity:${flake.opacity.toFixed(2)};--snow-size:${flake.size.toFixed(2)}rem;`}
+          />
+        ))}
+      </div>
+      <span>player feedback → mechanic changes</span>
+    </div>
+  )}
+
+  {slug === 'snake-raylib' && (
+    <video
+      class="snake-media"
+      src={snakeVideo}
+      poster={snakePoster.src}
+      controls
+      playsinline
+      preload="metadata"
+      aria-label="Snake built with Go and raylib"
+    >
+      Your browser does not support embedded video.
+    </video>
+  )}
+
+  {slug === 'tic-tac-toe-opengl' && (
+    <Image
+      class="tic-media"
+      src={ticTacToeGameplay}
+      alt="C++ and OpenGL Tic-Tac-Toe showing a completed board"
+      widths={[360, 520, 687]}
+      sizes="(max-width: 760px) 90vw, 30vw"
+      format="webp"
+      loading="lazy"
+    />
+  )}
+
+  {slug === 'card-system-study' && (
+    <div class="card-media" aria-label="Card system concepts: input, catalyst, mutation, and effect">
+      <span>input</span><span>catalyst</span><span>mutation</span><span>effect</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .work-media {
+    position: relative;
+    min-width: 0;
+  }
+
+  .work-media :global(img),
+  .work-media video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .observatory-media,
+  .bee-media,
+  .discourses-media {
+    position: relative;
+  }
+
+  .observatory-media {
+    overflow: hidden;
+    background: #050708;
+  }
+
+  .observatory-media__icon {
+    position: absolute;
+    right: 4%;
+    bottom: 5%;
+    width: clamp(3.5rem, 10vw, 7rem) !important;
+    filter: drop-shadow(0.25rem 0.35rem 0.2rem rgba(0, 0, 0, 0.42));
+    rotate: 5deg;
+  }
+
+  .bee-media__icon {
+    position: absolute;
+    right: 1%;
+    bottom: 1%;
+    width: clamp(3rem, 8vw, 5.5rem) !important;
+    rotate: 7deg;
+  }
+
+  .metric-media {
+    display: grid;
+    min-height: 17rem;
+    grid-template-columns: auto auto auto;
+    place-content: center;
+    align-items: baseline;
+    gap: 0.55rem 1rem;
+    padding: 2rem;
+    border: 1px solid rgba(243, 239, 228, 0.24);
+    background-image: radial-gradient(rgba(243, 239, 228, 0.12) 0.7px, transparent 0.7px);
+    background-size: 12px 12px;
+  }
+
+  .metric-media span,
+  .metric-media strong {
+    font-size: clamp(1.45rem, 3vw, 2.6rem);
+    font-weight: 400;
+  }
+
+  .metric-media strong {
+    color: var(--accent);
+  }
+
+  .metric-media small {
+    grid-column: 1 / -1;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .flow-media {
+    display: flex;
+    min-height: 17rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    padding: 2rem;
+    border: 1px solid rgba(243, 239, 228, 0.24);
+  }
+
+  .flow-media span {
+    max-width: 8.5rem;
+    text-align: center;
+  }
+
+  .flow-media i {
+    width: clamp(1.5rem, 4vw, 4rem);
+    border-top: 1px dashed var(--accent);
+  }
+
+  .discourses-media {
+    min-height: 20rem;
+    padding: 0 12% 8% 0;
+  }
+
+  .discourses-media video {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #111;
+  }
+
+  .discourses-media__cover {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 31% !important;
+    box-shadow: 0.45rem 0.55rem 0 rgba(0, 0, 0, 0.24);
+    rotate: 2.5deg;
+  }
+
+  .santa-media {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #7189a8;
+    image-rendering: pixelated;
+  }
+
+  .santa-media__layer {
+    position: absolute;
+    inset: 0;
+    height: 100% !important;
+    object-fit: cover;
+    image-rendering: pixelated;
+  }
+
+  .santa-media__sleigh {
+    position: absolute;
+    z-index: 3;
+    top: 25%;
+    left: 30%;
+    width: 17%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    animation: sleigh-flight 2.4s ease-in-out infinite alternate;
+  }
+
+  .santa-media__sleigh :global(img) {
+    width: 200%;
+    max-width: none;
+    height: 100%;
+    object-fit: contain;
+    animation: sleigh-frames 0.72s linear infinite;
+  }
+
+  .santa-media__snow {
+    position: absolute;
+    z-index: 4;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .santa-media__snow :global(img) {
+    position: absolute;
+    top: -12%;
+    left: var(--snow-left);
+    width: var(--snow-size);
+    opacity: var(--snow-opacity);
+    animation: snow-fall var(--snow-duration) linear var(--snow-delay) infinite;
+  }
+
+  .santa-media > span {
+    position: absolute;
+    z-index: 5;
+    right: 0.8rem;
+    bottom: 0.55rem;
+    color: #f3efe4;
+    font-size: 0.75rem;
+    text-shadow: 0.1rem 0.1rem #171716;
+  }
+
+  .snake-media,
+  .tic-media {
+    border: 1px solid rgba(243, 239, 228, 0.22);
+    background: #121312;
+  }
+
+  .snake-media {
+    aspect-ratio: 1150 / 720;
+    object-fit: cover;
+  }
+
+  .tic-media {
+    max-width: 27rem;
+    margin-inline: auto;
+    background: #1ba58f;
+  }
+
+  .card-media {
+    display: flex;
+    min-height: 14rem;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .card-media span {
+    display: grid;
+    width: clamp(4rem, 9vw, 5.7rem);
+    aspect-ratio: 0.72;
+    place-items: center;
+    margin-left: -0.8rem;
+    border: 1px solid rgba(243, 239, 228, 0.65);
+    background: #0a0a0a;
+    font-size: 0.75rem;
+    text-align: center;
+    rotate: -7deg;
+  }
+
+  .card-media span:nth-child(2) { translate: 0 -0.7rem; rotate: 4deg; }
+  .card-media span:nth-child(3) { translate: 0 0.5rem; rotate: -2deg; }
+  .card-media span:nth-child(4) { rotate: 7deg; }
+
+  @keyframes sleigh-frames {
+    0%, 49.99% { transform: translateX(0); }
+    50%, 100% { transform: translateX(-50%); }
+  }
+
+  @keyframes sleigh-flight {
+    from { transform: translateY(-42%) rotate(-2deg); }
+    to { transform: translateY(58%) rotate(2deg); }
+  }
+
+  @keyframes snow-fall {
+    from { top: -12%; transform: translateX(0) rotate(0deg); }
+    to { top: 108%; transform: translateX(var(--snow-drift)) rotate(240deg); }
+  }
+
+  @media (max-width: 34rem) {
+    .metric-media {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+      text-align: center;
+    }
+
+    .metric-media small {
+      grid-column: auto;
+    }
+
+    .flow-media {
+      flex-direction: column;
+    }
+
+    .flow-media i {
+      width: 1px;
+      height: 1.4rem;
+      border-top: 0;
+      border-left: 1px dashed var(--accent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .santa-media__sleigh,
+    .santa-media__sleigh :global(img) {
+      animation: none;
+    }
+
+    .santa-media__snow {
+      display: none;
+    }
+  }
+</style>

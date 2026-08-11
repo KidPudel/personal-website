@@ -1,0 +1,53 @@
+---
+import BaseDocument from '../layouts/BaseDocument.astro';
+import { sitePath } from '../config/site';
+---
+
+<BaseDocument
+  title="Page not found | Igor Kupchinenko"
+  description="The requested page could not be found. Return to Igor Kupchinenko’s product design portfolio."
+  themeColor="#0a0a0a"
+  robots="noindex"
+>
+  <main id="main-content" class="not-found">
+    <p>404</p>
+    <h1>This page wandered off.</h1>
+    <a href={sitePath('/')}>Return to the portfolio</a>
+  </main>
+</BaseDocument>
+
+<style>
+  .not-found {
+    display: grid;
+    min-height: 100svh;
+    align-content: center;
+    justify-items: start;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 6vw, 7rem);
+    background: #0a0a0a;
+    color: #f4f0e7;
+  }
+
+  .not-found p,
+  .not-found h1 {
+    margin: 0;
+  }
+
+  .not-found p,
+  .not-found a {
+    font-family: var(--font-reading);
+  }
+
+  .not-found h1 {
+    max-width: 12ch;
+    font-family: var(--font-distinctive);
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .not-found a {
+    color: inherit;
+    text-underline-offset: 0.35rem;
+  }
+</style>

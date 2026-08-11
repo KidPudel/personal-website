@@ -1,16 +1,36 @@
 ---
-import SpatialRouteShell from '../components/shell/SpatialRouteShell.astro';
-import WorldField from '../components/shell/WorldField.astro';
+import { getEntry } from 'astro:content';
+
+import HiringHomepage from '../components/homepage/HiringHomepage.astro';
+import homepageShareImage from '../assets/software-showcases/observatory/launch-film.png';
 import BaseDocument from '../layouts/BaseDocument.astro';
+
+const identityCage = await getEntry('writing', 'identity-cage');
+
+if (!identityCage) {
+  throw new Error('The homepage content entries could not be loaded.');
+}
 ---
 
 <BaseDocument
-  title="Igor Kupchinenko"
-  description="Igor Kupchinenko's personal website."
+  title="Igor Kupchinenko · Product Designer"
+  description="Product designer Igor Kupchinenko creates interactive products and the systems that make them real."
+  pageClass="portfolio-document"
+  themeColor="#f7f4ec"
+  ogImage={homepageShareImage.src}
 >
-  <WorldField>
-    <main id="main-content">
-      <SpatialRouteShell />
-    </main>
-  </WorldField>
+  <HiringHomepage {identityCage} />
 </BaseDocument>
+
+<style is:global>
+  html.portfolio-document,
+  html.portfolio-document body {
+    margin: 0;
+    background: #f7f4ec;
+    overscroll-behavior-y: auto;
+  }
+
+  html.portfolio-document {
+    scroll-behavior: smooth;
+  }
+</style>

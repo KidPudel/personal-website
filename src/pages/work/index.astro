@@ -1,20 +1,72 @@
 ---
-import { sitePath } from '../../config/site';
+import { getEntry } from 'astro:content';
 
-const redirectTarget = `${sitePath('/')}#work`;
-const canonicalURL = new URL(redirectTarget, Astro.site);
+import WorkPortfolio from '../../components/homepage/WorkPortfolio.astro';
+import shareImage from '../../assets/software-showcases/observatory/launch-film.png';
+import BaseDocument from '../../layouts/BaseDocument.astro';
+
+const [
+  observatory,
+  foodProduct,
+  chineseBee,
+  receiptProcessing,
+  orderingPlatform,
+  discourses,
+  santa,
+  snake,
+  ticTacToe,
+  cardStudy,
+] = await Promise.all([
+  getEntry('software', 'observatory'),
+  getEntry('software', 'flutter-product'),
+  getEntry('software', 'chinese-bee'),
+  getEntry('software', 'receipt-processing'),
+  getEntry('software', 'ordering-platform'),
+  getEntry('games', 'discourses-by-campfire'),
+  getEntry('games', 'santa-foundation'),
+  getEntry('games', 'snake-raylib'),
+  getEntry('games', 'tic-tac-toe-opengl'),
+  getEntry('games', 'card-system-study'),
+]);
+
+if (
+  !observatory || !foodProduct || !chineseBee || !receiptProcessing || !orderingPlatform ||
+  !discourses || !santa || !snake || !ticTacToe || !cardStudy
+) {
+  throw new Error('The work page content entries could not be loaded.');
+}
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="robots" content="noindex" />
-    <meta http-equiv="refresh" content={`0;url=${redirectTarget}`} />
-    <link rel="canonical" href={canonicalURL} />
-    <title>Redirecting to Work</title>
-  </head>
-  <body>
-    <p><a href={redirectTarget}>Continue to Work</a></p>
-  </body>
-</html>
+<BaseDocument
+  title="Work · Igor Kupchinenko"
+  description="Product design, interactive systems, and game work by Igor Kupchinenko."
+  pageClass="portfolio-document"
+  themeColor="#f7f4ec"
+  ogImage={shareImage.src}
+>
+  <WorkPortfolio
+    {observatory}
+    {foodProduct}
+    {chineseBee}
+    {receiptProcessing}
+    {orderingPlatform}
+    {discourses}
+    {santa}
+    {snake}
+    {ticTacToe}
+    {cardStudy}
+  />
+</BaseDocument>
+
+<style is:global>
+  html.portfolio-document,
+  html.portfolio-document body {
+    margin: 0;
+    background: #f7f4ec;
+    overscroll-behavior-y: auto;
+  }
+
+  html.portfolio-document {
+    scroll-behavior: smooth;
+  }
+</style>

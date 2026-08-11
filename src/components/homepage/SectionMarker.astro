@@ -1,0 +1,134 @@
+---
+import { Image } from 'astro:assets';
+
+import blogIcon from '../../assets/art/icons/Doodles_blog.png';
+import connectIcon from '../../assets/art/icons/Doodles_connect.png';
+import gamesIcon from '../../assets/art/icons/Doodles_games.png';
+import softwareIcon from '../../assets/art/icons/Doodles_software.png';
+import whoIcon from '../../assets/art/icons/Doodles_whoiam.png';
+import workIcon from '../../assets/art/icons/Doodles_work.png';
+
+interface Props {
+  icon: 'who' | 'blog' | 'connect' | 'work' | 'software' | 'games';
+  label: string;
+  compact?: boolean;
+}
+
+const { icon, label, compact = false } = Astro.props;
+const icons = {
+  who: whoIcon,
+  blog: blogIcon,
+  connect: connectIcon,
+  work: workIcon,
+  software: softwareIcon,
+  games: gamesIcon,
+};
+---
+
+<div class:list={['section-marker', `section-marker--${icon}`, compact && 'section-marker--compact']} aria-hidden="true">
+  <span class="section-marker__art">
+    <Image src={icons[icon]} alt="" width={512} loading="lazy" />
+  </span>
+  <span>{label}</span>
+</div>
+
+<style>
+  .section-marker {
+    --marker-tilt: -2deg;
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--muted, #aaa69e);
+    font-family: var(--font-reading);
+    font-size: 0.76rem;
+    line-height: 1.1;
+    transform: rotate(var(--marker-tilt));
+  }
+
+  .section-marker__art {
+    display: block;
+    width: 4.5rem;
+    aspect-ratio: 1;
+    overflow: hidden;
+    transform-origin: center;
+  }
+
+  .section-marker__art :global(img) {
+    display: block;
+    width: 320%;
+    max-width: none;
+    height: auto;
+    filter: grayscale(1);
+    opacity: 0.72;
+  }
+
+  .section-marker--blog { --marker-tilt: 2deg; }
+  .section-marker--connect { --marker-tilt: -1deg; }
+  .section-marker--work { --marker-tilt: 1deg; }
+  .section-marker--software { --marker-tilt: -3deg; }
+  .section-marker--games { --marker-tilt: 2deg; }
+
+  .section-marker--who .section-marker__art :global(img) {
+    width: 270%;
+    transform: translate(-30%, -26%);
+  }
+
+  .section-marker--blog .section-marker__art :global(img) {
+    width: 320%;
+    transform: translate(-36%, -37%);
+  }
+
+  .section-marker--connect .section-marker__art :global(img) {
+    width: 340%;
+    transform: translate(-31%, -31%);
+  }
+
+  .section-marker--work .section-marker__art :global(img) {
+    width: 320%;
+    transform: translate(-31%, -33%);
+  }
+
+  .section-marker--software .section-marker__art :global(img) {
+    width: 300%;
+    max-width: none;
+    height: auto;
+    transform: translate(-29%, -36%);
+  }
+
+  .section-marker--games .section-marker__art :global(img) {
+    width: 270%;
+    max-width: none;
+    height: auto;
+    transform: translate(-29.5%, -33%);
+  }
+
+  .section-marker--compact .section-marker__art {
+    width: 3.7rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .section-marker:hover .section-marker__art {
+      animation: section-marker-wobble 1.6s steps(1, end) infinite;
+    }
+  }
+
+  @keyframes section-marker-wobble {
+    0%, 100% { transform: translate(-0.1rem, -0.12rem) rotate(-3deg); }
+    25% { transform: translate(0.1rem, -0.08rem) rotate(2deg); }
+    50% { transform: translate(-0.08rem, -0.04rem) rotate(-1.5deg); }
+    75% { transform: translate(0.03rem, -0.18rem) rotate(1deg); }
+  }
+
+  @media (max-width: 40rem) {
+    .section-marker__art {
+      width: 3.8rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section-marker:hover .section-marker__art {
+      animation: none;
+    }
+  }
+</style>

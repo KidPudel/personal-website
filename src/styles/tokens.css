@@ -14,6 +14,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Averia Serif Libre';
+  src: url('../assets/fonts/AveriaSerifLibre-Bold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 @layer tokens {
   :root {
     --color-field: #171716;
@@ -34,6 +42,8 @@
 
     --font-reading: 'Bright Chalk', 'Segoe Print', 'Bradley Hand', cursive;
     --font-distinctive: 'Cartoon Relief', 'Bright Chalk', 'Segoe Print', cursive;
+    --font-portfolio-display: 'Averia Serif Libre', Georgia, serif;
+    --font-portfolio-body: var(--font-reading);
 
     --field-gutter: clamp(1rem, 4vw, 4rem);
     --destination-width: 76rem;

@@ -1,20 +1,8 @@
 ---
+import AnchorRedirect from '../../../components/shell/AnchorRedirect.astro';
 import { sitePath } from '../../../config/site';
 
-const redirectTarget = `${sitePath('/')}#work/software`;
-const canonicalURL = new URL(redirectTarget, Astro.site);
+const redirectTarget = `${sitePath('/work/')}#product-design`;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="robots" content="noindex" />
-    <meta http-equiv="refresh" content={`0;url=${redirectTarget}`} />
-    <link rel="canonical" href={canonicalURL} />
-    <title>Redirecting to Software</title>
-  </head>
-  <body>
-    <p><a href={redirectTarget}>Continue to Software</a></p>
-  </body>
-</html>
+<AnchorRedirect target={redirectTarget} destination="Product design work" />

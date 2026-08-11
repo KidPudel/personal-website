@@ -46,9 +46,10 @@ const sketches = [
   title="Observatory case study | Igor Kupchinenko"
   description="How I designed Observatory, a macOS activity monitor that groups related processes, records controlled tests, and keeps results available for comparison."
   pageClass="observatory-case-study"
+  ogImage={outcomeNow.src}
 >
   <nav class="topbar" aria-label="Case study navigation">
-    <a href={sitePath('/#work/software')}>← Software</a>
+    <a href={sitePath('/work/')}>← Work</a>
     <span>Observatory / Case study</span>
     <a href={repositoryURL}>Source ↗</a>
   </nav>
@@ -60,7 +61,7 @@ const sketches = [
       <li><a href="#research" data-index-link="research"><span>02</span><span class="chapter-index__name">Research</span></a></li>
       <li><a href="#direction" data-index-link="direction"><span>03</span><span class="chapter-index__name">Direction</span></a></li>
       <li><a href="#prototype" data-index-link="prototype"><span>04</span><span class="chapter-index__name">Prototype</span></a></li>
-      <li><a href="#validation-intro" data-index-link="validation-intro"><span>05</span><span class="chapter-index__name">Validation</span></a></li>
+      <li><a href="#validation-intro" data-index-link="validation-intro"><span>05</span><span class="chapter-index__name">Iteration</span></a></li>
       <li><a href="#outcome" data-index-link="outcome"><span>06</span><span class="chapter-index__name">Outcome</span></a></li>
       <li><a href="#reflection" data-index-link="reflection"><span>07</span><span class="chapter-index__name">Reflection</span></a></li>
     </ol>
@@ -350,29 +351,30 @@ const sketches = [
     <section class="chapter" id="validation-intro" data-index-section>
       <header class="chapter__label">
         <span>05</span>
-        <p>Validation</p>
+        <p>Iteration</p>
       </header>
       <div class="chapter__body">
         <h2>I reduced the interface before refining it.</h2>
         <p class="wide-copy">
           The early cards made each application feel self-contained, but they used too much space and made scanning
           harder. The first test setup also tried to keep configuration, recent tests, and an active round visible at
-          once. At wireframe level, I separated those responsibilities and made the hierarchy quieter.
+          once. At wireframe level, I separated those responsibilities and made the hierarchy quieter. These changes
+          came from task analysis and design critique, not a formal usability study.
         </p>
       </div>
     </section>
 
     <section class="validation-board" aria-labelledby="validation-title">
       <header class="validation-board__heading">
-        <h2 id="validation-title">validation</h2>
-        <p>Task analysis revealed a few problems. Tackling them drastically improved the situation.</p>
+        <h2 id="validation-title">what changed</h2>
+        <p>Reviewing each flow against its intended task exposed three structural problems.</p>
       </header>
 
       <article class="validation-case validation-case--cards">
         <p>
-          Users did not really like application grouping as cards. It was not intuitive enough whether a card was
-          a button, and the grid made a familiar collection harder to navigate. Changing cards into a list made the
-          applications more recognizable. Adding the live plot still kept the full picture visible.
+          Application grouping as cards made each item visually heavy and left the interaction ambiguous. The grid
+          also made a familiar collection harder to scan. Changing cards into a list made the applications more
+          recognizable while a live plot kept the full picture visible.
         </p>
         <div class="validation-pair">
           <figure><Image src={wireframeNowCards} alt="Wireframe of a card-based live application view." /><figcaption>Card grouping</figcaption></figure>
@@ -482,7 +484,7 @@ const sketches = [
       <a href={launchFilmURL}>Launch film ↗</a>
       <a href={releaseURL}>Download 0.1.1 ↗</a>
       <a href={repositoryURL}>Source ↗</a>
-      <a href={sitePath('/#work/software')}>Back to software ↑</a>
+      <a href={sitePath('/work/')}>Back to work ↑</a>
     </nav>
   </footer>
 </BaseDocument>

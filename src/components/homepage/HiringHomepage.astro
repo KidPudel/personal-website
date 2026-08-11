@@ -1,0 +1,371 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { connectLinks, sitePath } from '../../config/site';
+import ColorWord from '../who/ColorWord.astro';
+import CraftValues from '../who/CraftValues.astro';
+import PlayfulWord from '../who/PlayfulWord.astro';
+import PortraitInteraction from '../who/PortraitInteraction.astro';
+import OpeningSequence from './OpeningSequence.astro';
+import PortfolioHeader from './PortfolioHeader.astro';
+import SectionMarker from './SectionMarker.astro';
+
+interface Props {
+  identityCage: CollectionEntry<'writing'>;
+}
+
+const { identityCage } = Astro.props;
+---
+
+<div class="portfolio-page">
+  <PortfolioHeader current="home" />
+
+  <main id="main-content">
+    <OpeningSequence>
+      <section id="intro" class="hero" aria-labelledby="intro-title">
+        <div class="doodles doodles--hero" aria-hidden="true"></div>
+        <div class="hero__portrait">
+          <PortraitInteraction loading="eager" />
+        </div>
+        <div class="hero__copy">
+          <p class="hello">Hello, I’m Igor. <span>Product designer.</span></p>
+          <h1 id="intro-title">I build <PlayfulWord word="experiences" />, then the systems that make them real.</h1>
+          <p class="hero__summary">
+            I design and build interactive products and gameplay systems. I take someone’s desire,
+            carry it across technical boundaries, and bring it to life as something <ColorWord word="joyful" /> to use.
+          </p>
+          <div class="actions">
+            <a class="button" href={sitePath('/work/')}>See my work</a>
+            <a class="text-link" href={sitePath('/resume/igor-kupchinenko-resume.pdf')}>Résumé PDF</a>
+          </div>
+        </div>
+      </section>
+    </OpeningSequence>
+
+    <section id="values" class="values" aria-label="Three things important to me">
+      <div class="doodles doodles--values" aria-hidden="true"></div>
+      <div class="values__content">
+        <CraftValues completionId="values-contact-invitation" />
+        <aside id="values-contact-invitation" class="values__invitation" aria-live="polite" hidden>
+          <p>I’d love to chat with you.</p>
+          <div aria-label="Connect options">
+            {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="writing" class="writing" aria-labelledby="writing-title">
+      <div>
+        <SectionMarker icon="blog" label="Writing" />
+        <h2 id="writing-title">{identityCage.data.title}</h2>
+      </div>
+      <div class="writing__copy">
+        <p>{identityCage.data.summary}</p>
+        {identityCage.data.canonicalUrl && (
+          <a class="text-link" href={identityCage.data.canonicalUrl}>Read on Medium <span aria-hidden="true">↗</span></a>
+        )}
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<style>
+  .portfolio-page {
+    --black: #f7f4ec;
+    --white: #11110f;
+    --accent: #e35673;
+    --muted: #716d65;
+    --color-field-ink: #11110f;
+    min-width: 20rem;
+    overflow: clip;
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-portfolio-body);
+    font-size: clamp(0.95rem, 0.12vw + 0.93rem, 1.02rem);
+    line-height: 1.62;
+  }
+
+  .portfolio-page :global(*) {
+    box-sizing: border-box;
+  }
+
+  .portfolio-page :global(a) {
+    color: inherit;
+  }
+
+  .hero,
+  .values,
+  .writing {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .doodles {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-repeat: no-repeat;
+    filter: grayscale(1);
+    opacity: 0.075;
+    pointer-events: none;
+  }
+
+  .doodles--hero {
+    background-image:
+      url('../../assets/art/doodles/Doodles_disk.png'),
+      url('../../assets/art/doodles/Doodles_bird_1.png'),
+      url('../../assets/art/doodles/Doodles_scribble.png');
+    background-position: 3% 18%, 97% 78%, 96% 17%;
+    background-size: 8rem, 7rem, 9rem;
+  }
+
+  .doodles--values {
+    background-image:
+      url('../../assets/art/doodles/Doodles_camera.png'),
+      url('../../assets/art/doodles/Doodles_fish_1.png');
+    background-position: 97% 14%, 3% 88%;
+    background-size: 6rem, 8rem;
+  }
+
+  .hero {
+    display: grid;
+    min-height: 100svh;
+    grid-template-columns: minmax(15rem, 20rem) minmax(0, 36rem);
+    justify-content: center;
+    align-items: center;
+    gap: clamp(2.25rem, 4vw, 4rem);
+    padding: clamp(5.5rem, 10vh, 7.5rem) clamp(1.25rem, 6vw, 6rem) 3.5rem;
+    background: var(--black);
+  }
+
+  .hero__portrait {
+    width: min(100%, 28rem);
+    opacity: var(--hero-content-opacity, 1);
+    rotate: -1deg;
+  }
+
+  .hero__portrait :global(.portrait-interaction) {
+    width: 100%;
+  }
+
+  .hero__copy {
+    width: min(100%, 49rem);
+    opacity: var(--hero-content-opacity, 1);
+  }
+
+  .hello {
+    margin: 0;
+    color: var(--white);
+    font-family: var(--font-reading);
+    font-size: 0.86rem;
+    letter-spacing: 0.025em;
+  }
+
+  .hello {
+    font-size: clamp(1rem, 0.5vw + 0.9rem, 1.25rem);
+  }
+
+  .hello span {
+    margin-left: 0.35rem;
+    color: var(--muted);
+    font-size: 0.82em;
+  }
+
+  .hero h1,
+  .writing h2 {
+    margin: 0;
+    font-family: var(--font-portfolio-display);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+  }
+
+  .hero h1 {
+    max-width: 24ch;
+    margin-top: 1.2rem;
+    font-size: clamp(2.25rem, 3.25vw, 3.5rem);
+    line-height: 1.04;
+  }
+
+  .hero__summary {
+    max-width: 31rem;
+    margin: clamp(1.25rem, 2.5vh, 1.8rem) 0 0;
+    color: #4e4b45;
+    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
+    line-height: 1.68;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .button,
+  .text-link {
+    font-family: var(--font-reading);
+    font-size: 0.84rem;
+  }
+
+  .button {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    padding: 0.65rem 1.1rem;
+    border: 1px solid var(--white);
+    background: var(--white);
+    color: var(--black) !important;
+    text-decoration: none;
+  }
+
+  .text-link {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35rem;
+  }
+
+  .values,
+  .writing {
+    width: min(100%, 62rem);
+    margin-inline: auto;
+    padding: clamp(3rem, 5vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
+  }
+
+  .values {
+    z-index: 3;
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+    padding-bottom: clamp(3rem, 5vw, 4.5rem);
+  }
+
+  .values__content {
+    width: min(100%, 43rem);
+    margin-inline: auto;
+  }
+
+  .values__content :global(.craft-values) {
+    margin-top: 0;
+  }
+
+  .values__invitation {
+    margin: 2rem 0 0;
+    padding: 1.25rem;
+    border: 1px dashed rgba(17, 17, 15, 0.35);
+  }
+
+  .values__invitation p {
+    margin: 0 0 0.75rem;
+  }
+
+  .values__invitation div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .writing {
+    display: grid;
+    grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .writing h2 {
+    margin-top: 0.5rem;
+    font-size: clamp(2.1rem, 3.3vw, 3.4rem);
+    line-height: 1.04;
+  }
+
+  .writing__copy {
+    max-width: 38rem;
+    padding-top: 1rem;
+  }
+
+  .writing__copy p {
+    margin: 0 0 1.25rem;
+    color: #4e4b45;
+    font-size: clamp(0.98rem, 0.25vw + 0.94rem, 1.1rem);
+  }
+
+  @media (min-width: 52.01rem) {
+    .values {
+      margin-top: -18rem;
+    }
+  }
+
+  .writing {
+    padding-bottom: clamp(5rem, 10vw, 8rem);
+  }
+
+  @media (max-width: 52rem) {
+    .hero {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      align-content: center;
+      padding-top: 6rem;
+    }
+
+    .hero__portrait {
+      width: min(64vw, 20rem);
+      justify-self: center;
+    }
+
+    .hero__copy {
+      width: min(100%, 38rem);
+      justify-self: center;
+    }
+
+    .writing {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .values__content { min-width: 0; }
+  }
+
+  @media (max-width: 36rem) {
+    .hero {
+      min-height: 100svh;
+      padding-inline: 1.1rem;
+    }
+
+    .hero__portrait {
+      width: min(72vw, 17rem);
+    }
+
+    .hero__summary {
+      font-size: 0.95rem;
+    }
+
+  }
+
+  @media (max-height: 48rem) and (min-width: 52.01rem) {
+    .hero {
+      gap: 2.5rem;
+      padding-top: 5.5rem;
+    }
+
+    .hero__portrait {
+      width: min(100%, 22rem);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 3.2vw, 3.15rem);
+    }
+
+    .hero__summary {
+      margin-top: 1.15rem;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      margin-top: 1.35rem;
+    }
+
+    .values {
+      margin-top: -8rem;
+    }
+  }
+</style>

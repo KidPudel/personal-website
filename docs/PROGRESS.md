@@ -1,14 +1,69 @@
 # Website rebuild progress
 
-Last updated: 2026-08-01
+Last updated: 2026-08-11
 
 ## Status
 
-The clean foundation, approved Home base, shared destination field architecture, Who I am, Work, Blog index, and Connect disclosure are complete. The current public experience passed the milestone 6 interaction, responsive, accessibility, and performance review. Igor approved the implemented and verified milestone 7 Who I am fragment-addressed spatial disclosure as the model for the remaining destinations. Igor approved the completed milestone 8 Software, Games, and Blog route-owned unfoldings on 2026-07-24. Igor approved the completed milestone 9 Secret box on 2026-07-24. The local adaptation of `Identity Cage` still awaits approved article copy.
+The latest structural correction is implemented. The root page is now a focused personal document: box opening, identity reveal, three craft values, and writing. Contact lives in the persistent side disclosure rather than a repeated footer. The former oversized work and play stream has moved to a dedicated `/work/` page.
 
-Current milestone: **10. Release**
+The homepage still begins with the scroll-controlled box-opening sequence using the transparent frames in `src/assets/art/Doodles-box-opening/`. The portal reveals `Hello, I’m Igor.`, the existing portrait shuffle, colorful word interactions, a restrained type scale, and direct work and résumé paths. There is no separate `/secret-box/` route.
 
-## Milestones
+`/work/` now leads with Observatory, then presents the food product, Chinese Bee, receipt investigation, and payment-flow work. Finished games retain their authored presentation: Discourses uses its gameplay video, Santa uses its layered animated scene, and Snake keeps native video playback. Tic-Tac-Toe and the unfinished card-system study appear as real smaller artifacts rather than archive rows.
+
+Current milestone: **Structural correction complete. Next: visual critique and refinement with Igor**
+
+The latest rhythm pass uses Averia Serif Libre for headings and Bright Chalk for explanatory copy, labels, and interactions. Capriola and Cartoon Relief are not part of the homepage or work-page hierarchy. The full-width navigation bar is removed. A side-mounted control now exposes Work and an expandable contact list, appears with the opened box, and uses Igor's Connect drawing. The separate About section and its invented heading are removed, so the three craft values follow the introduction directly. Existing hand-drawn destination icons mark Writing, Contact, Work, Product design, and Games without gating those sections.
+
+## Hiring-first redesign milestones
+
+The first static implementation proved the content order but exposed a visual risk: repeated cards and editorial landing-page patterns feel too much like a generic portfolio template. They are scaffolding only and must be replaced with artifact-specific compositions before the visual milestone is accepted.
+
+The latest visual iteration removes the formal full-name eyebrow in favor of `Hello, I’m Igor.`, restores the original shuffled real/drawn portrait interaction, and keeps the authored colorful `experiences` and `joyful` word interactions. The compact archive is removed. Project breadth now lives on `/work/`, where each artifact receives appropriate media and prominence.
+
+The identity headline now uses a smaller scale and a wider measure. At the desktop review viewport it reads as a broader statement with fewer line breaks rather than an oversized poster block.
+
+The homepage now follows one centered content spine. The values section rises into the outgoing hero on wide screens to remove the approximately 400-pixel empty handoff, the redundant floating values cue is removed, and decorative doodles are confined to the side gutters. The redundant final contact block is removed because the persistent side disclosure already provides the complete contact path. The rejected overlapping-sphere background has been removed. The current opening experiment ties four saturated field colors directly to the eight box frames and cuts between them without interpolation, keeping the effect controlled by the visitor's scroll and the authored drawing.
+
+| Milestone | Status |
+| --- | --- |
+| 0. Reconcile documentation and evidence | Complete on 2026-08-11 |
+| 1. Static continuous homepage foundation | Complete on 2026-08-11 |
+| 2. Scroll-controlled box opening and identity reveal | Complete first pass on 2026-08-11 |
+| 3. Dedicated work presentation | Complete structural pass on 2026-08-11 |
+| 4. Personal, play, writing, and contact sections | Complete first pass on 2026-08-11 |
+| 5. Observatory hiring-evidence pass | Complete on 2026-08-11 |
+| 6. Visual restraint and motion pass | Complete first pass on 2026-08-11; visual refinement explicitly deferred to the next iteration |
+| 7. Responsive, accessibility, performance, and release | Complete on 2026-08-11 |
+
+Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
+
+## First-pass release verification
+
+- The continuous homepage includes the box opening, identity, three craft values, and writing in one semantic document. It links directly to the separate complete work document and keeps contact available through the addressable side disclosure.
+- The unopened box has no floating name-and-role overlay. The real/drawn portrait shuffle and the colorful `experiences` and `joyful` interactions remain in the revealed hero. The authored changing craft values, check-off interaction, and local contact invitation follow the introduction without a separate About section.
+- `/work/` is a real portfolio route. `/work/software/` forwards to `/work/#product-design`; `/work/games/` and `/games/` forward to `/work/#games`. Personal compatibility paths still reach their valid homepage anchors.
+- The opening uses normal page scroll, exposes a keyboard-reachable skip action, removes revealed content and navigation from interaction until visible, and bypasses the animation for reduced-motion preferences. Essential homepage content remains in the static HTML.
+- Desktop inspection at 998 by 943 found one main landmark and one h1 on both documents, no broken images, no horizontal overflow, live game media, and no server warnings or errors. The updated side control is hidden while the box is closed, enters with the reveal, stays inside the viewport on both homepage and work page, and expands all six contact links.
+- Responsive inspection used browser viewports at 390 by 844 and 320 by 800. The upright box, revealed hero, work introduction, project media, résumé path, and navigation remain contained without horizontal clipping.
+- The current color-flipbook opening was rechecked at 1280 by 720 and 390 by 844 after a clean development-server restart. The lossless box frames paint correctly, the saturated frame colors cut without muddy interpolation, and the opening remains horizontally contained.
+- The typography and spacing pass was inspected at 998 by 943 and 390 by 844. Averia Serif Libre headings, Bright Chalk copy and labels, the side navigation control, and the cropped section-marker drawings remain legible and contained.
+- The portrait shuffle and changing craft-value word remain operable. The Discourses video autoplays muted when visible, Santa's sleigh and snow animations run, and both embedded videos expose native controls.
+- Box frames use the original lossless 2048-pixel PNGs. The previous 1200-pixel lossy WebP conversion left only about 296 pixels across the visible box drawing and was visibly soft on high-density screens; the eight authored PNGs total about 756KB. Non-opening media stays responsive and lazy where it is not immediately needed.
+- The obsolete spatial Home, disclosure shell, and legacy work-composition components were removed after the replacement passed verification. The independent article shell and reusable authored interactions remain.
+- The production check and build pass with zero errors, warnings, or hints for both `/` and `/personal-website/` base paths. Sitemap generation and a static `404.html` are included.
+
+## Hiring evidence audit
+
+- Observatory is the leading case. It has a working macOS release, five exploratory interviews, authored product direction and interaction work, original identity and motion, and transparent AI-directed implementation.
+- Observatory's former `Validation` section is now accurately labeled `Iteration`; it explicitly distinguishes task analysis and design critique from a formal usability study. Homepage and case-study share metadata now include verified project imagery.
+- The food-ordering product is strong end-to-end professional evidence, but it remains anonymized and does not yet have an approved standalone evidence set. It stays supporting work for the first redesign pass.
+- Chinese Bee demonstrates a coherent product across chat, saved vocabulary, practice, handwriting, recognition, API, and embedded web UI. The repository does not currently support stronger research, adoption, or outcome claims.
+- The receipt-processing investigation has a verified performance result from approximately 6 to 10 seconds to approximately 600 to 650 milliseconds. It is valuable supporting evidence for technical product judgment.
+- Santa Foundation contains an honest feedback-to-change loop. Discourses by Campfire is a finished authored game experience. Both belong in supporting play and experiments.
+- The files named `docs/CONTEXT_ABOUT_IGOR.md` and `docs/PERSONAL_CONTEXT.md` are absent. No implementation may infer the missing facts.
+- Availability, location, working arrangement, additional collaborators, business metrics, and a second full case study remain evidence gaps until Igor verifies them.
+
+## Completed previous rebuild milestones
 
 | Milestone | Status |
 | --- | --- |
@@ -24,9 +79,31 @@ Current milestone: **10. Release**
 | 9. secret box page | Complete; approved by Igor on 2026-07-24 |
 | 10. Release | Pending |
 
-Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
+## Active hiring-first direction
 
-## Active direction change
+- Goal number one is to help Igor get hired as a product designer.
+- The separate `/secret-box/` route is removed in the redesign.
+- `/` begins with the box opening in the same continuous document as the homepage.
+- Ordinary scroll progress advances the new transparent frames in `src/assets/art/Doodles-box-opening/`.
+- A black circular portal expands from inside the box and reveals the homepage content beneath it.
+- The transparent frames may be inverted or recolored for the final surfaces.
+- The opening reveals Igor's name, `Product designer`, an approved positioning statement, and immediate selected-work access.
+- The empty four-direction Home is removed.
+- `/` becomes one continuous, vertically scrolling homepage.
+- The homepage order is identity, craft values, and writing, with work and contact persistently available in the side control.
+- Observatory leads product work and remains a separate editorial case study for depth.
+- Work must be visible in or at the edge of the first viewport.
+- Product design is primary. Games and technical experiments are supporting evidence.
+- Remove central hubs, diagram-like spokes, long decorative connectors, repeated route labels, and excess background doodles.
+- Remove the graphite field, persistent grain, and complex shared-world presentation.
+- Use clean black-and-warm-white surfaces with at most one controlled accent at a time.
+- Use personal doodles only as simple CSS background images that scroll normally with the document, without parallax, interaction, or route state.
+- Preserve authentic drawings, portrait interaction, craft values, purposeful imperfections, and the approved paper invitation.
+- Use proximity, hierarchy, alignment, and negative space for relationships. The visual principle is handmade minimalism.
+- Correct Observatory's validation and outcome language before treating it as final hiring evidence.
+- Historical verification below describes the implemented baseline, not the newly approved presentation target.
+
+## Superseded direction record
 
 - On 2026-07-24, Igor approved the completed Who I am unfolding prototype as the model for milestone 8.
 - On 2026-07-24, Igor approved the completed Software, Games, and Blog milestone 8 unfoldings.
@@ -47,7 +124,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Who I am, Software, Games, and Blog now implement the hand-drawn field direction.
 - Historical checks remain valid records of what was previously built, but their paper-based visual acceptance is superseded by this direction change.
 
-## Current decisions
+## Implemented baseline before the hiring-first redesign
 
 - `docs/CONCEPT_DESIGN.md` is the sole design and product authority.
 - The old presentation code is not a visual baseline.

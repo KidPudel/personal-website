@@ -1,0 +1,381 @@
+---
+import frame1 from "../../assets/art/Doodles-box-opening/box_frame1.png";
+import frame2 from "../../assets/art/Doodles-box-opening/box_frame2.png";
+import frame3 from "../../assets/art/Doodles-box-opening/box_frame3.png";
+import frame4 from "../../assets/art/Doodles-box-opening/box_frame4.png";
+import frame5 from "../../assets/art/Doodles-box-opening/box_frame5.png";
+import frame6 from "../../assets/art/Doodles-box-opening/box_frame6.png";
+import frame7 from "../../assets/art/Doodles-box-opening/box_frame7.png";
+import frame8 from "../../assets/art/Doodles-box-opening/box_frame8.png";
+
+const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
+---
+
+<opening-sequence class="opening-sequence" data-frame-count={frames.length}>
+    <div class="opening-sequence__sticky">
+        <div class="opening-sequence__wave opening-sequence__wave--pink" aria-hidden="true"></div>
+        <div class="opening-sequence__wave opening-sequence__wave--yellow" aria-hidden="true"></div>
+        <div class="opening-sequence__wave opening-sequence__wave--blue" aria-hidden="true"></div>
+
+        <div class="opening-sequence__reveal" data-opening-reveal>
+            <slot />
+        </div>
+
+        <div class="opening-sequence__art" aria-hidden="true" data-opening-art>
+            {
+                frames.map((frame, index) => (
+                    <img
+                        class="opening-sequence__frame"
+                        src={frame.src}
+                        alt=""
+                        width="2048"
+                        height="2048"
+                        loading="eager"
+                        decoding="async"
+                        data-opening-frame
+                        data-active={index === 0 ? "" : undefined}
+                    />
+                ))
+            }
+        </div>
+
+        <p class="opening-sequence__instruction" data-opening-instruction>
+            Scroll to open <span aria-hidden="true">↓</span>
+        </p>
+        <a class="opening-sequence__skip" href="#values">Skip opening</a>
+    </div>
+</opening-sequence>
+
+<script>
+    class OpeningSequence extends HTMLElement {
+        private frame = 0;
+        private abort?: AbortController;
+
+        connectedCallback() {
+            if (this.dataset.enhanced) return;
+            this.dataset.enhanced = "true";
+            this.abort = new AbortController();
+
+            const sticky = this.querySelector<HTMLElement>(
+                ".opening-sequence__sticky",
+            );
+            const reveal = this.querySelector<HTMLElement>(
+                "[data-opening-reveal]",
+            );
+            const art = this.querySelector<HTMLElement>("[data-opening-art]");
+            const instruction = this.querySelector<HTMLElement>(
+                "[data-opening-instruction]",
+            );
+            const frames = Array.from(
+                this.querySelectorAll<HTMLElement>("[data-opening-frame]"),
+            );
+            const page = this.closest<HTMLElement>(".portfolio-page");
+            const header = page?.querySelector<HTMLElement>(".site-header");
+            const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            );
+
+            if (
+                !sticky ||
+                !reveal ||
+                !art ||
+                !instruction ||
+                !frames.length ||
+                !page ||
+                !header
+            )
+                return;
+
+            const clamp = (value: number) => Math.min(1, Math.max(0, value));
+            const smooth = (value: number) => value * value * (3 - 2 * value);
+            const openingColors = [
+                "#7186e8",
+                "#7186e8",
+                "#ef7188",
+                "#ef7188",
+                "#f0cd50",
+                "#f0cd50",
+                "#4fc3ad",
+                "#4fc3ad",
+            ];
+
+            const render = () => {
+                this.frame = 0;
+
+                if (
+                    reducedMotion.matches ||
+                    window.location.hash === "#contact"
+                ) {
+                    this.style.setProperty("--wave-y", "-45vh");
+                    this.style.setProperty("--art-opacity", "0");
+                    this.style.setProperty("--instruction-opacity", "0");
+                    this.style.setProperty("--hero-content-opacity", "1");
+                    page.style.setProperty("--header-visibility", "1");
+                    header.inert = false;
+                    header.removeAttribute("aria-hidden");
+                    reveal.inert = false;
+                    return;
+                }
+
+                const rect = this.getBoundingClientRect();
+                const distance = Math.max(
+                    1,
+                    this.offsetHeight - window.innerHeight,
+                );
+                const progress = clamp(-rect.top / distance);
+                const frameProgress = clamp(progress / 0.5);
+                const frameIndex = Math.min(
+                    frames.length - 1,
+                    Math.floor(frameProgress * frames.length),
+                );
+                const waveProgress = smooth(clamp((progress - 0.38) / 0.5));
+                const artOpacity = 1 - smooth(clamp((progress - 0.58) / 0.2));
+                const instructionOpacity = 1 - smooth(clamp(progress / 0.16));
+                const headerVisibility = smooth(
+                    clamp((progress - 0.76) / 0.14),
+                );
+                const heroContentOpacity = smooth(
+                    clamp((progress - 0.71) / 0.14),
+                );
+
+                frames.forEach((frame, index) =>
+                    frame.toggleAttribute("data-active", index === frameIndex),
+                );
+                this.style.setProperty(
+                    "--opening-color",
+                    openingColors[frameIndex] ?? openingColors[0],
+                );
+                this.style.setProperty("--wave-y", `${135 - waveProgress * 180}vh`);
+                this.style.setProperty("--art-opacity", String(artOpacity));
+                this.style.setProperty(
+                    "--instruction-opacity",
+                    String(instructionOpacity),
+                );
+                this.style.setProperty(
+                    "--hero-content-opacity",
+                    String(heroContentOpacity),
+                );
+                page.style.setProperty(
+                    "--header-visibility",
+                    String(headerVisibility),
+                );
+                header.inert = headerVisibility < 0.86;
+                header.toggleAttribute("aria-hidden", headerVisibility < 0.86);
+                reveal.inert = waveProgress < 0.9;
+            };
+
+            const requestRender = () => {
+                if (this.frame) return;
+                this.frame = window.requestAnimationFrame(render);
+            };
+
+            window.addEventListener("scroll", requestRender, {
+                passive: true,
+                signal: this.abort.signal,
+            });
+            window.addEventListener("resize", requestRender, {
+                passive: true,
+                signal: this.abort.signal,
+            });
+            window.addEventListener("hashchange", requestRender, {
+                signal: this.abort.signal,
+            });
+            reducedMotion.addEventListener("change", requestRender, {
+                signal: this.abort.signal,
+            });
+            render();
+        }
+
+        disconnectedCallback() {
+            this.abort?.abort();
+            if (this.frame) window.cancelAnimationFrame(this.frame);
+            delete this.dataset.enhanced;
+        }
+    }
+
+    if (!customElements.get("opening-sequence")) {
+        customElements.define("opening-sequence", OpeningSequence);
+    }
+</script>
+
+<style>
+    .opening-sequence {
+        --wave-y: -45vh;
+        --art-opacity: 0;
+        --instruction-opacity: 0;
+        --hero-content-opacity: 1;
+        --opening-color: #7186e8;
+        position: relative;
+        z-index: 2;
+        display: block;
+        height: 100svh;
+        background: #f7f4ec;
+    }
+
+    .opening-sequence__sticky {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        overflow: clip;
+        background-color: var(--opening-color);
+    }
+
+    .opening-sequence__reveal {
+        position: absolute;
+        z-index: 9;
+        inset: 0;
+        overflow: hidden;
+        background: #f7f4ec;
+    }
+
+    .opening-sequence__wave {
+        display: none;
+    }
+
+    .opening-sequence__art {
+        display: none;
+    }
+
+    .opening-sequence__instruction,
+    .opening-sequence__skip {
+        display: none;
+    }
+
+    :global(.js) .opening-sequence {
+        height: 165svh;
+    }
+
+    :global(.js) .opening-sequence__reveal {
+        --wave-offset: 0vh;
+        clip-path: polygon(
+            0 calc(var(--wave-y) + var(--wave-offset) + 7vh),
+            12% calc(var(--wave-y) + var(--wave-offset) + 4vh),
+            25% calc(var(--wave-y) + var(--wave-offset) - 1vh),
+            40% calc(var(--wave-y) + var(--wave-offset) - 8vh),
+            55% calc(var(--wave-y) + var(--wave-offset) - 11vh),
+            70% calc(var(--wave-y) + var(--wave-offset) - 7vh),
+            85% calc(var(--wave-y) + var(--wave-offset) + 1vh),
+            100% calc(var(--wave-y) + var(--wave-offset) + 6vh),
+            100% 100%,
+            0 100%
+        );
+        will-change: clip-path;
+    }
+
+    :global(.js) .opening-sequence__wave {
+        position: absolute;
+        inset: 0;
+        display: block;
+        clip-path: polygon(
+            0 calc(var(--wave-y) + var(--wave-offset) + 7vh),
+            12% calc(var(--wave-y) + var(--wave-offset) + 4vh),
+            25% calc(var(--wave-y) + var(--wave-offset) - 1vh),
+            40% calc(var(--wave-y) + var(--wave-offset) - 8vh),
+            55% calc(var(--wave-y) + var(--wave-offset) - 11vh),
+            70% calc(var(--wave-y) + var(--wave-offset) - 7vh),
+            85% calc(var(--wave-y) + var(--wave-offset) + 1vh),
+            100% calc(var(--wave-y) + var(--wave-offset) + 6vh),
+            100% 100%,
+            0 100%
+        );
+        filter: blur(clamp(0.45rem, 0.8vw, 0.85rem));
+        pointer-events: none;
+        transform: scale(1.025);
+        will-change: clip-path;
+    }
+
+    :global(.js) .opening-sequence__wave--pink {
+        --wave-offset: -18vh;
+        z-index: 6;
+        background: #ff55d7;
+    }
+
+    :global(.js) .opening-sequence__wave--yellow {
+        --wave-offset: -11vh;
+        z-index: 7;
+        background: #ffd84f;
+    }
+
+    :global(.js) .opening-sequence__wave--blue {
+        --wave-offset: -5vh;
+        z-index: 8;
+        background: #2964ec;
+    }
+
+    :global(.js) .opening-sequence__art {
+        position: absolute;
+        z-index: 5;
+        inset: 0;
+        display: block;
+        opacity: var(--art-opacity);
+        pointer-events: none;
+        will-change: opacity;
+    }
+
+    .opening-sequence__frame {
+        position: absolute;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+    }
+
+    .opening-sequence__frame[data-active] {
+        opacity: 1;
+    }
+
+    :global(.js) .opening-sequence__instruction {
+        position: absolute;
+        z-index: 10;
+        right: clamp(1.25rem, 4vw, 3.5rem);
+        bottom: clamp(1.25rem, 3vw, 2.5rem);
+        display: flex;
+        gap: 0.75rem;
+        margin: 0;
+        opacity: var(--instruction-opacity);
+        color: #0a0a0a;
+        font-family: var(--font-reading);
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    :global(.js) .opening-sequence__skip {
+        position: absolute;
+        z-index: 11;
+        right: 1rem;
+        top: 1rem;
+        display: block;
+        padding: 0.65rem 0.8rem;
+        background: #11110f;
+        color: #ffd84f;
+        font-family: var(--font-reading);
+        font-size: 0.68rem;
+        opacity: 0;
+        pointer-events: none;
+        text-underline-offset: 0.2rem;
+    }
+
+    :global(.js) .opening-sequence__skip:focus-visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        :global(.js) .opening-sequence {
+            height: 100svh;
+        }
+
+        :global(.js) .opening-sequence__reveal {
+            clip-path: none;
+        }
+
+        :global(.js) .opening-sequence__wave,
+        :global(.js) .opening-sequence__art,
+        :global(.js) .opening-sequence__instruction {
+            display: none;
+        }
+    }
+</style>

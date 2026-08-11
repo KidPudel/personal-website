@@ -1,187 +1,351 @@
-# Website rebuild plan
+# Hiring-first website redesign plan
 
-Last updated: 2026-08-10
+Last updated: 2026-08-11
 
-## Purpose
+## Objective
 
-This file defines execution order only.
+Redesign Igor's personal website to maximize his ability to get hired as a product designer while preserving the website as an authored artistic work.
 
-- Product and design authority: `docs/CONCEPT_DESIGN.md` and `storyboards/`.
-- Public professional evidence: `docs/CONTEXT_ABOUT_IGOR.md`.
-- Private tone guidance: `docs/PERSONAL_CONTEXT.md`.
-- Technical structure: `docs/ARCHITECTURE.md`.
-- Current state: `docs/PROGRESS.md`.
+The redesign must make the following clear without requiring exploration:
 
-## Rebuild strategy
+1. This is Igor, introduced conversationally rather than as a formal nameplate.
+2. Igor is a product designer.
+3. Igor's strongest relevant product work is available immediately.
+4. Igor can frame problems, make defensible design decisions, produce strong interaction and visual work, and carry products into working artifacts.
+5. A hiring visitor can reach a case study, résumé, or contact path without decoding the site.
 
-- Treat the current visual implementation as legacy, not as a base to reskin.
-- Follow `docs/ARCHITECTURE.md` for stack, routes, component boundaries, state, styling, content, assets, and enhancement decisions.
-- Replace the legacy implementation through milestone-sized changes.
-- Keep direct URLs and a working production build throughout the rebuild.
-- Implement the static resting composition before optional motion or enhanced interactions.
-- Do not add design interpretation here. Resolve design questions against the authored concept or with Igor.
+## Authorities
+
+Use the smallest relevant source and do not duplicate it into implementation code:
+
+1. Igor's latest explicit instruction.
+2. `docs/CONCEPT_DESIGN.md` and `storyboards/` for approved experience and art direction.
+3. Verified public evidence already present in the repository. The files named `docs/CONTEXT_ABOUT_IGOR.md` and `docs/PERSONAL_CONTEXT.md` are currently absent and must not be assumed.
+4. `docs/ARCHITECTURE.md` for technical boundaries after milestone 0 reconciles it with this redesign.
+5. This file for execution order.
+6. `docs/PROGRESS.md` for current status and verification records.
+
+## Approved decisions
+
+- Goal number one is hiring Igor as a product designer.
+- Remove the separate `/secret-box/` route.
+- Make the box animation the opening section of `/`, in the same document as the continuous homepage.
+- Drive the authored frames in `src/assets/art/Doodles-box-opening/` from ordinary scroll progress.
+- Test a compact saturated palette as part of the frame sequence. Keep each moment flat and legible, cut colors with frame changes, and avoid decorative spheres or a separate ambient background animation.
+- Reveal the homepage through a black circular portal expanding from inside the box.
+- Treat the transparent frames as color-flexible assets that may be inverted or recolored for the chosen surfaces.
+- Replace the empty four-direction Home with a continuous homepage.
+- Make the box reveal Igor, not merely navigation.
+- Keep the unopened box free of name-and-role labels. Reveal `Hello, I’m Igor.`, `Product designer.`, the positioning statement, and direct work access through the portal as the box opens.
+- Make product work one direct action from the first revealed viewport.
+- Keep deep case studies as separate documents.
+- Present all verified work on a dedicated `/work/` document. Product design leads; games and technical experiments follow with their authored media and honest prominence.
+- Remove the graphite field, persistent grain system, and complex shared-world treatment.
+- Use a clean black-and-warm-white surface system with at most one controlled accent at a time.
+- Render personal doodles only as simple CSS background images that scroll normally with the page.
+- Preserve authentic drawings, portrait interaction, craft values, purposeful imperfections, and the approved paper invitation.
+- Remove hub-and-spoke compositions, long dotted connectors, repeated route labels, and excess background doodles.
+- Prefer proximity, alignment, hierarchy, and negative space over explanatory lines.
+- Do not turn the redesign into a corporate portfolio template, card grid, or generic personal-brand landing page.
+- Replace the rigid full-width navigation bar with a side-mounted Work and contact control that arrives with the opened box. The contact action uses the existing Connect drawing and expands the contact links. Writing remains discoverable in the main document rather than duplicated in global navigation.
+- Use the existing hand-drawn destination icons as section indicators on both the homepage and work page. They retain hover character but no longer gate content.
+- Use Averia Serif Libre for portfolio headings and Bright Chalk for explanatory copy, personal labels, and controls.
+- Align the homepage to one centered content spine. Reserve the side gutters for sparse background doodles and tighten the hero-to-values handoff so negative space frames the content rather than separating related sections.
+
+## Information architecture
+
+### Continuous personal homepage
+
+`/`
+
+The homepage is one document. It begins with the scroll-controlled box opening, then continues in ordinary vertical document flow. Its content appears in this order:
+
+1. Box opening and circular portal reveal.
+2. Identity and professional proposition.
+3. Three craft values directly beneath the introduction, without a separate About section or label.
+4. Writing.
+
+The side-mounted Work and contact control remains available after the box opens; contact is not repeated as a fifth content section.
+
+The first revealed viewport must provide a direct work action. The homepage must not repeat the complete portfolio beneath the introduction.
+
+The opening must use normal page scrolling. It must not intercept wheel or touch input, force smooth scrolling, use mandatory scroll snapping, or require the visitor to wait for a timed sequence. A fast scroll may complete the decorative sequence immediately.
+
+The unopened box is deliberately quiet. It must not carry floating identity labels. The revealed hero opens with `Hello, I’m Igor.` and keeps `Product designer.` next to that greeting.
+
+### Separate documents
+
+- `/case-studies/observatory/` remains a separate editorial case study.
+- `/work/` is the complete authored work presentation.
+- A second case study is added only after an evidence audit identifies a project that can honestly support one.
+- Individual approved Blog articles may remain separate documents.
+- Existing public and compatibility URLs must continue to reach an appropriate destination.
+
+### Homepage anchors
+
+Use simple semantic anchors rather than destination disclosures:
+
+- `/#values`
+- `/#writing`
+- `/#contact`
+
+Work uses `/work/#product-design` and `/work/#games`.
+
+Old fragments and compatibility paths should forward or resolve to the closest new section without trapping visitors in obsolete states.
+
+## Opening composition requirements
+
+The resting composition revealed by the box must answer four questions immediately:
+
+- Who: Igor, introduced warmly as `Hello, I’m Igor.`
+- What: Product designer, stated beside the greeting.
+- Value: one concise, evidence-compatible positioning statement approved by Igor.
+- Next: selected product work.
+
+The composition should include:
+
+- A warm first-person introduction with the role visible beside it.
+- The existing authored headline `I build experiences, then the systems that make them real.` if Igor retains it.
+- One authored portrait or self-drawing.
+- At most one short, direct supporting sentence. Do not repeat the complete About section in the opening.
+- A semantic link to selected work.
+- Reachable résumé and contact paths.
+- A direct semantic link to the dedicated work page.
+
+The identity information must remain available in the resting homepage. It must not disappear after an introductory animation.
+
+## Work-page content model
+
+### Selected product work on `/work/`
+
+Observatory leads the section and receives the greatest visual weight.
+
+Its work-page record must show:
+
+- A strong final-product image or restrained motion artifact.
+- The product problem in concise language.
+- Igor's verified role and contribution.
+- The working outcome.
+- A primary case-study link.
+- Launch film, source, and download only as secondary destinations.
+
+### Second case study
+
+Do not choose the second case by visual polish alone. Audit existing projects for:
+
+- A real problem and audience.
+- Clear individual contribution.
+- Research, constraints, or feedback that affected decisions.
+- Meaningful iteration.
+- A final artifact.
+- An honest outcome or learning boundary.
+- Collaboration evidence where available.
+
+If no current project meets that threshold, keep the slot unfilled and record the evidence gap. Do not manufacture a case study.
+
+### Supporting work
+
+Each supporting artifact should communicate, concisely:
+
+- What problem or opportunity it addressed.
+- What Igor owned.
+- One consequential decision.
+- The result or honest status.
+
+Replace junior or ambiguous framing such as `Learned along an artifact` with approved ownership-oriented language such as `What I owned`, `My contribution`, or another accurate title.
+
+### Play and experiments
+
+Use this section to show interaction craft, systems thinking, atmosphere, motion, and technical curiosity. Keep it visually lively but clearly secondary to selected product work.
+
+### Personal context
+
+Reuse the strongest approved material from the current Who I am experience:
+
+- Real and drawn portrait interaction.
+- The authored introduction.
+- Craft values.
+- Changing-word interactions where they remain legible and purposeful.
+- The paper invitation revealed after completing the values.
+
+Do not recreate the current central Who I am hub or its connector spokes. Place the invitation area locally beside or beneath the values it depends on.
+
+### Writing and contact
+
+- Show only approved writing, with product-relevant writing prioritized when available.
+- Keep email, LinkedIn, and résumé immediately usable in the persistent contact disclosure. Do not repeat them in a final homepage contact section.
+- Add availability, location, or working-arrangement information only after Igor explicitly verifies the facts.
+- Verify contact layout at common laptop heights so the primary email cannot be clipped.
+
+## Visual composition rules
+
+The visual direction is handmade minimalism on a clean, high-contrast surface system.
+
+- One primary message per viewport.
+- Product evidence has more visual weight than decoration.
+- No central navigation hub.
+- No hub-and-spoke connector system.
+- No long decorative connector crossing the viewport.
+- Use at most one short connector when it explains a real local sequence.
+- Do not use a line when proximity can communicate the relationship.
+- Use personal doodles only as sparse CSS background images with ordinary `background-attachment: scroll` behavior.
+- Do not render background doodles as individual interactive or stateful DOM elements.
+- Do not use parallax, independent doodle animation, pointer behavior, or route-aware doodle placement.
+- Keep background images away from important text and product imagery.
+- Use negative space to separate groups, not to create unexplained distance.
+- Keep authentic imperfections in drawings and edges without making alignment or reading order ambiguous.
+- Use Bright Chalk for authored character, explanatory copy, labels, and controls. Use Averia Serif Libre for headings so the reading hierarchy does not depend on outlined display lettering.
+- Keep one controlled accent treatment at a time.
+- Do not enclose every item or section in a card.
+- Motion must reveal hierarchy or state. It must not delay access to evidence.
+
+## Observatory case-study corrections
+
+Before treating Observatory as final hiring evidence:
+
+- Add a finished-product visual to the opening.
+- Preserve the clear role, interview count, working outcome, and transparent AI-directed build description.
+- Add duration, team context, constraints, or success criteria only where verified.
+- Correct the current `Validation` evidence boundary.
+- Do not say users disliked something or that a change drastically improved it unless documented testing supports that statement.
+- Label design critique, task analysis, exploratory research, usability testing, and product outcome accurately and separately.
+- Identify synthesized statements as synthesized rather than presenting them as verbatim participant quotes.
+- Evaluate the outcome against honest success criteria without inventing business metrics.
+- Share and promote the case-study root URL, not a fragment that skips its summary.
 
 ## Milestones
 
-### 0. Documentation reset
+Complete and verify one milestone before beginning the next.
 
-- Remove superseded design and strategy documents.
-- Establish the source-of-truth map.
-- Reset planning and tracking around the new implementation.
+### 0. Reconcile documentation and evidence
 
-Exit condition: no active document competes with `docs/CONCEPT_DESIGN.md` for design authority.
+- Update `docs/CONCEPT_DESIGN.md` with the approved hiring-first direction.
+- Update `docs/ARCHITECTURE.md` to replace the fragment-disclosure model with the continuous homepage model.
+- Inventory current public claims and record missing evidence sources.
+- Mark the existing four-direction and spatial-disclosure presentation as legacy.
+- Preserve the current implementation as a working reference while the new static structure is built.
 
-### 1. Clean foundation
+Exit condition: concept, architecture, plan, and progress documents describe the same redesign and do not direct implementation toward the rejected Home model.
 
-- Inventory the current source against the rebuild boundary in `docs/ARCHITECTURE.md` and classify each item as keep, replace, or remove.
-- Preserve verified content and original media outside the presentation reset.
-- Replace the legacy layout, shared components, interaction utilities, and global CSS with a minimal accessible shell.
-- Establish only the tokens and primitives needed by the concept.
-- Keep local development startup and shutdown reproducible through the repository script.
-- Keep GitHub Pages base-path handling and direct navigation working.
+### 1. Static continuous homepage foundation
 
-Exit condition: the clean shell builds successfully at `/` and `/personal-website/`, with no legacy visual system remaining.
+- Build the new semantic homepage structure from scratch.
+- Replace the persistent `WorldField` and DOM-managed doodle layer with ordinary document and section backgrounds.
+- Establish section anchors and compatibility behavior.
+- Add the static identity, values, and writing sequence with the persistent Work and contact control.
+- Keep all essential content available without JavaScript.
+- Do not add final motion during this milestone.
 
-### 2. Home
+Exit condition: the complete homepage is readable in correct order, buildable, and navigable without the old fragment shell.
 
-- Implement Home from `docs/CONCEPT_DESIGN.md` and the overview storyboard.
-- Add the real semantic navigation and progressively enhanced disclosures.
-- Establish desktop and mobile resting, focus, expanded, reduced-motion, and JavaScript-free states.
+### 2. Scroll-controlled box opening and identity reveal
 
-Exit condition: Home is complete enough for Igor to review as the site's resting space.
+- Compose the first viewport around name, role, positioning, portrait, selected-work access, résumé, and contact.
+- Make Observatory visible in or at the first-viewport edge.
+- Replace the deleted legacy frames with `src/assets/art/Doodles-box-opening/`.
+- Map the eight box frames to a short sticky section driven by ordinary scroll progress.
+- Expand a circular mask from the box interior to reveal the real homepage layer beneath it.
+- Keep the scroll-controlled interval short enough to complete within less than one additional viewport of scrolling.
+- Allow fast forward and backward scrolling to advance or reverse the decorative sequence naturally.
+- Support skip, keyboard, touch, no-JavaScript, and reduced-motion behavior.
+- Remove the obsolete `/secret-box/` page and its legacy timed component after the new root opening is verified.
 
-### 3. Destination composition and Who I am
+Exit condition: a five-second test identifies Igor, Product Designer, selected work, and the next action without explanation.
 
-- Build the shared persistent-field behavior, including the common shell-owned doodle layer, and direct-route behavior without introducing a separate destination surface.
-- Establish the responsive safe areas and the smallest reusable primitives needed for open hand-drawn borders, spines, paths, and annotations.
-- Implement Who I am with approved content and original assets.
-- Compose Who I am directly on the field using the hand-drawn route language in `docs/CONCEPT_DESIGN.md`.
-- Implement its text interaction without making essential meaning depend on JavaScript.
-- Preserve the explicitly approved paper invitation that appears over the dashed secret area after all three craft values are checked.
-- Do not introduce any other paper unless Igor has explicitly identified the exact special element and its purpose.
+### 3. Selected product-work presentation
 
-Exit condition: Home and Who I am form a complete, responsive, accessible vertical slice.
+- Rebuild Observatory's homepage presentation around final product, problem, contribution, and outcome.
+- Audit and choose the second case-study candidate.
+- Reframe supporting artifacts around ownership and decisions.
+- Keep games and experiments outside the primary product sequence.
 
-### 4. Work
+Exit condition: a hiring visitor can understand Igor's strongest product-design evidence in a 30-second scan.
 
-- Build the Work disclosure on Home with connected Igor-drawn Software and Games icon links, a slightly offset vertical wide-screen arrangement, and their shared wobble behavior.
-- Build the directly linkable Software and Games routes as hand-drawn long-form compositions on the persistent field.
-- On wide Software layouts, compose the second project as media left with its title and learning notes to the right, then alternate the third project below with its details left and media right. Preserve the single-column reading flow on narrower screens.
-- Rebuild the content model around verified artifacts and honest prominence.
-- Keep both Work openings compact on wide screens. Place the Software professional-work framing and interactive-product résumé downloads in its opening composition, and place the game-development résumé downloads in Games.
-- Keep each `What I've learned` list sourced from explicit project learnings, not engine, jam, or status metadata.
-- Prefer authentic project media over diagrammatic placeholders. Keep explicitly requested game animation bounded and provide a static reduced-motion state.
-- Implement the featured and supporting work using claims from `docs/CONTEXT_ABOUT_IGOR.md`.
-- Preserve compatibility for existing public URLs where useful.
+### 4. Personal, writing, and persistent contact
 
-Exit condition: all approved work is discoverable, factual, and usable with or without client-side enhancement.
+- Recompose approved Who I am content without hubs or long connectors.
+- Preserve the portrait and craft-value interactions.
+- Place the secret invitation locally with its triggering values.
+- Build the supporting play and experiments sequence.
+- Add approved writing and keep contact clear through the persistent disclosure without a redundant footer invitation.
+- Verify résumé and external destinations.
 
-### 5. Blog and contact completion
+Exit condition: personality and breadth enrich the professional story without competing with it.
 
-- Build the Blog index and local article presentation as calm hand-drawn compositions on the persistent field.
-- Complete the Home Connect experience and compatibility route.
-- Verify contact and social destinations, browser-viewable résumé PDFs, and direct-download résumé DOCX files.
+### Compact work archive
 
-Exit condition: every primary destination and public link is complete.
+Keep earlier, unfinished, and trajectory work visible in a compact labeled list after the featured evidence. This archive demonstrates sustained output and breadth without giving every artifact the visual weight or implied rigor of a full product-design case study.
 
-### 6. Interaction, responsive behavior, and accessibility
+### 5. Observatory hiring-evidence pass
 
-- Resolve the mobile composition through real viewport testing with Igor.
-- Verify keyboard, touch, focus, reduced motion, contrast, semantics, direct links, history, and no-JavaScript access.
-- Optimize fonts, images, motion, and client code.
+- Correct validation and outcome language.
+- Add the finished-product opening visual.
+- Clarify verified scope, constraints, research, decisions, and results.
+- Tighten scanning without flattening the editorial design.
+- Verify root case-study sharing metadata and preview artwork.
 
-Exit condition: the complete experience works across desktop and mobile without interaction or accessibility regressions, and a section-by-section review confirms that it expresses the authored concept rather than merely satisfying the route and content requirements.
+Exit condition: every consequential claim is supported, clearly bounded, and understandable without Igor presenting it live.
 
-### 7. Who I am fragment-unfolding prototype
+### 6. Visual restraint and motion pass
 
-- Prototype only Who I am as `/#who-i-am` inside the Home document.
-- Keep the Home clusters mounted and expand the complete Who I am semantic content from its existing cluster into real document layout.
-- Use a scoped TypeScript disclosure controller as the primary interaction layer for animation, `aria-expanded`, focus, scroll restoration, hash-history behavior, and lazy media activation. Use `:target` as the direct-fragment and JavaScript-free fallback.
-- Recompose the wide-screen Who I am opening around its Home origin, then bend its long content into ordinary vertical document flow without horizontal document scrolling or a nested scrolling panel.
-- Let the other Home clusters recede into faint spatial traces near the opening and disappear from the deeper reading sequence.
-- Present the same `#who-i-am` state as a full-screen composition on mobile.
-- Keep `/who-i-am/` as a compatibility entry that forwards to `/#who-i-am` for the prototype.
-- Verify the complete JavaScript-enhanced experience alongside collapsed Home, direct `/#who-i-am` loading, activation, Back, Forward, Home, reload, keyboard focus, JavaScript-free `:target`, reduced motion, mobile presentation, lazy media, and base-path deployment behavior.
+- Remove obsolete hubs, spokes, long paths, repeated route labels, and excess doodles.
+- Remove graphite and grain presentation tokens from the new homepage.
+- Flatten selected personal doodles into simple, scrollable background-image compositions.
+- Refine hierarchy, spacing, typography, and product-image prominence.
+- Add only motion that improves reveal, orientation, feedback, or continuity.
+- Use authored drawings rather than invented personal artwork.
 
-Exit condition: Igor can judge a working Home and Who I am fragment-disclosure slice and decide whether the model should govern the remaining destinations.
+Exit condition: every decorative element has a clear compositional purpose and the site still feels unmistakably Igor.
 
-### 8. Complete fragment-addressed spatial field
+### 7. Responsive, accessibility, performance, and release
 
-- Apply the accepted prototype model to `/#work/software`, `/#work/games`, and `/#blog`; retain the existing `/#work` and `/#connect` disclosures.
-- Place the complete semantic content for Who I am, Software, Games, and the Blog index inside the single Home document while keeping heavy media lazy or inactive until needed.
-- Preserve only one expanded destination at a time and keep fragment state, disclosure attributes, focus, scroll restoration, Back, and Forward synchronized.
-- Recompose each wide-screen opening around its selected Home cluster, then connect it to ordinary vertical reading with hand-drawn paths, spines, and loose alternating placements.
-- Keep full-screen mobile presentations for the same fragment states.
-- Convert `/work/software/`, `/work/games/`, `/games/`, and `/blog/` into compatibility redirects to their matching fragments. Preserve separate routes for published Blog articles.
-- Verify the complete fragment system at desktop, mobile, minimum width, reduced motion, JavaScript-free mode, direct fragment loads, root and GitHub Pages base paths, and browser history.
+- Inspect at 1440 by 900, 1280 by 720, 390 by 844, and 320 by 800.
+- Verify keyboard, touch, focus, reduced motion, contrast, landmarks, headings, anchor navigation, and no-JavaScript access.
+- Verify no horizontal overflow and no clipped primary contact action.
+- Optimize images, fonts, motion, and inactive media.
+- Complete title, description, Open Graph image, canonical metadata, sitemap, RSS where useful, and `404.html`.
+- Run Astro checks, production builds for both base paths, public-copy checks, and console inspection.
 
-Exit condition: Home behaves as one coherent fragment-addressed spatial field whose destinations genuinely unfold in place, while compatibility links and independent Blog articles remain usable.
+Exit condition: the redesigned site is deployable from a clean checkout and passes the hiring comprehension tests below.
 
-### 9. secret box page
+## Final comprehension tests
 
-- Simple `/secret-box` page with a box at the center. `/Users/iggysleepy/dev/web/frontend/personal-website/src/assets/art/secret-box-animation-frames`
-- user clicks on it, it gets animated to the other frames (3 FPS)
-- animation ends, transition effect happens
-- transition effect ends and user gets directed to the home page
-- background is the same color and grain as the home, but without doodles
-- Keep the complete mobile composition inside the visible dynamic viewport, including the revealed cat reflection, without document scrolling or a mismatched overscroll edge.
+### Five seconds
 
-Exit condition: Secret box page, animation, and transition effect and the transition itself after the delay happens correctly. and Igor approved it.
+A new visitor can identify:
 
+- Igor Kupchinenko.
+- Product Designer.
+- The nature of his strongest work.
+- Where to continue.
 
+### Thirty seconds
 
-### 10. Release
+A hiring visitor can find:
 
-- Complete metadata, social preview, sitemap, RSS, and `404.html`.
-- Use the authored avatar artwork as the browser-tab icon.
-- Resolve mobile page-process reloads by keeping animated game media decoder-friendly and releasing inactive destination video resources.
-- Keep the hand-drawn craft-value checkboxes visually complete in checked and unchecked browser-rendered states.
-- Keep the Software journey current by adding newly released, evidence-backed artifacts with their authored media and verified public destinations.
-- Keep the downloadable résumés synchronized with verified project evidence while preserving their focused audiences and two-page layouts.
-- Run clean checks and production builds.
-- After Igor deployed website through the GitHub Pages himself fix deployment-only issues and record the final state.
-- Paint the browser canvas with the shared field surface and suppress elastic overscroll globally so browsers cannot expose a visually different edge.
+- Observatory.
+- Igor's role and contribution.
+- A real outcome.
+- The case study.
+- Résumé and contact.
 
-Exit condition: the public site is complete, verified, and deployable from a clean checkout.
+### Five minutes
 
-### 10A. Observatory editorial case study
+A design reviewer can understand:
 
-- Add `/case-studies/observatory/` as an independent static Astro document.
-- Link it from Observatory's existing Software artifact without adding another
-  top-level Home destination.
-- Structure the document for product-design reviewers around the catalyst,
-  research, definition, iteration, working product, and reflection.
-- Use Observatory's authored sketches, wireframes, flows, and final screenshots
-  rather than simulated product UI or the personal site's destination
-  composition.
-- Keep the page statically generated, semantic, image-led, and completely
-  readable without enhancement. Progressively enhance the long document with a
-  side section index and restrained sticky visual sequences when motion is
-  available.
-- Present working personas as one vertical research sequence with sticky
-  identity context on wide screens and an ordinary document flow on phones.
-- Keep chapter labels, titles, prose, and research details in one centered
-  reading column, with a centered wider column for evidence-led compositions.
-- Use locally embedded Crimson Text faces for body copy and Averia Serif Libre
-  Bold for display headlines.
-- Use locally embedded Capriola for navigation, section indicators, metadata,
-  captions, and editorial labels while preserving their authored capitalization.
-- Keep narrative body copy on one shared Crimson Text reading size and line
-  height across research, personas, principles, validation, and sticky stories.
-- Use a high-contrast black text-selection treatment within the case study.
-- Use the case study's black ink color for editorial accents, navigation state,
-  and focus cues instead of introducing a separate accent hue.
-- On page load, briefly reveal the authored dithered Observatory texture through
-  the hero title one letter at a time, then return every letter to black. Keep
-  the resting title static when reduced motion is requested.
-- Verify root and GitHub Pages builds, desktop and mobile layouts, internal base
-  paths, image loading, and horizontal containment.
-
-Exit condition: the case study is editorial, factual, responsive, accessible,
-discoverable from Software, and deployable with the existing static pipeline.
+- The problem Igor chose or received.
+- How evidence changed his framing.
+- The major design decisions and tradeoffs.
+- What he personally owned.
+- What was built or delivered.
+- What was validated, what remains uncertain, and what he would do next.
 
 ## Change control
 
-- Update milestone status only in `docs/PROGRESS.md`.
-- Add a new dependency only when a milestone has a concrete requirement that the existing stack cannot meet simply.
-- If implementation reveals a design ambiguity, record it as a question in `docs/PROGRESS.md`; do not silently add a new design rule.
+- Do not invent facts, metrics, roles, collaborators, research, availability, or outcomes.
+- Do not publish private context without explicit approval.
+- Do not use em dashes in public copy.
+- Preserve unrelated user work.
+- Keep `docs/IMPLEMENTATION_PLAN.md` and `docs/PROGRESS.md` synchronized with implementation.
+- Record completed verification in `docs/PROGRESS.md`, not in this plan.
+- If a design choice changes the approved direction, update `docs/CONCEPT_DESIGN.md` before implementing it.

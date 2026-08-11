@@ -1,0 +1,27 @@
+---
+interface Props {
+  target: string;
+  destination: string;
+}
+
+const { target, destination } = Astro.props;
+const canonicalURL = new URL(target, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+    <link rel="canonical" href={canonicalURL} />
+    <title>Redirecting to {destination}</title>
+    <script is:inline define:vars={{ target }}>
+      window.location.replace(target);
+    </script>
+  </head>
+  <body>
+    <p><a href={target}>Continue to {destination}</a></p>
+  </body>
+</html>
