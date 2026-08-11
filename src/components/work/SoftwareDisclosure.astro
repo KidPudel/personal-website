@@ -71,6 +71,7 @@ const [observatory, flutterProduct, chineseBee, receiptProcessing] = entries;
           <h2 id="software-observatory-title">{observatory.data.title}</h2>
           <p class="software-opening__summary">{observatory.data.summary}</p>
           <nav class="software-project-links" aria-label="Observatory project links">
+            <a href={sitePath('/case-studies/observatory/')}>Read the case study</a>
             {observatory.data.videoUrl && <a href={observatory.data.videoUrl}>Launch film</a>}
             {observatory.data.externalUrl && <a href={observatory.data.externalUrl}>Project and source</a>}
             {observatory.data.downloadUrl && <a href={observatory.data.downloadUrl}>Download</a>}

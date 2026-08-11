@@ -336,6 +336,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Observatory now leads the interactive-product résumé's Relevant Product Experience. Its record covers the working macOS product, product and behavior specifications, information architecture, UX/UI, original telescope artwork, visual identity, AI-directed application development, and the 2:11 launch film without implying that Igor personally wrote the application code.
 - The professional summary and capability lines now include the verified product-direction, information-architecture, visual-identity, motion-direction, and specification-led AI-development evidence. Chinese Bee moves intact to a labeled page-two continuation so the résumé remains two pages.
 - The generic site DOCX and PDF and the named interactive-product DOCX are synchronized. The game-development résumé remains unchanged. Final DOCX rendering, two-page PDF inspection, link and list verification, accessibility audit, privacy check, and production-download checks pass.
+- The interactive-product résumé now leads with `Product & Interaction Design | Interactive Product Development` instead of `Product Design Engineer`. Its summary explicitly frames prototypes, motion, code, and AI-directed development as tools used to realize authored experiences, not as claims of framework specialization. The synchronized DOCX and PDF retain their clean two-page render.
 
 ## Global overscroll surface
 
@@ -362,6 +363,124 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Every route now uses the replacement authored `Drawn_me.png` artwork as its PNG favicon. The same replacement artwork appears as the drawn portrait in Home’s Who I am disclosure.
 - The replacement portrait was inspected in Home’s active drawn state at 1440 by 900 and 390 by 844. It stays contained in the existing portrait frame with no horizontal overflow, and the production build completes without diagnostics.
 
+## Observatory editorial case study
+
+- Added `/case-studies/observatory/` as a separate static Astro document and
+  linked it from Observatory's existing Software artifact without changing the
+  Home destination model.
+- Built a seven-chapter editorial argument for product-design reviewers covering
+  the catalyst, five-person exploratory research, product principles, early
+  sketches and flows, validation, the working product, and explicit ownership
+  boundaries.
+- Used all 24 authored case-study images from `src/assets/case_study_images`.
+  The page now relies on a serif-led, white and off-white composition with a
+  narrow reading measure, generous pauses, and freely positioned visual
+  evidence instead of simulated dashboards or decorative interface elements.
+- Recreated the authored validation-board rhythm with equally sized
+  before-and-after wireframes, concise observations, loose alignment, and simple
+  directional annotations. The document is semantic and requires no
+  case-specific client-side JavaScript.
+- Desktop and 390 by 844 browser inspection confirmed the opening, validation
+  board, consistent image stages, lazy image loading, and horizontal
+  containment. The mobile document matched its 390-pixel viewport with no
+  horizontal overflow.
+- `astro check`, the root production build, the `/personal-website/` GitHub
+  Pages build, and static generation of the case-study route passed without
+  diagnostics.
+- Rebuilt the case study after all 22 authored source images were replaced with
+  higher-resolution versions. Astro generated new optimized assets from those
+  sources, and the root static build completed without diagnostics.
+- Reworked the repeated centered chapter template into offset editorial passages
+  with shorter transitions, smaller evidence stages, and denser continuity
+  between chapters. The validation comparisons retain the authored paired
+  layout while using less vertical separation.
+- Added a fixed seven-part section index that follows the active chapter. The
+  prototype and outcome now use two progressively enhanced sticky image
+  sequences, so the visual changes as the reader reaches each decision. The
+  semantic image order remains available without JavaScript, and reduced-motion
+  visitors receive the complete static sequence.
+- Verified the revised page at 1054 by 943 and 390 by 844. The section index,
+  desktop and phone scroll transitions, active image changes, image containment,
+  and horizontal bounds all behaved as intended. The browser console remained
+  clear, `astro check` passed without diagnostics, and the production build
+  generated the static case-study route successfully.
+- Removed the opening final-product screenshot because it repeated the outcome
+  before the argument had established why that interface mattered. The project
+  facts now hand directly into the catalyst, while the shipped Now view remains
+  inside the outcome sequence where it has narrative context.
+- Expanded Research from a short summary into a complete account of the five
+  exploratory interviews: the learning goals, contextual interview structure,
+  limitations of the sample, two working personas, representative statements,
+  design implications, and the synthesis that led into product direction. The
+  new material stays narrow and editorial rather than turning the research into
+  a dashboard or a collection of persona cards.
+- Removed the column-grid treatment from the expanded Research chapter. Its
+  aims, interview prompts, persona narratives, quotations, and implications now
+  move through one continuous typographic flow with loose indentation and
+  asymmetric offsets instead of aligned cells.
+- Reframed the two working personas as a single vertical research sequence. On
+  wide screens, each portrait, persona name, and representative statement
+  remains sticky while situation, needs, friction, and the design response move
+  beside it; the next persona then replaces that context. Phones use ordinary
+  document flow.
+- Verified the persona opening, mid-scroll state, handoff, and phone document
+  flow at 1313 by 943 and 390 by 844. Both layouts remain within the viewport,
+  the browser console is clear, `astro check` passes, and production builds pass
+  for the root and `/personal-website/` base paths.
+- Replaced the case study's alternating percentage offsets with one centered
+  720-pixel reading column for chapter labels, titles, prose, research details,
+  and image headings. Personas, principles, sketches, sticky image stories,
+  prototype flows, and validation comparisons use a centered wider composition
+  with responsive index clearance. Reduced the oversized gap between Direction
+  and its sketches.
+- Embedded Crimson Text Regular, Italic, SemiBold, and Bold locally for body
+  copy, quotations, reading text, and in-prose emphasis. Averia Serif Libre Bold
+  remains limited to the hero, chapter titles, persona names, principles,
+  validation title, and sticky-story headings. The phone hero uses a smaller
+  setting so `Observatory` remains contained. Browser inspection at 1054 by 943
+  and 390 by 844 confirmed the correct reading and display faces, contained
+  layout, and no horizontal overflow. Root and `/personal-website/` production
+  builds pass without diagnostics.
+- Verified the centered system at 1313 by 943 and 390 by 844. Every desktop
+  reading column is centered at x=656.5 and clears the full index by 154.5
+  pixels; wide compositions are centered on the same axis and clear it without
+  overlap. Phone content returns to the 14-pixel inset, and both viewports have
+  no horizontal overflow.
+- Removed the later left-edge override from the narrow reading blocks. Prose,
+  quotations, findings, audience notes, research details, synthesis, and image
+  introductions now share the document's centered axis while retaining
+  left-aligned text for long-form readability.
+- Normalized narrative copy to one shared Crimson Text reading size and line
+  height across the case study. Persona stories and observations no longer drop
+  to 17 pixels, and validation explanations no longer switch to 14-pixel system
+  sans text. Metadata, captions, and uppercase navigation labels retain their
+  smaller sans-serif treatment.
+- Removed the off-white presentation backgrounds behind the transparent early
+  sketches and prototype sticky-story images. Both evidence types now sit
+  directly on the white document surface while retaining their authored image
+  content and layout.
+- Refreshed the two working-persona portraits from the authored files in
+  `src/assets/case_study_images/sketches` and assigned versioned asset names so
+  Astro's image proxy and the browser cannot reuse the previous optimized
+  portraits. Both transparent 2048-pixel square sources load through the
+  existing semantic image markup, remain fully visible in their 300-pixel
+  desktop and phone frames, and keep accurate alternative text.
+- Replaced the browser-blue text selection within the Observatory case study
+  with a high-contrast black highlight and white selected text.
+- Replaced the saturated blue editorial accent with a deep forest green and
+  renamed the page token from `--blue` to `--accent`. The chapter labels,
+  research markers, sticky-story steps, active section index, link hover, and
+  keyboard focus treatment now share the quieter color. Browser inspection at
+  1054 by 943 and 390 by 844 confirmed the accent, clear console, and no
+  horizontal overflow. Root and `/personal-website/` production builds pass
+  without diagnostics.
+- Replaced both working-persona placeholders with Igor's authored square
+  sketches. The drawings retain their transparent backgrounds and complete
+  composition at desktop and phone sizes, and include descriptive alternative
+  text. Browser inspection at 1313 by 943 and 390 by 844 confirmed transparent
+  containers, complete image loading, and no horizontal overflow. `astro check`
+  and production builds pass for the root and `/personal-website/` base paths.
+
 ## Open inputs and blockers
 
 - Bright Chalk and Cartoon Relief files are present and integrated. Web-embedding rights still need confirmation before release.
@@ -369,4 +488,6 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Next action
 
-Resolve the approved local `Identity Cage` copy and webfont embedding-rights confirmation, then begin milestone 10 release work.
+Review the Observatory case-study scroll pacing with Igor, then resolve the
+approved local `Identity Cage` copy and webfont embedding-rights confirmation
+before the remaining milestone 10 release work.

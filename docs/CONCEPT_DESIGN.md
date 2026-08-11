@@ -204,6 +204,18 @@ Software has:
 2. Chinese Bee;
 3. the receipt-processing investigation;
 
+Observatory remains the leading Software artifact and links to a separate
+`/case-studies/observatory/` document. That document is an editorial product
+design case study for design leads, hiring managers, and collaborators. It uses
+Observatory's own calm technical visual language rather than reproducing the
+personal site's Home composition. Its reading sequence covers the catalyst,
+research, definition, iteration, working product, and reflection. A quiet side
+index gives the long document orientation. The prototype and working-product
+sequences use restrained sticky image changes to connect decisions without
+turning the case study into a product demo. Narrow text measures, deliberate
+white space, freely positioned evidence, and the authored before-and-after validation layout keep the document
+minimal without turning it into a marketing landing page.
+
 Games has:
 
 1. `Discourses by Campfire`;

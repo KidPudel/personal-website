@@ -1,6 +1,6 @@
 # Website rebuild plan
 
-Last updated: 2026-07-24
+Last updated: 2026-08-10
 
 ## Purpose
 
@@ -143,6 +143,37 @@ Exit condition: Secret box page, animation, and transition effect and the transi
 - Paint the browser canvas with the shared field surface and suppress elastic overscroll globally so browsers cannot expose a visually different edge.
 
 Exit condition: the public site is complete, verified, and deployable from a clean checkout.
+
+### 10A. Observatory editorial case study
+
+- Add `/case-studies/observatory/` as an independent static Astro document.
+- Link it from Observatory's existing Software artifact without adding another
+  top-level Home destination.
+- Structure the document for product-design reviewers around the catalyst,
+  research, definition, iteration, working product, and reflection.
+- Use Observatory's authored sketches, wireframes, flows, and final screenshots
+  rather than simulated product UI or the personal site's destination
+  composition.
+- Keep the page statically generated, semantic, image-led, and completely
+  readable without enhancement. Progressively enhance the long document with a
+  side section index and restrained sticky visual sequences when motion is
+  available.
+- Present working personas as one vertical research sequence with sticky
+  identity context on wide screens and an ordinary document flow on phones.
+- Keep chapter labels, titles, prose, and research details in one centered
+  reading column, with a centered wider column for evidence-led compositions.
+- Use locally embedded Crimson Text faces for body copy and Averia Serif Libre
+  Bold for display headlines.
+- Keep narrative body copy on one shared Crimson Text reading size and line
+  height across research, personas, principles, validation, and sticky stories.
+- Use a high-contrast black text-selection treatment within the case study.
+- Use a deep, saturated forest green for the case study's editorial accents so labels,
+  navigation state, and focus cues remain distinct without a browser-blue theme.
+- Verify root and GitHub Pages builds, desktop and mobile layouts, internal base
+  paths, image loading, and horizontal containment.
+
+Exit condition: the case study is editorial, factual, responsive, accessible,
+discoverable from Software, and deployable with the existing static pipeline.
 
 ## Change control
 

@@ -1,6 +1,6 @@
 # Website architecture
 
-Last updated: 2026-07-24
+Last updated: 2026-08-10
 
 ## Purpose
 
@@ -45,6 +45,7 @@ The primary experience is one statically generated Home document with fragment-a
 | `/#connect` | Connect expanded |
 | `/#blog` | Blog index expanded |
 | `/secret-box/` | Self-contained secret-box animation that returns to Home |
+| `/case-studies/observatory/` | Independent editorial Observatory product-design case study |
 | `/blog/[slug]/` | Independent published article document |
 
 Fragments are not sent to the server, so every fragment address receives the same Home HTML. The document contains the semantic content required by every disclosure. CSS `:target` provides direct fragment and JavaScript-free visibility; enhancement synchronizes animation, focus, scroll, and disclosure attributes with `hashchange`.
@@ -54,6 +55,16 @@ The existing `/who-i-am/`, `/work/`, `/work/software/`, `/work/games/`, `/blog/`
 Home owns the canonical URL and default social metadata for all fragment states because fragments cannot select server-rendered metadata. Enhancement may update `document.title` for orientation, but it must not imply that fragments are independent documents. Published Blog articles retain their own metadata and canonical paths.
 
 The Secret box is a separate entry document outside the spatial disclosure shell. It reuses the field material without the shared doodle layer, owns its authored frame sequence and iris transition locally, and links directly to Home when JavaScript is unavailable.
+
+The Observatory case study is also an independent static document outside the
+spatial disclosure shell. It reuses the shared document metadata foundation but
+owns an Observatory-specific editorial composition. The Software disclosure
+links to it through a base-aware path. The case-study route keeps its complete
+argument and visual evidence available in semantic HTML. A small progressive
+enhancement synchronizes the side index and two sticky image sequences with the
+reader's scroll position. Without JavaScript or with reduced motion, every
+authored sketch, wireframe, flow, and final-product screenshot remains in the
+ordinary document flow.
 
 ## Shared document structure
 

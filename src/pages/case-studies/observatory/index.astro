@@ -1,0 +1,1178 @@
+---
+import { Image } from 'astro:assets';
+
+import flowConsolidation from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 7.png';
+import flowNow from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 6.png';
+import outcomeComparison from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-10 at 17.01.52 1.png';
+import outcomeMemory from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-07 at 22.55.07 1.png';
+import outcomeNow from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-07 at 22.54.44 1.png';
+import outcomeProcessDetails from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-07 at 22.54.52 1.png';
+import outcomeRecording from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-07 at 22.56.13 1.png';
+import outcomeSavedResults from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-10 at 17.01.22 1.png';
+import outcomeTestSetup from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-07 at 22.56.01 1.png';
+import prototypeHistory from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 5.png';
+import prototypeNow from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 3.png';
+import prototypeTest from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 8.png';
+import personaIndependentTroubleshooter from '../../../assets/case_study_images/sketches/persona_1_v2.png';
+import personaPerformanceVerifier from '../../../assets/case_study_images/sketches/persona_2_v2.png';
+import sketchGrouping from '../../../assets/case_study_images/explore_and_ideate_sketches/Untitled_Artwork-1 2 1.png';
+import sketchLevels from '../../../assets/case_study_images/explore_and_ideate_sketches/Untitled_Artwork-2 2 1.png';
+import sketchRecording from '../../../assets/case_study_images/explore_and_ideate_sketches/Untitled_Artwork-3 2 1.png';
+import sketchTestFlow from '../../../assets/case_study_images/explore_and_ideate_sketches/Untitled_Artwork-4 2 1.png';
+import wireframeHistory from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 5.png';
+import wireframeNowCards from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 3.png';
+import wireframeNowList from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 9.png';
+import wireframeSavedResults from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 11.png';
+import wireframeTestComplex from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 8.png';
+import wireframeTestSetup from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 10.png';
+import { sitePath } from '../../../config/site';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+
+const repositoryURL = 'https://github.com/KidPudel/Observatory';
+const releaseURL = 'https://github.com/KidPudel/Observatory/releases/latest';
+const launchFilmURL = 'https://www.youtube.com/watch?v=6LWORcxVZmY&t=5s';
+
+const sketches = [
+  { src: sketchGrouping, alt: 'Early sketch comparing loose processes with processes grouped by application.', caption: 'The first shift: from a loose field of processes to application groups.' },
+  { src: sketchLevels, alt: 'Early sketch comparing application-level and process-level resource tables.', caption: 'Application totals first, with process detail one level below.' },
+  { src: sketchRecording, alt: 'Early sketch of two applications being observed over the same ten-second period.', caption: 'A shared recording window makes the comparison legible.' },
+  { src: sketchTestFlow, alt: 'Early sketch of selecting applications, recording each one, and reviewing the results.', caption: 'The first outline of a controlled test and its result.' },
+];
+---
+
+<BaseDocument
+  title="Observatory case study | Igor Kupchinenko"
+  description="How I designed Observatory, a macOS activity monitor that groups related processes, records controlled tests, and keeps results available for comparison."
+  pageClass="observatory-case-study"
+>
+  <nav class="topbar" aria-label="Case study navigation">
+    <a href={sitePath('/#work/software')}>← Software</a>
+    <span>Observatory / Case study</span>
+    <a href={repositoryURL}>Source ↗</a>
+  </nav>
+
+  <nav class="chapter-index" aria-label="Case study sections">
+    <p>Case study</p>
+    <ol>
+      <li><a href="#problem" data-index-link="problem"><span>01</span><span class="chapter-index__name">Catalyst</span></a></li>
+      <li><a href="#research" data-index-link="research"><span>02</span><span class="chapter-index__name">Research</span></a></li>
+      <li><a href="#direction" data-index-link="direction"><span>03</span><span class="chapter-index__name">Direction</span></a></li>
+      <li><a href="#prototype" data-index-link="prototype"><span>04</span><span class="chapter-index__name">Prototype</span></a></li>
+      <li><a href="#validation-intro" data-index-link="validation-intro"><span>05</span><span class="chapter-index__name">Validation</span></a></li>
+      <li><a href="#outcome" data-index-link="outcome"><span>06</span><span class="chapter-index__name">Outcome</span></a></li>
+      <li><a href="#reflection" data-index-link="reflection"><span>07</span><span class="chapter-index__name">Reflection</span></a></li>
+    </ol>
+  </nav>
+
+  <main id="main-content">
+    <header class="hero">
+      <p class="eyebrow">Product design · Native macOS application</p>
+      <h1>Observatory</h1>
+      <p class="hero__line">Activity Monitor, but more.</p>
+      <p class="hero__intro">
+        I wanted to make system activity easier to understand without removing the detail that makes it useful.
+        Observatory groups related processes into applications, records controlled tests, and keeps the results
+        available for comparison.
+      </p>
+
+      <dl class="facts">
+        <div><dt>My role</dt><dd>Product direction, research, UX/UI, identity, motion</dd></div>
+        <div><dt>Research</dt><dd>5 exploratory interviews</dd></div>
+        <div><dt>Outcome</dt><dd>Working macOS prototype, release 0.1.1</dd></div>
+        <div><dt>Build</dt><dd>AI-directed development from my specifications</dd></div>
+      </dl>
+    </header>
+
+    <section class="chapter" id="problem" data-index-section>
+      <header class="chapter__label">
+        <span>01</span>
+        <p>The catalyst</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The numbers were there. The picture was not.</h2>
+        <div class="prose">
+          <p>
+            I started Observatory because the default Activity Monitor kept making me do the interpretation.
+            During resource-intensive work, one application could appear as several related processes. I had to
+            find them, combine their values in my head, and keep watching so I would not miss a spike.
+          </p>
+          <p>
+            Once the task ended, that evidence was gone. A screenshot could capture a moment, but it could not
+            make two runs comparable.
+          </p>
+        </div>
+        <blockquote>
+          How can I see what an application did during the work, then return to the same evidence later?
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="chapter" id="research" data-index-section>
+      <header class="chapter__label">
+        <span>02</span>
+        <p>Research</p>
+      </header>
+      <div class="chapter__body">
+        <h2>I looked at how people actually investigate performance.</h2>
+        <div class="prose">
+          <p>
+            I needed insight into the people themselves, not only reactions to an interface. I gathered five people
+            for exploratory interviews and asked them to reconstruct real moments when they investigated performance.
+          </p>
+          <p>
+            Five conversations do not prove how common a behavior is. They gave me enough depth to understand the
+            shape of the problem, find its language, and see where different needs separated.
+          </p>
+        </div>
+
+        <div class="research-aims">
+          <p class="research-label">What I wanted to understand</p>
+          <ul>
+            <li>How satisfied people were with the way they checked performance now.</li>
+            <li>Where they struggled, and what evidence went missing while they worked.</li>
+          </ul>
+        </div>
+
+        <div class="interview-structure">
+          <div>
+            <p class="research-label">Interview structure</p>
+            <p>
+              I started broad, then followed the person's own experience. This kept the conversation grounded in
+              what they had actually done instead of what they imagined they might do.
+            </p>
+          </div>
+          <ol>
+            <li><span>01</span><p><strong>Context.</strong> Describe your relationship with computers and technical tools.</p></li>
+            <li><span>02</span><p><strong>Current behavior.</strong> Walk me through the last time you checked performance and what you were trying to understand.</p></li>
+            <li><span>03</span><p><strong>Limits.</strong> What was frustrating, what did you try next, and what could the live view not tell you?</p></li>
+          </ol>
+        </div>
+
+        <div class="finding">
+          <p>What changed my framing</p>
+          <strong>People began with an application or a task, not with an isolated process.</strong>
+        </div>
+
+        <div class="persona-intro">
+          <p>
+            The patterns resolved into two working personas. They are a way to keep two different depths of need in
+            the design, not a claim about the size of either audience.
+          </p>
+        </div>
+
+        <div class="persona-sequence" aria-labelledby="working-personas-heading">
+          <p class="research-label" id="working-personas-heading">Working personas</p>
+
+          <article class="persona-profile">
+            <div class="persona-profile__identity">
+              <p class="persona-profile__number">01 / 02</p>
+              <div class="persona-profile__portrait">
+                <Image
+                  src={personaIndependentTroubleshooter}
+                  alt="Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture."
+                />
+              </div>
+              <h3>Independent troubleshooter</h3>
+              <div class="persona-profile__quote">
+                <p class="research-label">Representative statement</p>
+                <blockquote>“The numbers change so quickly that I’m never sure if I caught the actual problem or just a random spike.”</blockquote>
+              </div>
+            </div>
+
+            <div class="persona-profile__observations">
+              <section>
+                <h4>Situation</h4>
+                <p class="persona-profile__story">
+                  A power user whose work can be resource-intensive. They understand common performance metrics and
+                  know how to use Activity Monitor, but related processes and rapidly changing values force them to
+                  assemble the picture manually while it keeps moving.
+                </p>
+              </section>
+              <section>
+                <h4>Needs</h4>
+                <ul>
+                  <li>See the whole application before opening process detail.</li>
+                  <li>Catch short spikes with enough context to trust them.</li>
+                  <li>Return to evidence after the task has ended.</li>
+                </ul>
+              </section>
+              <section>
+                <h4>Friction</h4>
+                <ul>
+                  <li>One application is divided across related processes.</li>
+                  <li>Values change faster than they can be interpreted.</li>
+                  <li>Screenshots and notes do not make runs comparable.</li>
+                </ul>
+              </section>
+              <section class="persona-profile__response">
+                <h4>Design response</h4>
+                <p>Show the application as a whole, then let process detail wait until greater confidence is needed.</p>
+              </section>
+            </div>
+          </article>
+
+          <article class="persona-profile">
+            <div class="persona-profile__identity">
+              <p class="persona-profile__number">02 / 02</p>
+              <div class="persona-profile__portrait">
+                <Image
+                  src={personaPerformanceVerifier}
+                  alt="Hand-drawn portrait of the performance verifier persona writing on a clipboard."
+                />
+              </div>
+              <h3>Performance verifier</h3>
+              <div class="persona-profile__quote">
+                <p class="research-label">Representative statement</p>
+                <blockquote>“Activity Monitor is useful for answering ‘what is happening now while I’m looking at it?’ It is weak at answering ‘what happened during that run?’”</blockquote>
+              </div>
+            </div>
+
+            <div class="persona-profile__observations">
+              <section>
+                <h4>Situation</h4>
+                <p class="persona-profile__story">
+                  A developer who uses Activity Monitor for quick checks and advanced tools for deep profiling. The
+                  missing layer sits between those extremes: lightweight evidence that can be recorded repeatedly,
+                  trusted, and compared without losing its original context.
+                </p>
+              </section>
+              <section>
+                <h4>Needs</h4>
+                <ul>
+                  <li>Record the same kind of workload more than once.</li>
+                  <li>Trust how applications, timing, and measurements are grouped.</li>
+                  <li>Compare results without losing the original run.</li>
+                </ul>
+              </section>
+              <section>
+                <h4>Friction</h4>
+                <ul>
+                  <li>Live process data only explains the present moment.</li>
+                  <li>Full profiling tools can be excessive for routine checks.</li>
+                  <li>Loose screenshots cannot synchronize comparable evidence.</li>
+                </ul>
+              </section>
+              <section class="persona-profile__response">
+                <h4>Design response</h4>
+                <p>Turn live observation into an intentional recording that can be reopened and compared.</p>
+              </section>
+            </div>
+          </article>
+        </div>
+
+        <p class="research-synthesis">
+          Both personas needed more than a list of processes. One needed a readable whole picture. The other needed
+          evidence that survived the moment. Together, those needs defined the product direction.
+        </p>
+      </div>
+    </section>
+
+    <section class="chapter chapter--dark" id="direction" data-index-section>
+      <header class="chapter__label">
+        <span>03</span>
+        <p>Direction</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The product became three decisions.</h2>
+        <ol class="principles">
+          <li><span>1</span><div><h3>Applications first</h3><p>Show the total cost of the thing a person recognizes. Keep the underlying processes available, but secondary.</p></div></li>
+          <li><span>2</span><div><h3>Record the task</h3><p>Replace continuous watching with a defined observation: selected applications, warm-up, duration, and rounds.</p></div></li>
+          <li><span>3</span><div><h3>Keep the evidence</h3><p>Save results locally so a person can inspect them later and compare like with like.</p></div></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="image-chapter" aria-labelledby="sketches-title">
+      <div class="image-chapter__heading">
+        <p class="eyebrow">Explore and ideate</p>
+        <h2 id="sketches-title">Before screens, I sketched the model.</h2>
+        <p>The sketches were deliberately plain. I was deciding what should be grouped, recorded, and compared.</p>
+      </div>
+      <div class="sketch-grid">
+        {sketches.map((sketch, index) => (
+          <figure>
+            <div class="sketch-surface"><Image src={sketch.src} alt={sketch.alt} /></div>
+            <figcaption><span>0{index + 1}</span> {sketch.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section class="chapter chapter--wide" id="prototype" data-index-section>
+      <header class="chapter__label">
+        <span>04</span>
+        <p>Prototype</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The first structure followed three destinations.</h2>
+        <p class="wide-copy">
+          Now showed current activity. Tests created a repeatable recording. History kept the output. This gave me
+          a complete end-to-end path before I spent time on visual detail.
+        </p>
+      </div>
+
+      <div class="scroll-story" data-scroll-story>
+        <div class="scroll-story__stage" aria-live="off">
+          <figure data-story-frame="0" class="is-active"><Image src={prototypeNow} alt="Initial low-fidelity Now screen with application cards." /></figure>
+          <figure data-story-frame="1"><Image src={prototypeTest} alt="Initial low-fidelity test setup screen." /></figure>
+          <figure data-story-frame="2"><Image src={prototypeHistory} alt="Initial low-fidelity History screen with saved recordings." /></figure>
+        </div>
+        <ol class="scroll-story__steps">
+          <li data-story-step="0" class="is-active"><span>04.1</span><h3>Now</h3><p>Grouped application cards made the whole application visible, but not yet easy to scan.</p></li>
+          <li data-story-step="1"><span>04.2</span><h3>Tests</h3><p>Choose applications and configure a repeatable run before recording.</p></li>
+          <li data-story-step="2"><span>04.3</span><h3>History</h3><p>Reopen recordings and compare them after the live moment has passed.</p></li>
+        </ol>
+      </div>
+
+      <div class="flow-evidence">
+        <figure><Image src={flowNow} alt="Early linear flow for the Now experience." /><figcaption><span>04.4</span> The smallest possible path through the live view.</figcaption></figure>
+        <figure><Image src={flowConsolidation} alt="Three prototype flows showing the consolidation of History into Saved Results within Tests." /><figcaption><span>04.5</span> I eventually folded History into Tests as Saved Results. Recording and reviewing were one workflow, not two products.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="chapter" id="validation-intro" data-index-section>
+      <header class="chapter__label">
+        <span>05</span>
+        <p>Validation</p>
+      </header>
+      <div class="chapter__body">
+        <h2>I reduced the interface before refining it.</h2>
+        <p class="wide-copy">
+          The early cards made each application feel self-contained, but they used too much space and made scanning
+          harder. The first test setup also tried to keep configuration, recent tests, and an active round visible at
+          once. At wireframe level, I separated those responsibilities and made the hierarchy quieter.
+        </p>
+      </div>
+    </section>
+
+    <section class="validation-board" aria-labelledby="validation-title">
+      <header class="validation-board__heading">
+        <h2 id="validation-title">validation</h2>
+        <p>Task analysis revealed a few problems. Tackling them drastically improved the situation.</p>
+      </header>
+
+      <article class="validation-case validation-case--cards">
+        <p>
+          Users did not really like application grouping as cards. It was not intuitive enough whether a card was
+          a button, and the grid made a familiar collection harder to navigate. Changing cards into a list made the
+          applications more recognizable. Adding the live plot still kept the full picture visible.
+        </p>
+        <div class="validation-pair">
+          <figure><Image src={wireframeNowCards} alt="Wireframe of a card-based live application view." /><figcaption>Card grouping</figcaption></figure>
+          <span aria-hidden="true">→</span>
+          <figure><Image src={wireframeNowList} alt="Wireframe of a simplified list-based live application view." /><figcaption>List with live plot</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="validation-case validation-case--tests">
+        <p>
+          In the test screen, the user first encountered a choice between manual and automated testing. That created
+          friction before they reached what they actually wanted to do. Making application selection the first step
+          created a more natural flow without overwhelming a non-technical user.
+        </p>
+        <div class="validation-pair">
+          <figure><Image src={wireframeTestComplex} alt="Wireframe combining test setup, recent tests, and an active recording." /><figcaption>Everything at once</figcaption></figure>
+          <span aria-hidden="true">→</span>
+          <figure><Image src={wireframeTestSetup} alt="Wireframe of a simplified controlled test setup." /><figcaption>Choose, configure, start</figcaption></figure>
+        </div>
+      </article>
+
+      <article class="validation-case validation-case--history">
+        <p>
+          Now, Tests, and History described the implementation structure more than user intent. Moving History into
+          Tests as Saved Results reduced the number of destinations and made the relationship logical. A sidebar then
+          made it easy to move between the list and a wide result without navigating back and forth.
+        </p>
+        <div class="validation-pair">
+          <figure><Image src={wireframeHistory} alt="Wireframe of a separate History destination." /><figcaption>History as a destination</figcaption></figure>
+          <span aria-hidden="true">→</span>
+          <figure><Image src={wireframeSavedResults} alt="Wireframe of Saved Results inside the Tests workflow." /><figcaption>Saved Results inside Tests</figcaption></figure>
+        </div>
+      </article>
+    </section>
+
+    <section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
+      <header class="chapter__label">
+        <span>06</span>
+        <p>Outcome</p>
+      </header>
+      <div class="chapter__body">
+        <h2>A working product, not only a presentation.</h2>
+        <div class="prose prose--split">
+          <p>
+            Observatory 0.1.1 runs on macOS 14 and later. The live view groups related processes, shows a sixty-second
+            timeline, and reveals process detail when it is needed. Tests can record one to four applications with an
+            optional warm-up and repeated rounds.
+          </p>
+          <p>
+            Results remain on the Mac and can be reopened or compared. It is still an idea showcase more than a
+            standalone product, but the core experience is real enough to use, question, and improve.
+          </p>
+        </div>
+      </div>
+
+      <div class="scroll-story scroll-story--outcome" data-scroll-story>
+        <div class="scroll-story__stage" aria-live="off">
+          <figure data-story-frame="0" class="is-active"><Image src={outcomeNow} alt="Final Observatory Now screen with live application data and a chart." /></figure>
+          <figure data-story-frame="1"><Image src={outcomeProcessDetails} alt="Expanded process details in the final Observatory live view." /></figure>
+          <figure data-story-frame="2"><Image src={outcomeMemory} alt="Final Observatory memory timeline chart." /></figure>
+          <figure data-story-frame="3"><Image src={outcomeTestSetup} alt="Final Observatory controlled test setup screen." /></figure>
+          <figure data-story-frame="4"><Image src={outcomeRecording} alt="Final Observatory guided recording screen." /></figure>
+          <figure data-story-frame="5"><Image src={outcomeSavedResults} alt="Final Observatory Saved Results screen." /></figure>
+          <figure data-story-frame="6"><Image src={outcomeComparison} alt="Final Observatory comparison screen showing synchronized metric timelines." /></figure>
+        </div>
+        <ol class="scroll-story__steps">
+          <li data-story-step="0" class="is-active"><span>06.1 / Now</span><h3>Read the whole application.</h3><p>A compact application list keeps the live picture scannable.</p></li>
+          <li data-story-step="1"><span>06.2 / Detail</span><h3>Open detail only when it matters.</h3><p>Process data is present, but it waits until a row is expanded.</p></li>
+          <li data-story-step="2"><span>06.3 / Timeline</span><h3>Keep the frame stable.</h3><p>CPU, memory, energy, and disk share one chart position.</p></li>
+          <li data-story-step="3"><span>06.4 / Setup</span><h3>Define the observation.</h3><p>Select applications, choose a recording mode, then define the run.</p></li>
+          <li data-story-step="4"><span>06.5 / Record</span><h3>Guide one run at a time.</h3><p>Manual mode guides the person through one application at a time.</p></li>
+          <li data-story-step="5"><span>06.6 / Return</span><h3>Preserve the context.</h3><p>Saved results keep the meaning of each test after it ends.</p></li>
+          <li data-story-step="6"><span>06.7 / Compare</span><h3>Make the same moment comparable.</h3><p>Synchronized timelines align evidence across results.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="chapter reflection" id="reflection" data-index-section>
+      <header class="chapter__label">
+        <span>07</span>
+        <p>Reflection</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The useful part was not adding more data.</h2>
+        <div class="prose">
+          <p>
+            The strongest decision was changing the unit of attention from a process to an application, then making
+            time something the product could record rather than something the person had to watch.
+          </p>
+          <p>
+            I created the product direction, research, detailed behavior, information architecture, UX/UI, telescope
+            artwork, graphic identity, and launch film. The application code was created with AI under my direction
+            from the specifications and design decisions I authored.
+          </p>
+          <p>
+            The next useful step is not another feature. It is broader task-based testing with people who regularly
+            troubleshoot or verify performance, followed by a tighter pass on the comparison language and defaults.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="case-footer">
+    <p>Observatory<br /><em>Activity Monitor, but more.</em></p>
+    <nav aria-label="Observatory project links">
+      <a href={launchFilmURL}>Launch film ↗</a>
+      <a href={releaseURL}>Download 0.1.1 ↗</a>
+      <a href={repositoryURL}>Source ↗</a>
+      <a href={sitePath('/#work/software')}>Back to software ↑</a>
+    </nav>
+  </footer>
+</BaseDocument>
+
+<script>
+  document.documentElement.classList.add('has-scroll-stories');
+
+  const activateFrame = (story: HTMLElement, index: number) => {
+    story.querySelectorAll<HTMLElement>('[data-story-frame]').forEach((frame) => {
+      frame.classList.toggle('is-active', Number(frame.dataset.storyFrame) === index);
+    });
+    story.querySelectorAll<HTMLElement>('[data-story-step]').forEach((step) => {
+      step.classList.toggle('is-active', Number(step.dataset.storyStep) === index);
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-scroll-story]').forEach((story) => {
+    if (story.dataset.storyReady) return;
+    story.dataset.storyReady = 'true';
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const step = entry.target as HTMLElement;
+        activateFrame(story, Number(step.dataset.storyStep));
+      });
+    }, { rootMargin: '-40% 0px -44%', threshold: 0 });
+
+    story.querySelectorAll<HTMLElement>('[data-story-step]').forEach((step) => observer.observe(step));
+  });
+
+  const indexLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-index-link]'));
+  const setCurrentSection = (id: string) => {
+    indexLinks.forEach((link) => {
+      if (link.dataset.indexLink === id) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) setCurrentSection(entry.target.id);
+    });
+  }, { rootMargin: '-44% 0px -48%', threshold: 0 });
+
+  document.querySelectorAll<HTMLElement>('[data-index-section]').forEach((section) => sectionObserver.observe(section));
+
+</script>
+
+<style is:global>
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Italic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-SemiBold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Averia Serif Libre';
+    src: url('../../../assets/fonts/AveriaSerifLibre-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  html.observatory-case-study {
+    --paper: #ffffff;
+    --soft-paper: #f7f6f2;
+    --ink: #171714;
+    --muted: #6e6b64;
+    --line: #c8c4ba;
+    --accent: #0f5d3f;
+    --serif: 'Crimson Text', Georgia, serif;
+    --display-serif: 'Averia Serif Libre', 'Iowan Old Style', Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --reading-size: clamp(18px, 1.45vw, 20px);
+    --reading-line: 1.6;
+    color-scheme: light;
+    scroll-behavior: smooth;
+    background: var(--paper);
+  }
+
+  html.observatory-case-study body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.58;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.observatory-case-study * { box-sizing: border-box; }
+  html.observatory-case-study img { display: block; width: 100%; height: auto; }
+
+  html.observatory-case-study ::selection {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  html.observatory-case-study a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+  html.observatory-case-study a:hover { color: var(--accent); }
+  html.observatory-case-study :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  html.observatory-case-study .skip-link { background: var(--ink); color: var(--paper); }
+
+  .topbar,
+  main,
+  .case-footer {
+    width: min(100% - 48px, 1440px);
+    margin-inline: auto;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    min-height: 78px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .topbar span { color: var(--muted); text-align: center; }
+  .topbar a:last-child { justify-self: end; }
+
+  .hero {
+    padding: clamp(90px, 12vw, 180px) 0 clamp(70px, 9vw, 130px);
+    text-align: center;
+  }
+
+  .eyebrow,
+  figcaption,
+  .chapter__label,
+  .finding > p,
+  .audiences span,
+  .principles > li > span,
+  .comparison-set__heading > span {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .eyebrow { margin: 0 0 28px; color: var(--muted); }
+  .hero h1 { margin: 0; font-size: clamp(76px, 11vw, 158px); font-weight: 900; letter-spacing: -0.06em; line-height: 0.84; }
+  .hero__line { margin: 34px 0 0; font-size: clamp(28px, 3.6vw, 52px); font-style: italic; line-height: 1; }
+  .hero__intro { max-width: 680px; margin: 62px auto 68px; font-size: clamp(22px, 2vw, 29px); line-height: 1.38; text-align: left; }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 24px 54px;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .facts div { max-width: 190px; padding: 0; }
+  .facts div + div { padding-left: 0; border-left: 0; }
+  .facts dt { margin-bottom: 7px; color: var(--muted); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .facts dd { margin: 0; font-size: 15px; line-height: 1.4; }
+
+  figure { margin: 0; }
+  .evidence-grid img,
+  .flow-evidence img,
+  .comparison-set figure img,
+  .outcome-story img { border: 1px solid #e8e6e0; border-radius: 8px; background: var(--soft-paper); box-shadow: 0 16px 44px rgba(23, 23, 20, 0.06); }
+
+  figcaption { display: flex; gap: 16px; margin-top: 12px; color: var(--muted); }
+  figcaption span { min-width: max-content; color: var(--ink); }
+
+  .chapter {
+    display: block;
+    max-width: 780px;
+    margin-inline: auto;
+    padding: clamp(90px, 12vw, 175px) 0;
+  }
+
+  .chapter__label { display: flex; gap: 24px; align-items: baseline; margin-bottom: 50px; }
+  .chapter__label span { color: var(--accent); }
+  .chapter__label p { margin: 0; }
+  .chapter__body h2,
+  .image-chapter__heading h2 {
+    max-width: 720px;
+    margin: 0 0 56px;
+    font-size: clamp(40px, 5.2vw, 70px);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+
+  .prose { max-width: 650px; margin-inline: auto; }
+  .prose p,
+  .wide-copy,
+  .image-chapter__heading > p:last-child { max-width: 650px; margin: 0 auto 1.2em; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.58; }
+  .prose--split { display: block; max-width: 650px; }
+
+  blockquote { max-width: 790px; margin: 96px auto 0; padding: 0; font-size: clamp(30px, 3.4vw, 48px); font-style: italic; line-height: 1.18; text-align: center; }
+
+  .finding { max-width: 740px; margin: 92px auto 0; text-align: center; }
+  .finding p { margin: 0 0 22px; color: var(--accent); }
+  .finding strong { display: block; font-size: clamp(26px, 3vw, 42px); font-weight: 900; line-height: 1.25; }
+
+  .audiences { display: grid; grid-template-columns: repeat(2, 1fr); gap: 56px; max-width: 720px; margin: 82px auto 0; }
+  .audiences article { padding-top: 0; }
+  .audiences span { color: var(--accent); }
+  .audiences h3 { margin: 32px 0 14px; font-size: 28px; font-weight: 900; line-height: 1.08; }
+  .audiences p { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .research-label,
+  .persona-profile__number,
+  .persona-profile h4,
+  .persona-profile__quote .research-label {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+  .research-aims {
+    max-width: 610px;
+    margin: 64px auto 0;
+  }
+  .research-aims > p { margin: 0 0 22px; color: var(--muted); }
+  .research-aims ul { margin: 0; padding-left: 1.15em; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .research-aims li + li { margin-top: 12px; }
+  .interview-structure { max-width: 610px; margin: 78px auto 0; }
+  .interview-structure > div { display: block; }
+  .interview-structure > div > p { margin: 0; }
+  .interview-structure > div > p:first-child { color: var(--muted); }
+  .interview-structure > div > p:last-child { max-width: 610px; margin: 20px 0 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .interview-structure ol { max-width: 610px; margin: 32px 0 0; padding: 0; list-style: none; }
+  .interview-structure li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 13px 0; }
+  .interview-structure li > span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; line-height: 1.5; }
+  .interview-structure li p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .interview-structure strong { font-weight: 600; }
+  .persona-intro { max-width: 610px; margin: 82px auto 0; }
+  .persona-intro p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-sequence { width: min(980px, calc(100vw - 110px)); margin: 58px 50% 0; translate: -50% 0; }
+  .persona-sequence > .research-label { margin: 0 0 18px; color: var(--muted); }
+  .persona-profile { display: grid; grid-template-columns: minmax(230px, 0.78fr) minmax(340px, 1fr); gap: clamp(48px, 7vw, 92px); padding: 62px 0 118px; border-top: 1px solid #d8d5cd; }
+  .persona-profile:last-child { padding-bottom: 64px; }
+  .persona-profile__identity { position: sticky; top: clamp(82px, 12vh, 126px); align-self: start; }
+  .persona-profile__number { margin: 0 0 18px; color: var(--accent); }
+  .persona-profile__portrait { display: grid; width: min(100%, 300px); aspect-ratio: 1; place-items: center; overflow: hidden; }
+  .persona-profile__portrait img { height: 100%; object-fit: contain; }
+  .persona-profile h3 { max-width: 340px; margin: 24px 0 0; font-size: clamp(32px, 3.5vw, 47px); font-weight: 900; letter-spacing: -0.04em; line-height: 0.98; }
+  .persona-profile__quote { margin-top: 34px; }
+  .persona-profile__quote > p { margin: 0 0 13px; color: var(--muted); }
+  .persona-profile blockquote { max-width: 360px; margin: 0; padding: 0; border: 0; font-size: clamp(20px, 2vw, 27px); line-height: 1.24; text-align: left; }
+  .persona-profile__observations { padding-top: 38px; }
+  .persona-profile__observations section { padding: 0 0 58px; border-bottom: 1px solid #e5e3dd; }
+  .persona-profile__observations section + section { padding-top: 54px; }
+  .persona-profile__observations section:last-child { border-bottom: 0; }
+  .persona-profile h4 { margin: 0 0 20px; color: var(--accent); }
+  .persona-profile__story,
+  .persona-profile__observations p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-profile__observations ul { margin: 0; padding: 0; list-style: none; }
+  .persona-profile__observations li { position: relative; padding-left: 22px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-profile__observations li::before { content: '·'; position: absolute; left: 0; color: var(--accent); }
+  .persona-profile__observations li + li { margin-top: 17px; }
+  .persona-profile__response p { color: var(--muted); font-size: clamp(21px, 2.1vw, 28px); line-height: 1.38; }
+  .research-synthesis { max-width: 610px; margin: 96px auto 0; font-size: clamp(25px, 2.6vw, 34px); font-weight: 900; line-height: 1.3; }
+
+  .chapter--dark {
+    margin-block: 0 clamp(130px, 16vw, 220px);
+    background: transparent;
+    color: var(--ink);
+  }
+  .chapter--dark .chapter__label span { color: var(--accent); }
+
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; width: min(1080px, calc(100vw - 48px)); margin: 78px 50% 0; padding: 0; list-style: none; translate: -50% 0; }
+  .principles li { display: block; padding: 0; }
+  .principles li:last-child { border-bottom: 0; }
+  .principles > li > span { display: block; margin-bottom: 28px; color: var(--accent); }
+  .principles h3 { margin: 0 0 8px; font-size: 27px; font-weight: 900; }
+  .principles p { max-width: 620px; margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .image-chapter { padding-bottom: clamp(100px, 14vw, 190px); }
+  .image-chapter__heading { max-width: 720px; margin: 0 auto 100px; text-align: center; }
+  .image-chapter__heading h2 { margin-bottom: 0; }
+  .image-chapter__heading > p:last-child { max-width: 620px; margin: 36px auto 0; }
+
+  .sketch-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 90px 70px; max-width: 1120px; margin: 0 auto; }
+  .sketch-grid figure:nth-child(even) { translate: 0 70px; }
+  .sketch-surface { display: grid; place-items: center; aspect-ratio: 1.45; padding: 18px; background: transparent; border-radius: 18px; }
+  .sketch-surface img { max-width: 94%; }
+  .sketch-grid figure:nth-child(1) .sketch-surface { rotate: -1.5deg; }
+  .sketch-grid figure:nth-child(2) .sketch-surface { rotate: 1deg; }
+  .sketch-grid figure:nth-child(3) .sketch-surface { rotate: 0.8deg; }
+  .sketch-grid figure:nth-child(4) .sketch-surface { rotate: -1deg; }
+
+  .evidence-grid,
+  .flow-evidence,
+  .comparison-set,
+  .outcome-story { margin-bottom: clamp(100px, 13vw, 180px); }
+  .evidence-grid--three { display: flex; flex-direction: column; gap: 110px; max-width: 1180px; margin-inline: auto; }
+  .evidence-grid--three figure { width: min(760px, 76%); }
+  .evidence-grid--three figure:nth-child(2) { align-self: flex-end; }
+  .evidence-grid--three figure:nth-child(3) { align-self: center; }
+  .evidence-grid--three img { aspect-ratio: 1.44; object-fit: contain; }
+  .flow-evidence { display: grid; gap: 110px; max-width: 1240px; margin-inline: auto; }
+
+  .comparison-set { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 1200px; margin-inline: auto; }
+  .comparison-set__heading { grid-column: 1 / -1; max-width: 670px; margin: 0 auto 35px; padding: 0; text-align: center; }
+  .comparison-set__heading > span { color: var(--accent); }
+  .comparison-set__heading h3 { margin: 25px 0 16px; font-size: clamp(32px, 3.5vw, 50px); font-weight: 900; line-height: 1.05; }
+  .comparison-set__heading p { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+  .comparison-set figcaption { color: var(--ink); }
+
+  .validation-board { max-width: 1260px; margin: 0 auto clamp(150px, 18vw, 260px); }
+  .validation-board__heading { max-width: 690px; margin: 0 auto 140px; text-align: center; }
+  .validation-board__heading h2 { margin: 0 0 42px; font-size: clamp(46px, 6vw, 76px); font-weight: 900; letter-spacing: -0.045em; line-height: 1; }
+  .validation-board__heading p { max-width: 560px; margin: 0 auto; font-family: var(--serif); font-size: var(--reading-size); line-height: var(--reading-line); }
+  .validation-case { margin-bottom: clamp(150px, 18vw, 250px); }
+  .validation-case > p { max-width: 820px; margin: 0 0 58px 5%; font-family: var(--serif); font-size: var(--reading-size); line-height: var(--reading-line); }
+  .validation-case--tests > p { margin-left: 16%; }
+  .validation-case--history > p { margin-left: 10%; }
+  .validation-pair { display: grid; grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr); gap: 22px; align-items: center; }
+  .validation-pair figure:first-child { rotate: -0.35deg; }
+  .validation-pair figure:last-child { rotate: 0.25deg; translate: 0 24px; }
+  .validation-pair img { aspect-ratio: 1.45; object-fit: contain; border: 1px solid #e3e1dc; border-radius: 3px; background: var(--soft-paper); box-shadow: 0 12px 34px rgba(23, 23, 20, 0.05); }
+  .validation-pair > span { font-family: var(--serif); font-size: 56px; font-weight: 300; line-height: 1; text-align: center; rotate: -3deg; }
+  .validation-pair figcaption { justify-content: center; }
+
+  .chapter--outcome { padding-bottom: 100px; }
+  .outcome-story { display: flex; flex-direction: column; gap: 120px; max-width: 1180px; margin-inline: auto; }
+  .outcome-story figure { width: min(920px, 84%); }
+  .outcome-story figure:nth-child(even) { align-self: flex-end; }
+  .outcome-story figure:nth-child(3n) { align-self: center; }
+  .outcome-story img { aspect-ratio: 16 / 10; object-fit: contain; }
+
+  .reflection { margin-top: clamp(120px, 16vw, 220px); }
+
+  .case-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 110px 0 90px;
+  }
+  .case-footer p { margin: 0; font-size: 24px; line-height: 1.25; }
+  .case-footer nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px 30px; align-content: start; font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  @media (max-width: 900px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 42px; max-width: 620px; }
+    .prose--split { gap: 28px; }
+    .principles { gap: 28px; }
+    .validation-pair { grid-template-columns: 1fr 52px 1fr; gap: 12px; }
+  }
+
+  @media (max-width: 620px) {
+    html.observatory-case-study { scroll-behavior: auto; }
+    html.observatory-case-study body { font-size: 16px; }
+    .topbar,
+    main,
+    .case-footer { width: min(100% - 28px, 1440px); }
+    .topbar { grid-template-columns: 1fr 1fr; min-height: 58px; }
+    .topbar span { display: none; }
+    .hero { padding-top: 86px; }
+    .hero h1 { font-size: clamp(62px, 19vw, 78px); }
+    .hero__line { margin-top: 28px; }
+    .hero__intro { margin: 44px 0 55px; }
+    .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 18px; }
+    .facts div,
+    .facts div + div,
+    .facts div:nth-child(3) { padding: 0; border: 0; }
+    .chapter { padding-block: 76px; }
+    .chapter__label { gap: 22px; }
+    .chapter__body h2,
+    .image-chapter__heading h2 { margin-bottom: 36px; }
+    .audiences,
+    .sketch-grid,
+    .comparison-set,
+    .case-footer { grid-template-columns: 1fr; }
+    .finding { margin-top: 64px; }
+    .audiences { gap: 42px; margin-top: 58px; }
+    blockquote { margin-top: 58px; }
+    .image-chapter__heading { margin-bottom: 44px; }
+    .sketch-grid { gap: 40px; }
+    .sketch-grid figure:nth-child(even) { translate: 0; }
+    .sketch-surface { min-height: 230px; padding: 8px; }
+    .principles { grid-template-columns: 1fr; gap: 48px; margin-top: 54px; }
+    .evidence-grid--three figure,
+    .evidence-grid--three figure:nth-child(2),
+    .evidence-grid--three figure:nth-child(3) { width: 100%; margin-left: 0; }
+    .comparison-set__heading { grid-column: auto; }
+    .evidence-grid--three,
+    .comparison-set,
+    .outcome-story { gap: 48px; }
+    .comparison-set { padding-top: 18px; }
+    .comparison-set figure + figure { margin-top: 6px; }
+    .validation-board__heading { margin-bottom: 88px; }
+    .validation-case { margin-bottom: 110px; }
+    .validation-case > p,
+    .validation-case--tests > p,
+    .validation-case--history > p { margin: 0 0 38px; font-size: var(--reading-size); }
+    .validation-pair { grid-template-columns: 1fr; gap: 28px; }
+    .validation-pair > span { font-size: 44px; rotate: 90deg; }
+    .validation-pair figure:last-child { translate: 0; }
+    .outcome-story figure,
+    .outcome-story figure:nth-child(even),
+    .outcome-story figure:nth-child(3n) { width: 100%; align-self: auto; }
+    .case-footer nav { grid-template-columns: 1fr; margin-top: 26px; }
+  }
+
+  /* Editorial scroll revision */
+  .chapter-index {
+    position: fixed;
+    z-index: 20;
+    top: 50%;
+    left: max(16px, calc((100vw - 1440px) / 2 + 16px));
+    width: 126px;
+    color: #96928a;
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+    translate: 0 -50%;
+  }
+
+  .chapter-index > p { margin: 0 0 20px 23px; }
+  .chapter-index ol { position: relative; display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+  .chapter-index ol::before { content: ''; position: absolute; top: 13px; bottom: 13px; left: 3px; width: 1px; background: #dfddd7; }
+  .chapter-index a { position: relative; display: grid; grid-template-columns: 24px 1fr; gap: 8px; align-items: center; min-height: 30px; text-decoration: none; transition: color 180ms ease; }
+  .chapter-index a::before { content: ''; z-index: 1; width: 7px; height: 7px; border: 1px solid var(--paper); border-radius: 50%; background: #c6c2ba; transition: background 180ms ease, scale 180ms ease; }
+  .chapter-index a > span:first-child { grid-column: 1; position: absolute; left: 18px; opacity: 0; font-variant-numeric: tabular-nums; transition: opacity 180ms ease; }
+  .chapter-index__name { grid-column: 2; }
+  .chapter-index a[aria-current='location'] { color: var(--ink); }
+  .chapter-index a[aria-current='location']::before { background: var(--accent); scale: 1.2; }
+  .chapter-index a[aria-current='location'] > span:first-child { opacity: 1; }
+
+  .hero { padding: clamp(76px, 9vw, 124px) 0 clamp(44px, 5vw, 68px); }
+  .hero h1 { font-size: clamp(72px, 8vw, 112px); line-height: 0.9; }
+  .hero__line { font-size: clamp(27px, 3vw, 42px); }
+  .hero__intro { max-width: 620px; margin-block: 46px 52px; font-size: clamp(20px, 1.7vw, 23px); line-height: 1.48; }
+  .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; max-width: 900px; }
+  .facts div { max-width: none; }
+  .hero + .chapter { padding-top: clamp(42px, 5vw, 68px); }
+
+  .chapter {
+    max-width: 1000px;
+    padding-block: clamp(56px, 6vw, 84px);
+  }
+
+  .chapter__label,
+  .chapter__body {
+    width: min(720px, calc(100% - 80px));
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .chapter__label { margin-bottom: 30px; }
+
+  .chapter__body h2,
+  .image-chapter__heading h2 {
+    max-width: 720px;
+    margin-bottom: 38px;
+    font-size: clamp(39px, 4vw, 54px);
+    line-height: 1.04;
+  }
+
+  .prose,
+  .prose--split,
+  .wide-copy { max-width: 610px; margin-left: auto; margin-right: auto; }
+  .prose p { max-width: 610px; }
+  .prose p,
+  .wide-copy,
+  .image-chapter__heading > p:last-child { font-size: var(--reading-size); line-height: var(--reading-line); }
+  blockquote { max-width: 610px; margin: 56px auto 0; font-size: clamp(27px, 2.5vw, 34px); line-height: 1.24; text-align: left; }
+  .finding { max-width: 610px; margin: 64px auto 0; text-align: left; }
+  .finding strong { font-size: clamp(25px, 2.5vw, 34px); line-height: 1.3; }
+  .audiences { max-width: 650px; margin: 58px auto 0; gap: 38px; }
+
+  .chapter--dark { margin-bottom: 0; padding-bottom: clamp(44px, 6vw, 72px); }
+  .principles { width: min(940px, calc(100vw - 110px)); gap: 32px; margin: 54px 50% 0; translate: -50% 0; }
+  .principles > li > span { margin-bottom: 20px; }
+  .principles h3 { font-size: 23px; line-height: 1.12; }
+  .principles p { font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .image-chapter { padding: 44px 0 clamp(80px, 10vw, 130px); }
+  .image-chapter__heading { width: min(720px, calc(100% - 80px)); max-width: 720px; margin: 0 auto 64px; text-align: left; }
+  .image-chapter__heading > p:last-child { margin: 28px auto 0; }
+  .sketch-grid {
+    width: min(1000px, calc(100% - 60px));
+    max-width: none;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 54px 44px;
+  }
+  .sketch-grid figure:nth-child(even) { translate: 0 28px; }
+  .sketch-surface { aspect-ratio: 1.48; padding: 12px; border-radius: 4px; }
+
+  .chapter--wide { max-width: 1180px; }
+  .chapter--wide > .chapter__label,
+  .chapter--wide > .chapter__body {
+    width: min(720px, calc(100% - 80px));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .scroll-story {
+    display: grid;
+    grid-template-columns: minmax(0, 820px) minmax(210px, 270px);
+    gap: clamp(34px, 6vw, 80px);
+    align-items: start;
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+  }
+  .scroll-story__stage { display: grid; gap: 32px; }
+  .scroll-story__stage figure { margin: 0; }
+  .scroll-story__stage img {
+    width: 100%;
+    aspect-ratio: 1.46;
+    object-fit: contain;
+    border: 1px solid #e5e3dd;
+    border-radius: 8px;
+    background: transparent;
+    box-shadow: 0 18px 48px rgba(23, 23, 20, 0.06);
+  }
+  .scroll-story__steps { margin: 0; padding: 0; list-style: none; }
+  .scroll-story__steps li { margin: 0 0 90px; color: var(--muted); }
+  .scroll-story__steps span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+  .scroll-story__steps h3 { margin: 18px 0 10px; color: var(--ink); font-size: clamp(24px, 2.4vw, 34px); font-weight: 900; line-height: 1.05; }
+  .scroll-story__steps p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .has-scroll-stories .scroll-story__stage {
+    position: sticky;
+    top: 14vh;
+    display: block;
+    height: min(66vh, 630px);
+    overflow: hidden;
+    border-radius: 10px;
+    background: transparent;
+  }
+  .has-scroll-stories .scroll-story__stage figure {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.985);
+    transition: opacity 520ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .has-scroll-stories .scroll-story__stage figure.is-active { opacity: 1; transform: scale(1); }
+  .has-scroll-stories .scroll-story__stage img { height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+  .has-scroll-stories .scroll-story__steps li { display: flex; min-height: 52vh; margin: 0; flex-direction: column; justify-content: center; opacity: 0.3; transition: opacity 260ms ease; }
+  .has-scroll-stories .scroll-story__steps li.is-active { opacity: 1; }
+
+  .flow-evidence {
+    width: min(1000px, calc(100% - 60px));
+    max-width: none;
+    margin: 86px auto 30px;
+    gap: 62px;
+  }
+  .flow-evidence img { border-radius: 5px; box-shadow: 0 10px 32px rgba(23, 23, 20, 0.045); }
+
+  .validation-board {
+    width: min(1000px, calc(100% - 60px));
+    max-width: none;
+    margin: 0 auto clamp(90px, 10vw, 140px);
+  }
+  .validation-board__heading { margin-bottom: 86px; }
+  .validation-board__heading h2 { margin-bottom: 28px; font-size: clamp(42px, 5vw, 64px); }
+  .validation-case { margin-bottom: clamp(86px, 10vw, 130px); }
+  .validation-case > p { max-width: 720px; margin-bottom: 40px; }
+  .validation-pair { grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr); gap: 16px; }
+  .validation-pair > span { font-size: 42px; }
+  .validation-pair figure:last-child { translate: 0 14px; }
+
+  .chapter--outcome { padding-bottom: 70px; }
+  .scroll-story--outcome { margin-top: 76px; }
+  .scroll-story--outcome .scroll-story__stage img { aspect-ratio: 16 / 10; }
+  .has-scroll-stories .scroll-story--outcome .scroll-story__steps li { min-height: 46vh; }
+  .reflection { margin-top: clamp(54px, 7vw, 90px); }
+
+  .hero h1,
+  .chapter__body h2,
+  .image-chapter__heading h2,
+  .finding strong,
+  .audiences h3,
+  .persona-profile h3,
+  .research-synthesis,
+  .principles h3,
+  .comparison-set__heading h3,
+  .validation-board__heading h2,
+  .scroll-story__steps h3 {
+    font-family: var(--display-serif);
+    font-weight: 700;
+    font-synthesis: none;
+  }
+
+  @media (max-width: 1180px) {
+    .chapter-index { width: 38px; }
+    .chapter-index > p,
+    .chapter-index__name { display: none; }
+    .chapter-index a { grid-template-columns: 30px; }
+    .chapter-index a > span:first-child { left: 15px; }
+  }
+
+  @media (max-width: 900px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 22px; max-width: 620px; }
+  }
+
+  @media (max-width: 760px) {
+    .chapter-index { display: none; }
+    .hero h1 { font-size: clamp(56px, 15vw, 61px); letter-spacing: -0.055em; }
+    .chapter { padding-block: 58px; }
+    .chapter__label,
+    .chapter__body,
+    #problem .chapter__body,
+    #direction .chapter__body,
+    #research .chapter__body,
+    #validation-intro .chapter__body,
+    #reflection .chapter__body,
+    #problem .chapter__label,
+    #direction .chapter__label,
+    #research .chapter__label,
+    #validation-intro .chapter__label,
+    #reflection .chapter__label,
+    .chapter--wide > .chapter__label,
+    .chapter--wide > .chapter__body { width: 100%; margin-left: 0; margin-right: 0; }
+    .chapter__body h2,
+    .image-chapter__heading h2 { font-size: clamp(36px, 11vw, 48px); }
+    .principles { width: 100%; }
+    .image-chapter__heading { width: 100%; margin-left: 0; }
+    .sketch-grid { width: 100%; margin-left: 0; gap: 34px; }
+    .sketch-grid figure:nth-child(1),
+    .sketch-grid figure:nth-child(2),
+    .sketch-grid figure:nth-child(3),
+    .sketch-grid figure:nth-child(4) { rotate: 0deg; }
+    .sketch-grid figure:nth-child(1) .sketch-surface,
+    .sketch-grid figure:nth-child(2) .sketch-surface,
+    .sketch-grid figure:nth-child(3) .sketch-surface,
+    .sketch-grid figure:nth-child(4) .sketch-surface { rotate: 0deg; }
+    .scroll-story { display: block; width: 100%; margin: 50px 0 0; }
+    .has-scroll-stories .scroll-story__stage { top: 9vh; z-index: 1; height: min(48vh, 405px); }
+    .has-scroll-stories .scroll-story__steps { position: relative; z-index: 2; margin-top: -48vh; padding: 28vh 0 8vh; }
+    .has-scroll-stories .scroll-story__steps li,
+    .has-scroll-stories .scroll-story--outcome .scroll-story__steps li {
+      min-height: 48vh;
+      width: min(88%, 350px);
+      margin: 0 auto;
+      padding: 18px;
+      justify-content: flex-end;
+      opacity: 0;
+    }
+    .has-scroll-stories .scroll-story__steps li.is-active { opacity: 1; }
+    .has-scroll-stories .scroll-story__steps li > * { width: fit-content; max-width: 100%; padding: 2px 7px; background: rgba(255, 255, 255, 0.94); box-decoration-break: clone; }
+    .has-scroll-stories .scroll-story__steps h3 { margin-block: 5px 0; }
+    .flow-evidence { width: 100%; margin: 28px 0 30px; gap: 38px; }
+    .validation-board { width: 100%; margin-left: 0; }
+    .validation-board__heading { margin-bottom: 64px; }
+    .validation-case { margin-bottom: 82px; }
+    .research-aims { margin-top: 44px; }
+    .interview-structure { margin-top: 56px; }
+    .interview-structure ol { margin: 30px 0 0; }
+    .persona-intro { margin-top: 66px; }
+    .persona-sequence { width: 100%; margin: 48px 0 0; translate: none; }
+    .persona-profile { display: block; padding: 40px 0 82px; }
+    .persona-profile:last-child { padding-bottom: 24px; }
+    .persona-profile__identity { position: static; }
+    .persona-profile__portrait { width: min(100%, 300px); }
+    .persona-profile h3 { font-size: 38px; }
+    .persona-profile__quote { margin-top: 28px; }
+    .persona-profile blockquote { max-width: none; font-size: 25px; }
+    .persona-profile__observations { padding-top: 54px; }
+    .persona-profile__observations section { padding-bottom: 40px; }
+    .persona-profile__observations section + section { padding-top: 38px; }
+    .research-synthesis { margin-top: 80px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-index a,
+    .chapter-index a::before,
+    .has-scroll-stories .scroll-story__stage figure,
+    .has-scroll-stories .scroll-story__steps li { transition: none; }
+    .has-scroll-stories .scroll-story { display: block; }
+    .has-scroll-stories .scroll-story__stage { position: static; display: grid; height: auto; gap: 32px; overflow: visible; background: transparent; }
+    .has-scroll-stories .scroll-story__stage figure { position: static; opacity: 1; transform: none; }
+    .has-scroll-stories .scroll-story__stage img { height: auto; border: 1px solid #e5e3dd; }
+    .has-scroll-stories .scroll-story__steps { display: none; }
+  }
+</style>
