@@ -171,6 +171,9 @@ Exit condition: the public site is complete, verified, and deployable from a cle
 - Use a high-contrast black text-selection treatment within the case study.
 - Use the case study's black ink color for editorial accents, navigation state,
   and focus cues instead of introducing a separate accent hue.
+- On page load, briefly reveal the authored dithered Observatory texture through
+  the hero title one letter at a time, then return every letter to black. Keep
+  the resting title static when reduced motion is requested.
 - Verify root and GitHub Pages builds, desktop and mobile layouts, internal base
   paths, image loading, and horizontal containment.
 

@@ -486,6 +486,14 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
   shared accent token now resolves to the page's black ink color, so labels,
   research markers, sticky-story steps, navigation state, link hover, and
   keyboard focus cues use a monochrome treatment.
+- Added a one-time load animation to the Observatory hero title using Igor's
+  authored `ditchered_observatory_bg.png` texture. The texture flashes through
+  the letters in sequence before the word returns to solid black; the semantic
+  heading remains a single accessible label and reduced-motion visitors receive
+  the static black title.
+- Expanded each animated letter's invisible texture paint box beyond the font's
+  line box. Averia's ascenders and the `y` descender now retain the dither reveal
+  instead of falling back to black where the glyph overshoots its CSS box.
 - Replaced both working-persona placeholders with Igor's authored square
   sketches. The drawings retain their transparent backgrounds and complete
   composition at desktop and phone sizes, and include descriptive alternative
