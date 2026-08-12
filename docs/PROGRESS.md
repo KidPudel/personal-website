@@ -1,6 +1,6 @@
 # Website rebuild progress
 
-Last updated: 2026-08-11
+Last updated: 2026-08-12
 
 ## Status
 
@@ -28,7 +28,7 @@ The homepage now follows one centered content spine. The values section rises in
 | --- | --- |
 | 0. Reconcile documentation and evidence | Complete on 2026-08-11 |
 | 1. Static continuous homepage foundation | Complete on 2026-08-11 |
-| 2. Scroll-controlled box opening and identity reveal | Complete; frame-6 pigment handoff integrated on 2026-08-11 |
+| 2. Scroll-controlled box opening and identity reveal | Complete; frame-6 pigment handoff refined on 2026-08-12 |
 | 3. Dedicated work presentation | Complete structural pass on 2026-08-11 |
 | 4. Personal, play, writing, and contact sections | Complete first pass on 2026-08-11 |
 | 5. Observatory hiring-evidence pass | Complete on 2026-08-11 |
@@ -46,6 +46,7 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
 - Desktop inspection at 998 by 943 found one main landmark and one h1 on both documents, no broken images, no horizontal overflow, live game media, and no server warnings or errors. The updated side control is hidden while the box is closed, enters with the reveal, stays inside the viewport on both homepage and work page, and expands all six contact links.
 - Responsive inspection used browser viewports at 390 by 844 and 320 by 800. The upright box, revealed hero, work introduction, project media, résumé path, and navigation remain contained without horizontal clipping.
 - The frame-6 pigment handoff was checked at 1280 by 720, 480 by 999, 390 by 844, and the 320 by 800 minimum-width viewport. All eight authored frames remain in the sequence. The sampled cobalt, ice, yellow, orange, coral, magenta, and violet field emerges from inside the opened box, grows beyond full coverage, reveals the hero through a fading wash, and leaves two restrained residual trails before clearing completely. Reverse scroll restores the same states, the hero remains inert until substantially revealed, and no browser console warnings or errors were observed.
+- The 2026-08-12 refinement widens and saturates the lemon, orange, coral, magenta, and violet bands. Detached early lobes were removed so one continuous field emerges from the box. Until the transition takes over the screen, the essence renders beneath the authored box drawing and casts a broad light response plus restrained chromatic ink glow into the opening field. Mobile emergence begins as a horizontal pool aligned with the box interior, then expands for the portrait viewport without horizontal overflow.
 - The typography and spacing pass was inspected at 998 by 943 and 390 by 844. Averia Serif Libre headings, Delius copy and labels, the side navigation control, and the cropped section-marker drawings remain legible and contained.
 - The portrait shuffle and changing craft-value word remain operable. The Discourses video autoplays muted when visible, Santa's sleigh and snow animations run, and both embedded videos expose native controls.
 - Box frames use the original lossless 2048-pixel PNGs. The previous 1200-pixel lossy WebP conversion left only about 296 pixels across the visible box drawing and was visibly soft on high-density screens; the eight authored PNGs total about 756KB. Non-opening media stays responsive and lazy where it is not immediately needed.

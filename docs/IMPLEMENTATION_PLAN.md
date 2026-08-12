@@ -32,7 +32,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Make the box animation the opening section of `/`, in the same document as the continuous homepage.
 - Drive the authored frames in `src/assets/art/Doodles-box-opening/` from ordinary scroll progress.
 - Test a compact saturated palette as part of the frame sequence. Keep each moment flat and legible, cut colors with frame changes, and avoid decorative spheres or a separate ambient background animation.
-- Keep the verified frame-color changes and the approved frame-6 pigment handoff. The color field must originate inside the opened box, grow past full coverage, and clear through restrained residual trails. Preserve the sampled cobalt, ice, yellow, orange, coral, magenta, and violet character without turning it into straight stripes, separate droplets, or an unrelated full-screen graphic.
+- Keep the verified frame-color changes and the approved frame-6 pigment handoff. The color field must originate inside the opened box, illuminate the field and drawing before crossing in front, grow past full coverage, and clear through restrained residual trails. Preserve the vivid cobalt, ice, lemon, orange, coral, magenta, and violet character without turning it into straight stripes, separate droplets, or an unrelated full-screen graphic.
 - Treat the transparent frames as color-flexible assets that may be inverted or recolored for the chosen surfaces.
 - Replace the empty four-direction Home with a continuous homepage.
 - Make the box reveal Igor, not merely navigation.
