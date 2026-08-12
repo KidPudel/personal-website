@@ -132,7 +132,8 @@ const { identityCage } = Astro.props;
   .hero {
     display: grid;
     min-height: 100svh;
-    grid-template-columns: minmax(15rem, 20rem) minmax(0, 36rem);
+    grid-template-columns: minmax(0, 36rem) minmax(15rem, 20rem);
+    grid-template-areas: "copy portrait";
     justify-content: center;
     align-items: center;
     gap: clamp(2.25rem, 4vw, 4rem);
@@ -141,6 +142,7 @@ const { identityCage } = Astro.props;
   }
 
   .hero__portrait {
+    grid-area: portrait;
     width: min(100%, 28rem);
     opacity: var(--hero-content-opacity, 1);
     rotate: -1deg;
@@ -151,6 +153,7 @@ const { identityCage } = Astro.props;
   }
 
   .hero__copy {
+    grid-area: copy;
     width: min(100%, 49rem);
     opacity: var(--hero-content-opacity, 1);
   }
@@ -302,17 +305,22 @@ const { identityCage } = Astro.props;
   @media (max-width: 52rem) {
     .hero {
       grid-template-columns: 1fr;
+      grid-template-areas:
+        "portrait"
+        "copy";
       gap: 1.5rem;
       align-content: center;
       padding-top: 6rem;
     }
 
     .hero__portrait {
+      grid-area: portrait;
       width: min(64vw, 20rem);
       justify-self: center;
     }
 
     .hero__copy {
+      grid-area: copy;
       width: min(100%, 38rem);
       justify-self: center;
     }

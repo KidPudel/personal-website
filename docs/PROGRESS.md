@@ -24,6 +24,8 @@ The identity headline now uses a smaller scale and a wider measure. At the deskt
 
 The homepage now follows one centered content spine. The values section rises into the outgoing hero on wide screens to remove the approximately 400-pixel empty handoff, the redundant floating values cue is removed, and decorative doodles are confined to the side gutters. The redundant final contact block is removed because the persistent side disclosure already provides the complete contact path. The rejected overlapping-sphere background, nested splash forms, separate droplets, circular portal, closed canvas ribbon, and stacked rainbow wave remain removed. Saturated field colors still cut with the box frames, then the frame-6 pigment essence expands as one connected asymmetric burst before the #F8F8F8 homepage settles beneath its fading trails. Home and Work use black ink on the #F8F8F8 field; dark surfaces remain local to project media.
 
+The latest hero refinement places the copy first and the interactive portrait on the right on wide screens. Named grid areas keep the two desktop items in one row, while narrow layouts remain a single column with the portrait above the copy. The corrected composition was checked at 1093 by 999 and 390 by 844 with no horizontal overflow or console warnings.
+
 | Milestone | Status |
 | --- | --- |
 | 0. Reconcile documentation and evidence | Complete on 2026-08-11 |

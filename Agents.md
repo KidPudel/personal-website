@@ -7,11 +7,8 @@ Build and ship Igor's personal website as a clean implementation of the authored
 Use the smallest relevant source and do not duplicate it elsewhere:
 
 1. Igor's latest explicit instruction.
-2. `docs/CONCEPT_DESIGN.md` and `storyboards/` for product vision, structure, visual language, interaction, and accessibility intent.
-3. `docs/CONTEXT_ABOUT_IGOR.md` for professional facts, evidence, claim boundaries, and craft context.
-4. `docs/PERSONAL_CONTEXT.md` for private tone guidance. Do not publish personal details without explicit approval.
+2. `docs/CONCEPT_DESIGN.md` for product vision, structure, visual language, interaction, and accessibility intent.
 5. `docs/ARCHITECTURE.md` for technical structure and implementation boundaries.
-6. `docs/IMPLEMENTATION_PLAN.md` for rebuild sequencing.
 7. `docs/PROGRESS.md` for current status, blockers, and next work.
 
 Do not rewrite or expand the authored concept unless Igor asks. Plans and progress records should reference it rather than restating it.
