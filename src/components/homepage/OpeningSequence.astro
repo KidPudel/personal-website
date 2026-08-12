@@ -109,15 +109,15 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
             ];
             const essencePalette = [
                 { stop: 0, color: [26, 42, 122] },
-                { stop: 0.16, color: [35, 77, 196] },
-                { stop: 0.3, color: [43, 96, 235] },
-                { stop: 0.42, color: [109, 157, 222] },
-                { stop: 0.51, color: [235, 239, 247] },
-                { stop: 0.61, color: [255, 230, 78] },
-                { stop: 0.7, color: [255, 164, 38] },
-                { stop: 0.78, color: [251, 92, 48] },
-                { stop: 0.85, color: [244, 47, 104] },
-                { stop: 0.92, color: [238, 28, 198] },
+                { stop: 0.08, color: [35, 77, 196] },
+                { stop: 0.18, color: [43, 96, 235] },
+                { stop: 0.28, color: [109, 157, 222] },
+                { stop: 0.38, color: [235, 239, 247] },
+                { stop: 0.49, color: [255, 230, 78] },
+                { stop: 0.61, color: [255, 164, 38] },
+                { stop: 0.72, color: [251, 92, 48] },
+                { stop: 0.82, color: [244, 47, 104] },
+                { stop: 0.91, color: [238, 28, 198] },
                 { stop: 1, color: [207, 34, 237] },
             ];
 
@@ -150,18 +150,25 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 );
 
             const energyDirections = [
-                { angle: -2.72, reach: 0.52, width: 0.2 },
-                { angle: -2.18, reach: 0.34, width: 0.24 },
-                { angle: -1.5, reach: 0.86, width: 0.17 },
-                { angle: -0.78, reach: 0.46, width: 0.21 },
-                { angle: -0.04, reach: 0.78, width: 0.18 },
-                { angle: 0.68, reach: 0.42, width: 0.23 },
-                { angle: 1.38, reach: 0.67, width: 0.18 },
-                { angle: 2.22, reach: 0.38, width: 0.25 },
-                { angle: 2.93, reach: 0.6, width: 0.19 },
+                { angle: -3.02, reach: 0.34, width: 0.1 },
+                { angle: -2.72, reach: 0.66, width: 0.14 },
+                { angle: -2.29, reach: 0.42, width: 0.12 },
+                { angle: -1.91, reach: 0.76, width: 0.11 },
+                { angle: -1.49, reach: 1, width: 0.1 },
+                { angle: -1.08, reach: 0.48, width: 0.13 },
+                { angle: -0.72, reach: 0.82, width: 0.11 },
+                { angle: -0.3, reach: 0.5, width: 0.14 },
+                { angle: 0.05, reach: 0.9, width: 0.1 },
+                { angle: 0.45, reach: 0.42, width: 0.12 },
+                { angle: 0.83, reach: 0.72, width: 0.11 },
+                { angle: 1.29, reach: 0.56, width: 0.13 },
+                { angle: 1.58, reach: 0.92, width: 0.1 },
+                { angle: 2.02, reach: 0.5, width: 0.12 },
+                { angle: 2.43, reach: 0.8, width: 0.11 },
+                { angle: 2.88, reach: 0.58, width: 0.13 },
             ];
 
-            const fieldDistance = (x: number, y: number, growth: number) => {
+            const fieldSample = (x: number, y: number, growth: number) => {
                 const dx = x - 0.5;
                 const dy = y - (0.53 - growth * 0.015);
                 const skewedX = dx + dy * 0.16;
@@ -184,14 +191,14 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     energy *
                         (Math.sin(radial * 3.8 + 0.8) * 0.12 +
                             Math.sin(radial * 7.2 - 0.55) * 0.045);
-                const flare = smooth(clamp((radial - 0.1) / 0.92));
+                const flare = smooth(clamp((radial - 0.018) / 0.52));
                 const contour =
                     1 +
                     Math.sin(flowAngle * 3 + 0.7) *
-                        (0.028 + growth * 0.035) +
+                        (0.022 + growth * 0.032) +
                     Math.cos(flowAngle * 5 - 0.45) *
-                        (0.018 + growth * 0.025) +
-                    Math.sin(flowAngle * 8 + radial * 2.6) * energy * 0.018;
+                        (0.014 + growth * 0.022) +
+                    Math.sin(flowAngle * 11 + radial * 3.1) * energy * 0.022;
                 let directionalReach = 0;
 
                 for (const direction of energyDirections) {
@@ -209,25 +216,40 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     energy * flare * directionalReach +
                     energy *
                         flare *
-                        Math.sin(flowAngle * 6.5 + radial * 3.2) *
-                        0.055;
+                        Math.sin(flowAngle * 8.5 + radial * 4.4) *
+                        0.07;
 
-                return radial / Math.max(0.58, contour * reach);
+                return {
+                    distance: radial / Math.max(0.58, contour * reach),
+                    flowAngle,
+                    radial,
+                };
             };
 
-            const ellipseDistance = (
-                x: number,
-                y: number,
-                centerX: number,
-                centerY: number,
-                radiusX: number,
-                radiusY: number,
-                skew: number,
+            const spectrumPosition = (
+                band: number,
+                flowAngle: number,
+                radial: number,
+                growth: number,
             ) => {
-                const dx = x - centerX;
-                const dy = y - centerY;
+                const angularWave =
+                    0.5 +
+                    Math.sin(
+                        flowAngle * 5.25 +
+                            radial * 1.45 +
+                            Math.sin(flowAngle * 9 - 0.4) * 0.24,
+                    ) *
+                        0.5;
+                const angularSpectrum =
+                    0.06 + Math.pow(angularWave, 0.62) * 0.94;
+                const spectrumMix =
+                    smooth(clamp((growth - 0.2) / 0.6)) *
+                    smooth(clamp((radial - 0.01) / 0.24)) *
+                    0.93;
 
-                return Math.hypot((dx + dy * skew) / radiusX, dy / radiusY);
+                return clamp(
+                    band + (angularSpectrum - band) * spectrumMix,
+                );
             };
 
             const drawEssence = (progress: number) => {
@@ -249,9 +271,9 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 }
 
                 const growth = clamp((progress - 0.335) / 0.405);
-                const reveal = smooth(clamp((progress - 0.72) / 0.25));
-                const after = clamp((progress - 0.69) / 0.31);
-                const afterEnvelope = Math.sin(after * Math.PI) * 0.42;
+                const reveal = smooth(clamp((progress - 0.7) / 0.19));
+                const echoLife = clamp((progress - 0.77) / 0.2);
+                const echoEnvelope = Math.sin(echoLife * Math.PI) * 0.2;
                 const worldReaction =
                     Math.sin(
                         Math.PI * clamp((progress - 0.31) / 0.38),
@@ -265,11 +287,11 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
 
                 essence.toggleAttribute(
                     "data-visible",
-                    growth > 0 && (reveal < 1 || afterEnvelope > 0.001),
+                    growth > 0 && (reveal < 1 || echoEnvelope > 0.001),
                 );
                 essence.toggleAttribute("data-front", progress >= 0.61);
 
-                if (growth <= 0 || (reveal >= 1 && afterEnvelope <= 0.001)) {
+                if (growth <= 0 || (reveal >= 1 && echoEnvelope <= 0.001)) {
                     essenceContext.clearRect(
                         0,
                         0,
@@ -294,59 +316,100 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     for (let x = 0; x < essence.width; x += 1) {
                         const normalizedX = x / Math.max(1, essence.width - 1);
                         const normalizedY = y / Math.max(1, essence.height - 1);
-                        const band =
-                            fieldDistance(normalizedX, normalizedY, growth) /
-                            radius;
+                        const sample = fieldSample(
+                            normalizedX,
+                            normalizedY,
+                            growth,
+                        );
+                        const band = sample.distance / radius;
                         const edge = 1 - smooth(clamp((band - 0.965) / 0.1));
                         const baseAlpha = edge * baseOpacity;
-
-                        const trailOne = ellipseDistance(
-                            normalizedX,
-                            normalizedY,
-                            -0.06 + after * 0.62,
-                            0.86 - after * 0.72,
-                            0.3 + after * 0.14,
-                            0.2 + after * 0.1,
-                            -0.32,
+                        const echoWarp = echoLife * 0.065;
+                        const echoSample = fieldSample(
+                            normalizedX +
+                                Math.sin(
+                                    normalizedY * 11 + echoLife * 4.2,
+                                ) *
+                                    echoWarp,
+                            normalizedY +
+                                Math.sin(
+                                    normalizedX * 9 - echoLife * 3.4,
+                                ) *
+                                    echoWarp *
+                                    0.72,
+                            1,
                         );
-                        const trailTwo = ellipseDistance(
-                            normalizedX,
-                            normalizedY,
-                            1.08 - after * 0.44,
-                            0.18 + after * 0.6,
-                            0.22 + after * 0.12,
-                            0.3 + after * 0.08,
-                            0.28,
+                        const echoBand =
+                            echoSample.distance /
+                            (radius * (0.9 + echoLife * 0.16));
+                        const echoPhase =
+                            echoSample.flowAngle * 5.25 +
+                            echoSample.radial * 1.45 +
+                            Math.sin(echoSample.flowAngle * 9 - 0.4) * 0.24;
+                        const echoSpokes =
+                            1 -
+                            smooth(
+                                clamp(
+                                    Math.abs(Math.sin(echoPhase)) / 0.22,
+                                ),
+                            );
+                        const echoSpan =
+                            smooth(clamp((echoBand - 0.16) / 0.16)) *
+                            (1 - smooth(clamp((echoBand - 0.82) / 0.14)));
+                        const echoBreakup = smooth(
+                            clamp(
+                                (Math.sin(
+                                    echoBand * 29 +
+                                        Math.sin(echoSample.flowAngle * 4.5) *
+                                            1.35 -
+                                        echoLife * 8,
+                                ) -
+                                    0.04) /
+                                    0.76,
+                            ),
                         );
-                        const trailBand = Math.min(trailOne, trailTwo);
-                        const trailEdge =
-                            1 - smooth(clamp((trailBand - 0.72) / 0.3));
-                        const trailAlpha = trailEdge * afterEnvelope;
+                        const echoAlpha =
+                            echoSpokes *
+                            echoSpan *
+                            (0.3 + echoBreakup * 0.7) *
+                            echoEnvelope;
                         const alpha = clamp(
-                            baseAlpha + trailAlpha * (1 - baseAlpha),
+                            baseAlpha + echoAlpha * (1 - baseAlpha),
                         );
 
                         if (alpha <= 0.002) continue;
 
-                        const baseColor = paletteColor(band);
-                        const trailColor = paletteColor(
-                            0.58 + clamp(trailBand) * 0.4,
+                        const baseColor = paletteColor(
+                            spectrumPosition(
+                                band,
+                                sample.flowAngle,
+                                sample.radial,
+                                growth,
+                            ),
                         );
-                        const trailMix =
-                            alpha > 0 ? trailAlpha / (baseAlpha + trailAlpha) : 0;
+                        const echoColor = paletteColor(
+                            spectrumPosition(
+                                echoBand,
+                                echoSample.flowAngle + echoLife * 0.38,
+                                echoSample.radial,
+                                1,
+                            ),
+                        );
+                        const echoMix =
+                            alpha > 0 ? echoAlpha / (baseAlpha + echoAlpha) : 0;
                         const pixelIndex = (y * essence.width + x) * 4;
 
                         image.data[pixelIndex] = Math.round(
                             baseColor[0] +
-                                (trailColor[0] - baseColor[0]) * trailMix,
+                                (echoColor[0] - baseColor[0]) * echoMix,
                         );
                         image.data[pixelIndex + 1] = Math.round(
                             baseColor[1] +
-                                (trailColor[1] - baseColor[1]) * trailMix,
+                                (echoColor[1] - baseColor[1]) * echoMix,
                         );
                         image.data[pixelIndex + 2] = Math.round(
                             baseColor[2] +
-                                (trailColor[2] - baseColor[2]) * trailMix,
+                                (echoColor[2] - baseColor[2]) * echoMix,
                         );
                         image.data[pixelIndex + 3] = Math.round(alpha * 255);
                     }

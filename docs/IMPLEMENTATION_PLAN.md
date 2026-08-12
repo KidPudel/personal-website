@@ -32,7 +32,7 @@ Use the smallest relevant source and do not duplicate it into implementation cod
 - Make the box animation the opening section of `/`, in the same document as the continuous homepage.
 - Drive the authored frames in `src/assets/art/Doodles-box-opening/` from ordinary scroll progress.
 - Test a compact saturated palette as part of the frame sequence. Keep each moment flat and legible, cut colors with frame changes, and avoid decorative spheres or a separate ambient background animation.
-- Keep the verified frame-color changes and the approved frame-6 pigment handoff. The color field must originate inside the opened box, illuminate the field and drawing before crossing in front, grow past full coverage, and clear through restrained residual trails. Preserve the vivid cobalt, ice, lemon, orange, coral, magenta, and violet character. Shape it as one connected, asymmetric energy field whose calm center accelerates into fluid tendrils and fan-like directional reaches, without turning it into straight stripes, separate droplets, or an unrelated full-screen graphic.
+- Keep the verified frame-color changes and the approved frame-6 pigment handoff. The color field must originate inside the opened box, illuminate the field and drawing before crossing in front, grow past full coverage, and clear through a brief distorted echo of the same field. Preserve the vivid cobalt, ice, lemon, orange, coral, magenta, and violet character across the full burst. Shape it as one connected, asymmetric energy field whose calm center accelerates into fluid tendrils and fan-like directional reaches, without turning it into straight stripes, separate droplets, geometric afterimages, or an unrelated full-screen graphic.
 - Treat the transparent frames as color-flexible assets that may be inverted or recolored for the chosen surfaces.
 - Replace the empty four-direction Home with a continuous homepage.
 - Make the box reveal Igor, not merely navigation.
@@ -244,7 +244,7 @@ Exit condition: the complete homepage is readable in correct order, buildable, a
 - Make Observatory visible in or at the first-viewport edge.
 - Replace the deleted legacy frames with `src/assets/art/Doodles-box-opening/`.
 - Map the eight box frames to a short sticky section driven by ordinary scroll progress.
-- Use the verified frame-6 pigment field as the production handoff. Keep its irregular low-resolution contour, short coverage overshoot, and residual edge trails connected to ordinary scroll progress.
+- Use the verified frame-6 pigment field as the production handoff. Keep its irregular low-resolution contour, short coverage overshoot, and fragmented radial echo connected to ordinary scroll progress.
 - Keep the scroll-controlled interval short enough to complete within less than one additional viewport of scrolling.
 - Allow fast forward and backward scrolling to advance or reverse the decorative sequence naturally.
 - Support skip, keyboard, touch, no-JavaScript, and reduced-motion behavior.
