@@ -245,7 +245,7 @@ Exit condition: the complete homepage is readable in correct order, buildable, a
 - Replace the deleted legacy frames with `src/assets/art/Doodles-box-opening/`.
 - Map the eight box frames to a short sticky section driven by ordinary scroll progress.
 - Use the verified frame-6 pigment field as the production handoff. Keep its irregular low-resolution contour, short coverage overshoot, and fragmented radial echo connected to ordinary scroll progress.
-- Keep the scroll-controlled interval short enough to complete within less than one additional viewport of scrolling.
+- Give the scroll-controlled interval enough travel for the authored frames and color handoff to feel deliberate, while keeping the opening bounded to about one and a half viewports of scrolling.
 - Allow fast forward and backward scrolling to advance or reverse the decorative sequence naturally.
 - Support skip, keyboard, touch, no-JavaScript, and reduced-motion behavior.
 - Remove the obsolete `/secret-box/` page and its legacy timed component after the new root opening is verified.

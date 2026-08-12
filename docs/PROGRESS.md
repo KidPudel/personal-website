@@ -584,6 +584,10 @@ Milestone scope and exit conditions live only in `docs/IMPLEMENTATION_PLAN.md`.
   containers, complete image loading, and no horizontal overflow. `astro check`
   and production builds pass for the root and `/personal-website/` base paths.
 
+## Recent homepage interaction update
+
+- Lengthened the JavaScript-enhanced opening sequence from `195svh` to `250svh` so native scrolling advances the box frames and color handoff more gradually. The frame timing, reveal timing, skip link, reduced-motion behavior, and no-JavaScript fallback remain unchanged.
+
 ## Open inputs and blockers
 
 - Delius and Cartoon Relief files are present and integrated. Web-embedding rights still need confirmation before release.
