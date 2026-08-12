@@ -141,15 +141,29 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                 );
             };
 
+            const angularDistance = (first: number, second: number) =>
+                Math.abs(
+                    Math.atan2(
+                        Math.sin(first - second),
+                        Math.cos(first - second),
+                    ),
+                );
+
+            const energyDirections = [
+                { angle: -2.72, reach: 0.52, width: 0.2 },
+                { angle: -2.18, reach: 0.34, width: 0.24 },
+                { angle: -1.5, reach: 0.86, width: 0.17 },
+                { angle: -0.78, reach: 0.46, width: 0.21 },
+                { angle: -0.04, reach: 0.78, width: 0.18 },
+                { angle: 0.68, reach: 0.42, width: 0.23 },
+                { angle: 1.38, reach: 0.67, width: 0.18 },
+                { angle: 2.22, reach: 0.38, width: 0.25 },
+                { angle: 2.93, reach: 0.6, width: 0.19 },
+            ];
+
             const fieldDistance = (x: number, y: number, growth: number) => {
                 const dx = x - 0.5;
                 const dy = y - (0.53 - growth * 0.015);
-                const angle = Math.atan2(dy, dx);
-                const contour =
-                    1 +
-                    Math.sin(angle * 3 + 0.7) * (0.045 + growth * 0.055) +
-                    Math.cos(angle * 5 - 0.45) * (0.025 + growth * 0.035) +
-                    Math.sin(angle * 2 + 1.1) * 0.025;
                 const skewedX = dx + dy * 0.16;
                 const viewportAspect = window.innerWidth / window.innerHeight;
                 const seedVerticalRadius = Math.min(
@@ -160,10 +174,45 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
                     seedVerticalRadius +
                     (0.48 - seedVerticalRadius) *
                         smooth(clamp((growth - 0.18) / 0.82));
+                const normalizedX = skewedX / 0.6;
+                const normalizedY = dy / verticalRadius;
+                const radial = Math.hypot(normalizedX, normalizedY);
+                const angle = Math.atan2(normalizedY, normalizedX);
+                const energy = smooth(clamp((growth - 0.12) / 0.74));
+                const flowAngle =
+                    angle +
+                    energy *
+                        (Math.sin(radial * 3.8 + 0.8) * 0.12 +
+                            Math.sin(radial * 7.2 - 0.55) * 0.045);
+                const flare = smooth(clamp((radial - 0.1) / 0.92));
+                const contour =
+                    1 +
+                    Math.sin(flowAngle * 3 + 0.7) *
+                        (0.028 + growth * 0.035) +
+                    Math.cos(flowAngle * 5 - 0.45) *
+                        (0.018 + growth * 0.025) +
+                    Math.sin(flowAngle * 8 + radial * 2.6) * energy * 0.018;
+                let directionalReach = 0;
 
-                return (
-                    Math.hypot(skewedX / 0.6, dy / verticalRadius) / contour
-                );
+                for (const direction of energyDirections) {
+                    const distance = angularDistance(
+                        flowAngle,
+                        direction.angle,
+                    );
+                    const profile = 1 - smooth(clamp(distance / direction.width));
+
+                    directionalReach += direction.reach * profile;
+                }
+
+                const reach =
+                    1 +
+                    energy * flare * directionalReach +
+                    energy *
+                        flare *
+                        Math.sin(flowAngle * 6.5 + radial * 3.2) *
+                        0.055;
+
+                return radial / Math.max(0.58, contour * reach);
             };
 
             const ellipseDistance = (
@@ -501,7 +550,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
         width: calc(100% + 8vmax);
         height: calc(100% + 8vmax);
         filter:
-            blur(clamp(0.65rem, 1.65vw, 1.45rem))
+            blur(clamp(0.45rem, 1.05vw, 0.95rem))
             saturate(1.42)
             contrast(1.045);
         image-rendering: pixelated;
