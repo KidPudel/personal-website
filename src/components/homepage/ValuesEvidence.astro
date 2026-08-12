@@ -1,0 +1,684 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { sitePath } from '../../config/site';
+
+interface Props {
+  observatory: CollectionEntry<'software'>;
+  foodProduct: CollectionEntry<'software'>;
+  chineseBee: CollectionEntry<'software'>;
+}
+
+const { observatory, foodProduct, chineseBee } = Astro.props;
+const projectTitles = {
+  Observatory: observatory.data.title,
+  PizzaSushiWok: foodProduct.data.title,
+  'Chinese Bee': chineseBee.data.title,
+};
+
+const values = [
+  {
+    number: '01',
+    before: 'Fulfil a real wish for ',
+    words: ['experience', 'behaviour', 'capability'],
+    after: '.',
+    copy: 'Start with what someone is actually trying to accomplish, then carry that need through the product.',
+    aspects: [
+      {
+        project: 'Observatory',
+        title: 'Run controlled tests, not only watch live activity.',
+        copy: 'A person can test one to four applications, add a warm-up, repeat rounds, and keep the results for later inspection and comparison.',
+        shot: 'Observatory testing view screenshot',
+        caseStudy: true,
+      },
+      {
+        project: 'PizzaSushiWok',
+        title: 'Carry one order from browsing to delivery.',
+        copy: 'Menu navigation, basket, checkout, payment, addresses, courier status, promotions, loyalty, and bonuses belong to one complete ordering journey.',
+        shot: 'Ordering journey screenshot',
+      },
+      {
+        project: 'Chinese Bee',
+        title: 'Turn a learning need into a repeatable practice loop.',
+        copy: 'Multilingual search leads into saved vocabulary, quizzes, guidance, handwriting practice, and recognition feedback instead of ending at a definition.',
+        shot: 'Search-to-practice flow screenshot',
+      },
+    ],
+  },
+  {
+    number: '02',
+    before: 'Create an ',
+    words: ['impactful', 'empowering'],
+    after: ' interaction experience.',
+    copy: 'Give people useful control, confidence, ease, or delight through the way the product behaves.',
+    aspects: [
+      {
+        project: 'Observatory',
+        title: 'Keep evidence local, reopenable, and comparable.',
+        copy: 'Recorded tests stay on the Mac and remain available for later comparison, giving people useful evidence rather than a disappearing live snapshot.',
+        shot: 'Saved test comparison screenshot',
+      },
+      {
+        project: 'PizzaSushiWok',
+        title: 'Make complex order states manageable.',
+        copy: 'Payments and 3DS, maps and addresses, courier progress, promotions, loyalty, bonuses, and themes work as understandable parts of one product.',
+        shot: 'Checkout and delivery-state screenshot',
+      },
+      {
+        project: 'Chinese Bee',
+        title: 'Respond to the learner’s own handwriting.',
+        copy: 'Freehand character input receives an accuracy result, turning practice from passive review into feedback on something the learner actually made.',
+        shot: 'Handwriting feedback screenshot',
+      },
+    ],
+  },
+  {
+    number: '03',
+    before: 'Be ',
+    words: ['clear', 'honest'],
+    after: ' with users or players.',
+    copy: 'Expose the right structure and state so the product can be understood without fighting it.',
+    aspects: [
+      {
+        project: 'Observatory',
+        title: 'Group processes into the applications people recognize.',
+        copy: 'Related processes become whole-application totals, replacing Activity Monitor’s process-first view with a structure that reads clearly at a glance.',
+        shot: 'Application totals screenshot',
+      },
+      {
+        project: 'PizzaSushiWok',
+        title: 'Keep a large menu navigable across devices.',
+        copy: 'Custom category and menu-scrolling behavior, adaptive layouts, and repeated usability fixes help people keep their place while ordering.',
+        shot: 'Menu navigation screenshot',
+      },
+      {
+        project: 'Chinese Bee',
+        title: 'Make several surfaces feel like one capability.',
+        copy: 'Chat, saved learning state, practice eligibility, freehand input, and scoring are connected as one understandable workflow rather than separate tools.',
+        shot: 'Connected chat and practice screenshot',
+      },
+    ],
+  },
+] as const;
+---
+
+<section id="values" class="values-story" aria-labelledby="values-title">
+  <header class="values-story__intro">
+    <p class="eyebrow">Three things important to me</p>
+    <h2 id="values-title">The values only matter if they appear in the details.</h2>
+    <p>
+      These are not three projects assigned to three values. They are specific product decisions
+      where the values become visible.
+    </p>
+    <a href={sitePath('/case-studies/observatory/')}>
+      Read the flagship Observatory case study <span aria-hidden="true">→</span>
+    </a>
+  </header>
+
+  <div class="value-chapters" data-value-chapters>
+    {values.map((value) => (
+      <section class="value-chapter" aria-labelledby={`value-${value.number}`}>
+        <div class="value-sticky">
+          <span class="value-sticky__number" aria-hidden="true">{value.number}</span>
+          <h3 id={`value-${value.number}`}>
+            {value.before}<button
+              type="button"
+              class="word-cycle"
+              data-word-cycle
+              aria-label={`${value.words[0]}. Change this word.`}
+              disabled
+            >
+              {value.words.map((word, wordIndex) => (
+                <span data-word-option hidden={wordIndex !== 0}>{word}</span>
+              ))}
+            </button>{value.after}
+          </h3>
+          <p>{value.copy}</p>
+          <span class="value-sticky__hint" aria-hidden="true">the evidence unfolds ↓</span>
+        </div>
+
+        <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
+          {value.aspects.map((aspect, aspectIndex) => (
+            <li class="aspect" data-aspect>
+              <div class="aspect__count" aria-hidden="true">{value.number}.{aspectIndex + 1}</div>
+              <div class="aspect__visual" role="img" aria-label={`Placeholder for ${aspect.shot} from ${projectTitles[aspect.project]}`}>
+                <span>{aspect.shot}</span>
+                <small>image placeholder</small>
+              </div>
+              <div class="aspect__copy">
+                <p class="aspect__project">{aspect.project}</p>
+                <h4>{aspect.title}</h4>
+                <p>{aspect.copy}</p>
+                {'caseStudy' in aspect && aspect.caseStudy && (
+                  <a href={sitePath('/case-studies/observatory/')}>
+                    See this in the case study <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
+
+  <div class="personal-note">
+    <div>
+      <p class="eyebrow">A few things about me</p>
+      <h2>More than one discipline, still one person.</h2>
+    </div>
+    <ul>
+      <li>Product designer</li>
+      <li>Experienced software engineer</li>
+      <li>Hobby game designer</li>
+      <li>Editorial and illustrative sketcher</li>
+      <li>Proud boyfriend to a beautiful girlfriend</li>
+    </ul>
+  </div>
+
+  <div class="more-work">
+    <p>That’s the short version.</p>
+    <a href={sitePath('/work/')}>See more work <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<script>
+  const enhanceValueChapters = (root: ParentNode = document) => {
+    root.querySelectorAll<HTMLElement>('[data-value-chapters]').forEach((chapters) => {
+      if (chapters.dataset.enhanced) return;
+      chapters.dataset.enhanced = 'true';
+
+      chapters.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
+        const options = Array.from(button.querySelectorAll<HTMLElement>('[data-word-option]'));
+        let activeIndex = 0;
+
+        const update = () => {
+          options.forEach((option, index) => {
+            const active = index === activeIndex;
+            option.hidden = !active;
+            option.setAttribute('aria-hidden', String(!active));
+          });
+
+          const word = options[activeIndex]?.textContent?.trim() ?? '';
+          button.setAttribute('aria-label', `${word}. Change this word.`);
+        };
+
+        button.disabled = false;
+        button.addEventListener('click', () => {
+          activeIndex = (activeIndex + 1) % options.length;
+          update();
+        });
+        update();
+      });
+
+      if (!('IntersectionObserver' in window)) return;
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).dataset.revealed = 'true';
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -14% 0px', threshold: 0.16 });
+
+      chapters.querySelectorAll<HTMLElement>('[data-aspect]').forEach((aspect) => observer.observe(aspect));
+    });
+  };
+
+  enhanceValueChapters();
+  document.addEventListener('astro:page-load', () => enhanceValueChapters());
+</script>
+
+<style>
+  .values-story {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 88rem);
+    margin-inline: auto;
+    padding: clamp(4.5rem, 8vw, 7.5rem) clamp(1.25rem, 5vw, 4.5rem) clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .values-story::before,
+  .values-story::after {
+    position: absolute;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: '';
+    filter: grayscale(1);
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .values-story::before {
+    top: 11rem;
+    left: -1rem;
+    width: 8rem;
+    aspect-ratio: 1;
+    background-image: url('../../assets/art/doodles/Doodles_camera.png');
+    rotate: -7deg;
+  }
+
+  .values-story::after {
+    right: 0;
+    bottom: 22rem;
+    width: 9rem;
+    aspect-ratio: 1;
+    background-image: url('../../assets/art/doodles/Doodles_fish_1.png');
+    rotate: 4deg;
+  }
+
+  .eyebrow,
+  .aspect__project,
+  .value-sticky__hint {
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--font-reading);
+    font-size: 0.78rem;
+    letter-spacing: 0.035em;
+  }
+
+  .values-story__intro {
+    width: min(100%, 48rem);
+    margin: 0 auto clamp(5rem, 10vw, 9rem);
+    text-align: center;
+  }
+
+  .values-story__intro h2,
+  .personal-note h2,
+  .value-sticky h3,
+  .aspect h4 {
+    margin: 0;
+    font-family: var(--font-portfolio-display);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+  }
+
+  .values-story__intro h2 {
+    margin-top: 0.55rem;
+    font-size: clamp(1.9rem, 3vw, 3.1rem);
+    line-height: 1.06;
+  }
+
+  .values-story__intro > p:not(.eyebrow) {
+    max-width: 38rem;
+    margin: 1.2rem auto 0;
+    color: #4e4b45;
+  }
+
+  .values-story__intro a,
+  .aspect__copy a {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-family: var(--font-reading);
+    font-size: 0.82rem;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35rem;
+  }
+
+  .value-chapter {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem) minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(32rem, auto));
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    border-top: 1px solid rgba(17, 17, 15, 0.15);
+  }
+
+  .value-sticky {
+    position: sticky;
+    z-index: 2;
+    top: max(15vh, 6rem);
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
+    padding: 1.35rem 1rem 1.5rem;
+    background: #f8f8f8;
+    text-align: center;
+  }
+
+  .value-sticky::after {
+    position: absolute;
+    z-index: -1;
+    top: 100%;
+    left: 50%;
+    height: clamp(3rem, 8vh, 5rem);
+    border-left: 2px dashed rgba(17, 17, 15, 0.22);
+    content: '';
+    transform: translateX(-50%) rotate(0.6deg);
+  }
+
+  .value-sticky__number {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--accent);
+    font-family: var(--font-reading);
+    font-size: 0.72rem;
+  }
+
+  .value-sticky h3 {
+    font-size: clamp(1.5rem, 2.15vw, 2.2rem);
+    line-height: 1.08;
+  }
+
+  .value-sticky > p {
+    max-width: 27rem;
+    margin: 0.9rem auto 0;
+    color: #5d5952;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .value-sticky__hint {
+    display: block;
+    margin-top: 1.2rem;
+  }
+
+  .word-cycle {
+    position: relative;
+    display: inline-grid;
+    padding: 0;
+    border: 0;
+    border-bottom: 0.08em solid currentColor;
+    border-radius: 0;
+    background: transparent;
+    color: var(--accent);
+    font: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .value-chapter:nth-child(1) .word-cycle { min-width: 6.2em; }
+  .value-chapter:nth-child(2) .word-cycle { min-width: 5.4em; }
+  .value-chapter:nth-child(3) .word-cycle { min-width: 3.1em; }
+
+  .word-cycle:disabled {
+    color: inherit;
+    cursor: default;
+  }
+
+  .word-cycle:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 0.2rem;
+  }
+
+  .word-cycle [data-word-option][hidden] { display: none; }
+
+  .aspects {
+    display: contents;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .aspect {
+    position: relative;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .aspect:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .aspect:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1;
+    margin-top: clamp(12rem, 18vw, 17rem);
+  }
+
+  .aspect:nth-child(3) {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 2rem;
+  }
+
+  .value-chapter:nth-child(even) .aspect:nth-child(1),
+  .value-chapter:nth-child(even) .aspect:nth-child(3) {
+    grid-column: 3;
+  }
+
+  .value-chapter:nth-child(even) .aspect:nth-child(2) {
+    grid-column: 1;
+  }
+
+  [data-value-chapters][data-enhanced] .aspect {
+    opacity: 0.2;
+    transform: translateY(2.5rem) rotate(0.4deg);
+    transition:
+      opacity 480ms ease,
+      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  [data-value-chapters][data-enhanced] .aspect[data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .aspect__count {
+    position: absolute;
+    top: -1.2rem;
+    right: 0.5rem;
+    color: rgba(17, 17, 15, 0.38);
+    font-family: var(--font-reading);
+    font-size: 0.72rem;
+    rotate: 2deg;
+  }
+
+  .aspect__visual {
+    display: grid;
+    aspect-ratio: 16 / 8.5;
+    place-items: center;
+    padding: 2rem;
+    overflow: hidden;
+    border: clamp(0.28rem, 0.45vw, 0.42rem) solid #11110f;
+    border-radius: clamp(1.15rem, 2vw, 1.75rem);
+    background:
+      linear-gradient(135deg, rgba(227, 86, 115, 0.08), transparent 48%),
+      radial-gradient(rgba(17, 17, 15, 0.18) 0.65px, transparent 0.65px),
+      #ecebe7;
+    background-size: auto, 12px 12px, auto;
+    box-shadow: 0.32rem 0.38rem 0 rgba(17, 17, 15, 0.13);
+    color: #59564f;
+    font-family: var(--font-reading);
+    text-align: center;
+  }
+
+  .aspect__visual span,
+  .aspect__visual small {
+    grid-area: 1 / 1;
+  }
+
+  .aspect__visual span {
+    max-width: 22ch;
+  }
+
+  .aspect__visual small {
+    align-self: end;
+    color: rgba(17, 17, 15, 0.48);
+    font-size: 0.68rem;
+  }
+
+  .aspect__copy {
+    padding-top: 1.25rem;
+  }
+
+  .aspect h4 {
+    max-width: 22ch;
+    margin-top: 0.45rem;
+    font-size: clamp(1.35rem, 1.75vw, 1.9rem);
+    line-height: 1.1;
+  }
+
+  .aspect__copy > p:not(.aspect__project) {
+    max-width: 39rem;
+    margin: 0.85rem 0 0;
+    color: #4e4b45;
+    font-size: 0.9rem;
+    line-height: 1.62;
+  }
+
+  .personal-note {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 7vw, 7rem);
+    width: min(100%, 62rem);
+    margin: clamp(5rem, 10vw, 9rem) auto 0;
+    padding-top: clamp(2.5rem, 5vw, 4.5rem);
+    border-top: 1px solid rgba(17, 17, 15, 0.15);
+  }
+
+  .personal-note h2 {
+    max-width: 12ch;
+    margin-top: 0.5rem;
+    font-size: clamp(1.8rem, 2.6vw, 2.7rem);
+    line-height: 1.08;
+  }
+
+  .personal-note ul {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-reading);
+    list-style: none;
+  }
+
+  .personal-note li {
+    display: grid;
+    grid-template-columns: 1rem minmax(0, 1fr);
+    gap: 0.55rem;
+    align-items: baseline;
+  }
+
+  .personal-note li::before {
+    color: var(--accent);
+    content: '•';
+  }
+
+  .more-work {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.8rem 1.35rem;
+    margin-top: clamp(4rem, 8vw, 7rem);
+    text-align: center;
+  }
+
+  .more-work p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .more-work a {
+    font-family: var(--font-portfolio-display);
+    font-size: clamp(1.4rem, 1.9vw, 1.9rem);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35rem;
+  }
+
+  @media (max-width: 50rem) {
+    .value-chapter {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      gap: 2.5rem;
+      padding-top: 3.5rem;
+    }
+
+    .value-sticky {
+      z-index: 3;
+      top: 3.2rem;
+      grid-column: 1;
+      grid-row: auto;
+      width: calc(100% + 0.5rem);
+      margin-left: -0.25rem;
+      padding: 1.1rem 0.75rem 1.25rem;
+      box-shadow: 0 1rem 1.4rem rgba(248, 248, 248, 0.96);
+    }
+
+    .value-sticky::after,
+    .value-sticky__hint {
+      display: none;
+    }
+
+    .value-sticky h3 {
+      max-width: 22rem;
+      margin-inline: auto;
+      font-size: clamp(1.35rem, 5.6vw, 1.8rem);
+    }
+
+    .value-sticky > p {
+      max-width: 31rem;
+      margin-top: 0.65rem;
+      font-size: 0.88rem;
+    }
+
+    .aspects {
+      display: grid;
+      gap: 4.5rem;
+    }
+
+    .aspect:nth-child(n),
+    .value-chapter:nth-child(even) .aspect:nth-child(n) {
+      grid-column: 1;
+      grid-row: auto;
+      margin-top: 0;
+      width: 90%;
+    }
+
+    .aspect:nth-child(odd) {
+      justify-self: start;
+    }
+
+    .aspect:nth-child(even) {
+      justify-self: end;
+    }
+
+    .value-chapter:nth-child(even) .aspect:nth-child(odd) {
+      justify-self: end;
+    }
+
+    .value-chapter:nth-child(even) .aspect:nth-child(even) {
+      justify-self: start;
+    }
+
+    [data-value-chapters][data-enhanced] .aspect:nth-child(odd) {
+      transform: translate(-1.25rem, 2rem) rotate(-0.4deg);
+    }
+
+    [data-value-chapters][data-enhanced] .aspect:nth-child(even) {
+      transform: translate(1.25rem, 2rem) rotate(0.4deg);
+    }
+
+    [data-value-chapters][data-enhanced] .aspect[data-revealed] {
+      transform: none;
+    }
+
+    .aspect__visual {
+      aspect-ratio: 16 / 9.5;
+    }
+
+    .personal-note {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .more-work {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-value-chapters][data-enhanced] .aspect {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

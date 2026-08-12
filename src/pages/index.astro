@@ -6,8 +6,11 @@ import homepageShareImage from '../assets/software-showcases/observatory/launch-
 import BaseDocument from '../layouts/BaseDocument.astro';
 
 const identityCage = await getEntry('writing', 'identity-cage');
+const observatory = await getEntry('software', 'observatory');
+const foodProduct = await getEntry('software', 'flutter-product');
+const chineseBee = await getEntry('software', 'chinese-bee');
 
-if (!identityCage) {
+if (!identityCage || !observatory || !foodProduct || !chineseBee) {
   throw new Error('The homepage content entries could not be loaded.');
 }
 ---
@@ -19,7 +22,7 @@ if (!identityCage) {
   themeColor="#F8F8F8"
   ogImage={homepageShareImage.src}
 >
-  <HiringHomepage {identityCage} />
+  <HiringHomepage {identityCage} {observatory} {foodProduct} {chineseBee} />
 </BaseDocument>
 
 <style is:global>

@@ -49,7 +49,13 @@ BaseDocument
     ├── OpeningSequence
     │   ├── scroll-controlled box frames
     │   └── circular reveal containing IdentityIntroduction
-    ├── CraftValues
+    ├── ValuesEvidence
+    │   ├── three sticky interactive value chapters
+    │   ├── concrete project-aspect evidence on both sides
+    │   ├── Observatory case-study path
+    │   ├── replaceable screenshot placeholders
+    │   ├── concise personal list
+    │   └── complete-work path
     └── WritingPreview
 
 PortfolioHeader
@@ -146,7 +152,7 @@ Allowed local enhancements include:
 
 - scroll-controlled box-frame and pigment-field progress;
 - portrait switching;
-- craft-value word cycling and completion reveal;
+- craft-value word cycling inside the values-and-evidence composition;
 - the side-mounted contact disclosure;
 - restrained media activation;
 

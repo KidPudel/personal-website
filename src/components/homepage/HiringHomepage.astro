@@ -1,20 +1,23 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
-import { connectLinks, sitePath } from '../../config/site';
+import { sitePath } from '../../config/site';
 import ColorWord from '../who/ColorWord.astro';
-import CraftValues from '../who/CraftValues.astro';
 import PlayfulWord from '../who/PlayfulWord.astro';
 import PortraitInteraction from '../who/PortraitInteraction.astro';
 import OpeningSequence from './OpeningSequence.astro';
 import PortfolioHeader from './PortfolioHeader.astro';
 import SectionMarker from './SectionMarker.astro';
+import ValuesEvidence from './ValuesEvidence.astro';
 
 interface Props {
   identityCage: CollectionEntry<'writing'>;
+  observatory: CollectionEntry<'software'>;
+  foodProduct: CollectionEntry<'software'>;
+  chineseBee: CollectionEntry<'software'>;
 }
 
-const { identityCage } = Astro.props;
+const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
 ---
 
 <div class="portfolio-page">
@@ -42,18 +45,7 @@ const { identityCage } = Astro.props;
       </section>
     </OpeningSequence>
 
-    <section id="values" class="values" aria-label="Three things important to me">
-      <div class="doodles doodles--values" aria-hidden="true"></div>
-      <div class="values__content">
-        <CraftValues completionId="values-contact-invitation" />
-        <aside id="values-contact-invitation" class="values__invitation" aria-live="polite" hidden>
-          <p>I’d love to chat with you.</p>
-          <div aria-label="Connect options">
-            {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-          </div>
-        </aside>
-      </div>
-    </section>
+    <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
 
     <section id="writing" class="writing" aria-labelledby="writing-title">
       <div>
@@ -96,7 +88,6 @@ const { identityCage } = Astro.props;
   }
 
   .hero,
-  .values,
   .writing {
     position: relative;
     isolation: isolate;
@@ -119,14 +110,6 @@ const { identityCage } = Astro.props;
       url('../../assets/art/doodles/Doodles_scribble.png');
     background-position: 3% 18%, 97% 78%, 96% 17%;
     background-size: 8rem, 7rem, 9rem;
-  }
-
-  .doodles--values {
-    background-image:
-      url('../../assets/art/doodles/Doodles_camera.png'),
-      url('../../assets/art/doodles/Doodles_fish_1.png');
-    background-position: 97% 14%, 3% 88%;
-    background-size: 6rem, 8rem;
   }
 
   .hero {
@@ -229,43 +212,10 @@ const { identityCage } = Astro.props;
     text-underline-offset: 0.35rem;
   }
 
-  .values,
   .writing {
     width: min(100%, 62rem);
     margin-inline: auto;
     padding: clamp(3rem, 5vw, 4.5rem) clamp(1.25rem, 5vw, 4rem);
-  }
-
-  .values {
-    z-index: 3;
-    padding-top: clamp(1.5rem, 3vw, 2.5rem);
-    padding-bottom: clamp(3rem, 5vw, 4.5rem);
-  }
-
-  .values__content {
-    width: min(100%, 43rem);
-    margin-inline: auto;
-  }
-
-  .values__content :global(.craft-values) {
-    margin-top: 0;
-  }
-
-  .values__invitation {
-    margin: 2rem 0 0;
-    padding: 1.25rem;
-    border: 1px dashed rgba(17, 17, 15, 0.35);
-  }
-
-  .values__invitation p {
-    margin: 0 0 0.75rem;
-  }
-
-  .values__invitation div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem 1rem;
-    font-size: 0.8rem;
   }
 
   .writing {
@@ -290,12 +240,6 @@ const { identityCage } = Astro.props;
     margin: 0 0 1.25rem;
     color: #4e4b45;
     font-size: clamp(0.98rem, 0.25vw + 0.94rem, 1.1rem);
-  }
-
-  @media (min-width: 52.01rem) {
-    .values {
-      margin-top: -18rem;
-    }
   }
 
   .writing {
@@ -330,7 +274,6 @@ const { identityCage } = Astro.props;
       gap: 2rem;
     }
 
-    .values__content { min-width: 0; }
   }
 
   @media (max-width: 36rem) {
@@ -372,8 +315,5 @@ const { identityCage } = Astro.props;
       margin-top: 1.35rem;
     }
 
-    .values {
-      margin-top: -8rem;
-    }
   }
 </style>

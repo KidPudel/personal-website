@@ -172,6 +172,11 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
   .work-media {
     position: relative;
     min-width: 0;
+    overflow: hidden;
+    border: clamp(0.28rem, 0.45vw, 0.42rem) solid var(--media-frame, #11110f);
+    border-radius: clamp(1.15rem, 2vw, 1.75rem);
+    background: #11110f;
+    box-shadow: 0.32rem 0.38rem 0 rgba(17, 17, 15, 0.13);
   }
 
   .work-media :global(img),
@@ -217,7 +222,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
     align-items: baseline;
     gap: 0.55rem 1rem;
     padding: 2rem;
-    border: 1px solid rgba(243, 239, 228, 0.24);
+    border: 0;
     background-image: radial-gradient(rgba(243, 239, 228, 0.12) 0.7px, transparent 0.7px);
     background-size: 12px 12px;
   }
@@ -245,7 +250,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
     justify-content: center;
     gap: 0.7rem;
     padding: 2rem;
-    border: 1px solid rgba(243, 239, 228, 0.24);
+    border: 0;
   }
 
   .flow-media span {
@@ -341,7 +346,6 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
 
   .snake-media,
   .tic-media {
-    border: 1px solid rgba(243, 239, 228, 0.22);
     background: #121312;
   }
 
