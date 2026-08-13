@@ -75,14 +75,11 @@ const projectTitles: Record<ValueProject, string> = {
 
     <p class="work-path">
       {workPath.lead}{' '}
-      <a href={sitePath('/work/')}>{workPath.label} <span aria-hidden="true">→</span></a>
+      <a href={sitePath('/work/')}>{workPath.label}</a>
     </p>
 
     <div class="personal-note">
-      <div>
-        <p class="personal-note__eyebrow">{personalNote.eyebrow}</p>
-        <h2>{personalNote.title}</h2>
-      </div>
+      <p class="personal-note__eyebrow">{personalNote.eyebrow}</p>
       <ul>
         {personalNote.items.map((item) => (
           <li>{item}</li>
@@ -199,8 +196,9 @@ const projectTitles: Record<ValueProject, string> = {
   }
 
   .word-cycle {
-    padding: 0;
+    padding: 0 0 0.04em;
     border: 0;
+    border-bottom: 0.1rem dotted var(--color-muted);
     border-radius: 0;
     background: transparent;
     color: inherit;
@@ -328,8 +326,7 @@ const projectTitles: Record<ValueProject, string> = {
     color: var(--color-ink);
     font-family: var(--font-display);
     font-size: clamp(1.4rem, 1.75vw, 1.8rem);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.35rem;
+    text-decoration: none;
   }
 
   .personal-note {
@@ -346,16 +343,6 @@ const projectTitles: Record<ValueProject, string> = {
     font-family: var(--font-reading);
     font-size: 0.8rem;
     letter-spacing: 0.035em;
-  }
-
-  .personal-note h2 {
-    max-width: 12ch;
-    margin: 0.5rem 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.8rem, 2.35vw, 2.45rem);
-    font-weight: 400;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
   }
 
   .personal-note ul {

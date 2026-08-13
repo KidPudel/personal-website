@@ -46,17 +46,63 @@ class OpeningSequence extends HTMLElement {
 
     let openingStart = 0;
     let openingDistance = 1;
+    let openingAnimationDistance = 1;
+    let openingTransitionDistance = 1;
     let visualProgress = 0;
     let lastFrameTime: number | undefined;
     let needsMeasurement = true;
+    let forwardBoundaryActive = false;
+    let forwardBoundaryPassed = false;
+    let lastEssenceProgress = -1;
+    let lastEssencePaintTime = 0;
 
     const measure = () => {
       openingStart = window.scrollY + this.getBoundingClientRect().top;
       openingDistance = Math.max(1, this.offsetHeight - window.innerHeight);
+      const authoredScrollViewports =
+        openingMotion.boundedScrollViewports +
+        openingMotion.transitionScrollViewports +
+        openingMotion.restingScrollViewports;
+      const viewportUnit = openingDistance / authoredScrollViewports;
+      openingAnimationDistance = Math.max(1, viewportUnit * openingMotion.boundedScrollViewports);
+      openingTransitionDistance = Math.max(1, viewportUnit * openingMotion.transitionScrollViewports);
       needsMeasurement = false;
     };
 
-    const paint = (progress: number) => {
+    const scrollProgress = () => {
+      const travelled = window.scrollY - openingStart;
+
+      if (travelled <= openingAnimationDistance) {
+        return openingMotion.forwardBoundaryReleaseAt * clamp(travelled / openingAnimationDistance);
+      }
+
+      const transitionProgress = clamp((travelled - openingAnimationDistance) / openingTransitionDistance);
+      return (
+        openingMotion.forwardBoundaryReleaseAt +
+        (1 - openingMotion.forwardBoundaryReleaseAt) * transitionProgress
+      );
+    };
+
+    const bypassOpening = () => reducedMotion.matches || window.location.hash.length > 0;
+
+    const releaseForwardBoundary = (markPassed = false) => {
+      forwardBoundaryActive = false;
+      if (markPassed) forwardBoundaryPassed = true;
+      this.removeAttribute('data-forward-boundary');
+    };
+
+    const activateForwardBoundary = () => {
+      forwardBoundaryActive = true;
+      this.setAttribute('data-forward-boundary', '');
+    };
+
+    const wheelDistance = (event: WheelEvent) => {
+      if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * 16;
+      if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) return event.deltaY * window.innerHeight;
+      return event.deltaY;
+    };
+
+    const paint = (progress: number, timestamp: number) => {
       const frameProgress = clamp(progress / openingMotion.flipbookUntil);
       const frameIndex = Math.min(frames.length - 1, Math.floor(frameProgress * frames.length));
       const revealProgress = smooth(
@@ -74,7 +120,15 @@ class OpeningSequence extends HTMLElement {
       this.style.setProperty('--art-opacity', String(artOpacity));
       this.style.setProperty('--instruction-opacity', String(instructionOpacity));
       this.style.setProperty('--identity-opacity', '1');
-      drawPigmentField(essence, essenceContext, this, progress);
+      const essenceProgressChanged = Math.abs(progress - lastEssenceProgress) >= openingMotion.essenceProgressStep;
+      const essenceFrameDue = timestamp - lastEssencePaintTime >= openingMotion.essenceFrameIntervalMs;
+      const essenceTerminalState = progress === 0 || progress === 1;
+
+      if (essenceTerminalState || (essenceProgressChanged && essenceFrameDue)) {
+        drawPigmentField(essence, essenceContext, this, progress);
+        lastEssenceProgress = progress;
+        lastEssencePaintTime = timestamp;
+      }
       page.style.setProperty('--header-visibility', String(headerVisibility));
       header.inert = headerVisibility < openingMotion.headerInteractiveAt;
       header.toggleAttribute('aria-hidden', headerVisibility < openingMotion.headerInteractiveAt);
@@ -96,7 +150,8 @@ class OpeningSequence extends HTMLElement {
       visualProgress = 1;
       this.frame = 0;
       lastFrameTime = undefined;
-      paint(visualProgress);
+      releaseForwardBoundary();
+      paint(visualProgress, performance.now());
     };
 
     const requestRender = () => {
@@ -107,16 +162,22 @@ class OpeningSequence extends HTMLElement {
     const render = (timestamp: number) => {
       this.frame = 0;
 
-      if (reducedMotion.matches || window.location.hash === '#contact') {
+      if (bypassOpening()) {
         showCompletedOpening();
         return;
       }
 
       if (needsMeasurement) measure();
 
-      const targetProgress = clamp((window.scrollY - openingStart) / openingDistance);
+      const targetProgress = scrollProgress();
 
-      if (lastFrameTime === undefined) {
+      if (forwardBoundaryPassed && targetProgress < openingMotion.forwardBoundaryResetAt) {
+        forwardBoundaryPassed = false;
+      }
+
+      if (forwardBoundaryPassed) {
+        visualProgress = targetProgress;
+      } else if (lastFrameTime === undefined) {
         visualProgress = targetProgress;
       } else {
         const elapsedSeconds = Math.min(
@@ -127,9 +188,74 @@ class OpeningSequence extends HTMLElement {
       }
 
       lastFrameTime = timestamp;
-      paint(visualProgress);
+      paint(visualProgress, timestamp);
 
-      if (Math.abs(targetProgress - visualProgress) > openingMotion.settleDistance) requestRender();
+      if (
+        forwardBoundaryActive &&
+        visualProgress >= openingMotion.forwardBoundaryReleaseAt - openingMotion.settleDistance
+      ) {
+        releaseForwardBoundary(true);
+      }
+
+      if (
+        forwardBoundaryActive ||
+        (!forwardBoundaryPassed && Math.abs(targetProgress - visualProgress) > openingMotion.settleDistance)
+      ) {
+        requestRender();
+      }
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (event.deltaY <= 0 || bypassOpening()) return;
+      if (forwardBoundaryPassed) return;
+      if (needsMeasurement) measure();
+
+      const openingAnimationEnd = Math.max(openingStart, openingStart + openingAnimationDistance - 1);
+      const controlledDistance = wheelDistance(event);
+      if (controlledDistance <= 0) return;
+
+      // Cancel from the first forward event in the gesture. Trackpad momentum
+      // events may become non-cancelable after an earlier event is allowed to
+      // scroll natively, so waiting for the event that crosses the boundary is
+      // too late. Reapply the same distance synchronously and clamp only at the
+      // end of the bounded box-opening phase.
+      event.preventDefault();
+      const nextScrollY = Math.min(openingAnimationEnd, window.scrollY + controlledDistance);
+      window.scrollTo({ top: nextScrollY, left: window.scrollX, behavior: 'instant' });
+
+      if (nextScrollY >= openingAnimationEnd - 1) activateForwardBoundary();
+
+      requestRender();
+    };
+
+    const handleScroll = () => {
+      if (needsMeasurement) measure();
+
+      if (!bypassOpening()) {
+        const openingAnimationEnd = Math.max(openingStart, openingStart + openingAnimationDistance - 1);
+
+        if (forwardBoundaryActive) {
+          if (window.scrollY > openingAnimationEnd + 1) {
+            window.scrollTo({ top: openingAnimationEnd, left: window.scrollX, behavior: 'instant' });
+          } else if (window.scrollY < openingAnimationEnd - 1) {
+            // Reverse input is allowed to move the document first. This avoids
+            // releasing the boundary because of a momentary opposite-signed
+            // trackpad delta that did not actually move back into the opening.
+            releaseForwardBoundary();
+          }
+        } else if (
+          !forwardBoundaryPassed &&
+          visualProgress < openingMotion.forwardBoundaryReleaseAt &&
+          window.scrollY > openingAnimationEnd
+        ) {
+          // Keyboard, scrollbar, and programmatic movement do not pass through
+          // the wheel guard, so keep a small positional fallback for them.
+          activateForwardBoundary();
+          window.scrollTo({ top: openingAnimationEnd, left: window.scrollX, behavior: 'instant' });
+        }
+      }
+
+      requestRender();
     };
 
     const handleResize = () => {
@@ -139,12 +265,20 @@ class OpeningSequence extends HTMLElement {
 
     const handleMotionPreference = () => {
       lastFrameTime = undefined;
+      if (reducedMotion.matches) releaseForwardBoundary();
       requestRender();
     };
 
-    window.addEventListener('scroll', requestRender, { passive: true, signal: this.abort.signal });
+    const handleHashChange = () => {
+      lastFrameTime = undefined;
+      releaseForwardBoundary();
+      requestRender();
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true, signal: this.abort.signal });
+    window.addEventListener('wheel', handleWheel, { passive: false, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
-    window.addEventListener('hashchange', requestRender, { signal: this.abort.signal });
+    window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
     render(performance.now());
   }
@@ -152,6 +286,7 @@ class OpeningSequence extends HTMLElement {
   disconnectedCallback() {
     this.abort?.abort();
     if (this.frame) window.cancelAnimationFrame(this.frame);
+    this.removeAttribute('data-forward-boundary');
     delete this.dataset.enhanced;
   }
 }

@@ -161,8 +161,8 @@ export const drawPigmentField = (
   host: HTMLElement,
   progress: number,
 ) => {
-  const targetWidth = Math.max(64, Math.min(144, Math.round(window.innerWidth / 12)));
-  const targetHeight = Math.max(64, Math.min(144, Math.round(window.innerHeight / 12)));
+  const targetWidth = Math.max(56, Math.min(96, Math.round(window.innerWidth / 18)));
+  const targetHeight = Math.max(56, Math.min(96, Math.round(window.innerHeight / 18)));
 
   if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
     canvas.width = targetWidth;
@@ -199,30 +199,38 @@ export const drawPigmentField = (
       const band = sample.distance / radius;
       const edge = 1 - smooth(clamp((band - 0.965) / 0.1));
       const baseAlpha = edge * baseOpacity;
-      const echoWarp = echoLife * 0.065;
-      const echoSample = fieldSample(
-        normalizedX + Math.sin(normalizedY * 11 + echoLife * 4.2) * echoWarp,
-        normalizedY + Math.sin(normalizedX * 9 - echoLife * 3.4) * echoWarp * 0.72,
-        1,
-      );
-      const echoBand = echoSample.distance / (radius * (0.9 + echoLife * 0.16));
-      const echoPhase =
-        echoSample.flowAngle * 5.25 + echoSample.radial * 1.45 + Math.sin(echoSample.flowAngle * 9 - 0.4) * 0.24;
-      const echoSpokes = 1 - smooth(clamp(Math.abs(Math.sin(echoPhase)) / 0.22));
-      const echoSpan = smooth(clamp((echoBand - 0.16) / 0.16)) * (1 - smooth(clamp((echoBand - 0.82) / 0.14)));
-      const echoBreakup = smooth(
-        clamp(
-          (Math.sin(echoBand * 29 + Math.sin(echoSample.flowAngle * 4.5) * 1.35 - echoLife * 8) - 0.04) / 0.76,
-        ),
-      );
-      const echoAlpha = echoSpokes * echoSpan * (0.3 + echoBreakup * 0.7) * echoEnvelope;
+      let echoAlpha = 0;
+      let echoBand = 0;
+      let echoFlowAngle = 0;
+      let echoRadial = 0;
+
+      if (echoEnvelope > 0.001) {
+        const echoWarp = echoLife * 0.065;
+        const echoSample = fieldSample(
+          normalizedX + Math.sin(normalizedY * 11 + echoLife * 4.2) * echoWarp,
+          normalizedY + Math.sin(normalizedX * 9 - echoLife * 3.4) * echoWarp * 0.72,
+          1,
+        );
+        echoBand = echoSample.distance / (radius * (0.9 + echoLife * 0.16));
+        echoFlowAngle = echoSample.flowAngle;
+        echoRadial = echoSample.radial;
+        const echoPhase =
+          echoFlowAngle * 5.25 + echoRadial * 1.45 + Math.sin(echoFlowAngle * 9 - 0.4) * 0.24;
+        const echoSpokes = 1 - smooth(clamp(Math.abs(Math.sin(echoPhase)) / 0.22));
+        const echoSpan =
+          smooth(clamp((echoBand - 0.16) / 0.16)) * (1 - smooth(clamp((echoBand - 0.82) / 0.14)));
+        const echoBreakup = smooth(
+          clamp((Math.sin(echoBand * 29 + Math.sin(echoFlowAngle * 4.5) * 1.35 - echoLife * 8) - 0.04) / 0.76),
+        );
+        echoAlpha = echoSpokes * echoSpan * (0.3 + echoBreakup * 0.7) * echoEnvelope;
+      }
       const alpha = clamp(baseAlpha + echoAlpha * (1 - baseAlpha));
 
       if (alpha <= 0.002) continue;
 
       const baseColor = paletteColor(pigmentPosition(band, sample.flowAngle, sample.radial, growth));
       const echoColor = paletteColor(
-        pigmentPosition(echoBand, echoSample.flowAngle + echoLife * 0.38, echoSample.radial, 1),
+        pigmentPosition(echoBand, echoFlowAngle + echoLife * 0.38, echoRadial, 1),
       );
       const echoMix = alpha > 0 ? echoAlpha / (baseAlpha + echoAlpha) : 0;
       const pixelIndex = (y * canvas.width + x) * 4;

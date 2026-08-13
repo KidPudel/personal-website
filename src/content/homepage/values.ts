@@ -44,7 +44,6 @@ export const workPath = {
 
 export const personalNote = {
   eyebrow: 'A few things about me',
-  title: 'More than one discipline, still one person.',
   items: [
     'Product designer',
     'Experienced software engineer',
