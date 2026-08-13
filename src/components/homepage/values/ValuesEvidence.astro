@@ -1,0 +1,510 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import { sitePath } from '../../../config/site';
+import {
+  personalNote,
+  values,
+  valuesPremise,
+  workPath,
+  type ValueProject,
+} from '../../../content/homepage/values';
+import EvidenceObject from './EvidenceObject.astro';
+
+interface Props {
+  observatory: CollectionEntry<'software'>;
+  foodProduct: CollectionEntry<'software'>;
+  chineseBee: CollectionEntry<'software'>;
+}
+
+const { observatory, foodProduct, chineseBee } = Astro.props;
+const projectTitles: Record<ValueProject, string> = {
+  Observatory: observatory.data.title,
+  PizzaSushiWok: foodProduct.data.title,
+  'Chinese Bee': chineseBee.data.title,
+  'Discourses by Campfire': 'Discourses by Campfire',
+  'Santa Foundation': 'Santa Foundation',
+};
+---
+
+<value-story>
+  <section id="values" class="values-story" aria-labelledby="values-title">
+    <div class="value-composition">
+      <div class="value-voice" data-value-voice>
+        <div class="value-voice__stack">
+          <div class="value-voice__layer value-voice__layer--intro" data-voice-layer>
+            <h2 id="values-title">{valuesPremise}</h2>
+          </div>
+
+          {values.map((value) => (
+            <div class="value-voice__layer" data-voice-layer>
+              <h3 id={`value-${value.id}`}>
+                {value.before}<button
+                  type="button"
+                  class="word-cycle"
+                  data-word-cycle
+                  aria-label={`${value.words[0]}. Change this word.`}
+                  disabled
+                >
+                  {value.words.map((word, wordIndex) => (
+                    <span data-word-option hidden={wordIndex !== 0}>{word}</span>
+                  ))}
+                </button>{value.after}
+              </h3>
+              <p>{value.copy}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div class="value-chapters">
+        {values.map((value) => (
+          <section
+            class="value-chapter"
+            aria-labelledby={`value-${value.id}`}
+            data-value-passage
+          >
+            <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
+              {value.aspects.map((aspect) => (
+                <EvidenceObject aspect={aspect} projectTitle={projectTitles[aspect.project]} />
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+    </div>
+
+    <p class="work-path">
+      {workPath.lead}{' '}
+      <a href={sitePath('/work/')}>{workPath.label} <span aria-hidden="true">→</span></a>
+    </p>
+
+    <div class="personal-note">
+      <div>
+        <p class="personal-note__eyebrow">{personalNote.eyebrow}</p>
+        <h2>{personalNote.title}</h2>
+      </div>
+      <ul>
+        {personalNote.items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</value-story>
+
+<script>
+  import './value-voice';
+</script>
+
+<style>
+  value-story {
+    position: relative;
+    z-index: 3;
+    display: block;
+  }
+
+  .values-story {
+    --passage-hold: 78svh;
+    --voice-width: clamp(16rem, 23vw, 19rem);
+    position: relative;
+    isolation: isolate;
+    width: min(calc(100% - clamp(4rem, 7vw, 6rem)), 88rem);
+    margin-inline: auto;
+    padding: 0 clamp(0.75rem, 2vw, 1.75rem) clamp(3.5rem, 6vw, 5rem);
+  }
+
+  .values-story::before,
+  .values-story::after {
+    position: absolute;
+    z-index: -1;
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: '';
+    filter: grayscale(1);
+    opacity: 0.06;
+    pointer-events: none;
+  }
+
+  .values-story::before {
+    top: 11rem;
+    left: -1rem;
+    width: 8rem;
+    aspect-ratio: 1;
+    background-image: url('../../../assets/art/doodles/Doodles_camera.png');
+    rotate: -7deg;
+  }
+
+  .values-story::after {
+    right: 0;
+    bottom: 22rem;
+    width: 9rem;
+    aspect-ratio: 1;
+    background-image: url('../../../assets/art/doodles/Doodles_fish_1.png');
+    rotate: 4deg;
+  }
+
+  .value-composition {
+    position: relative;
+    display: grid;
+  }
+
+  .value-voice,
+  .value-chapters {
+    grid-area: 1 / 1;
+  }
+
+  .value-voice {
+    position: sticky;
+    z-index: 4;
+    top: max(14svh, 6rem);
+    align-self: start;
+    width: var(--voice-width);
+    min-height: 9rem;
+    margin-inline: auto;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .value-voice__stack {
+    display: grid;
+    align-items: start;
+  }
+
+  .value-voice__layer {
+    min-width: 0;
+    padding: 1.1rem 0.9rem 1.25rem;
+    background: rgb(248 248 248 / 0.94);
+    pointer-events: auto;
+  }
+
+  .value-voice__layer h2,
+  .value-voice__layer h3,
+  .value-voice__layer p {
+    margin: 0;
+  }
+
+  .value-voice__layer--intro h2 {
+    font-family: var(--font-reading);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.18;
+  }
+
+  .value-voice__layer h3 {
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 2.3vw, 2.25rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+  }
+
+  .value-voice__layer:nth-child(2) .word-cycle { min-width: 6.2em; }
+  .value-voice__layer:nth-child(3) .word-cycle { min-width: 5.4em; }
+  .value-voice__layer:nth-child(4) .word-cycle { min-width: 3.1em; }
+
+  .value-voice__layer > p {
+    max-width: 27rem;
+    margin: 0.9rem auto 0;
+    color: var(--color-copy);
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  .word-cycle {
+    position: relative;
+    display: inline-grid;
+    padding: 0;
+    border: 0;
+    border-bottom: 0.08em solid currentColor;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-accent);
+    font: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .word-cycle:disabled {
+    color: inherit;
+    cursor: default;
+  }
+
+  .word-cycle:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 0.2rem;
+  }
+
+  .word-cycle [data-word-option][hidden] {
+    display: none;
+  }
+
+  :global(.js) .value-voice[data-enhanced] .value-voice__stack {
+    display: grid;
+  }
+
+  :global(.js) .value-voice[data-enhanced] .value-voice__layer {
+    grid-area: 1 / 1;
+    clip-path: inset(var(--voice-clip-top, 100%) var(--voice-clip-right, 100%) 0 0);
+    filter: blur(var(--voice-blur, 0));
+    opacity: var(--voice-opacity, 0);
+    transform: translateY(var(--voice-shift, 0));
+    will-change: clip-path, filter, opacity, transform;
+  }
+
+  .value-chapters {
+    position: relative;
+    z-index: 1;
+  }
+
+  .value-chapter,
+  .value-chapter:first-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(30rem, auto));
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+    padding: var(--passage-hold) 0 clamp(4rem, 8vw, 7rem);
+  }
+
+  .value-chapter:first-child {
+    grid-template-rows: repeat(3, minmax(30rem, auto));
+  }
+
+  .aspects {
+    display: contents;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .value-chapter :global(.aspect:nth-child(1)) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .value-chapter :global(.aspect:nth-child(2)) {
+    grid-column: 3;
+    grid-row: 1;
+    margin-top: clamp(12rem, 18vw, 17rem);
+  }
+
+  .value-chapter :global(.aspect:nth-child(3)) {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 2rem;
+  }
+
+  .value-chapter:nth-child(even) :global(.aspect:nth-child(1)),
+  .value-chapter:nth-child(even) :global(.aspect:nth-child(3)) {
+    grid-column: 3;
+  }
+
+  .value-chapter:nth-child(even) :global(.aspect:nth-child(2)) {
+    grid-column: 1;
+  }
+
+  .value-chapter:first-child :global(.aspect:nth-child(4)) {
+    grid-column: 3;
+    grid-row: 2;
+    margin-top: clamp(12rem, 18vw, 17rem);
+  }
+
+  .value-chapter:first-child :global(.aspect:nth-child(5)) {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 2rem;
+  }
+
+  :global(.js) value-story[data-enhanced] :global(.aspect) {
+    opacity: 0.18;
+    transform: translateY(2.25rem) rotate(0.35deg);
+    transition:
+      opacity 480ms ease,
+      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  :global(.js) value-story[data-enhanced] :global(.aspect[data-revealed]) {
+    opacity: 1;
+    transform: none;
+  }
+
+  .work-path {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem 1.1rem;
+    width: min(100%, 62rem);
+    margin: clamp(1.5rem, 4vw, 3rem) auto 0;
+    color: var(--color-muted);
+  }
+
+  .work-path a {
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 1.75vw, 1.8rem);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35rem;
+  }
+
+  .personal-note {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 7vw, 7rem);
+    width: min(100%, 62rem);
+    margin: clamp(4.5rem, 7vw, 6.5rem) auto 0;
+  }
+
+  .personal-note__eyebrow {
+    margin: 0;
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: 0.8rem;
+    letter-spacing: 0.035em;
+  }
+
+  .personal-note h2 {
+    max-width: 12ch;
+    margin: 0.5rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 2.35vw, 2.45rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+  }
+
+  .personal-note ul {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0;
+    margin: 0;
+    font-family: var(--font-reading);
+    list-style: none;
+  }
+
+  .personal-note li {
+    display: grid;
+    grid-template-columns: 1rem minmax(0, 1fr);
+    gap: 0.55rem;
+    align-items: baseline;
+  }
+
+  .personal-note li::before {
+    color: var(--color-accent);
+    content: '•';
+  }
+
+  @media (max-width: 50rem) {
+    .values-story {
+      --passage-hold: 72svh;
+      --voice-width: clamp(7.5rem, 36vw, 9rem);
+      width: 100%;
+      padding-inline: clamp(0.45rem, 2.2vw, 0.9rem);
+    }
+
+    .value-voice {
+      top: max(12svh, 4.5rem);
+      min-height: 6rem;
+    }
+
+    .value-voice__layer {
+      padding: 0.65rem 0.35rem 0.75rem;
+    }
+
+    .value-voice__layer--intro h2 {
+      font-size: clamp(0.9rem, 4vw, 1.08rem);
+    }
+
+    .value-voice__layer h3 {
+      font-size: clamp(0.82rem, 3.8vw, 1.05rem);
+      line-height: 1.09;
+    }
+
+    .value-voice__layer > p {
+      margin-top: 0.42rem;
+      font-size: clamp(0.56rem, 2.25vw, 0.66rem);
+      line-height: 1.4;
+    }
+
+    .value-chapter,
+    .value-chapter:first-child {
+      grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
+      grid-template-rows: repeat(2, minmax(19rem, auto));
+      gap: clamp(0.55rem, 2.6vw, 1rem);
+      padding: var(--passage-hold) 0 clamp(3rem, 14vw, 4.5rem);
+    }
+
+    .value-chapter:first-child {
+      grid-template-rows: repeat(3, minmax(19rem, auto));
+    }
+
+    .value-chapter :global(.aspect:nth-child(n)),
+    .value-chapter:nth-child(even) :global(.aspect:nth-child(n)),
+    .value-chapter:first-child :global(.aspect:nth-child(n)) {
+      width: 100%;
+      margin-top: 0;
+      justify-self: stretch;
+    }
+
+    .value-chapter :global(.aspect:nth-child(2)),
+    .value-chapter:first-child :global(.aspect:nth-child(2)) {
+      margin-top: 7rem;
+    }
+
+    .value-chapter:first-child :global(.aspect:nth-child(4)) {
+      margin-top: 7rem;
+    }
+
+    .values-story :global(.aspect__visual),
+    .values-story :global(.aspect--compact .aspect__visual),
+    .values-story :global(.aspect--portrait .aspect__visual) {
+      width: 100%;
+    }
+
+    .values-story :global(.aspect__copy) {
+      padding-top: 0.45rem;
+    }
+
+    .values-story :global(.aspect__project) {
+      font-size: clamp(0.48rem, 1.9vw, 0.58rem);
+    }
+
+    .values-story :global(.aspect h4) {
+      margin-top: 0.2rem;
+      font-size: clamp(0.6rem, 2.45vw, 0.74rem);
+    }
+
+    .values-story :global(.aspect__copy > p:not(.aspect__project)) {
+      margin-top: 0.35rem;
+      font-size: clamp(0.49rem, 1.95vw, 0.59rem);
+      line-height: 1.42;
+    }
+
+    .values-story :global(.aspect__copy a) {
+      margin-top: 0.55rem;
+      font-size: clamp(0.48rem, 1.9vw, 0.58rem);
+    }
+
+    .personal-note {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .value-voice[data-enhanced] .value-voice__layer {
+      filter: none;
+      transform: none;
+      will-change: auto;
+    }
+
+    :global(.js) value-story[data-enhanced] :global(.aspect) {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

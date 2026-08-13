@@ -1,0 +1,23 @@
+export const openingMotion = {
+  flipbookUntil: 0.54,
+  artFadeStart: 0.51,
+  artFadeDistance: 0.16,
+  instructionFadeDistance: 0.16,
+  identityRevealStart: 0.68,
+  identityRevealDistance: 0.17,
+  headerRevealStart: 0.78,
+  headerRevealDistance: 0.13,
+  completeAt: 0.995,
+  headerInteractiveAt: 0.86,
+  identityInteractiveAt: 0.9,
+  frameColors: [
+    '#6f8aff',
+    '#6f8aff',
+    '#ff85d6',
+    '#ff85d6',
+    '#ffe16b',
+    '#ffe16b',
+    '#5695d0',
+    '#5695d0',
+  ],
+} as const;

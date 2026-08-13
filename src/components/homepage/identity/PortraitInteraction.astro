@@ -1,8 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 
-import drawnPortrait from '../../assets/art/Drawn_me.png';
-import realPortrait from '../../assets/art/avatar_irl.png';
+import drawnPortrait from '../../../assets/art/Drawn_me.png';
+import realPortrait from '../../../assets/art/avatar_irl.png';
 
 interface Props {
   loading?: 'eager' | 'lazy';
@@ -109,7 +109,6 @@ const { loading = 'eager' } = Astro.props;
     justify-items: center;
     gap: 1.15rem;
     width: min(100%, 23rem);
-    justify-self: end;
   }
 
   .portrait-interaction__stack {
@@ -124,7 +123,7 @@ const { loading = 'eager' } = Astro.props;
     position: relative;
     margin: 0;
     padding: 0 0 1.7rem;
-    color: var(--color-field-ink);
+    color: var(--color-ink);
   }
 
   .portrait-card :global(img) {
@@ -221,33 +220,15 @@ const { loading = 'eager' } = Astro.props;
   }
 
   @keyframes portrait-replay-drawn {
-    0% {
-      translate: 0 0;
-    }
-    42% {
-      translate: -0.25rem -0.45rem;
-    }
-    100% {
-      translate: 0 0;
-    }
+    0% { translate: 0 0; }
+    42% { translate: -0.25rem -0.45rem; }
+    100% { translate: 0 0; }
   }
 
   @keyframes portrait-replay-real {
-    0% {
-      translate: 0 0;
-    }
-    38% {
-      translate: 0.25rem -0.5rem;
-    }
-    100% {
-      translate: 0 0;
-    }
-  }
-
-  @media (max-width: 50rem) {
-    .portrait-interaction {
-      justify-self: center;
-    }
+    0% { translate: 0 0; }
+    38% { translate: 0.25rem -0.5rem; }
+    100% { translate: 0 0; }
   }
 
   @media (max-width: 31rem) {

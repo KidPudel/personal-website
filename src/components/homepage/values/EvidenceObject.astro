@@ -1,0 +1,108 @@
+---
+import type { ValueAspect } from '../../../content/homepage/values';
+import { sitePath } from '../../../config/site';
+
+interface Props {
+  aspect: ValueAspect;
+  projectTitle: string;
+}
+
+const { aspect, projectTitle } = Astro.props;
+const portrait = aspect.image.height > aspect.image.width;
+const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
+---
+
+<li
+  class:list={[
+    'aspect',
+    portrait && 'aspect--portrait',
+    compact && 'aspect--compact',
+  ]}
+  data-aspect
+>
+  <div class="aspect__visual">
+    <img
+      src={aspect.image.src}
+      width={aspect.image.width}
+      height={aspect.image.height}
+      alt={`${aspect.shot} from ${projectTitle}`}
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+  <div class="aspect__copy">
+    <p class="aspect__project">{aspect.project}</p>
+    <h4>{aspect.title}</h4>
+    <p>{aspect.copy}</p>
+    {aspect.caseStudy && (
+      <a href={sitePath('/case-studies/observatory/')}>
+        See this in the case study <span aria-hidden="true">→</span>
+      </a>
+    )}
+  </div>
+</li>
+
+<style>
+  .aspect {
+    position: relative;
+    min-width: 0;
+    align-self: start;
+  }
+
+  .aspect__visual {
+    width: min(100%, 31rem);
+  }
+
+  .aspect--compact .aspect__visual {
+    width: min(88%, 25rem);
+  }
+
+  .aspect--portrait .aspect__visual {
+    width: min(68%, 18rem);
+  }
+
+  .aspect__visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .aspect__copy {
+    padding-top: 1rem;
+  }
+
+  .aspect__project {
+    margin: 0;
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: 0.8rem;
+    letter-spacing: 0.035em;
+  }
+
+  .aspect h4 {
+    max-width: 22ch;
+    margin: 0.45rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 1.5vw, 1.65rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+
+  .aspect__copy > p:not(.aspect__project) {
+    max-width: 39rem;
+    margin: 0.85rem 0 0;
+    color: var(--color-copy);
+    font-size: 0.96rem;
+    line-height: 1.58;
+  }
+
+  .aspect__copy a {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-family: var(--font-reading);
+    font-size: 0.82rem;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.35rem;
+  }
+</style>

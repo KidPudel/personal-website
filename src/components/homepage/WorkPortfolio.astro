@@ -33,7 +33,7 @@ const {
 } = Astro.props;
 ---
 
-<div class="work-page">
+<div class="work-page" data-work-page>
   <PortfolioHeader current="work" />
 
   <main id="main-content">
@@ -70,7 +70,7 @@ const {
             {observatory.data.capabilities.slice(0, 5).map((capability) => <li>{capability}</li>)}
           </ul>
           <div class="project-links">
-            <a class="button" href={sitePath('/case-studies/observatory/')}>Read the case study</a>
+            <a href={sitePath('/case-studies/observatory/')}>Read the case study</a>
             {observatory.data.externalUrl && <a href={observatory.data.externalUrl}>GitHub <span aria-hidden="true">↗</span></a>}
           </div>
         </div>
@@ -145,7 +145,7 @@ const {
           <ul class="learnings" aria-label="Craft demonstrated">
             {discourses.data.learnings.map((learning) => <li>{learning}</li>)}
           </ul>
-          {discourses.data.externalUrl && <a class="button button--outline" href={discourses.data.externalUrl}>Play on itch.io <span aria-hidden="true">↗</span></a>}
+          {discourses.data.externalUrl && <a href={discourses.data.externalUrl}>Play on itch.io <span aria-hidden="true">↗</span></a>}
         </div>
       </article>
 
@@ -158,7 +158,7 @@ const {
           <ul class="learnings" aria-label="Craft demonstrated">
             {santa.data.learnings.map((learning) => <li>{learning}</li>)}
           </ul>
-          {santa.data.externalUrl && <a class="button button--outline" href={santa.data.externalUrl}>View the game <span aria-hidden="true">↗</span></a>}
+          {santa.data.externalUrl && <a href={santa.data.externalUrl}>View the game <span aria-hidden="true">↗</span></a>}
         </div>
       </article>
 
@@ -205,22 +205,14 @@ const {
 
 <style>
   .work-page {
-    --black: #F8F8F8;
-    --white: #11110f;
-    --accent: #e35673;
-    --muted: #716d65;
-    --color-field-ink: #11110f;
     min-width: 20rem;
     overflow: clip;
-    background: var(--black);
-    color: var(--white);
-    font-family: var(--font-portfolio-body);
+    background: var(--color-field);
+    color: var(--color-ink);
+    font-family: var(--font-reading);
     font-size: clamp(0.95rem, 0.12vw + 0.93rem, 1.02rem);
     line-height: 1.62;
   }
-
-  .work-page :global(*) { box-sizing: border-box; }
-  .work-page :global(a) { color: inherit; }
 
   .work-intro,
   .work-section,
@@ -270,7 +262,7 @@ const {
   .section-label,
   .project-label {
     margin: 0;
-    color: var(--muted);
+    color: var(--color-muted);
     font-family: var(--font-reading);
     font-size: 0.78rem;
     letter-spacing: 0.035em;
@@ -284,7 +276,7 @@ const {
   .experiments h3,
   .experiment h4 {
     margin: 0;
-    font-family: var(--font-portfolio-display);
+    font-family: var(--font-display);
     font-weight: 400;
     letter-spacing: -0.045em;
   }
@@ -299,7 +291,7 @@ const {
   .work-intro > p:not(.section-label) {
     max-width: 45rem;
     margin: 1.2rem 0 0;
-    color: #4e4b45;
+    color: var(--color-copy);
     font-size: clamp(0.98rem, 0.35vw + 0.93rem, 1.14rem);
   }
 
@@ -315,14 +307,21 @@ const {
   }
 
   .work-intro__links a,
-  .project-links > a:not(.button) {
+  .project-links a,
+  .game-feature__copy > a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
     text-underline-offset: 0.35rem;
+  }
+
+  .game-feature__copy > a {
+    margin-top: 1.1rem;
   }
 
   .work-section {
     padding-top: clamp(4rem, 6.5vw, 5.8rem);
     padding-bottom: clamp(4rem, 7vw, 6rem);
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
   }
 
   .section-intro {
@@ -344,7 +343,6 @@ const {
     align-items: center;
     gap: clamp(2rem, 4vw, 4rem);
     padding-bottom: clamp(3rem, 5.5vw, 4.75rem);
-    border-bottom: 1px solid rgba(17, 17, 15, 0.15);
   }
 
   .featured-project__media {
@@ -365,7 +363,7 @@ const {
   .experiment > p:not(.project-label),
   .experiment--wide > div > p:not(.project-label) {
     margin: 1rem 0 0;
-    color: #4e4b45;
+    color: var(--color-copy);
   }
 
   .capabilities,
@@ -375,7 +373,7 @@ const {
     gap: 0.25rem 1rem;
     padding: 0;
     margin: 1.2rem 0 0;
-    color: var(--muted);
+    color: var(--color-muted);
     font-size: 0.78rem;
     font-family: var(--font-reading);
     list-style: none;
@@ -383,29 +381,9 @@ const {
 
   .capabilities li::before,
   .learnings li::before {
-    color: var(--accent);
+    color: var(--color-accent);
     content: '·';
     margin-right: 0.35rem;
-  }
-
-  .button {
-    display: inline-flex;
-    min-height: 2.9rem;
-    align-items: center;
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--white);
-    background: var(--white);
-    color: var(--black) !important;
-    font-size: 0.8rem;
-    font-family: var(--font-reading);
-    text-decoration: none;
-  }
-
-  .button--outline {
-    width: fit-content;
-    margin-top: 1.6rem;
-    background: transparent;
-    color: var(--white) !important;
   }
 
   .product-pair,
@@ -417,7 +395,6 @@ const {
 
   .product-pair {
     padding: clamp(3rem, 5.5vw, 4.75rem) 0;
-    border-bottom: 1px solid rgba(17, 17, 15, 0.15);
   }
 
   .systems-pair {
@@ -451,7 +428,7 @@ const {
   .section-intro--games > p {
     max-width: 34rem;
     margin: 0;
-    color: #4e4b45;
+    color: var(--color-copy);
   }
 
   .game-feature {
@@ -460,7 +437,6 @@ const {
     align-items: center;
     gap: clamp(2rem, 4vw, 4rem);
     padding: clamp(2.75rem, 4.5vw, 4rem) 0;
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
   }
 
   .game-feature--reverse .game-feature__media { order: 2; }
@@ -474,7 +450,6 @@ const {
 
   .experiments {
     padding-top: clamp(3rem, 5.5vw, 4.75rem);
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
   }
 
   .experiments > header {
@@ -492,7 +467,7 @@ const {
 
   .experiments > header > p:last-child {
     margin: 0;
-    color: #4e4b45;
+    color: var(--color-copy);
   }
 
   .experiments__grid {
@@ -530,7 +505,6 @@ const {
     align-items: center;
     gap: clamp(2rem, 5vw, 4rem);
     padding-top: 2rem;
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
   }
 
   .experiment--wide .project-label {
@@ -544,12 +518,11 @@ const {
     align-items: baseline;
     padding-top: 3rem;
     padding-bottom: 4rem;
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
     font-size: 0.82rem;
     font-family: var(--font-reading);
   }
 
-  .work-footer p { margin: 0; color: var(--muted); }
+  .work-footer p { margin: 0; color: var(--color-muted); }
   .work-footer a { text-underline-offset: 0.3rem; }
 
   @media (max-width: 52rem) {

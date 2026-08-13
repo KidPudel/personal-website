@@ -1,8 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 
-import HomeReturn from '../../components/shell/HomeReturn.astro';
-import WorldField from '../../components/shell/WorldField.astro';
+import PortfolioHeader from '../../components/homepage/PortfolioHeader.astro';
 import { sitePath } from '../../config/site';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 
@@ -28,17 +27,16 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
 });
 ---
 
-<BaseDocument title={`${entry.data.title} | Igor Kupchinenko`} description={entry.data.summary}>
-  <WorldField destination>
-    <HomeReturn />
+<BaseDocument
+  title={`${entry.data.title} | Igor Kupchinenko`}
+  description={entry.data.summary}
+  pageClass="composition-document"
+>
+  <div class="article-page">
+    <PortfolioHeader current="home" />
     <main id="main-content" class="article-main">
       <article class="writing-article" aria-labelledby="article-title">
-        <svg class="writing-article__boundary" viewBox="0 0 1000 1400" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M35 21 C22 178 43 346 28 506 C18 675 39 835 25 1002 C17 1131 31 1255 23 1380" />
-          <path class="writing-article__boundary-echo" d="M46 35 C37 192 54 349 41 516 C31 660 48 804 38 951" />
-        </svg>
-
-        <a class="writing-article__back" href={sitePath('/blog/')}>← Blog</a>
+        <a class="writing-article__back" href={sitePath('/')}>Back to Igor</a>
 
         <header>
           {publishedAt && <time datetime={entry.data.publishedAt?.toISOString()}>{publishedAt}</time>}
@@ -50,71 +48,40 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
           <Content />
         </div>
 
-        {
-          entry.data.canonicalUrl && (
-            <footer>
-              <a href={entry.data.canonicalUrl}>Originally published on Medium ↗</a>
-            </footer>
-          )
-        }
+        {entry.data.canonicalUrl && (
+          <footer>
+            <a href={entry.data.canonicalUrl}>Originally published on Medium ↗</a>
+          </footer>
+        )}
       </article>
     </main>
-  </WorldField>
+  </div>
 </BaseDocument>
 
 <style>
+  .article-page {
+    min-width: 20rem;
+    background: var(--color-field);
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+  }
+
   .article-main {
-    width: 100%;
-    max-width: var(--destination-width);
-    color: var(--color-field-ink);
-    isolation: isolate;
+    width: min(100%, 62rem);
+    margin-inline: auto;
   }
 
   .writing-article {
-    position: relative;
-    isolation: isolate;
-    min-height: calc(100vh - (2 * var(--field-gutter)));
-    padding: clamp(2.25rem, 6vw, 5rem) clamp(2rem, 9vw, 8rem) clamp(4rem, 8vw, 7rem);
-    overflow: clip;
-  }
-
-  .writing-article__boundary {
-    position: absolute;
-    z-index: 0;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  .writing-article__boundary path {
-    fill: none;
-    stroke: rgba(17, 17, 15, 0.62);
-    stroke-linecap: round;
-    stroke-width: 2;
-    vector-effect: non-scaling-stroke;
-  }
-
-  .writing-article__boundary .writing-article__boundary-echo {
-    stroke: rgba(17, 17, 15, 0.2);
-    stroke-width: 1.1;
-  }
-
-  .writing-article__back,
-  .writing-article header,
-  .writing-article__body,
-  .writing-article footer {
-    position: relative;
-    z-index: 1;
+    min-height: 100svh;
+    padding: clamp(5.5rem, 10vw, 8rem) clamp(1.25rem, 5vw, 4rem) clamp(4rem, 8vw, 7rem);
   }
 
   .writing-article__back {
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
-    margin-bottom: clamp(2.5rem, 6vw, 5.5rem);
-    color: rgba(17, 17, 15, 0.8);
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+    color: var(--color-muted);
     text-underline-offset: 0.24em;
   }
 
@@ -122,25 +89,28 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
     display: grid;
     gap: 1rem;
     max-width: 48rem;
-    margin-bottom: clamp(3rem, 7vw, 6rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
   }
 
   .writing-article time {
-    color: rgba(17, 17, 15, 0.56);
+    color: var(--color-muted);
     font-size: 0.9rem;
   }
 
   .writing-article h1 {
     max-width: 15ch;
-    font-family: var(--font-distinctive);
-    font-size: clamp(3rem, 7.5vw, 6.5rem);
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 5vw, 4.2rem);
     font-weight: 400;
+    letter-spacing: -0.045em;
     line-height: 0.98;
   }
 
   .writing-article header p {
     max-width: 58ch;
-    color: rgba(17, 17, 15, 0.74);
+    margin: 0;
+    color: var(--color-copy);
     font-size: clamp(1.08rem, 1.9vw, 1.28rem);
     line-height: 1.65;
   }
@@ -158,17 +128,17 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
   .writing-article__body :global(h2),
   .writing-article__body :global(h3) {
     margin-top: 2.4em;
-    font-family: var(--font-distinctive);
+    font-family: var(--font-display);
     font-weight: 400;
     line-height: 1.12;
   }
 
   .writing-article__body :global(h2) {
-    font-size: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(1.8rem, 3.2vw, 2.6rem);
   }
 
   .writing-article__body :global(h3) {
-    font-size: clamp(1.55rem, 3vw, 2.2rem);
+    font-size: clamp(1.4rem, 2.4vw, 1.9rem);
   }
 
   .writing-article__body :global(a),
@@ -182,7 +152,7 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
     position: relative;
     margin-block: 2rem;
     padding-left: clamp(1.25rem, 3vw, 2rem);
-    color: rgba(17, 17, 15, 0.78);
+    color: var(--color-copy);
   }
 
   .writing-article__body :global(blockquote)::before {
@@ -193,7 +163,6 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
     width: 0.12rem;
     background: rgba(17, 17, 15, 0.42);
     content: '';
-    transform: rotate(0.5deg);
   }
 
   .writing-article__body :global(ul),
@@ -205,20 +174,5 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
     max-width: var(--reading-width);
     margin-top: clamp(3.5rem, 8vw, 6rem);
     padding-top: 1.5rem;
-    border-top: 0.1rem solid rgba(17, 17, 15, 0.28);
-  }
-
-  @media (max-width: 36rem) {
-    .writing-article {
-      padding: 1.5rem 1.15rem 3.5rem 1.35rem;
-    }
-
-    .writing-article__boundary {
-      transform: translateX(-0.45rem);
-    }
-
-    .writing-article h1 {
-      font-size: clamp(3rem, 15vw, 4.4rem);
-    }
   }
 </style>

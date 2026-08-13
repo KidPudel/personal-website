@@ -1,7 +1,7 @@
 ---
 import { getEntry } from 'astro:content';
 
-import HiringHomepage from '../components/homepage/HiringHomepage.astro';
+import Homepage from '../components/homepage/Homepage.astro';
 import homepageShareImage from '../assets/software-showcases/observatory/launch-film.png';
 import BaseDocument from '../layouts/BaseDocument.astro';
 
@@ -18,22 +18,9 @@ if (!identityCage || !observatory || !foodProduct || !chineseBee) {
 <BaseDocument
   title="Igor Kupchinenko · Product Designer"
   description="Product designer Igor Kupchinenko creates interactive products and the systems that make them real."
-  pageClass="portfolio-document"
+  pageClass="composition-document"
   themeColor="#F8F8F8"
   ogImage={homepageShareImage.src}
 >
-  <HiringHomepage {identityCage} {observatory} {foodProduct} {chineseBee} />
+  <Homepage {identityCage} {observatory} {foodProduct} {chineseBee} />
 </BaseDocument>
-
-<style is:global>
-  html.portfolio-document,
-  html.portfolio-document body {
-    margin: 0;
-    background: #F8F8F8;
-    overscroll-behavior-y: auto;
-  }
-
-  html.portfolio-document {
-    scroll-behavior: smooth;
-  }
-</style>

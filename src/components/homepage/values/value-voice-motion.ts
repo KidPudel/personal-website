@@ -1,0 +1,16 @@
+export const valueVoiceMotion = {
+  firstHandoffViewportStart: 0.3,
+  laterHandoffViewportStart: 0.66,
+  firstHandoffDistance: 0.42,
+  laterHandoffDistance: 0.46,
+  eraseUntil: 0.72,
+  revealAfter: 0.18,
+  revealDistance: 0.82,
+  reducedMotionThreshold: 0.52,
+  outgoingShift: -0.4,
+  incomingShift: 0.45,
+  outgoingBlur: 1.8,
+  incomingBlur: 1.4,
+  aspectRevealMargin: '0px 0px -14% 0px',
+  aspectRevealThreshold: 0.16,
+} as const;

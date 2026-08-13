@@ -1,6 +1,6 @@
 # Website architecture
 
-Last updated: 2026-08-11
+Last updated: 2026-08-13
 
 ## Purpose
 
@@ -45,18 +45,20 @@ Work anchors are:
 
 ```text
 BaseDocument
-└── main
-    ├── OpeningSequence
-    │   ├── scroll-controlled box frames
-    │   └── circular reveal containing IdentityIntroduction
-    ├── ValuesEvidence
-    │   ├── three sticky interactive value chapters
-    │   ├── concrete project-aspect evidence on both sides
-    │   ├── Observatory case-study path
-    │   ├── replaceable screenshot placeholders
-    │   ├── concise personal list
-    │   └── complete-work path
-    └── WritingPreview
+└── Homepage
+    ├── PortfolioHeader
+    └── main
+        ├── OpeningSequence
+        │   ├── scroll-controlled box frames
+        │   └── circular reveal containing IdentityIntroduction
+        ├── ValuesEvidence
+        │   ├── three sticky interactive value chapters
+        │   ├── concrete project-aspect evidence on both sides
+        │   ├── Observatory case-study path
+        │   ├── replaceable screenshot placeholders
+        │   ├── concise personal list
+        │   └── complete-work path
+        └── WritingPreview
 
 PortfolioHeader
 └── side-mounted Work link and addressable ContactDisclosure
@@ -88,10 +90,12 @@ The DOM order is also the reading order. CSS may create asymmetrical composition
 
 The root and work pages own their #F8F8F8 and black-ink surface styles. The Observatory document retains its independent editorial typography and layout.
 
-The portfolio presentation uses two local roles without changing Observatory:
+The composition presentation uses two local roles without changing Observatory:
 
-- Averia Serif Libre for display headings;
-- Delius for explanatory copy, personal labels, controls, captions, and authored interactions.
+- Averia Serif Libre (`--font-display`) for display headings;
+- Delius (`--font-reading`) for explanatory copy, personal labels, controls, captions, and authored interactions.
+
+Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`.
 
 `PortfolioHeader` is a side-mounted Work and contact control rather than a full-width bar. It arrives with the opened box, uses the existing Connect drawing, and expands contact links locally. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
 
@@ -127,7 +131,7 @@ The redesign removes the graphite field, paper-grain overlay, and `WorldField` p
 
 ## Content and evidence
 
-Typed content collections remain the source for verified software, games, and writing records. Page components may curate and reframe existing fields but must not introduce unsupported claims.
+Typed content collections remain the source for verified software, games, and writing records. Homepage identity and values composition copy live in `src/content/homepage/` and may point at those records. Page components may curate and reframe existing fields but must not introduce unsupported claims.
 
 Homepage project records distinguish:
 
@@ -220,15 +224,4 @@ Every implementation milestone verifies:
 
 ## Removal sequence
 
-Do not delete the old root presentation before the static continuous replacement builds.
-
-After replacement verification, remove obsolete presentation code:
-
-- `src/pages/secret-box.astro`;
-- `src/components/secret-box/SecretBoxSequence.astro`;
-- `src/components/shell/SpatialRouteShell.astro`;
-- `src/components/shell/WorldField.astro` when no compatibility page needs it;
-- `src/components/home/HomeMap.astro` and obsolete disclosure compositions;
-- graphite and grain tokens unused by the case study or remaining routes.
-
-Preserve content files, project media, portraits, résumé files, deployment configuration, and independently useful interaction components.
+The old root presentation, `WorldField`, `HomeReturn`, graphite/grain tokens, and the previous homepage landing-page components have been removed. Preserve content files, project media, portraits, résumé files, deployment configuration, and independently useful interaction components. The Observatory case study remains an independent editorial document.

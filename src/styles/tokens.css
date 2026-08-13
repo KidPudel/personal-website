@@ -25,35 +25,19 @@
 @layer tokens {
   :root {
     --color-field: #F8F8F8;
-    --color-paper: #f2e8cf;
-    --color-paper-edge: #d8ccb0;
-    --color-ink: #20201e;
-    --color-field-ink: #11110f;
+    --color-ink: #11110f;
+    --color-muted: #716d65;
+    --color-copy: #4e4b45;
+    --color-accent: #e35673;
     --color-focus: #7db7ff;
 
-    --field-texture-images:
-      radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.35), transparent 34%),
-      radial-gradient(circle at 82% 76%, rgba(17, 17, 15, 0.035), transparent 44%),
-      url('../assets/art/paper-grain.svg');
-    --field-texture-positions: 0 0, 0 0, 0 0;
-    --field-texture-sizes: auto, auto, 180px 180px;
-    --field-texture-blend-modes: soft-light, multiply, soft-light;
-    --field-texture-root-overlay: rgba(248, 248, 248, 0.7);
-
     --font-reading: 'Delius', Arial, sans-serif;
+    --font-display: 'Averia Serif Libre', Georgia, serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
-    --font-portfolio-display: 'Averia Serif Libre', Georgia, serif;
-    --font-portfolio-body: var(--font-reading);
 
-    --field-gutter: clamp(1rem, 4vw, 4rem);
-    --destination-width: 76rem;
-    --destination-home-track: clamp(4.75rem, 7vw, 6rem);
-    --paper-width: 72rem;
     --reading-width: 58ch;
-
     --focus-width: 0.2rem;
-    --focus-offset: 0.25rem; 
-
+    --focus-offset: 0.25rem;
     --drawn-icon-wobble-duration: 1600ms;
   }
 }

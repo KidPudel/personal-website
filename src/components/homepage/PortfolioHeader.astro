@@ -14,7 +14,7 @@ const primaryLabel = current === 'home' ? 'Work' : 'Back to Igor';
 ---
 
 <portfolio-navigation>
-  <header class="site-header" aria-label="Primary navigation">
+  <header class="site-header" aria-label="Primary navigation" data-site-header>
     <a class="site-header__work" href={primaryHref} aria-current={current === 'work' ? 'page' : undefined}>
       {primaryLabel}
     </a>
@@ -83,7 +83,7 @@ const primaryLabel = current === 'home' ? 'Work' : 'Back to Igor';
     display: grid;
     justify-items: end;
     gap: 0.55rem;
-    color: var(--white, #11110f);
+    color: var(--color-ink);
     font-family: var(--font-reading);
     font-size: 0.78rem;
     opacity: var(--header-visibility, 1);
@@ -112,7 +112,7 @@ const primaryLabel = current === 'home' ? 'Work' : 'Back to Igor';
   .site-header__work::after {
     content: '↗';
     margin-left: 0.42rem;
-    color: var(--muted, #716d65);
+    color: var(--color-muted);
     font-size: 0.78em;
   }
 
@@ -191,7 +191,7 @@ const primaryLabel = current === 'home' ? 'Work' : 'Back to Igor';
 
   .contact-disclosure__panel a:hover,
   .contact-disclosure__panel a:focus-visible {
-    color: var(--accent, #e35673);
+    color: var(--color-accent);
   }
 
   @media (hover: hover) and (pointer: fine) {

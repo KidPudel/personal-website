@@ -1,0 +1,207 @@
+---
+import frame1 from '../../../assets/art/Doodles-box-opening/box_frame1.png';
+import frame2 from '../../../assets/art/Doodles-box-opening/box_frame2.png';
+import frame3 from '../../../assets/art/Doodles-box-opening/box_frame3.png';
+import frame4 from '../../../assets/art/Doodles-box-opening/box_frame4.png';
+import frame5 from '../../../assets/art/Doodles-box-opening/box_frame5.png';
+import frame6 from '../../../assets/art/Doodles-box-opening/box_frame6.png';
+import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
+import frame8 from '../../../assets/art/Doodles-box-opening/box_frame8.png';
+
+const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
+---
+
+<opening-sequence class="opening-sequence" data-frame-count={frames.length}>
+  <div class="opening-sequence__sticky">
+    <div class="opening-sequence__reveal" data-opening-reveal>
+      <slot />
+    </div>
+
+    <div class="opening-sequence__art" aria-hidden="true" data-opening-art>
+      {frames.map((frame, index) => (
+        <img
+          class="opening-sequence__frame"
+          src={frame.src}
+          alt=""
+          width="2048"
+          height="2048"
+          loading="eager"
+          decoding="async"
+          data-opening-frame
+          data-active={index === 0 ? '' : undefined}
+        />
+      ))}
+    </div>
+
+    <canvas class="opening-sequence__essence" aria-hidden="true" data-opening-essence></canvas>
+
+    <p class="opening-sequence__instruction" data-opening-instruction>
+      Scroll to open <span aria-hidden="true">↓</span>
+    </p>
+    <a class="opening-sequence__skip" href="#values">Skip opening</a>
+  </div>
+</opening-sequence>
+
+<script>
+  import './opening-controller';
+</script>
+
+<style>
+  .opening-sequence {
+    --reveal-opacity: 1;
+    --art-opacity: 0;
+    --instruction-opacity: 0;
+    --identity-opacity: 1;
+    --opening-color: #4265ff;
+    --world-reaction: 0;
+    position: relative;
+    z-index: 2;
+    display: block;
+    height: 100svh;
+    background: var(--color-field);
+  }
+
+  .opening-sequence__sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: clip;
+    background:
+      radial-gradient(
+        ellipse 62% 55% at 50% 53%,
+        rgb(255 240 73 / calc(var(--world-reaction) * 0.5)) 0%,
+        rgb(255 50 185 / calc(var(--world-reaction) * 0.32)) 34%,
+        rgb(43 96 235 / calc(var(--world-reaction) * 0.18)) 58%,
+        transparent 78%
+      ),
+      var(--opening-color);
+  }
+
+  .opening-sequence__reveal {
+    position: absolute;
+    z-index: 10;
+    inset: 0;
+    overflow: hidden;
+    background: var(--color-field);
+    opacity: var(--reveal-opacity);
+  }
+
+  .opening-sequence__art,
+  .opening-sequence__essence,
+  .opening-sequence__instruction,
+  .opening-sequence__skip {
+    display: none;
+  }
+
+  :global(.js) .opening-sequence {
+    height: 250svh;
+  }
+
+  :global(.js) .opening-sequence__reveal {
+    will-change: opacity;
+  }
+
+  :global(.js) .opening-sequence__art {
+    position: absolute;
+    z-index: 5;
+    inset: 0;
+    display: block;
+    opacity: var(--art-opacity);
+    filter:
+      drop-shadow(
+        0 0 calc(0.25rem + var(--world-reaction) * 0.7rem)
+          rgb(238 28 198 / calc(var(--world-reaction) * 0.62))
+      )
+      drop-shadow(
+        0 0 calc(0.15rem + var(--world-reaction) * 0.38rem)
+          rgb(255 230 78 / calc(var(--world-reaction) * 0.55))
+      );
+    pointer-events: none;
+    will-change: filter, opacity;
+  }
+
+  :global(.js) .opening-sequence__essence {
+    position: absolute;
+    z-index: 4;
+    inset: -4vmax;
+    display: block;
+    width: calc(100% + 8vmax);
+    height: calc(100% + 8vmax);
+    filter: blur(clamp(0.6rem, 1.25vw, 1.2rem)) saturate(1.08) contrast(1.01);
+    image-rendering: pixelated;
+    opacity: 0;
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  :global(.js) .opening-sequence__essence[data-visible] {
+    opacity: 1;
+  }
+
+  :global(.js) .opening-sequence__essence[data-front] {
+    z-index: 15;
+  }
+
+  .opening-sequence__frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+
+  .opening-sequence__frame[data-active] {
+    opacity: 1;
+  }
+
+  :global(.js) .opening-sequence__instruction {
+    position: absolute;
+    z-index: 10;
+    right: clamp(1.25rem, 4vw, 3.5rem);
+    bottom: clamp(1.25rem, 3vw, 2.5rem);
+    display: flex;
+    gap: 0.75rem;
+    margin: 0;
+    opacity: var(--instruction-opacity);
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  :global(.js) .opening-sequence__skip {
+    position: absolute;
+    z-index: 11;
+    right: 1rem;
+    top: 1rem;
+    display: block;
+    padding: 0.65rem 0.8rem;
+    background: var(--color-ink);
+    color: #ffd84f;
+    font-family: var(--font-reading);
+    font-size: 0.68rem;
+    opacity: 0;
+    pointer-events: none;
+    text-underline-offset: 0.2rem;
+  }
+
+  :global(.js) .opening-sequence__skip:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .opening-sequence {
+      height: 100svh;
+    }
+
+    :global(.js) .opening-sequence__art,
+    :global(.js) .opening-sequence__essence,
+    :global(.js) .opening-sequence__instruction {
+      display: none;
+    }
+  }
+</style>

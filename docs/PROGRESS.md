@@ -1,12 +1,8 @@
 # Progress
 
-- Removed the simulated irregular double frame, tilted card treatment, and drawn-style shadow from the homepage portraits.
-- Preserved Igor's authored drawn portrait, decorative artwork, portrait toggle, labels, and accessible image descriptions.
-- Verified the production build, both portrait-toggle states, desktop and mobile layouts, and mobile horizontal overflow.
-- Replaced the isolated sticky headings with one persistent typographic voice containing the premise and all three values.
-- Let the introduction scroll away normally instead of staying pinned over "Three things important to me".
-- Kept the values premise in the handwritten reading face, following the introduction in ordinary scroll.
-- Removed the duplicated values premise along with "Next", progress numbering, evidence counters, and instructional UI.
-- Replaced the strike-through treatment with the same soft erase-and-reveal morph for every value handoff.
-- Kept the desktop three-column evidence composition on mobile and scaled the typography, artwork, and spacing down together.
-- Kept the values reading order meaningful without JavaScript and made reduced-motion handoffs discrete.
+- Split the homepage into OpeningSequence, IdentityIntroduction, ValuesEvidence, and WritingPreview, with copy in `src/content/homepage/` and named motion modules.
+- Replaced inverted portfolio tokens with field, ink, copy, muted, and accent.
+- Removed WorldField, HomeReturn, paper grain, and the previous hiring landing-page components.
+- Rebuilt `/` as one composition: identity without a work CTA, values evidence as objects in the field, and writing as the next passage.
+- Rebuilt `/work/` and independent articles onto the same field and type language.
+- Verified `astro check`, production builds at `/` and `/personal-website/`, desktop 1440 and mobile 390/320 layouts, and no horizontal overflow.

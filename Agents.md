@@ -13,6 +13,22 @@ Use the smallest relevant source and do not duplicate it elsewhere:
 
 Do not rewrite or expand the authored concept unless Igor asks. Plans and progress records should reference it rather than restating it.
 
+## Where to change things
+
+| Intent | File |
+| --- | --- |
+| Homepage identity copy | `src/content/homepage/identity.ts` |
+| Values copy or which evidence belongs to a value | `src/content/homepage/values.ts` |
+| Opening colors or scroll timing | `src/components/homepage/opening/opening-motion.ts` |
+| Pigment-field look | `src/components/homepage/opening/pigment-field.ts` |
+| Identity composition | `src/components/homepage/identity/IdentityIntroduction.astro` |
+| Values rhythm | `src/components/homepage/values/value-voice-motion.ts` and `ValuesEvidence.astro` |
+| An evidence object's layout | `src/components/homepage/values/EvidenceObject.astro` |
+| Writing preview | `src/components/homepage/WritingPreview.astro` |
+| Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
+| Work document | `src/components/homepage/WorkPortfolio.astro` |
+| Type, ink, field, accent | `src/styles/tokens.css` |
+
 ## Execution
 
 - Rebuild the presentation layer from scratch. Do not incrementally reskin the old interface.

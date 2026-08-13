@@ -1,0 +1,146 @@
+---
+import { identity } from '../../../content/homepage/identity';
+import ColorWord from './ColorWord.astro';
+import PlayfulWord from './PlayfulWord.astro';
+import PortraitInteraction from './PortraitInteraction.astro';
+---
+
+<section id="intro" class="identity" aria-labelledby="intro-title">
+  <div class="identity__doodles" aria-hidden="true"></div>
+  <div class="identity__portrait">
+    <PortraitInteraction loading="eager" />
+  </div>
+  <div class="identity__copy">
+    <p class="identity__hello">{identity.hello} <span>{identity.role}</span></p>
+    <h1 id="intro-title">
+      {identity.title.before}<PlayfulWord word={identity.title.word} />{identity.title.after}
+    </h1>
+    <p class="identity__summary">
+      {identity.summary.before}<ColorWord word={identity.summary.word} />{identity.summary.after}
+    </p>
+  </div>
+</section>
+
+<style>
+  .identity {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-height: 100svh;
+    grid-template-columns: minmax(0, 36rem) minmax(15rem, 20rem);
+    grid-template-areas: "copy portrait";
+    justify-content: center;
+    align-items: center;
+    gap: clamp(2.25rem, 4vw, 4rem);
+    padding: clamp(5.5rem, 10vh, 7.5rem) clamp(1.25rem, 6vw, 6rem) 3.5rem;
+    background: var(--color-field);
+  }
+
+  .identity__doodles {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background-image:
+      url('../../../assets/art/doodles/Doodles_disk.png'),
+      url('../../../assets/art/doodles/Doodles_bird_1.png'),
+      url('../../../assets/art/doodles/Doodles_scribble.png');
+    background-position: 3% 18%, 97% 78%, 96% 17%;
+    background-repeat: no-repeat;
+    background-size: 8rem, 7rem, 9rem;
+    filter: grayscale(1);
+    opacity: 0.075;
+    pointer-events: none;
+  }
+
+  .identity__portrait {
+    grid-area: portrait;
+    width: min(100%, 28rem);
+    opacity: var(--identity-opacity, 1);
+  }
+
+  .identity__portrait :global(.portrait-interaction) {
+    width: 100%;
+  }
+
+  .identity__copy {
+    grid-area: copy;
+    width: min(100%, 49rem);
+    opacity: var(--identity-opacity, 1);
+  }
+
+  .identity__hello {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    font-size: clamp(1rem, 0.5vw + 0.9rem, 1.25rem);
+    letter-spacing: 0.025em;
+  }
+
+  .identity__hello span {
+    margin-left: 0.35rem;
+    color: var(--color-muted);
+    font-size: 0.82em;
+  }
+
+  .identity h1 {
+    max-width: 24ch;
+    margin: 1.2rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 3.25vw, 3.5rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+  }
+
+  .identity__summary {
+    max-width: 31rem;
+    margin: clamp(1.25rem, 2.5vh, 1.8rem) 0 0;
+    color: var(--color-copy);
+    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
+    line-height: 1.68;
+  }
+
+  @media (max-width: 52rem) {
+    .identity {
+      grid-template-columns: minmax(0, 1fr) minmax(7.5rem, 36vw);
+      gap: clamp(0.8rem, 3vw, 1.5rem);
+      padding: 6rem clamp(0.7rem, 3vw, 1.25rem) 2.5rem;
+    }
+
+    .identity__portrait {
+      width: 100%;
+    }
+
+    .identity__copy {
+      width: 100%;
+    }
+
+    .identity h1 {
+      font-size: clamp(1.35rem, 5.4vw, 2.15rem);
+    }
+
+    .identity__summary {
+      font-size: clamp(0.78rem, 2.8vw, 0.95rem);
+    }
+  }
+
+  @media (max-height: 48rem) and (min-width: 52.01rem) {
+    .identity {
+      gap: 2.5rem;
+      padding-top: 5.5rem;
+    }
+
+    .identity__portrait {
+      width: min(100%, 22rem);
+    }
+
+    .identity h1 {
+      font-size: clamp(2.2rem, 3.2vw, 3.15rem);
+    }
+
+    .identity__summary {
+      margin-top: 1.15rem;
+      font-size: 0.95rem;
+    }
+  }
+</style>
