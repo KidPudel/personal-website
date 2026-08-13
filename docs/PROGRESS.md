@@ -8,8 +8,13 @@
 - Replaced the identity `experiences` click colouring with a semantic-text-backed canvas thermal field shaped for Averia Serif. Staggered, domain-warped metaballs grow from each letter center, blend continuously between glyphs, move from pink through dark blue, then reverse and clear back to the untouched text.
 - Verified the thermal wave’s ignition, overlapping forward travel, per-letter reverse, clean black resting state, complete glyph coverage including descenders, replay trigger, and 1440, 390, and 320 layouts with no horizontal overflow.
 - Aligned the thermal canvas to the DOM text baseline and split its input behavior: touch/click plays the complete traveling wave, while fine-pointer hover continuously moves a local liquid field with the cursor and softly releases on exit.
+- Added a one-time, shortened thermal afterglow as the identity finishes emerging from the opening essence, while preserving the full-strength interactive variants.
+- Replaced the typeset identity hello with the authored 18-frame handwritten sequence. It plays once as the identity becomes visible and holds the completed frame for reduced motion and no-JavaScript reading.
+- Verified the handwritten sequence from its first playing frame through its completed hold at 1440 by 900, 1280 by 720, 390 by 844, and 320 by 800, with no horizontal overflow or browser warnings. The production compiler also completed at both root and `/personal-website/` base paths.
+- Reduced the handwritten hello, opened its vertical crop so Igor's `g` descender remains fully visible, and moved the role label directly beneath it to leave the adjacent space open. Verified the stack at 1440 by 900 and 390 by 844 with no horizontal overflow.
+- Tightened the identity summary to replace `desire` with `ideas` and state the same thought more directly.
 - Gave every values-evidence screenshot a stable slight random tilt and a rounded white frame.
 - Removed the supporting paragraph from each sticky value heading, and replaced each evidence title and body with a short body-font caption, keeping the Observatory case-study link.
-- Set `--font-special` to Goudy Mediaeval for the sticky values voice, leaving Averia for headlines and the current sans for body.
+- Set `--font-reading` to Aleo and `--font-special` to Bright Chalk, leaving Averia for headlines.
 - Removed the underline from the cycling value words.
 - Set cycling value words to inherit heading color and size to the active word so the line reflows instead of holding a reserved width.

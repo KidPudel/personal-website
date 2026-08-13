@@ -23,18 +23,34 @@
 }
 
 @font-face {
-  font-family: 'Goudy Mediaeval';
-  src: url('../assets/fonts/GoudyMediaeval-Regular.ttf') format('truetype');
+  font-family: 'Aleo';
+  src: url('../assets/fonts/Aleo-Regular.ttf') format('truetype');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Goudy Mediaeval';
-  src: url('../assets/fonts/GoudyMediaeval-DemiBold.ttf') format('truetype');
+  font-family: 'Aleo';
+  src: url('../assets/fonts/Aleo-Italic.ttf') format('truetype');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Aleo';
+  src: url('../assets/fonts/Aleo-Bold.ttf') format('truetype');
   font-style: normal;
   font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Bright Chalk';
+  src: url('../assets/fonts/bright-chalk.regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
   font-display: swap;
 }
 
@@ -47,9 +63,9 @@
     --color-accent: #e35673;
     --color-focus: #7db7ff;
 
-    --font-reading: 'Delius', Arial, sans-serif;
+    --font-reading: 'Aleo', Georgia, serif;
     --font-display: 'Averia Serif Libre', Georgia, serif;
-    --font-special: 'Goudy Mediaeval', Georgia, serif;
+    --font-special: 'Bright Chalk', 'Delius', Arial, sans-serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
 
     --reading-width: 58ch;

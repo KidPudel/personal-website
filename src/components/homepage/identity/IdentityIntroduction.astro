@@ -1,6 +1,7 @@
 ---
 import { identity } from '../../../content/homepage/identity';
 import ColorWord from './ColorWord.astro';
+import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
 import PortraitInteraction from './PortraitInteraction.astro';
 ---
@@ -11,7 +12,10 @@ import PortraitInteraction from './PortraitInteraction.astro';
     <PortraitInteraction loading="eager" />
   </div>
   <div class="identity__copy">
-    <p class="identity__hello">{identity.hello} <span>{identity.role}</span></p>
+    <p class="identity__hello">
+      <HelloAnimation text={identity.hello} />
+      <span>{identity.role}</span>
+    </p>
     <h1 id="intro-title">
       {identity.title.before}<PlayfulWord word={identity.title.word} />{identity.title.after}
     </h1>
@@ -69,6 +73,10 @@ import PortraitInteraction from './PortraitInteraction.astro';
   }
 
   .identity__hello {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
     margin: 0;
     color: var(--color-ink);
     font-family: var(--font-reading);
@@ -77,9 +85,9 @@ import PortraitInteraction from './PortraitInteraction.astro';
   }
 
   .identity__hello span {
-    margin-left: 0.35rem;
     color: var(--color-muted);
     font-size: 0.82em;
+    line-height: 1.2;
   }
 
   .identity h1 {

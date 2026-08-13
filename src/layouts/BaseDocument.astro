@@ -4,7 +4,7 @@ import '../styles/composition.css';
 import '../styles/motion.css';
 
 import avatarURL from '../assets/art/Drawn_me.png?url';
-import deliusURL from '../assets/fonts/Delius-Regular.ttf?url';
+import aleoURL from '../assets/fonts/Aleo-Regular.ttf?url';
 
 interface Props {
   title: string;
@@ -32,7 +32,7 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}
     <meta name="theme-color" content={themeColor} />
-    <link rel="preload" href={deliusURL} as="font" type="font/ttf" crossorigin="anonymous" />
+    <link rel="preload" href={aleoURL} as="font" type="font/ttf" crossorigin="anonymous" />
     <link rel="icon" type="image/png" href={avatarURL} />
     <link rel="canonical" href={canonicalURL} />
     <title>{title}</title>

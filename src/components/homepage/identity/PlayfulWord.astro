@@ -57,6 +57,8 @@ const essenceStyle = [
     private palette: ThermalStop[] = [];
     private animationFrame = 0;
     private animationStart = 0;
+    private waveSpeed = 1;
+    private waveStrength = 1;
     private resizeObserver?: ResizeObserver;
     private reducedMotion?: MediaQueryList;
     private finePointer?: MediaQueryList;
@@ -88,6 +90,7 @@ const essenceStyle = [
       this.addEventListener('pointermove', this.movePointerField);
       this.addEventListener('pointerleave', this.endPointerField);
       this.addEventListener('pointerdown', this.handlePointerDown);
+      this.addEventListener('thermal-hint', this.playHint);
 
       if ('ResizeObserver' in window) {
         this.resizeObserver = new ResizeObserver(() => this.configureCanvas());
@@ -104,6 +107,7 @@ const essenceStyle = [
       this.removeEventListener('pointermove', this.movePointerField);
       this.removeEventListener('pointerleave', this.endPointerField);
       this.removeEventListener('pointerdown', this.handlePointerDown);
+      this.removeEventListener('thermal-hint', this.playHint);
       delete this.dataset.enhanced;
     }
 
@@ -262,18 +266,29 @@ const essenceStyle = [
       this.restartWave();
     };
 
-    private restartWave = () => {
+    private startWave(speed: number, strength: number) {
       if (this.reducedMotion?.matches || !this.geometry) return;
       window.cancelAnimationFrame(this.animationFrame);
       this.pointerActive = false;
       this.pointerReleaseStart = 0;
+      this.waveSpeed = speed;
+      this.waveStrength = strength;
       this.animationStart = performance.now();
       this.setAttribute('data-thermal-wave', '');
       this.animationFrame = window.requestAnimationFrame(this.animate);
+    }
+
+    private restartWave = () => {
+      this.startWave(1, 1);
+    };
+
+    private playHint = () => {
+      if (this.pointerActive || this.matches(':hover')) return;
+      this.startWave(1.7, 0.78);
     };
 
     private animate = (time: number) => {
-      const elapsed = time - this.animationStart;
+      const elapsed = (time - this.animationStart) * this.waveSpeed;
       const totalDuration = this.pulseDuration + Math.max(0, this.word.length - 1) * this.letterDelay;
       this.drawFrame(elapsed);
 
@@ -351,7 +366,9 @@ const essenceStyle = [
         }
 
         const localTime = (elapsed - letterIndex * this.letterDelay) / this.pulseDuration;
-        return localTime > 0 && localTime < 1 ? Math.pow(Math.sin(localTime * Math.PI), 0.72) : 0;
+        return localTime > 0 && localTime < 1
+          ? Math.pow(Math.sin(localTime * Math.PI), 0.72) * this.waveStrength
+          : 0;
       });
       const centerYs = centers.map(
         (_, letterIndex) => {

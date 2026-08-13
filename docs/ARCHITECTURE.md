@@ -93,8 +93,8 @@ The root and work pages own their #F8F8F8 and black-ink surface styles. The Obse
 The composition presentation uses three local roles without changing Observatory:
 
 - Averia Serif Libre (`--font-display`) for display headings;
-- Delius (`--font-reading`) for body copy, personal labels, controls, captions, and authored interactions;
-- Goudy Mediaeval (`--font-special`) for special elements, currently the sticky values voice.
+- Aleo (`--font-reading`) for body copy, personal labels, controls, captions, and authored interactions;
+- Bright Chalk (`--font-special`) for special elements, currently the sticky values voice.
 
 Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`.
 
@@ -156,6 +156,7 @@ Observatory receives a dedicated authored record because it has the strongest cu
 Allowed local enhancements include:
 
 - scroll-controlled box-frame and pigment-field progress;
+- one-time handwritten hello frame playback as the identity becomes visible;
 - portrait switching;
 - craft-value word cycling inside the values-and-evidence composition;
 - the side-mounted contact disclosure;

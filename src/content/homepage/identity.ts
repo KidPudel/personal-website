@@ -8,7 +8,7 @@ export const identity = {
   },
   summary: {
     before:
-      'I design and build interactive products and gameplay systems. I take someone’s desire, carry it across technical boundaries, and bring it to life as something ',
+      'I build interactive products and gameplay systems. I carry ideas across technical boundaries and bring them to life as something ',
     word: 'joyful',
     after: ' to use.',
   },

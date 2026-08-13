@@ -5,6 +5,8 @@ import { drawPigmentField } from './pigment-field';
 class OpeningSequence extends HTMLElement {
   private frame = 0;
   private abort?: AbortController;
+  private helloAnimationPlayed = false;
+  private thermalHintPlayed = false;
 
   connectedCallback() {
     if (this.dataset.enhanced) return;
@@ -69,6 +71,16 @@ class OpeningSequence extends HTMLElement {
       header.toggleAttribute('aria-hidden', headerVisibility < openingMotion.headerInteractiveAt);
       reveal.inert = revealProgress < openingMotion.identityInteractiveAt;
       this.toggleAttribute('data-complete', progress >= openingMotion.completeAt);
+
+      if (!this.helloAnimationPlayed && revealProgress >= 0.72) {
+        this.helloAnimationPlayed = true;
+        reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-play'));
+      }
+
+      if (!this.thermalHintPlayed && revealProgress >= 0.94) {
+        this.thermalHintPlayed = true;
+        reveal.querySelector('playful-word')?.dispatchEvent(new CustomEvent('thermal-hint'));
+      }
     };
 
     const requestRender = () => {
