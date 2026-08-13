@@ -2,6 +2,17 @@
 import type { CollectionEntry } from 'astro:content';
 
 import { sitePath } from '../../config/site';
+import chineseBee1 from '../../assets/evidence/cb1.png';
+import chineseBee2 from '../../assets/evidence/cb2.png';
+import chineseBee3 from '../../assets/evidence/cb3.png';
+import campfire1 from '../../assets/evidence/campfire1.png';
+import observatory1 from '../../assets/evidence/observatory1.png';
+import observatory2 from '../../assets/evidence/observatory2.png';
+import observatory3 from '../../assets/evidence/observatory3.png';
+import pizzaSushiWok1 from '../../assets/evidence/pzw1.png';
+import pizzaSushiWok2 from '../../assets/evidence/pzw2.png';
+import pizzaSushiWok3 from '../../assets/evidence/pzw3.png';
+import santaFoundation1 from '../../assets/evidence/secret_santa_foundation1.png';
 
 interface Props {
   observatory: CollectionEntry<'software'>;
@@ -14,6 +25,8 @@ const projectTitles = {
   Observatory: observatory.data.title,
   PizzaSushiWok: foodProduct.data.title,
   'Chinese Bee': chineseBee.data.title,
+  'Discourses by Campfire': 'Discourses by Campfire',
+  'Santa Foundation': 'Santa Foundation',
 };
 
 const values = [
@@ -29,6 +42,7 @@ const values = [
         title: 'Run controlled tests, not only watch live activity.',
         copy: 'A person can test one to four applications, add a warm-up, repeat rounds, and keep the results for later inspection and comparison.',
         shot: 'Observatory testing view screenshot',
+        image: observatory1,
         caseStudy: true,
       },
       {
@@ -36,12 +50,28 @@ const values = [
         title: 'Carry one order from browsing to delivery.',
         copy: 'Menu navigation, basket, checkout, payment, addresses, courier status, promotions, loyalty, and bonuses belong to one complete ordering journey.',
         shot: 'Ordering journey screenshot',
+        image: pizzaSushiWok1,
       },
       {
         project: 'Chinese Bee',
         title: 'Turn a learning need into a repeatable practice loop.',
         copy: 'Multilingual search leads into saved vocabulary, quizzes, guidance, handwriting practice, and recognition feedback instead of ending at a definition.',
         shot: 'Search-to-practice flow screenshot',
+        image: chineseBee1,
+      },
+      {
+        project: 'Discourses by Campfire',
+        title: 'Build one survival experience from connected systems.',
+        copy: 'The winter forest, shifting day and night, survival pressure, dialogue, sound, music, effects, and interacting systems work together as one suspenseful experience.',
+        shot: 'Discourses by Campfire gameplay screenshot',
+        image: campfire1,
+      },
+      {
+        project: 'Santa Foundation',
+        title: 'Keep a small game focused on its playable idea.',
+        copy: 'A compact browser game turns delivering presents, avoiding the Grinch’s attacks, original pixel art, and player-led balancing changes into one complete game-jam experience.',
+        shot: 'Santa Foundation gameplay screenshot',
+        image: santaFoundation1,
       },
     ],
   },
@@ -57,18 +87,21 @@ const values = [
         title: 'Keep evidence local, reopenable, and comparable.',
         copy: 'Recorded tests stay on the Mac and remain available for later comparison, giving people useful evidence rather than a disappearing live snapshot.',
         shot: 'Saved test comparison screenshot',
+        image: observatory2,
       },
       {
         project: 'PizzaSushiWok',
         title: 'Make complex order states manageable.',
         copy: 'Payments and 3DS, maps and addresses, courier progress, promotions, loyalty, bonuses, and themes work as understandable parts of one product.',
         shot: 'Checkout and delivery-state screenshot',
+        image: pizzaSushiWok2,
       },
       {
         project: 'Chinese Bee',
         title: 'Respond to the learner’s own handwriting.',
         copy: 'Freehand character input receives an accuracy result, turning practice from passive review into feedback on something the learner actually made.',
         shot: 'Handwriting feedback screenshot',
+        image: chineseBee2,
       },
     ],
   },
@@ -84,18 +117,21 @@ const values = [
         title: 'Group processes into the applications people recognize.',
         copy: 'Related processes become whole-application totals, replacing Activity Monitor’s process-first view with a structure that reads clearly at a glance.',
         shot: 'Application totals screenshot',
+        image: observatory3,
       },
       {
         project: 'PizzaSushiWok',
         title: 'Keep a large menu navigable across devices.',
         copy: 'Custom category and menu-scrolling behavior, adaptive layouts, and repeated usability fixes help people keep their place while ordering.',
         shot: 'Menu navigation screenshot',
+        image: pizzaSushiWok3,
       },
       {
         project: 'Chinese Bee',
         title: 'Make several surfaces feel like one capability.',
         copy: 'Chat, saved learning state, practice eligibility, freehand input, and scoring are connected as one understandable workflow rather than separate tools.',
         shot: 'Connected chat and practice screenshot',
+        image: chineseBee3,
       },
     ],
   },
@@ -141,9 +177,21 @@ const values = [
           {value.aspects.map((aspect, aspectIndex) => (
             <li class="aspect" data-aspect>
               <div class="aspect__count" aria-hidden="true">{value.number}.{aspectIndex + 1}</div>
-              <div class="aspect__visual" role="img" aria-label={`Placeholder for ${aspect.shot} from ${projectTitles[aspect.project]}`}>
-                <span>{aspect.shot}</span>
-                <small>image placeholder</small>
+              <div
+                class:list={[
+                  'aspect__visual',
+                  aspect.image.height > aspect.image.width && 'aspect__visual--portrait',
+                  aspect.image.height <= aspect.image.width && aspect.image.width / aspect.image.height < 1.35 && 'aspect__visual--compact',
+                ]}
+              >
+                <img
+                  src={aspect.image.src}
+                  width={aspect.image.width}
+                  height={aspect.image.height}
+                  alt={`${aspect.shot} from ${projectTitles[aspect.project]}`}
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
               <div class="aspect__copy">
                 <p class="aspect__project">{aspect.project}</p>
@@ -447,6 +495,26 @@ const values = [
     grid-column: 1;
   }
 
+  .value-chapter:first-child {
+    grid-template-rows: repeat(3, minmax(32rem, auto));
+  }
+
+  .value-chapter:first-child .value-sticky {
+    grid-row: 1 / span 3;
+  }
+
+  .value-chapter:first-child .aspect:nth-child(4) {
+    grid-column: 3;
+    grid-row: 2;
+    margin-top: clamp(12rem, 18vw, 17rem);
+  }
+
+  .value-chapter:first-child .aspect:nth-child(5) {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 2rem;
+  }
+
   [data-value-chapters][data-enhanced] .aspect {
     opacity: 0.2;
     transform: translateY(2.5rem) rotate(0.4deg);
@@ -471,37 +539,26 @@ const values = [
   }
 
   .aspect__visual {
-    display: grid;
-    aspect-ratio: 16 / 8.5;
-    place-items: center;
-    padding: 2rem;
+    width: min(100%, 31rem);
     overflow: hidden;
     border: clamp(0.28rem, 0.45vw, 0.42rem) solid #11110f;
     border-radius: clamp(1.15rem, 2vw, 1.75rem);
-    background:
-      linear-gradient(135deg, rgba(227, 86, 115, 0.08), transparent 48%),
-      radial-gradient(rgba(17, 17, 15, 0.18) 0.65px, transparent 0.65px),
-      #ecebe7;
-    background-size: auto, 12px 12px, auto;
+    background: #ecebe7;
     box-shadow: 0.32rem 0.38rem 0 rgba(17, 17, 15, 0.13);
-    color: #59564f;
-    font-family: var(--font-reading);
-    text-align: center;
   }
 
-  .aspect__visual span,
-  .aspect__visual small {
-    grid-area: 1 / 1;
+  .aspect__visual--compact {
+    width: min(88%, 25rem);
   }
 
-  .aspect__visual span {
-    max-width: 22ch;
+  .aspect__visual--portrait {
+    width: min(68%, 18rem);
   }
 
-  .aspect__visual small {
-    align-self: end;
-    color: rgba(17, 17, 15, 0.48);
-    font-size: 0.68rem;
+  .aspect__visual img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 
   .aspect__copy {
@@ -624,7 +681,8 @@ const values = [
     }
 
     .aspect:nth-child(n),
-    .value-chapter:nth-child(even) .aspect:nth-child(n) {
+    .value-chapter:nth-child(even) .aspect:nth-child(n),
+    .value-chapter:first-child .aspect:nth-child(n) {
       grid-column: 1;
       grid-row: auto;
       margin-top: 0;
@@ -647,6 +705,10 @@ const values = [
       justify-self: start;
     }
 
+    .value-chapter:first-child .value-sticky {
+      grid-row: auto;
+    }
+
     [data-value-chapters][data-enhanced] .aspect:nth-child(odd) {
       transform: translate(-1.25rem, 2rem) rotate(-0.4deg);
     }
@@ -657,10 +719,6 @@ const values = [
 
     [data-value-chapters][data-enhanced] .aspect[data-revealed] {
       transform: none;
-    }
-
-    .aspect__visual {
-      aspect-ratio: 16 / 9.5;
     }
 
     .personal-note {

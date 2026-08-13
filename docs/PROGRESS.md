@@ -1,6 +1,6 @@
 # Website rebuild progress
 
-Last updated: 2026-08-12
+Last updated: 2026-08-13
 
 ## Status
 
@@ -10,11 +10,13 @@ The homepage still begins with the scroll-controlled box-opening sequence using 
 
 `/work/` now leads with Observatory, then presents the food product, Chinese Bee, receipt investigation, and payment-flow work. Finished games retain their authored presentation: Discourses uses its gameplay video, Santa uses its layered animated scene, and Snake keeps native video playback. Tic-Tac-Toe and the unfinished card-system study appear as real smaller artifacts rather than archive rows.
 
-Current milestone: **Centered sticky values and concrete aspect evidence implemented. Next: replace the nine labeled screenshot placeholders with Igor’s captures**
+Current milestone: **Centered sticky values and concrete aspect evidence implemented with Igor’s eleven supplied captures**
+
+The homepage evidence placeholders have been replaced with the supplied Observatory, PizzaSushiWok, Chinese Bee, Discourses by Campfire, and Santa Foundation captures. The first value now includes product and game evidence. Every frame follows its capture's native proportions; portrait and near-square captures use narrower caps so the evidence stays supporting in scale instead of becoming a repeated wall of wide rectangles.
 
 The homepage evidence milestone passed `astro check`, root and `/personal-website/` production builds, and `git diff --check`. Browser inspection at 1440 by 900 confirms that every value remains in the physical center while its three concrete evidence blocks alternate across the left and right in two rows. Inspection at 390 by 844 and 320 by 800 confirms the same centered sticky value and narrower left/right evidence rhythm without horizontal overflow. The document retains one main landmark and one h1, operable changing value words, consistent rounded frames, and no console warnings or errors.
 
-The latest homepage pass removes the checkbox and completion-invitation mechanic without removing the authored changing-word interaction. The centered sticky values still cycle `experience / behaviour / capability`, `impactful / empowering`, and `clear / honest`. Each value is supported by three verified aspects: Observatory testing, saved comparison, and application grouping; PizzaSushiWok’s complete order journey, complex order states, and menu navigation; and Chinese Bee’s learning loop, handwriting feedback, and connected chat-to-practice workflow. Nine labeled framed placeholders mark the exact screenshots still needed. The section uses a deliberately smaller type scale than the opening.
+The latest homepage pass removes the checkbox and completion-invitation mechanic without removing the authored changing-word interaction. The centered sticky values still cycle `experience / behaviour / capability`, `impactful / empowering`, and `clear / honest`. The product evidence covers Observatory testing, saved comparison, and application grouping; PizzaSushiWok’s complete order journey, complex order states, and menu navigation; and Chinese Bee’s learning loop, handwriting feedback, and connected chat-to-practice workflow. Discourses by Campfire and Santa Foundation add game evidence to the first value. The eleven supplied captures appear in proportion-aware framed compositions. The section uses a deliberately smaller type scale than the opening.
 
 ## Hiring-first redesign milestones
 
