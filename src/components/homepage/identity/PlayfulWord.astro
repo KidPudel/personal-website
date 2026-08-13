@@ -39,6 +39,13 @@ const essenceStyle = [
     radii: number[];
   }
 
+  interface PointerField {
+    strength: number;
+    time: number;
+    x: number;
+    y: number;
+  }
+
   class PlayfulWord extends HTMLElement {
     private canvas?: HTMLCanvasElement;
     private context?: CanvasRenderingContext2D;
@@ -52,8 +59,13 @@ const essenceStyle = [
     private animationStart = 0;
     private resizeObserver?: ResizeObserver;
     private reducedMotion?: MediaQueryList;
+    private finePointer?: MediaQueryList;
     private word = '';
     private inkColor = 'rgb(17 17 15)';
+    private pointerActive = false;
+    private pointerReleaseStart = 0;
+    private pointerTarget = { x: 0, y: 0 };
+    private pointerCurrent = { x: 0, y: 0 };
 
     private readonly letterDelay = 70;
     private readonly pulseDuration = 1_470;
@@ -68,11 +80,14 @@ const essenceStyle = [
 
       this.dataset.enhanced = 'true';
       this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      this.finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
       this.readPalette();
       this.configureCanvas();
 
-      this.addEventListener('pointerenter', this.restartWave);
-      this.addEventListener('pointerdown', this.restartWave);
+      this.addEventListener('pointerenter', this.beginPointerField);
+      this.addEventListener('pointermove', this.movePointerField);
+      this.addEventListener('pointerleave', this.endPointerField);
+      this.addEventListener('pointerdown', this.handlePointerDown);
 
       if ('ResizeObserver' in window) {
         this.resizeObserver = new ResizeObserver(() => this.configureCanvas());
@@ -85,8 +100,10 @@ const essenceStyle = [
     disconnectedCallback() {
       window.cancelAnimationFrame(this.animationFrame);
       this.resizeObserver?.disconnect();
-      this.removeEventListener('pointerenter', this.restartWave);
-      this.removeEventListener('pointerdown', this.restartWave);
+      this.removeEventListener('pointerenter', this.beginPointerField);
+      this.removeEventListener('pointermove', this.movePointerField);
+      this.removeEventListener('pointerleave', this.endPointerField);
+      this.removeEventListener('pointerdown', this.handlePointerDown);
       delete this.dataset.enhanced;
     }
 
@@ -155,9 +172,24 @@ const essenceStyle = [
 
       const metrics = this.context.measureText(this.word);
       const ascent = metrics.actualBoundingBoxAscent || fontSize * 0.76;
-      const descent = metrics.actualBoundingBoxDescent || fontSize * 0.2;
       const drawX = paddingX + (bounds.width - metrics.width) * 0.5;
-      const baseline = paddingTop + (bounds.height - ascent - descent) * 0.5 + ascent;
+      const baselineProbe = document.createElement('span');
+      Object.assign(baselineProbe.style, {
+        border: '0',
+        display: 'inline-block',
+        height: '0',
+        padding: '0',
+        verticalAlign: 'baseline',
+        width: '0',
+      });
+      base.after(baselineProbe);
+      // A zero-height inline block sits exactly on the browser's text baseline.
+      // Measuring it avoids approximating CSS line layout with canvas metrics.
+      // Canvas rasterizes Averia's glyphs fractionally lower than the DOM at
+      // the same baseline, so compensate in proportion to the rendered size.
+      const baseline =
+        paddingTop + baselineProbe.getBoundingClientRect().top - bounds.top - fontSize * 0.045;
+      baselineProbe.remove();
       const centers: number[] = [];
       const radii: number[] = [];
 
@@ -178,9 +210,63 @@ const essenceStyle = [
       this.drawFrame(0);
     }
 
+    private updatePointer(event: PointerEvent, snap = false) {
+      if (!this.canvas || !this.geometry) return;
+
+      const canvasBounds = this.canvas.getBoundingClientRect();
+      const { ascent, baseline, fontSize } = this.geometry;
+      this.pointerTarget = {
+        x: Math.max(0, Math.min(this.geometry.cssWidth, event.clientX - canvasBounds.left)),
+        y: Math.max(
+          baseline - ascent * 0.78,
+          Math.min(baseline + fontSize * 0.08, event.clientY - canvasBounds.top),
+        ),
+      };
+
+      if (snap) this.pointerCurrent = { ...this.pointerTarget };
+    }
+
+    private beginPointerField = (event: PointerEvent) => {
+      if (!this.finePointer?.matches || this.reducedMotion?.matches || !this.geometry) return;
+
+      window.cancelAnimationFrame(this.animationFrame);
+      this.updatePointer(event, true);
+      this.pointerActive = true;
+      this.pointerReleaseStart = 0;
+      this.setAttribute('data-thermal-wave', '');
+      this.animationFrame = window.requestAnimationFrame(this.animatePointer);
+    };
+
+    private movePointerField = (event: PointerEvent) => {
+      if (!this.finePointer?.matches || this.reducedMotion?.matches) return;
+      if (!this.pointerActive) {
+        this.beginPointerField(event);
+        return;
+      }
+
+      this.updatePointer(event);
+    };
+
+    private endPointerField = () => {
+      if (!this.finePointer?.matches || !this.pointerActive) return;
+      this.pointerActive = false;
+      this.pointerReleaseStart = performance.now();
+    };
+
+    private handlePointerDown = (event: PointerEvent) => {
+      if (this.finePointer?.matches) {
+        this.beginPointerField(event);
+        return;
+      }
+
+      this.restartWave();
+    };
+
     private restartWave = () => {
       if (this.reducedMotion?.matches || !this.geometry) return;
       window.cancelAnimationFrame(this.animationFrame);
+      this.pointerActive = false;
+      this.pointerReleaseStart = 0;
       this.animationStart = performance.now();
       this.setAttribute('data-thermal-wave', '');
       this.animationFrame = window.requestAnimationFrame(this.animate);
@@ -197,6 +283,31 @@ const essenceStyle = [
       }
 
       this.drawFrame(totalDuration);
+      this.removeAttribute('data-thermal-wave');
+      this.animationFrame = 0;
+    };
+
+    private animatePointer = (time: number) => {
+      const follow = 0.17;
+      this.pointerCurrent.x += (this.pointerTarget.x - this.pointerCurrent.x) * follow;
+      this.pointerCurrent.y += (this.pointerTarget.y - this.pointerCurrent.y) * follow;
+
+      const release = this.pointerActive
+        ? 1
+        : Math.max(0, 1 - (time - this.pointerReleaseStart) / 260);
+
+      this.drawFrame(0, {
+        ...this.pointerCurrent,
+        strength: release * release * (3 - 2 * release),
+        time,
+      });
+
+      if (release > 0) {
+        this.animationFrame = window.requestAnimationFrame(this.animatePointer);
+        return;
+      }
+
+      this.drawFrame(0);
       this.removeAttribute('data-thermal-wave');
       this.animationFrame = 0;
     };
@@ -220,7 +331,7 @@ const essenceStyle = [
       ) as [number, number, number];
     }
 
-    private drawFrame(elapsed: number) {
+    private drawFrame(elapsed: number, pointer?: PointerField) {
       if (!this.geometry || !this.context || !this.fieldContext || !this.textContext || !this.canvas) return;
 
       const { ascent, baseline, centers, cssHeight, cssWidth, drawX, fontSize, radii } = this.geometry;
@@ -232,13 +343,24 @@ const essenceStyle = [
       const verticalRadius = fontSize * 0.62;
       const image = this.fieldContext.createImageData(fieldWidth, fieldHeight);
       const pixels = image.data;
-      const time = elapsed * 0.001;
-      const pulseStrengths = centers.map((_, letterIndex) => {
+      const time = (pointer?.time ?? elapsed) * 0.001;
+      const pulseStrengths = centers.map((letterCenter, letterIndex) => {
+        if (pointer) {
+          const proximity = Math.max(0, 1 - Math.abs(letterCenter - pointer.x) / (fontSize * 2.05));
+          return Math.pow(proximity, 0.62) * pointer.strength;
+        }
+
         const localTime = (elapsed - letterIndex * this.letterDelay) / this.pulseDuration;
         return localTime > 0 && localTime < 1 ? Math.pow(Math.sin(localTime * Math.PI), 0.72) : 0;
       });
       const centerYs = centers.map(
-        (_, letterIndex) => centerY + Math.sin(letterIndex * 1.73 + 0.4) * fontSize * 0.075,
+        (_, letterIndex) => {
+          const fluidOffset = Math.sin(letterIndex * 1.73 + time * 1.6 + 0.4) * fontSize * 0.075;
+          if (!pointer) return centerY + fluidOffset;
+
+          const attraction = Math.max(0, pulseStrengths[letterIndex]) * 0.34;
+          return centerY + fluidOffset + (pointer.y - centerY) * attraction;
+        },
       );
 
       for (let pixelY = 0; pixelY < fieldHeight; pixelY += 1) {
@@ -255,6 +377,17 @@ const essenceStyle = [
             Math.sin(x * 0.074 - time * 2.8) * fontSize * 0.045 +
             Math.cos((x - y) * 0.052 + time * 2.4) * fontSize * 0.025;
           let field = -0.18;
+
+          if (pointer && pointer.strength > 0) {
+            const hoverRadiusX = fontSize * (0.74 + Math.sin(warpedY * 0.16 + time * 2.7) * 0.07);
+            const hoverRadiusY = verticalRadius * (0.88 + Math.sin(warpedX * 0.11 - time * 2.2) * 0.08);
+            const hoverDistance = Math.hypot(
+              (warpedX - pointer.x) / hoverRadiusX,
+              (warpedY - pointer.y) / hoverRadiusY,
+            );
+            const hoverSource = pointer.strength * 1.14 - hoverDistance * 0.54;
+            field = this.smoothMax(field, hoverSource, 0.085);
+          }
 
           for (let letterIndex = 0; letterIndex < centers.length; letterIndex += 1) {
             const strength = pulseStrengths[letterIndex];

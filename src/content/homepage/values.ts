@@ -88,7 +88,7 @@ export const values: readonly ValuePassage[] = [
       },
       {
         project: 'Santa Foundation',
-        caption: 'One playable idea',
+        caption: 'You are a little elf working on Santa',
         shot: 'Santa Foundation gameplay screenshot',
         image: santaFoundation1,
       },

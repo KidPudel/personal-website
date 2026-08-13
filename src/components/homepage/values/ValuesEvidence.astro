@@ -183,38 +183,30 @@ const projectTitles: Record<ValueProject, string> = {
   }
 
   .value-voice__layer--intro h2 {
-    font-family: var(--font-reading);
+    font-family: var(--font-special);
     font-size: clamp(1.35rem, 2vw, 1.85rem);
-    font-weight: 400;
-    letter-spacing: 0;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     line-height: 1.18;
   }
 
   .value-voice__layer h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-special);
     font-size: clamp(1.55rem, 2.3vw, 2.25rem);
-    font-weight: 400;
-    letter-spacing: -0.035em;
-    line-height: 1.08;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.12;
   }
 
-  .value-voice__layer:nth-child(2) .word-cycle { min-width: 6.2em; }
-  .value-voice__layer:nth-child(3) .word-cycle { min-width: 5.4em; }
-  .value-voice__layer:nth-child(4) .word-cycle { min-width: 3.1em; }
-
   .word-cycle {
-    position: relative;
-    display: inline-grid;
     padding: 0;
     border: 0;
-    border-bottom: 0.08em solid currentColor;
     border-radius: 0;
     background: transparent;
-    color: var(--color-accent);
+    color: inherit;
     font: inherit;
     letter-spacing: inherit;
     line-height: inherit;
-    text-align: center;
     cursor: pointer;
   }
 

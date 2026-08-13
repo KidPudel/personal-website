@@ -90,10 +90,11 @@ The DOM order is also the reading order. CSS may create asymmetrical composition
 
 The root and work pages own their #F8F8F8 and black-ink surface styles. The Observatory document retains its independent editorial typography and layout.
 
-The composition presentation uses two local roles without changing Observatory:
+The composition presentation uses three local roles without changing Observatory:
 
 - Averia Serif Libre (`--font-display`) for display headings;
-- Delius (`--font-reading`) for explanatory copy, personal labels, controls, captions, and authored interactions.
+- Delius (`--font-reading`) for body copy, personal labels, controls, captions, and authored interactions;
+- Goudy Mediaeval (`--font-special`) for special elements, currently the sticky values voice.
 
 Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`.
 

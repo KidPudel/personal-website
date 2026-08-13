@@ -22,6 +22,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Goudy Mediaeval';
+  src: url('../assets/fonts/GoudyMediaeval-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Goudy Mediaeval';
+  src: url('../assets/fonts/GoudyMediaeval-DemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 @layer tokens {
   :root {
     --color-field: #F8F8F8;
@@ -33,6 +49,7 @@
 
     --font-reading: 'Delius', Arial, sans-serif;
     --font-display: 'Averia Serif Libre', Georgia, serif;
+    --font-special: 'Goudy Mediaeval', Georgia, serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
 
     --reading-width: 58ch;
