@@ -1,5 +1,8 @@
 # Progress
 
+- Renamed the identity thermal-word rAF loop so it no longer shadows `HTMLElement.animate`, restoring a clean `astro check`.
+- Removed the opening “Scroll to open” prompt. The lid now teaches the mapping by lifting within the first 20–40px of scroll.
+- Shortened the opening flipbook's closed first frame so the lid begins lifting within the first 20–40px of scroll instead of waiting through about 19% of a viewport. Remaining frames keep even spacing through the rest of the box-opening range.
 - Split the homepage into OpeningSequence, IdentityIntroduction, ValuesEvidence, and WritingPreview, with copy in `src/content/homepage/` and named motion modules.
 - Replaced inverted portfolio tokens with field, ink, copy, muted, and accent.
 - Removed WorldField, HomeReturn, paper grain, and the previous hiring landing-page components.

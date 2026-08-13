@@ -40,9 +40,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
 
     <canvas class="opening-sequence__essence" aria-hidden="true" data-opening-essence></canvas>
 
-    <p class="opening-sequence__instruction" data-opening-instruction>
-      Scroll to open <span aria-hidden="true">↓</span>
-    </p>
     <a class="opening-sequence__skip" href="#values">Skip opening</a>
   </div>
 </opening-sequence>
@@ -55,7 +52,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
   .opening-sequence {
     --reveal-opacity: 1;
     --art-opacity: 0;
-    --instruction-opacity: 0;
     --identity-opacity: 1;
     --opening-color: #4265ff;
     --world-reaction: 0;
@@ -93,7 +89,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
 
   .opening-sequence__art,
   .opening-sequence__essence,
-  .opening-sequence__instruction,
   .opening-sequence__skip {
     display: none;
   }
@@ -161,22 +156,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
     opacity: 1;
   }
 
-  :global(.js) .opening-sequence__instruction {
-    position: absolute;
-    z-index: 10;
-    right: clamp(1.25rem, 4vw, 3.5rem);
-    bottom: clamp(1.25rem, 3vw, 2.5rem);
-    display: flex;
-    gap: 0.75rem;
-    margin: 0;
-    opacity: var(--instruction-opacity);
-    color: var(--color-ink);
-    font-family: var(--font-reading);
-    font-size: 0.7rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
   :global(.js) .opening-sequence__skip {
     position: absolute;
     z-index: 11;
@@ -204,8 +183,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8];
     }
 
     :global(.js) .opening-sequence__art,
-    :global(.js) .opening-sequence__essence,
-    :global(.js) .opening-sequence__instruction {
+    :global(.js) .opening-sequence__essence {
       display: none;
     }
   }

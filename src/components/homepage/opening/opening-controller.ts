@@ -1,5 +1,5 @@
 import { clamp, smooth } from '../../../lib/motion';
-import { openingMotion } from './opening-motion';
+import { flipbookFrameIndex, openingMotion } from './opening-motion';
 import { drawPigmentField } from './pigment-field';
 
 const approach = (current: number, target: number, elapsedSeconds: number) => {
@@ -32,14 +32,13 @@ class OpeningSequence extends HTMLElement {
     const sticky = this.querySelector<HTMLElement>('.opening-sequence__sticky');
     const reveal = this.querySelector<HTMLElement>('[data-opening-reveal]');
     const art = this.querySelector<HTMLElement>('[data-opening-art]');
-    const instruction = this.querySelector<HTMLElement>('[data-opening-instruction]');
     const essence = this.querySelector<HTMLCanvasElement>('[data-opening-essence]');
     const frames = Array.from(this.querySelectorAll<HTMLElement>('[data-opening-frame]'));
     const page = this.closest<HTMLElement>('[data-homepage]');
     const header = page?.querySelector<HTMLElement>('[data-site-header]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    if (!sticky || !reveal || !art || !instruction || !essence || !frames.length || !page || !header) return;
+    if (!sticky || !reveal || !art || !essence || !frames.length || !page || !header) return;
 
     const essenceContext = essence.getContext('2d');
     if (!essenceContext) return;
@@ -103,13 +102,11 @@ class OpeningSequence extends HTMLElement {
     };
 
     const paint = (progress: number, timestamp: number) => {
-      const frameProgress = clamp(progress / openingMotion.flipbookUntil);
-      const frameIndex = Math.min(frames.length - 1, Math.floor(frameProgress * frames.length));
+      const frameIndex = flipbookFrameIndex(progress, frames.length, openingAnimationDistance);
       const revealProgress = smooth(
         clamp((progress - openingMotion.identityRevealStart) / openingMotion.identityRevealDistance),
       );
       const artOpacity = 1 - smooth(clamp((progress - openingMotion.artFadeStart) / openingMotion.artFadeDistance));
-      const instructionOpacity = 1 - smooth(clamp(progress / openingMotion.instructionFadeDistance));
       const headerVisibility = smooth(
         clamp((progress - openingMotion.headerRevealStart) / openingMotion.headerRevealDistance),
       );
@@ -118,7 +115,6 @@ class OpeningSequence extends HTMLElement {
       this.style.setProperty('--opening-color', openingMotion.frameColors[frameIndex] ?? openingMotion.frameColors[0]);
       this.style.setProperty('--reveal-opacity', String(revealProgress));
       this.style.setProperty('--art-opacity', String(artOpacity));
-      this.style.setProperty('--instruction-opacity', String(instructionOpacity));
       this.style.setProperty('--identity-opacity', '1');
       const essenceProgressChanged = Math.abs(progress - lastEssenceProgress) >= openingMotion.essenceProgressStep;
       const essenceFrameDue = timestamp - lastEssencePaintTime >= openingMotion.essenceFrameIntervalMs;

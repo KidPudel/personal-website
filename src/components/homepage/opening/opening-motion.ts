@@ -1,3 +1,5 @@
+import { clamp } from '../../../lib/motion';
+
 export const openingMotion = {
   scrollHeightVh: 400,
   boundedScrollViewports: 2,
@@ -12,10 +14,10 @@ export const openingMotion = {
   forwardBoundaryResetAt: 0.56,
   essenceFrameIntervalMs: 34,
   essenceProgressStep: 0.0025,
+  firstFramePixels: 20,
   flipbookUntil: 0.54,
   artFadeStart: 0.51,
   artFadeDistance: 0.16,
-  instructionFadeDistance: 0.16,
   identityRevealStart: 0.68,
   identityRevealDistance: 0.17,
   headerRevealStart: 0.78,
@@ -34,3 +36,26 @@ export const openingMotion = {
     '#5695d0',
   ],
 } as const;
+
+const firstFrameUntil = (animationDistance: number) =>
+  openingMotion.forwardBoundaryReleaseAt *
+  clamp(openingMotion.firstFramePixels / Math.max(1, animationDistance));
+
+export const flipbookFrameIndex = (
+  progress: number,
+  frameCount: number,
+  animationDistance: number,
+) => {
+  if (frameCount <= 1) return 0;
+
+  const lastFrame = frameCount - 1;
+  const lidLiftAt = firstFrameUntil(animationDistance);
+  if (progress >= openingMotion.flipbookUntil) return lastFrame;
+  if (progress < lidLiftAt) return 0;
+
+  const remaining = clamp(
+    (progress - lidLiftAt) / (openingMotion.flipbookUntil - lidLiftAt),
+  );
+
+  return 1 + Math.min(lastFrame - 1, Math.floor(remaining * lastFrame));
+};

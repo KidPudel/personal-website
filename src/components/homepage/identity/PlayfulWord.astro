@@ -275,7 +275,7 @@ const essenceStyle = [
       this.waveStrength = strength;
       this.animationStart = performance.now();
       this.setAttribute('data-thermal-wave', '');
-      this.animationFrame = window.requestAnimationFrame(this.animate);
+      this.animationFrame = window.requestAnimationFrame(this.animateWave);
     }
 
     private restartWave = () => {
@@ -287,13 +287,13 @@ const essenceStyle = [
       this.startWave(1.7, 0.78);
     };
 
-    private animate = (time: number) => {
+    private animateWave = (time: number) => {
       const elapsed = (time - this.animationStart) * this.waveSpeed;
       const totalDuration = this.pulseDuration + Math.max(0, this.word.length - 1) * this.letterDelay;
       this.drawFrame(elapsed);
 
       if (elapsed < totalDuration) {
-        this.animationFrame = window.requestAnimationFrame(this.animate);
+        this.animationFrame = window.requestAnimationFrame(this.animateWave);
         return;
       }
 
