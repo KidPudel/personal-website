@@ -11,6 +11,9 @@ export const valueVoiceMotion = {
   incomingShift: 0.45,
   outgoingBlur: 1.8,
   incomingBlur: 1.4,
+  identityPinTopVh: 87,
+  valuesStickTopVh: 14,
+  identityPinRelease: 0.12,
   aspectRevealMargin: '0px 0px -14% 0px',
   aspectRevealThreshold: 0.16,
 } as const;

@@ -61,6 +61,39 @@ class ValueStory extends HTMLElement {
       this.querySelectorAll<HTMLElement>('[data-aspect]').forEach((aspect) => this.observer?.observe(aspect));
     }
 
+    const opening = document.querySelector<HTMLElement>('opening-sequence');
+    const page = this.closest<HTMLElement>('[data-homepage]') ?? document.querySelector<HTMLElement>('[data-homepage]');
+
+    const pinVoiceToIdentity = () => {
+      if (!opening || !page) return;
+
+      const viewport = window.innerHeight;
+      const pin = clamp(
+        (opening.getBoundingClientRect().bottom - viewport * valueVoiceMotion.identityPinRelease) /
+          Math.max(1, viewport * (1 - valueVoiceMotion.identityPinRelease)),
+      );
+      const topVh =
+        valueVoiceMotion.valuesStickTopVh +
+        pin * (valueVoiceMotion.identityPinTopVh - valueVoiceMotion.valuesStickTopVh);
+      const parsedHeaderVisibility = Number.parseFloat(page.style.getPropertyValue('--header-visibility'));
+      const headerVisibility = Number.isFinite(parsedHeaderVisibility)
+        ? parsedHeaderVisibility
+        : opening.hasAttribute('data-complete')
+          ? 1
+          : 0;
+
+      if (pin > 0.001) {
+        voice.dataset.identityPin = 'true';
+        voice.style.setProperty('--voice-pin-top', `${topVh.toFixed(2)}svh`);
+        voice.style.setProperty('--voice-pin-opacity', headerVisibility.toFixed(4));
+        return;
+      }
+
+      delete voice.dataset.identityPin;
+      voice.style.removeProperty('--voice-pin-top');
+      voice.style.removeProperty('--voice-pin-opacity');
+    };
+
     const setLayer = (
       layer: HTMLElement,
       opacity: number,
@@ -98,6 +131,7 @@ class ValueStory extends HTMLElement {
 
     const render = () => {
       this.frame = 0;
+      pinVoiceToIdentity();
 
       if (reducedMotion.matches) {
         let active = 0;

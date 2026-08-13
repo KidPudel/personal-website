@@ -1,8 +1,8 @@
 export const openingMotion = {
-  scrollHeightVh: 500,
+  scrollHeightVh: 400,
   boundedScrollViewports: 2,
   transitionScrollViewports: 1,
-  restingScrollViewports: 1,
+  restingScrollViewports: 0,
   scrollResponseSeconds: 0.18,
   minProgressPerSecond: 0.14,
   maxProgressPerSecond: 0.72,

@@ -103,10 +103,12 @@ const projectTitles: Record<ValueProject, string> = {
   .values-story {
     --passage-hold: 78svh;
     --voice-width: clamp(16rem, 23vw, 19rem);
+    --values-intro-lift: 13svh;
     position: relative;
     isolation: isolate;
     width: min(calc(100% - clamp(4rem, 7vw, 6rem)), 88rem);
     margin-inline: auto;
+    margin-top: calc(-1 * var(--values-intro-lift));
     padding: 0 clamp(0.75rem, 2vw, 1.75rem) clamp(3.5rem, 6vw, 5rem);
   }
 
@@ -160,6 +162,14 @@ const projectTitles: Record<ValueProject, string> = {
     margin-inline: auto;
     text-align: center;
     pointer-events: none;
+  }
+
+  :global(.js) .value-voice[data-identity-pin] {
+    position: fixed;
+    top: var(--voice-pin-top, 87svh);
+    left: 0;
+    right: 0;
+    opacity: var(--voice-pin-opacity, 0);
   }
 
   .value-voice__stack {

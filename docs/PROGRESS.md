@@ -33,3 +33,4 @@
 - Set the identity colour word to Bright Chalk with a dotted underline.
 - Removed the identity colour-word interaction. `joyful` is now ordinary summary copy set in Bright Chalk.
 - Rejected the high-contrast torn-paper treatment on the cycling Values words after visual review. The active word now remains black and uses a quiet muted-ink dotted underline as its interaction cue, consistent with the identity treatment. Verified the word cycle at 1440 by 900 and 390 by 844 with no horizontal overflow or browser warnings.
+- Brought the values premise onto the revealed identity screen by pinning the heading to the lower field while the opening still covers the viewport, then handing it to the sticky values voice. Verified at 1440 by 900 with the heading visible beside the identity copy without further scrolling, and hidden during the unopened box.
