@@ -2,6 +2,22 @@ import { clamp, smooth } from '../../../lib/motion';
 import { openingMotion } from './opening-motion';
 import { drawPigmentField } from './pigment-field';
 
+const approach = (current: number, target: number, elapsedSeconds: number) => {
+  const delta = target - current;
+  const distance = Math.abs(delta);
+
+  if (distance <= openingMotion.settleDistance) return target;
+
+  const preferredSpeed = distance / openingMotion.scrollResponseSeconds;
+  const boundedSpeed = Math.min(
+    openingMotion.maxProgressPerSecond,
+    Math.max(openingMotion.minProgressPerSecond, preferredSpeed),
+  );
+  const step = Math.min(distance, boundedSpeed * elapsedSeconds);
+
+  return current + Math.sign(delta) * step;
+};
+
 class OpeningSequence extends HTMLElement {
   private frame = 0;
   private abort?: AbortController;
@@ -28,26 +44,19 @@ class OpeningSequence extends HTMLElement {
     const essenceContext = essence.getContext('2d');
     if (!essenceContext) return;
 
-    const render = () => {
-      this.frame = 0;
+    let openingStart = 0;
+    let openingDistance = 1;
+    let visualProgress = 0;
+    let lastFrameTime: number | undefined;
+    let needsMeasurement = true;
 
-      if (reducedMotion.matches || window.location.hash === '#contact') {
-        this.style.setProperty('--reveal-opacity', '1');
-        this.style.setProperty('--art-opacity', '0');
-        this.style.setProperty('--instruction-opacity', '0');
-        this.style.setProperty('--identity-opacity', '1');
-        drawPigmentField(essence, essenceContext, this, 1);
-        page.style.setProperty('--header-visibility', '1');
-        header.inert = false;
-        header.removeAttribute('aria-hidden');
-        reveal.inert = false;
-        this.toggleAttribute('data-complete', true);
-        return;
-      }
+    const measure = () => {
+      openingStart = window.scrollY + this.getBoundingClientRect().top;
+      openingDistance = Math.max(1, this.offsetHeight - window.innerHeight);
+      needsMeasurement = false;
+    };
 
-      const rect = this.getBoundingClientRect();
-      const distance = Math.max(1, this.offsetHeight - window.innerHeight);
-      const progress = clamp(-rect.top / distance);
+    const paint = (progress: number) => {
       const frameProgress = clamp(progress / openingMotion.flipbookUntil);
       const frameIndex = Math.min(frames.length - 1, Math.floor(frameProgress * frames.length));
       const revealProgress = smooth(
@@ -83,16 +92,61 @@ class OpeningSequence extends HTMLElement {
       }
     };
 
+    const showCompletedOpening = () => {
+      visualProgress = 1;
+      this.frame = 0;
+      lastFrameTime = undefined;
+      paint(visualProgress);
+    };
+
     const requestRender = () => {
       if (this.frame) return;
       this.frame = window.requestAnimationFrame(render);
     };
 
+    const render = (timestamp: number) => {
+      this.frame = 0;
+
+      if (reducedMotion.matches || window.location.hash === '#contact') {
+        showCompletedOpening();
+        return;
+      }
+
+      if (needsMeasurement) measure();
+
+      const targetProgress = clamp((window.scrollY - openingStart) / openingDistance);
+
+      if (lastFrameTime === undefined) {
+        visualProgress = targetProgress;
+      } else {
+        const elapsedSeconds = Math.min(
+          openingMotion.maxFrameDeltaSeconds,
+          Math.max(0, (timestamp - lastFrameTime) / 1000),
+        );
+        visualProgress = approach(visualProgress, targetProgress, elapsedSeconds);
+      }
+
+      lastFrameTime = timestamp;
+      paint(visualProgress);
+
+      if (Math.abs(targetProgress - visualProgress) > openingMotion.settleDistance) requestRender();
+    };
+
+    const handleResize = () => {
+      needsMeasurement = true;
+      requestRender();
+    };
+
+    const handleMotionPreference = () => {
+      lastFrameTime = undefined;
+      requestRender();
+    };
+
     window.addEventListener('scroll', requestRender, { passive: true, signal: this.abort.signal });
-    window.addEventListener('resize', requestRender, { passive: true, signal: this.abort.signal });
+    window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     window.addEventListener('hashchange', requestRender, { signal: this.abort.signal });
-    reducedMotion.addEventListener('change', requestRender, { signal: this.abort.signal });
-    render();
+    reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
+    render(performance.now());
   }
 
   disconnectedCallback() {

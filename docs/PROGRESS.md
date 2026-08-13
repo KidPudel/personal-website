@@ -20,3 +20,5 @@
 - Set `--font-reading` to Aleo and `--font-special` to Bright Chalk, leaving Averia for headlines.
 - Removed the underline from the cycling value words.
 - Set cycling value words to inherit heading color and size to the active word so the line reflows instead of holding a reserved width.
+- Added a velocity-bounded follower and a three-viewport runway to the opening sequence. Slow scrolling remains closely coupled to native progress, while fast wheel and trackpad input advances quickly without skipping the box opening in one paint.
+- Set the identity colour word to Bright Chalk with a dotted underline.

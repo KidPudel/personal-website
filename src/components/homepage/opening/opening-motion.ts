@@ -1,4 +1,10 @@
 export const openingMotion = {
+  scrollHeightVh: 300,
+  scrollResponseSeconds: 0.18,
+  minProgressPerSecond: 0.14,
+  maxProgressPerSecond: 0.72,
+  maxFrameDeltaSeconds: 0.04,
+  settleDistance: 0.0005,
   flipbookUntil: 0.54,
   artFadeStart: 0.51,
   artFadeDistance: 0.16,
