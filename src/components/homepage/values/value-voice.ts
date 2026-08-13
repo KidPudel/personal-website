@@ -94,25 +94,16 @@ class ValueStory extends HTMLElement {
       voice.style.removeProperty('--voice-pin-opacity');
     };
 
-    const setLayer = (
-      layer: HTMLElement,
-      opacity: number,
-      clipTop: number,
-      clipRight: number,
-      shift: number,
-      blur: number,
-    ) => {
+    const setLayer = (layer: HTMLElement, opacity: number, blur: number) => {
       layer.style.setProperty('--voice-opacity', opacity.toFixed(4));
-      layer.style.setProperty('--voice-clip-top', `${clipTop.toFixed(2)}%`);
-      layer.style.setProperty('--voice-clip-right', `${clipRight.toFixed(2)}%`);
-      layer.style.setProperty('--voice-shift', `${shift.toFixed(3)}rem`);
       layer.style.setProperty('--voice-blur', `${blur.toFixed(3)}px`);
     };
 
     const showOnly = (activeIndex: number) => {
       layers.forEach((layer, index) => {
         const active = index === activeIndex;
-        setLayer(layer, active ? 1 : 0, active ? 0 : 100, active ? 0 : 100, 0, 0);
+        setLayer(layer, active ? 1 : 0, 0);
+        layer.style.pointerEvents = active ? 'auto' : 'none';
         layer.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
           button.tabIndex = active ? 0 : -1;
         });
@@ -159,35 +150,25 @@ class ValueStory extends HTMLElement {
       const progress = smooth(transitions[activeTransition]);
       const outgoingIndex = activeTransition;
       const incomingIndex = activeTransition + 1;
-      const erase = smooth(clamp(progress / valueVoiceMotion.eraseUntil));
-      const reveal = smooth(
-        clamp((progress - valueVoiceMotion.revealAfter) / valueVoiceMotion.revealDistance),
-      );
+      const outgoingOpacity = Math.cos(progress * Math.PI * 0.5) ** 2;
+      const incomingOpacity = Math.sin(progress * Math.PI * 0.5) ** 2;
+      const outgoingBlur =
+        valueVoiceMotion.morphBlur * smooth(clamp(progress / valueVoiceMotion.morphBlurRamp));
+      const incomingBlur =
+        valueVoiceMotion.morphBlur *
+        smooth(clamp((1 - progress) / valueVoiceMotion.morphBlurRamp));
 
       layers.forEach((layer, index) => {
         if (index === outgoingIndex) {
-          setLayer(
-            layer,
-            1 - erase,
-            erase * 100,
-            0,
-            valueVoiceMotion.outgoingShift * erase,
-            valueVoiceMotion.outgoingBlur * erase,
-          );
+          setLayer(layer, outgoingOpacity, outgoingBlur);
         } else if (index === incomingIndex) {
-          setLayer(
-            layer,
-            reveal,
-            0,
-            (1 - reveal) * 100,
-            valueVoiceMotion.incomingShift * (1 - reveal),
-            valueVoiceMotion.incomingBlur * (1 - reveal),
-          );
+          setLayer(layer, incomingOpacity, incomingBlur);
         } else {
-          setLayer(layer, 0, 100, 100, 0, 0);
+          setLayer(layer, 0, 0);
         }
 
         const interactive = index === (progress < 0.5 ? outgoingIndex : incomingIndex);
+        layer.style.pointerEvents = interactive ? 'auto' : 'none';
         layer.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
           button.tabIndex = interactive ? 0 : -1;
         });

@@ -90,13 +90,16 @@ The DOM order is also the reading order. CSS may create asymmetrical composition
 
 The root and work pages own their #F8F8F8 and black-ink surface styles. The Observatory document retains its independent editorial typography and layout.
 
-The composition presentation uses three local roles without changing Observatory:
+The composition presentation uses local type roles without changing Observatory:
 
 - Averia Serif Libre (`--font-display`) for display headings;
 - Aleo (`--font-reading`) for body copy, personal labels, controls, captions, and authored interactions;
-- Bright Chalk (`--font-special`) for special elements, currently the identity summary word and the sticky values voice.
+- Crimson Text (`--font-editorial`) for non-interactive values voice text;
+- Bright Chalk (`--font-special`) for special elements, currently the identity summary word and the cycling values words.
 
 Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`.
+
+The values voice changes phrase in one stationary position. Complementary opacity curves keep the outgoing and incoming phrases continuously present while opposing blur curves obscure their overlap, creating one black-ink optical morph without a blank midpoint.
 
 `PortfolioHeader` is a side-mounted Work and contact control rather than a full-width bar. It arrives with the opened box, uses the existing Connect drawing, and expands contact links locally. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
 

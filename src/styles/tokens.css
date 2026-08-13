@@ -54,6 +54,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Crimson Text';
+  src: url('../assets/fonts/CrimsonText-Regular.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Crimson Text';
+  src: url('../assets/fonts/CrimsonText-SemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
 @layer tokens {
   :root {
     --color-field: #F8F8F8;
@@ -65,6 +81,7 @@
 
     --font-reading: 'Aleo', Georgia, serif;
     --font-display: 'Averia Serif Libre', Georgia, serif;
+    --font-editorial: 'Crimson Text', Georgia, serif;
     --font-special: 'Bright Chalk', 'Delius', Arial, sans-serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
 

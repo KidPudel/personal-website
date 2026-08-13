@@ -174,13 +174,12 @@ const projectTitles: Record<ValueProject, string> = {
 
   .value-voice__stack {
     display: grid;
-    align-items: start;
+    align-items: center;
   }
 
   .value-voice__layer {
     min-width: 0;
     padding: 1.1rem 0.9rem 1.25rem;
-    background: rgb(248 248 248 / 0.94);
     pointer-events: auto;
   }
 
@@ -190,19 +189,19 @@ const projectTitles: Record<ValueProject, string> = {
   }
 
   .value-voice__layer--intro h2 {
-    font-family: var(--font-special);
+    font-family: var(--font-editorial);
     font-size: clamp(1.35rem, 2vw, 1.85rem);
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.01em;
-    line-height: 1.18;
+    line-height: 1.25;
   }
 
   .value-voice__layer h3 {
-    font-family: var(--font-special);
+    font-family: var(--font-editorial);
     font-size: clamp(1.55rem, 2.3vw, 2.25rem);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-    line-height: 1.12;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.22;
   }
 
   .word-cycle {
@@ -212,8 +211,10 @@ const projectTitles: Record<ValueProject, string> = {
     border-radius: 0;
     background: transparent;
     color: inherit;
-    font: inherit;
-    letter-spacing: inherit;
+    font-family: var(--font-special);
+    font-size: inherit;
+    font-weight: 400;
+    letter-spacing: -0.015em;
     line-height: inherit;
     cursor: pointer;
   }
@@ -238,11 +239,10 @@ const projectTitles: Record<ValueProject, string> = {
 
   :global(.js) .value-voice[data-enhanced] .value-voice__layer {
     grid-area: 1 / 1;
-    clip-path: inset(var(--voice-clip-top, 100%) var(--voice-clip-right, 100%) 0 0);
+    color: var(--color-ink);
     filter: blur(var(--voice-blur, 0));
     opacity: var(--voice-opacity, 0);
-    transform: translateY(var(--voice-shift, 0));
-    will-change: clip-path, filter, opacity, transform;
+    will-change: filter, opacity;
   }
 
   .value-chapters {
@@ -460,7 +460,6 @@ const projectTitles: Record<ValueProject, string> = {
   @media (prefers-reduced-motion: reduce) {
     :global(.js) .value-voice[data-enhanced] .value-voice__layer {
       filter: none;
-      transform: none;
       will-change: auto;
     }
 
