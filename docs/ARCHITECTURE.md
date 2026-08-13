@@ -157,7 +157,7 @@ Allowed local enhancements include:
 
 - scroll-controlled box-frame and pigment-field progress;
 - one-time handwritten hello frame playback as the identity becomes visible;
-- portrait switching;
+- a name-triggered reveal of Igor's photograph;
 - craft-value word cycling inside the values-and-evidence composition;
 - the side-mounted contact disclosure;
 - restrained media activation;

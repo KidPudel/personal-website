@@ -13,6 +13,8 @@
 - Verified the handwritten sequence from its first playing frame through its completed hold at 1440 by 900, 1280 by 720, 390 by 844, and 320 by 800, with no horizontal overflow or browser warnings. The production compiler also completed at both root and `/personal-website/` base paths.
 - Reduced the handwritten hello, opened its vertical crop so Igor's `g` descender remains fully visible, and moved the role label directly beneath it to leave the adjacent space open. Verified the stack at 1440 by 900 and 390 by 844 with no horizontal overflow.
 - Tightened the identity summary to replace `desire` with `ideas` and state the same thought more directly.
+- Removed the drawn portrait and the portrait switcher. The identity now rests centered with no visible photo; activating `Igor` in the handwritten hello layers a smaller photograph into the upper-right whitespace without moving the copy, with an accessible show/hide control.
+- Verified the centered default state and the stacked photo reveal at 1440 by 900, 820 by 999, and 390 by 844. Production compilation completed at both root and `/personal-website/` base paths.
 - Gave every values-evidence screenshot a stable slight random tilt and a rounded white frame.
 - Removed the supporting paragraph from each sticky value heading, and replaced each evidence title and body with a short body-font caption, keeping the Observatory case-study link.
 - Set `--font-reading` to Aleo and `--font-special` to Bright Chalk, leaving Averia for headlines.

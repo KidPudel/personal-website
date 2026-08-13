@@ -35,6 +35,15 @@ const frames = Object.entries(frameModules)
       />
     ))}
   </hello-animation>
+  <button
+    class="hello-animation__name-trigger"
+    type="button"
+    aria-label="Show a photo of Igor"
+    aria-controls="identity-portrait"
+    aria-expanded="false"
+    data-identity-portrait-trigger
+    hidden
+  ></button>
 </span>
 
 <script>
@@ -115,6 +124,7 @@ const frames = Object.entries(frameModules)
 
 <style>
   .hello-animation-with-text {
+    position: relative;
     display: inline-block;
     flex: none;
     width: min(100%, 13rem);
@@ -141,6 +151,29 @@ const frames = Object.entries(frameModules)
 
   .hello-animation img[data-active] {
     opacity: 1;
+  }
+
+  .hello-animation__name-trigger {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: -0.15rem;
+    width: 42%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 0.3rem;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .hello-animation__name-trigger[hidden] {
+    display: none;
+  }
+
+  .hello-animation__name-trigger:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
   }
 
   @media (max-width: 52rem) {
