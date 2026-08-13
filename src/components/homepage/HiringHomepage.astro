@@ -128,7 +128,6 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
     grid-area: portrait;
     width: min(100%, 28rem);
     opacity: var(--hero-content-opacity, 1);
-    rotate: -1deg;
   }
 
   .hero__portrait :global(.portrait-interaction) {
@@ -208,6 +207,9 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
   }
 
   .text-link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.35rem;
   }
@@ -227,7 +229,7 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
 
   .writing h2 {
     margin-top: 0.5rem;
-    font-size: clamp(2.1rem, 3.3vw, 3.4rem);
+    font-size: clamp(2rem, 2.7vw, 2.75rem);
     line-height: 1.04;
   }
 
@@ -290,6 +292,10 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
       font-size: 0.95rem;
     }
 
+    .hero h1 {
+      font-size: clamp(2.05rem, 9.2vw, 2.25rem);
+    }
+
   }
 
   @media (max-height: 48rem) and (min-width: 52.01rem) {
@@ -316,4 +322,5 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
     }
 
   }
+
 </style>

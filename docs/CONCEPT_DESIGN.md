@@ -47,3 +47,13 @@ The site should feel:
 - Mix/blend of quite calm minimalism with maximalism "anti-portfolio" portfolio
 - Restrained-with-one-loud-moment — website is primary calm and aesthetic with intentional clash with loud memorable experience (opening the box with the splash of colors)
 - The balance between playful-chaotic-warm with quiet confidence that is still artistic and unique.
+
+## Artistic continuity
+
+The homepage is one authored artistic expression, not a sequence of product-marketing sections or an e-commerce funnel.
+
+- Continuity should come from composition, transformation, rhythm, and the relationship between adjacent elements.
+- Do not add "next" labels, numbered progress indicators, step counters, section-navigation chrome, or similar conversion-interface patterns to explain the page.
+- Do not repeat a heading at the end of one composition and the beginning of another. If text introduces what follows, keep one instance and let that same instance transform or carry into the next passage.
+- Semantic sections may remain for accessibility and document structure, but they must not create visible seams or dictate the artistic composition.
+- Responsive variants should preserve the same composition and interaction logic wherever practical, scaling and tightening the artwork instead of substituting a different section sequence.

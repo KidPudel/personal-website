@@ -123,38 +123,8 @@ const { loading = 'eager' } = Astro.props;
   .portrait-card {
     position: relative;
     margin: 0;
-    padding: 0.55rem 0.55rem 2.15rem;
+    padding: 0 0 1.7rem;
     color: var(--color-field-ink);
-    filter: drop-shadow(0.3rem 0.45rem 0.35rem rgba(3, 3, 3, 0.3));
-  }
-
-  .portrait-card::before,
-  .portrait-card::after {
-    position: absolute;
-    pointer-events: none;
-    content: '';
-  }
-
-  .portrait-card::before {
-    inset: 0.06rem 0.1rem 1.65rem 0.02rem;
-    border: 0.12rem solid rgba(17, 17, 15, 0.82);
-    clip-path: polygon(1% 2%, 33% 0.5%, 67% 1.5%, 99% 0%, 98.4% 34%, 100% 68%, 98.5% 99%, 65% 98%, 32% 100%, 0.5% 98%, 1.5% 64%, 0% 31%);
-    transform: rotate(-0.45deg);
-  }
-
-  .portrait-card::after {
-    inset: 0.32rem 0.24rem 1.82rem 0.3rem;
-    border: 0.07rem solid rgba(17, 17, 15, 0.38);
-    transform: rotate(0.6deg);
-  }
-
-  .portrait-card--drawn {
-    transform: rotate(-2.2deg);
-  }
-
-  .portrait-card--real {
-    margin-top: 1.8rem;
-    transform: rotate(2.8deg);
   }
 
   .portrait-card :global(img) {
@@ -172,16 +142,14 @@ const { loading = 'eager' } = Astro.props;
 
   .portrait-card figcaption {
     position: absolute;
-    left: 0.8rem;
-    bottom: 0.55rem;
+    left: 0;
+    bottom: 0;
     font-size: 0.92rem;
-    transform: rotate(-1deg);
   }
 
   .portrait-card--drawn figcaption {
-    right: 0.8rem;
+    right: 0;
     left: auto;
-    transform: rotate(1deg);
   }
 
   .portrait-interaction[data-enhanced] .portrait-interaction__stack {
@@ -198,22 +166,22 @@ const { loading = 'eager' } = Astro.props;
 
   .portrait-interaction[data-enhanced] .portrait-card--drawn:not([data-active]) {
     z-index: 1;
-    opacity: 0.72;
-    transform: translate(1.1rem, 0.7rem) rotate(4deg) scale(0.95);
+    opacity: 0.58;
+    transform: translate(1.1rem, 0.7rem) scale(0.95);
   }
 
   .portrait-interaction[data-enhanced] .portrait-card--real:not([data-active]) {
     z-index: 1;
     margin: 0;
-    opacity: 0.72;
-    transform: translate(-1rem, 0.8rem) rotate(-4deg) scale(0.95);
+    opacity: 0.58;
+    transform: translate(-1rem, 0.8rem) scale(0.95);
   }
 
   .portrait-interaction[data-enhanced] .portrait-card[data-active] {
     z-index: 2;
     margin: 0;
     opacity: 1;
-    transform: rotate(-1.5deg);
+    transform: none;
   }
 
   .portrait-interaction[data-enhanced] .portrait-card:not([data-active]) figcaption {
@@ -254,44 +222,24 @@ const { loading = 'eager' } = Astro.props;
 
   @keyframes portrait-replay-drawn {
     0% {
-      filter: none;
-      rotate: 0deg;
       translate: 0 0;
     }
     42% {
-      filter: drop-shadow(0.2rem 0.35rem 0.2rem rgba(0, 0, 0, 0.28));
-      rotate: -1.8deg;
-      translate: -0.35rem -0.65rem;
-    }
-    72% {
-      rotate: 0.65deg;
-      translate: 0.12rem 0.08rem;
+      translate: -0.25rem -0.45rem;
     }
     100% {
-      filter: none;
-      rotate: 0deg;
       translate: 0 0;
     }
   }
 
   @keyframes portrait-replay-real {
     0% {
-      filter: none;
-      rotate: 0deg;
       translate: 0 0;
     }
     38% {
-      filter: drop-shadow(0.25rem 0.4rem 0.22rem rgba(0, 0, 0, 0.3));
-      rotate: 1.5deg;
-      translate: 0.35rem -0.75rem;
-    }
-    70% {
-      rotate: -0.55deg;
-      translate: -0.1rem 0.06rem;
+      translate: 0.25rem -0.5rem;
     }
     100% {
-      filter: none;
-      rotate: 0deg;
       translate: 0 0;
     }
   }

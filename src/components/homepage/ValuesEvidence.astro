@@ -138,76 +138,83 @@ const values = [
 ] as const;
 ---
 
-<section id="values" class="values-story" aria-labelledby="values-title">
-  <header class="values-story__intro">
-    <p class="eyebrow">Three things important to me</p>
-    <h2 id="values-title">The values only matter if they appear in the details.</h2>
-    <p>
-      These are not three projects assigned to three values. They are specific product decisions
-      where the values become visible.
-    </p>
-    <a href={sitePath('/case-studies/observatory/')}>
-      Read the flagship Observatory case study <span aria-hidden="true">→</span>
-    </a>
-  </header>
-
-  <div class="value-chapters" data-value-chapters>
-    {values.map((value) => (
-      <section class="value-chapter" aria-labelledby={`value-${value.number}`}>
-        <div class="value-sticky">
-          <span class="value-sticky__number" aria-hidden="true">{value.number}</span>
-          <h3 id={`value-${value.number}`}>
-            {value.before}<button
-              type="button"
-              class="word-cycle"
-              data-word-cycle
-              aria-label={`${value.words[0]}. Change this word.`}
-              disabled
-            >
-              {value.words.map((word, wordIndex) => (
-                <span data-word-option hidden={wordIndex !== 0}>{word}</span>
-              ))}
-            </button>{value.after}
-          </h3>
-          <p>{value.copy}</p>
-          <span class="value-sticky__hint" aria-hidden="true">the evidence unfolds ↓</span>
+<value-story>
+<section id="values" class="values-story" aria-labelledby="values-title" data-values-story>
+  <div class="value-composition" data-value-composition>
+    <div class="value-voice" data-value-voice>
+      <div class="value-voice__stack">
+        <div class="value-voice__layer value-voice__layer--intro" data-voice-layer>
+          <h2 id="values-title">Three things important to me.</h2>
         </div>
 
-        <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
-          {value.aspects.map((aspect, aspectIndex) => (
-            <li class="aspect" data-aspect>
-              <div class="aspect__count" aria-hidden="true">{value.number}.{aspectIndex + 1}</div>
-              <div
-                class:list={[
-                  'aspect__visual',
-                  aspect.image.height > aspect.image.width && 'aspect__visual--portrait',
-                  aspect.image.height <= aspect.image.width && aspect.image.width / aspect.image.height < 1.35 && 'aspect__visual--compact',
-                ]}
+        {values.map((value) => (
+          <div class="value-voice__layer" data-voice-layer>
+            <h3 id={`value-${value.number}`}>
+              {value.before}<button
+                type="button"
+                class="word-cycle"
+                data-word-cycle
+                aria-label={`${value.words[0]}. Change this word.`}
+                disabled
               >
-                <img
-                  src={aspect.image.src}
-                  width={aspect.image.width}
-                  height={aspect.image.height}
-                  alt={`${aspect.shot} from ${projectTitles[aspect.project]}`}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div class="aspect__copy">
-                <p class="aspect__project">{aspect.project}</p>
-                <h4>{aspect.title}</h4>
-                <p>{aspect.copy}</p>
-                {'caseStudy' in aspect && aspect.caseStudy && (
-                  <a href={sitePath('/case-studies/observatory/')}>
-                    See this in the case study <span aria-hidden="true">→</span>
-                  </a>
-                )}
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
-    ))}
+                {value.words.map((word, wordIndex) => (
+                  <span data-word-option hidden={wordIndex !== 0}>{word}</span>
+                ))}
+              </button>{value.after}
+            </h3>
+            <p>{value.copy}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="value-chapters" data-value-chapters>
+      {values.map((value) => (
+        <section
+          class="value-chapter"
+          aria-labelledby={`value-${value.number}`}
+          data-value-passage
+        >
+          <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
+            {value.aspects.map((aspect) => (
+              <li class="aspect" data-aspect>
+                <div
+                  class:list={[
+                    'aspect__visual',
+                    aspect.image.height > aspect.image.width && 'aspect__visual--portrait',
+                    aspect.image.height <= aspect.image.width && aspect.image.width / aspect.image.height < 1.35 && 'aspect__visual--compact',
+                  ]}
+                >
+                  <img
+                    src={aspect.image.src}
+                    width={aspect.image.width}
+                    height={aspect.image.height}
+                    alt={`${aspect.shot} from ${projectTitles[aspect.project]}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div class="aspect__copy">
+                  <p class="aspect__project">{aspect.project}</p>
+                  <h4>{aspect.title}</h4>
+                  <p>{aspect.copy}</p>
+                  {'caseStudy' in aspect && aspect.caseStudy && (
+                    <a href={sitePath('/case-studies/observatory/')}>
+                      See this in the case study <span aria-hidden="true">→</span>
+                    </a>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+  </div>
+
+  <div class="more-work">
+    <p>That’s the short version.</p>
+    <a href={sitePath('/work/')}>See more work <span aria-hidden="true">→</span></a>
   </div>
 
   <div class="personal-note">
@@ -224,19 +231,29 @@ const values = [
     </ul>
   </div>
 
-  <div class="more-work">
-    <p>That’s the short version.</p>
-    <a href={sitePath('/work/')}>See more work <span aria-hidden="true">→</span></a>
-  </div>
 </section>
+</value-story>
 
 <script>
-  const enhanceValueChapters = (root: ParentNode = document) => {
-    root.querySelectorAll<HTMLElement>('[data-value-chapters]').forEach((chapters) => {
-      if (chapters.dataset.enhanced) return;
-      chapters.dataset.enhanced = 'true';
+  class ValueStory extends HTMLElement {
+    private abort?: AbortController;
+    private frame = 0;
+    private observer?: IntersectionObserver;
 
-      chapters.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
+    connectedCallback() {
+      if (this.dataset.enhanced) return;
+      this.dataset.enhanced = 'true';
+      this.abort = new AbortController();
+
+      const voice = this.querySelector<HTMLElement>('[data-value-voice]');
+      const layers = Array.from(this.querySelectorAll<HTMLElement>('[data-voice-layer]'));
+      const passages = Array.from(this.querySelectorAll<HTMLElement>('[data-value-passage]'));
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      if (!voice || layers.length !== passages.length + 1 || !passages.length) return;
+      voice.dataset.enhanced = 'true';
+
+      this.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
         const options = Array.from(button.querySelectorAll<HTMLElement>('[data-word-option]'));
         let activeIndex = 0;
 
@@ -259,32 +276,135 @@ const values = [
         update();
       });
 
-      if (!('IntersectionObserver' in window)) return;
+      if ('IntersectionObserver' in window) {
+        this.observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              (entry.target as HTMLElement).dataset.revealed = 'true';
+              this.observer?.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -14% 0px', threshold: 0.16 });
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).dataset.revealed = 'true';
-            observer.unobserve(entry.target);
-          }
+        this.querySelectorAll<HTMLElement>('[data-aspect]').forEach((aspect) => this.observer?.observe(aspect));
+      }
+
+      const clamp = (value: number) => Math.min(1, Math.max(0, value));
+      const smooth = (value: number) => value * value * (3 - 2 * value);
+
+      const setLayer = (
+        layer: HTMLElement,
+        opacity: number,
+        clipTop: number,
+        clipRight: number,
+        shift: number,
+        blur: number,
+      ) => {
+        layer.style.setProperty('--voice-opacity', opacity.toFixed(4));
+        layer.style.setProperty('--voice-clip-top', `${clipTop.toFixed(2)}%`);
+        layer.style.setProperty('--voice-clip-right', `${clipRight.toFixed(2)}%`);
+        layer.style.setProperty('--voice-shift', `${shift.toFixed(3)}rem`);
+        layer.style.setProperty('--voice-blur', `${blur.toFixed(3)}px`);
+      };
+
+      const showOnly = (activeIndex: number) => {
+        layers.forEach((layer, index) => {
+          const active = index === activeIndex;
+          setLayer(layer, active ? 1 : 0, active ? 0 : 100, active ? 0 : 100, 0, 0);
+          layer.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
+            button.tabIndex = active ? 0 : -1;
+          });
         });
-      }, { rootMargin: '0px 0px -14% 0px', threshold: 0.16 });
+      };
 
-      chapters.querySelectorAll<HTMLElement>('[data-aspect]').forEach((aspect) => observer.observe(aspect));
-    });
-  };
+      const transitionProgress = (passage: HTMLElement, index: number) => {
+        const top = passage.getBoundingClientRect().top;
+        const start = window.innerHeight * (index === 0 ? 0.3 : 0.66);
+        const distance = window.innerHeight * (index === 0 ? 0.42 : 0.46);
+        return clamp((start - top) / Math.max(1, distance));
+      };
 
-  enhanceValueChapters();
-  document.addEventListener('astro:page-load', () => enhanceValueChapters());
+      const render = () => {
+        this.frame = 0;
+
+        if (reducedMotion.matches) {
+          let active = 0;
+          passages.forEach((passage, index) => {
+            if (passage.getBoundingClientRect().top < window.innerHeight * 0.52) active = index + 1;
+          });
+          showOnly(active);
+          return;
+        }
+
+        const transitions = passages.map(transitionProgress);
+        const activeTransition = transitions.findIndex((progress) => progress > 0 && progress < 1);
+
+        if (activeTransition === -1) {
+          let active = 0;
+          transitions.forEach((progress, index) => {
+            if (progress >= 1) active = index + 1;
+          });
+          showOnly(active);
+          return;
+        }
+
+        const progress = smooth(transitions[activeTransition]);
+        const outgoingIndex = activeTransition;
+        const incomingIndex = activeTransition + 1;
+        const erase = smooth(clamp(progress / 0.72));
+        const reveal = smooth(clamp((progress - 0.18) / 0.82));
+
+        layers.forEach((layer, index) => {
+          if (index === outgoingIndex) {
+            setLayer(layer, 1 - erase, erase * 100, 0, -0.4 * erase, 1.8 * erase);
+          } else if (index === incomingIndex) {
+            setLayer(layer, reveal, 0, (1 - reveal) * 100, 0.45 * (1 - reveal), 1.4 * (1 - reveal));
+          } else {
+            setLayer(layer, 0, 100, 100, 0, 0);
+          }
+
+          const interactive = index === (progress < 0.5 ? outgoingIndex : incomingIndex);
+          layer.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
+            button.tabIndex = interactive ? 0 : -1;
+          });
+        });
+      };
+
+      const requestRender = () => {
+        if (this.frame) return;
+        this.frame = window.requestAnimationFrame(render);
+      };
+
+      window.addEventListener('scroll', requestRender, { passive: true, signal: this.abort.signal });
+      window.addEventListener('resize', requestRender, { passive: true, signal: this.abort.signal });
+      reducedMotion.addEventListener('change', requestRender, { signal: this.abort.signal });
+      render();
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.observer?.disconnect();
+      if (this.frame) window.cancelAnimationFrame(this.frame);
+      delete this.dataset.enhanced;
+    }
+  }
+
+  if (!customElements.get('value-story')) {
+    customElements.define('value-story', ValueStory);
+  }
 </script>
 
 <style>
+  value-story {
+    display: block;
+  }
+
   .values-story {
     position: relative;
     isolation: isolate;
-    width: min(100%, 88rem);
+    width: min(calc(100% - clamp(5.5rem, 8vw, 7rem)), 84rem);
     margin-inline: auto;
-    padding: clamp(4.5rem, 8vw, 7.5rem) clamp(1.25rem, 5vw, 4.5rem) clamp(3.5rem, 7vw, 6rem);
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 3.5rem) clamp(3.5rem, 6vw, 5rem);
   }
 
   .values-story::before,
@@ -318,44 +438,22 @@ const values = [
   }
 
   .eyebrow,
-  .aspect__project,
-  .value-sticky__hint {
+  .aspect__project {
     margin: 0;
     color: var(--muted);
     font-family: var(--font-reading);
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     letter-spacing: 0.035em;
   }
 
-  .values-story__intro {
-    width: min(100%, 48rem);
-    margin: 0 auto clamp(5rem, 10vw, 9rem);
-    text-align: center;
-  }
-
-  .values-story__intro h2,
   .personal-note h2,
-  .value-sticky h3,
   .aspect h4 {
     margin: 0;
     font-family: var(--font-portfolio-display);
     font-weight: 400;
-    letter-spacing: -0.045em;
+    letter-spacing: -0.035em;
   }
 
-  .values-story__intro h2 {
-    margin-top: 0.55rem;
-    font-size: clamp(1.9rem, 3vw, 3.1rem);
-    line-height: 1.06;
-  }
-
-  .values-story__intro > p:not(.eyebrow) {
-    max-width: 38rem;
-    margin: 1.2rem auto 0;
-    color: #4e4b45;
-  }
-
-  .values-story__intro a,
   .aspect__copy a {
     display: inline-block;
     margin-top: 1.25rem;
@@ -363,65 +461,6 @@ const values = [
     font-size: 0.82rem;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.35rem;
-  }
-
-  .value-chapter {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 18rem) minmax(0, 1fr);
-    grid-template-rows: repeat(2, minmax(32rem, auto));
-    gap: clamp(2rem, 4vw, 4rem);
-    align-items: start;
-    padding: clamp(4rem, 8vw, 7rem) 0;
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
-  }
-
-  .value-sticky {
-    position: sticky;
-    z-index: 2;
-    top: max(15vh, 6rem);
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: start;
-    padding: 1.35rem 1rem 1.5rem;
-    background: #f8f8f8;
-    text-align: center;
-  }
-
-  .value-sticky::after {
-    position: absolute;
-    z-index: -1;
-    top: 100%;
-    left: 50%;
-    height: clamp(3rem, 8vh, 5rem);
-    border-left: 2px dashed rgba(17, 17, 15, 0.22);
-    content: '';
-    transform: translateX(-50%) rotate(0.6deg);
-  }
-
-  .value-sticky__number {
-    display: block;
-    margin-bottom: 0.35rem;
-    color: var(--accent);
-    font-family: var(--font-reading);
-    font-size: 0.72rem;
-  }
-
-  .value-sticky h3 {
-    font-size: clamp(1.5rem, 2.15vw, 2.2rem);
-    line-height: 1.08;
-  }
-
-  .value-sticky > p {
-    max-width: 27rem;
-    margin: 0.9rem auto 0;
-    color: #5d5952;
-    font-size: 0.9rem;
-    line-height: 1.55;
-  }
-
-  .value-sticky__hint {
-    display: block;
-    margin-top: 1.2rem;
   }
 
   .word-cycle {
@@ -439,10 +478,6 @@ const values = [
     text-align: center;
     cursor: pointer;
   }
-
-  .value-chapter:nth-child(1) .word-cycle { min-width: 6.2em; }
-  .value-chapter:nth-child(2) .word-cycle { min-width: 5.4em; }
-  .value-chapter:nth-child(3) .word-cycle { min-width: 3.1em; }
 
   .word-cycle:disabled {
     color: inherit;
@@ -469,82 +504,13 @@ const values = [
     align-self: start;
   }
 
-  .aspect:nth-child(1) {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .aspect:nth-child(2) {
-    grid-column: 3;
-    grid-row: 1;
-    margin-top: clamp(12rem, 18vw, 17rem);
-  }
-
-  .aspect:nth-child(3) {
-    grid-column: 1;
-    grid-row: 2;
-    margin-top: 2rem;
-  }
-
-  .value-chapter:nth-child(even) .aspect:nth-child(1),
-  .value-chapter:nth-child(even) .aspect:nth-child(3) {
-    grid-column: 3;
-  }
-
-  .value-chapter:nth-child(even) .aspect:nth-child(2) {
-    grid-column: 1;
-  }
-
-  .value-chapter:first-child {
-    grid-template-rows: repeat(3, minmax(32rem, auto));
-  }
-
-  .value-chapter:first-child .value-sticky {
-    grid-row: 1 / span 3;
-  }
-
-  .value-chapter:first-child .aspect:nth-child(4) {
-    grid-column: 3;
-    grid-row: 2;
-    margin-top: clamp(12rem, 18vw, 17rem);
-  }
-
-  .value-chapter:first-child .aspect:nth-child(5) {
-    grid-column: 1;
-    grid-row: 3;
-    margin-top: 2rem;
-  }
-
-  [data-value-chapters][data-enhanced] .aspect {
-    opacity: 0.2;
-    transform: translateY(2.5rem) rotate(0.4deg);
-    transition:
-      opacity 480ms ease,
-      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
-  [data-value-chapters][data-enhanced] .aspect[data-revealed] {
-    opacity: 1;
-    transform: none;
-  }
-
-  .aspect__count {
-    position: absolute;
-    top: -1.2rem;
-    right: 0.5rem;
-    color: rgba(17, 17, 15, 0.38);
-    font-family: var(--font-reading);
-    font-size: 0.72rem;
-    rotate: 2deg;
-  }
-
   .aspect__visual {
     width: min(100%, 31rem);
     overflow: hidden;
-    border: clamp(0.28rem, 0.45vw, 0.42rem) solid #11110f;
-    border-radius: clamp(1.15rem, 2vw, 1.75rem);
+    border: clamp(0.22rem, 0.3vw, 0.32rem) solid #11110f;
+    border-radius: clamp(1.05rem, 1.6vw, 1.5rem);
     background: #ecebe7;
-    box-shadow: 0.32rem 0.38rem 0 rgba(17, 17, 15, 0.13);
+    box-shadow: 0.22rem 0.26rem 0 rgba(17, 17, 15, 0.12);
   }
 
   .aspect__visual--compact {
@@ -562,22 +528,23 @@ const values = [
   }
 
   .aspect__copy {
-    padding-top: 1.25rem;
+    padding-top: 1rem;
   }
 
   .aspect h4 {
     max-width: 22ch;
     margin-top: 0.45rem;
-    font-size: clamp(1.35rem, 1.75vw, 1.9rem);
-    line-height: 1.1;
+    font-size: clamp(1.25rem, 1.5vw, 1.65rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
   }
 
   .aspect__copy > p:not(.aspect__project) {
     max-width: 39rem;
     margin: 0.85rem 0 0;
     color: #4e4b45;
-    font-size: 0.9rem;
-    line-height: 1.62;
+    font-size: 0.96rem;
+    line-height: 1.58;
   }
 
   .personal-note {
@@ -585,15 +552,13 @@ const values = [
     grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1fr);
     gap: clamp(2.5rem, 7vw, 7rem);
     width: min(100%, 62rem);
-    margin: clamp(5rem, 10vw, 9rem) auto 0;
-    padding-top: clamp(2.5rem, 5vw, 4.5rem);
-    border-top: 1px solid rgba(17, 17, 15, 0.15);
+    margin: clamp(4.5rem, 7vw, 6.5rem) auto 0;
   }
 
   .personal-note h2 {
     max-width: 12ch;
     margin-top: 0.5rem;
-    font-size: clamp(1.8rem, 2.6vw, 2.7rem);
+    font-size: clamp(1.8rem, 2.35vw, 2.45rem);
     line-height: 1.08;
   }
 
@@ -623,7 +588,7 @@ const values = [
     align-items: baseline;
     justify-content: center;
     gap: 0.8rem 1.35rem;
-    margin-top: clamp(4rem, 8vw, 7rem);
+    margin-top: clamp(3.5rem, 6vw, 5rem);
     text-align: center;
   }
 
@@ -634,93 +599,12 @@ const values = [
 
   .more-work a {
     font-family: var(--font-portfolio-display);
-    font-size: clamp(1.4rem, 1.9vw, 1.9rem);
+    font-size: clamp(1.4rem, 1.75vw, 1.8rem);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.35rem;
   }
 
   @media (max-width: 50rem) {
-    .value-chapter {
-      grid-template-columns: 1fr;
-      grid-template-rows: none;
-      gap: 2.5rem;
-      padding-top: 3.5rem;
-    }
-
-    .value-sticky {
-      z-index: 3;
-      top: 3.2rem;
-      grid-column: 1;
-      grid-row: auto;
-      width: calc(100% + 0.5rem);
-      margin-left: -0.25rem;
-      padding: 1.1rem 0.75rem 1.25rem;
-      box-shadow: 0 1rem 1.4rem rgba(248, 248, 248, 0.96);
-    }
-
-    .value-sticky::after,
-    .value-sticky__hint {
-      display: none;
-    }
-
-    .value-sticky h3 {
-      max-width: 22rem;
-      margin-inline: auto;
-      font-size: clamp(1.35rem, 5.6vw, 1.8rem);
-    }
-
-    .value-sticky > p {
-      max-width: 31rem;
-      margin-top: 0.65rem;
-      font-size: 0.88rem;
-    }
-
-    .aspects {
-      display: grid;
-      gap: 4.5rem;
-    }
-
-    .aspect:nth-child(n),
-    .value-chapter:nth-child(even) .aspect:nth-child(n),
-    .value-chapter:first-child .aspect:nth-child(n) {
-      grid-column: 1;
-      grid-row: auto;
-      margin-top: 0;
-      width: 90%;
-    }
-
-    .aspect:nth-child(odd) {
-      justify-self: start;
-    }
-
-    .aspect:nth-child(even) {
-      justify-self: end;
-    }
-
-    .value-chapter:nth-child(even) .aspect:nth-child(odd) {
-      justify-self: end;
-    }
-
-    .value-chapter:nth-child(even) .aspect:nth-child(even) {
-      justify-self: start;
-    }
-
-    .value-chapter:first-child .value-sticky {
-      grid-row: auto;
-    }
-
-    [data-value-chapters][data-enhanced] .aspect:nth-child(odd) {
-      transform: translate(-1.25rem, 2rem) rotate(-0.4deg);
-    }
-
-    [data-value-chapters][data-enhanced] .aspect:nth-child(even) {
-      transform: translate(1.25rem, 2rem) rotate(0.4deg);
-    }
-
-    [data-value-chapters][data-enhanced] .aspect[data-revealed] {
-      transform: none;
-    }
-
     .personal-note {
       grid-template-columns: 1fr;
       gap: 2rem;
@@ -731,9 +615,324 @@ const values = [
       align-items: center;
     }
   }
+</style>
+
+<style>
+  value-story {
+    position: relative;
+    z-index: 3;
+    display: block;
+    margin-top: -30svh;
+  }
+
+  .values-story {
+    position: relative;
+    isolation: isolate;
+    width: min(calc(100% - clamp(4rem, 7vw, 6rem)), 88rem);
+    margin-inline: auto;
+    padding: 0 clamp(0.75rem, 2vw, 1.75rem) clamp(3.5rem, 6vw, 5rem);
+  }
+
+  .value-composition {
+    position: relative;
+    display: grid;
+  }
+
+  .value-voice,
+  .value-chapters {
+    grid-area: 1 / 1;
+  }
+
+  .value-voice {
+    position: sticky;
+    z-index: 4;
+    top: max(14svh, 6rem);
+    align-self: start;
+    width: clamp(16rem, 23vw, 19rem);
+    min-height: 9rem;
+    margin-inline: auto;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  .value-voice__stack {
+    display: grid;
+    align-items: start;
+  }
+
+  .value-voice__layer {
+    min-width: 0;
+    padding: 1.1rem 0.9rem 1.25rem;
+    background: rgb(248 248 248 / 0.94);
+    pointer-events: auto;
+  }
+
+  .value-voice__layer h2,
+  .value-voice__layer h3,
+  .value-voice__layer p {
+    margin: 0;
+  }
+
+  .value-voice__layer--intro h2 {
+    font-family: var(--font-reading);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.18;
+  }
+
+  .value-voice__layer h3 {
+    font-family: var(--font-portfolio-display);
+    font-size: clamp(1.55rem, 2.3vw, 2.25rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+  }
+
+  .value-voice__layer:nth-child(2) .word-cycle { min-width: 6.2em; }
+  .value-voice__layer:nth-child(3) .word-cycle { min-width: 5.4em; }
+  .value-voice__layer:nth-child(4) .word-cycle { min-width: 3.1em; }
+
+  .value-voice__layer > p {
+    max-width: 27rem;
+    margin: 0.9rem auto 0;
+    color: #5d5952;
+    font-size: 0.94rem;
+    line-height: 1.55;
+  }
+
+  :global(.js) .value-voice[data-enhanced] .value-voice__stack {
+    display: grid;
+  }
+
+  :global(.js) .value-voice[data-enhanced] .value-voice__layer {
+    grid-area: 1 / 1;
+    clip-path: inset(var(--voice-clip-top, 100%) var(--voice-clip-right, 100%) 0 0);
+    filter: blur(var(--voice-blur, 0));
+    opacity: var(--voice-opacity, 0);
+    transform: translateY(var(--voice-shift, 0));
+    will-change: clip-path, filter, opacity, transform;
+  }
+
+  .value-chapters {
+    position: relative;
+    z-index: 1;
+  }
+
+  .value-chapter,
+  .value-chapter:first-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(16rem, 23vw, 19rem) minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(30rem, auto));
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+    padding: 78svh 0 clamp(4rem, 8vw, 7rem);
+  }
+
+  .value-chapter:first-child {
+    grid-template-rows: repeat(3, minmax(30rem, auto));
+    padding-top: 94svh;
+  }
+
+  .aspects {
+    display: contents;
+  }
+
+  .aspect:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .aspect:nth-child(2) {
+    grid-column: 3;
+    grid-row: 1;
+    margin-top: clamp(12rem, 18vw, 17rem);
+  }
+
+  .aspect:nth-child(3) {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 2rem;
+  }
+
+  .value-chapter:nth-child(even) .aspect:nth-child(1),
+  .value-chapter:nth-child(even) .aspect:nth-child(3) {
+    grid-column: 3;
+  }
+
+  .value-chapter:nth-child(even) .aspect:nth-child(2) {
+    grid-column: 1;
+  }
+
+  .value-chapter:first-child .aspect:nth-child(4) {
+    grid-column: 3;
+    grid-row: 2;
+    margin-top: clamp(12rem, 18vw, 17rem);
+  }
+
+  .value-chapter:first-child .aspect:nth-child(5) {
+    grid-column: 1;
+    grid-row: 3;
+    margin-top: 2rem;
+  }
+
+  :global(.js) value-story[data-enhanced] .aspect {
+    opacity: 0.18;
+    transform: translateY(2.25rem) rotate(0.35deg);
+    transition:
+      opacity 480ms ease,
+      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  :global(.js) value-story[data-enhanced] .aspect[data-revealed] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (max-width: 50rem) {
+    value-story {
+      margin-top: -26svh;
+    }
+
+    .values-story {
+      width: 100%;
+      padding-inline: clamp(0.45rem, 2.2vw, 0.9rem);
+    }
+
+    .value-voice {
+      top: max(12svh, 4.5rem);
+      width: clamp(7.5rem, 36vw, 9rem);
+      min-height: 6rem;
+      margin-top: 10.5rem;
+    }
+
+    .value-voice__layer {
+      padding: 0.65rem 0.35rem 0.75rem;
+    }
+
+    .value-voice__layer--intro h2 {
+      font-size: clamp(0.9rem, 4vw, 1.08rem);
+      line-height: 1.18;
+    }
+
+    .value-voice__layer h3 {
+      font-size: clamp(0.82rem, 3.8vw, 1.05rem);
+      line-height: 1.09;
+    }
+
+    .value-voice__layer > p {
+      margin-top: 0.42rem;
+      font-size: clamp(0.56rem, 2.25vw, 0.66rem);
+      line-height: 1.4;
+    }
+
+    .value-chapter,
+    .value-chapter:first-child {
+      grid-template-columns: minmax(0, 1fr) clamp(7.5rem, 36vw, 9rem) minmax(0, 1fr);
+      grid-template-rows: repeat(2, minmax(19rem, auto));
+      gap: clamp(0.55rem, 2.6vw, 1rem);
+      padding: 72svh 0 clamp(3rem, 14vw, 4.5rem);
+    }
+
+    .value-chapter:first-child {
+      grid-template-rows: repeat(3, minmax(19rem, auto));
+      padding-top: 88svh;
+    }
+
+    .aspects {
+      display: contents;
+    }
+
+    .aspect:nth-child(n),
+    .value-chapter:nth-child(even) .aspect:nth-child(n),
+    .value-chapter:first-child .aspect:nth-child(n) {
+      width: 100%;
+      margin-top: 0;
+      justify-self: stretch;
+    }
+
+    .aspect:nth-child(1),
+    .value-chapter:first-child .aspect:nth-child(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .aspect:nth-child(2),
+    .value-chapter:first-child .aspect:nth-child(2) {
+      grid-column: 3;
+      grid-row: 1;
+      margin-top: 7rem;
+    }
+
+    .aspect:nth-child(3),
+    .value-chapter:first-child .aspect:nth-child(3) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .value-chapter:nth-child(even) .aspect:nth-child(1),
+    .value-chapter:nth-child(even) .aspect:nth-child(3) {
+      grid-column: 3;
+    }
+
+    .value-chapter:nth-child(even) .aspect:nth-child(2) {
+      grid-column: 1;
+    }
+
+    .value-chapter:first-child .aspect:nth-child(4) {
+      grid-column: 3;
+      grid-row: 2;
+      margin-top: 7rem;
+    }
+
+    .value-chapter:first-child .aspect:nth-child(5) {
+      grid-column: 1;
+      grid-row: 3;
+    }
+
+    .aspect__visual,
+    .aspect__visual--compact,
+    .aspect__visual--portrait {
+      width: 100%;
+      border-width: 0.14rem;
+      border-radius: 0.6rem;
+      box-shadow: 0.12rem 0.15rem 0 rgba(17, 17, 15, 0.12);
+    }
+
+    .aspect__copy {
+      padding-top: 0.45rem;
+    }
+
+    .aspect__project {
+      font-size: clamp(0.48rem, 1.9vw, 0.58rem);
+    }
+
+    .aspect h4 {
+      margin-top: 0.2rem;
+      font-size: clamp(0.6rem, 2.45vw, 0.74rem);
+      line-height: 1.12;
+    }
+
+    .aspect__copy > p:not(.aspect__project) {
+      margin-top: 0.35rem;
+      font-size: clamp(0.49rem, 1.95vw, 0.59rem);
+      line-height: 1.42;
+    }
+
+    .aspect__copy a {
+      margin-top: 0.55rem;
+      font-size: clamp(0.48rem, 1.9vw, 0.58rem);
+    }
+  }
 
   @media (prefers-reduced-motion: reduce) {
-    [data-value-chapters][data-enhanced] .aspect {
+    :global(.js) .value-voice[data-enhanced] .value-voice__layer {
+      filter: none;
+      transform: none;
+      will-change: auto;
+    }
+
+    :global(.js) value-story[data-enhanced] .aspect {
       opacity: 1;
       transform: none;
       transition: none;
