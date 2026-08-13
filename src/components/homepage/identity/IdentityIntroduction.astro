@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 
 import realPortrait from '../../../assets/art/avatar_irl.png';
 import { identity } from '../../../content/homepage/identity';
+import PortfolioHeader from '../PortfolioHeader.astro';
 import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
 ---
@@ -21,6 +22,7 @@ import PlayfulWord from './PlayfulWord.astro';
       <p class="identity__summary">
         {identity.summary.before}<span class="identity__word">{identity.summary.word}</span>{identity.summary.after}
       </p>
+      <PortfolioHeader current="home" placement="intro" contactId="intro-contact" />
     </div>
     <figure id="identity-portrait" class="identity__portrait" aria-hidden="true">
       <Image
@@ -141,6 +143,7 @@ import PlayfulWord from './PlayfulWord.astro';
   }
 
   .identity__copy {
+    position: relative;
     width: min(100%, 49rem);
     opacity: var(--identity-opacity, 1);
   }
@@ -174,7 +177,7 @@ import PlayfulWord from './PlayfulWord.astro';
   }
 
   .identity__summary {
-    max-width: 31rem;
+    max-width: 35rem;
     margin: clamp(1.25rem, 2.5vh, 1.8rem) 0 0;
     color: var(--color-copy);
     font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);

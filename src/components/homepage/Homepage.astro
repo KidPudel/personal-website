@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
+import ElasticOverscrollBackdrop from './ElasticOverscrollBackdrop.astro';
 import IdentityIntroduction from './identity/IdentityIntroduction.astro';
 import OpeningSequence from './opening/OpeningSequence.astro';
 import PortfolioHeader from './PortfolioHeader.astro';
@@ -17,9 +18,10 @@ interface Props {
 const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
 ---
 
-<div class="homepage" data-homepage>
-  <PortfolioHeader current="home" />
+<ElasticOverscrollBackdrop placement="top" />
+<ElasticOverscrollBackdrop placement="bottom" />
 
+<div class="homepage" data-homepage>
   <main id="main-content">
     <OpeningSequence>
       <IdentityIntroduction />
@@ -27,17 +29,34 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
 
     <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
     <WritingPreview {identityCage} />
+    <PortfolioHeader current="home" placement="footer" contactId="contact" />
   </main>
+
 </div>
 
 <style>
   .homepage {
+    position: relative;
+    z-index: 1;
     min-width: 20rem;
-    overflow: clip;
+    overflow-x: clip;
     background: var(--color-field);
     color: var(--color-ink);
     font-family: var(--font-reading);
     font-size: clamp(0.95rem, 0.12vw + 0.93rem, 1.02rem);
     line-height: 1.62;
+  }
+
+  :global(.homepage-document[data-elastic-edge]) .homepage {
+    transform: translate3d(
+      0,
+      calc(var(--elastic-top-pull, 0px) - var(--elastic-bottom-pull, 0px)),
+      0
+    );
+    will-change: transform;
+  }
+
+  :global(.homepage-document[data-elastic-top-edge]) .homepage {
+    background: #6f8aff;
   }
 </style>

@@ -1,6 +1,6 @@
 # Website architecture
 
-Last updated: 2026-08-13
+Last updated: 2026-08-14
 
 ## Purpose
 
@@ -61,7 +61,9 @@ BaseDocument
         └── WritingPreview
 
 PortfolioHeader
-└── side-mounted Work link and addressable ContactDisclosure
+├── centered introduction Work link and ContactDisclosure
+├── centered closing Work link and addressable ContactDisclosure
+└── compact fixed variant for secondary documents
 
 BaseDocument
 └── WorkPortfolio
@@ -101,7 +103,7 @@ Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-cop
 
 The values voice changes phrase in one stationary position. Complementary opacity curves keep the outgoing and incoming phrases continuously present while opposing blur curves obscure their overlap, creating one black-ink optical morph without a blank midpoint.
 
-`PortfolioHeader` is a side-mounted Work and contact control rather than a full-width bar. It arrives with the opened box, uses the existing Connect drawing, and expands contact links locally. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
+`PortfolioHeader` is a quiet Work and contact pair centered directly after the homepage introduction copy, then repeated as a centered closing gesture at the bottom of the document. Secondary documents use its compact fixed variant. The existing Work and Connect drawings stay hidden until hover or keyboard focus; the Connect drawing also stays visible while its disclosure is open. Each text label blurs away as its drawing resolves in at the same position, without an underline or spatial travel, so it cannot overlap the introduction. Contact links expand in flow and retain static `details` behavior without JavaScript. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
 
 ## Opening sequence
 
@@ -112,7 +114,8 @@ The opening is the first section of `/`, not another route.
 - The opening controller maps each frame to one saturated field color. Colors cut with the flipbook frame rather than running as a separate ambient animation or interpolating through muddy intermediate tones. The closed first frame yields after a short early-scroll interval so the lid begins to lift within the first 20–40 pixels; the remaining frames keep even spacing through the flipbook range.
 - A four-viewport sticky section has three authored scroll spans. The first two scrollable viewports open the box and expand the pigment through a velocity-bounded visual follower. The third maps native scroll directly to the pigment dissolve and identity reveal, without a speed cap. The values premise then shares the revealed identity field instead of waiting behind another full viewport. Slow early input stays close to native progress, while strong wheel and trackpad input catches up at a capped rate so intermediate box frames remain visible.
 - The stable implementation uses all eight authored frames and begins the final pigment handoff at frame 6. A deliberately low-resolution canvas field grows from the open box, using a connected polar field with a quieter center and asymmetric directional reaches that become fluid tendrils and fan-like rays as it expands. A restrained multi-scale domain warp bends those reaches into broad folds, soft eddies, and uneven channels without obscuring the outward burst. Color follows one continuous layered progression using the approved swatches: Imperial Blue, Cloudy Sky, Alice Blue, Mustard, Tiger Flame, Cinnabar, and a thin terminal Magenta accent. It does not repeat color around angular wedges or include a purple field wash. During emergence the canvas sits behind the box drawing, while a broad light response and restrained chromatic shadow make the field and ink react to it. The canvas moves in front only after it becomes the page transition. It briefly grows beyond full coverage, then clears into the off-white homepage through a short, low-opacity echo made from warped fragments of the same radial field. The canvas is decorative, pointer-transparent, and redraws only with scroll, resize, or state changes.
-- Forward wheel and trackpad distance is reapplied synchronously during the early box-and-pigment phase so the controller owns the gesture from its first event and can reliably stop at the phase boundary. Slow input retains its one-to-one distance, while strong momentum is consumed only after reaching the final box frame and near-maximum pigment spread. The boundary is then permanently released for that forward traversal. From there, the dissolve and identity reveal track physical scroll directly so an unfinished colored field cannot lag behind and leave with the sticky section. Reverse input must move back into the bounded range before rearming it; an opposite-signed momentum event alone must not release the boundary. Anchor navigation and reduced-motion presentation bypass it. Do not introduce forced smooth scrolling or mandatory snapping.
+- Forward wheel and trackpad distance is reapplied synchronously during the early box-and-pigment phase so the controller owns the gesture from its first event and can reliably stop at the phase boundary. Slow input retains its one-to-one distance, while strong momentum is consumed only after reaching the final box frame and near-maximum pigment spread. The boundary is then permanently released for that forward traversal. From there, the dissolve and identity reveal track physical scroll directly so an unfinished colored field cannot lag behind and leave with the sticky section. Reverse input must move back into the bounded range before rearming it; an opposite-signed momentum event alone must not release the boundary. The non-passive wheel listener exists only while that bounded phase can still intercept input, then hands normal scrolling back to the document. Anchor navigation and reduced-motion presentation bypass it. Do not introduce forced smooth scrolling or mandatory snapping.
+- The homepage suppresses the browser's native vertical rubber band and provides one custom elastic response at each document edge. Outward wheel or touch distance displaces the complete page on the compositor, revealing a fixed essence field behind it rather than painting over content. Each field uses soft, irregular aurora curtains in the opening palette, holds for 280 milliseconds after the last outward input, and returns with a damped spring. The page and reveal move by the same device-pixel-snapped distance so their join has no raster seam. While any top displacement remains, the homepage and opening section retain the same Imperial Blue backing as the reveal; the reveal stays rendered through the exact final device pixel, so the spring and normal scrolling never expose the off-white document underneath. The treatment adds no scroll height and all of its input and boundary listeners are passive. Only the active edge is visible or promoted; its curtain silhouettes share one blurred composite layer, and all animation work stops after the spring settles. Reduced motion keeps the native overscroll suppression but removes the decorative displacement.
 - Fast scrolling may move the native target ahead, but the rendered opening catches up quickly rather than completing in one paint.
 - The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the pigment field reveals it.
 - The enhanced content layer remains inert while visually unavailable and becomes interactive once substantially revealed.
@@ -159,6 +162,7 @@ Observatory receives a dedicated authored record because it has the strongest cu
 Allowed local enhancements include:
 
 - scroll-controlled box-frame and pigment-field progress;
+- custom top and bottom elastic-edge displacement;
 - one-time handwritten hello frame playback as the identity becomes visible;
 - a name-triggered reveal of Igor's photograph;
 - craft-value word cycling inside the values-and-evidence composition;
@@ -210,6 +214,7 @@ Preserve base-path behavior for both `/` and `/personal-website/` builds.
 - Avoid decoding eight full 2048 by 2048 box frames on mobile.
 - Use CSS for surfaces, masks, and simple transitions.
 - Keep scroll work to class, attribute, frame, and custom-property updates.
+- Keep elastic-edge fields hidden and unpromoted at rest, with no more than one blurred composite curtain layer active at a time.
 - Test mobile page stability with all below-fold media inactive.
 
 ## Verification

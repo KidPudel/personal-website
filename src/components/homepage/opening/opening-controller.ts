@@ -21,6 +21,7 @@ const approach = (current: number, target: number, elapsedSeconds: number) => {
 class OpeningSequence extends HTMLElement {
   private frame = 0;
   private abort?: AbortController;
+  private wheelAbort?: AbortController;
   private helloAnimationPlayed = false;
   private thermalHintPlayed = false;
 
@@ -88,11 +89,31 @@ class OpeningSequence extends HTMLElement {
       forwardBoundaryActive = false;
       if (markPassed) forwardBoundaryPassed = true;
       this.removeAttribute('data-forward-boundary');
+      syncWheelGuard();
     };
 
     const activateForwardBoundary = () => {
       forwardBoundaryActive = true;
       this.setAttribute('data-forward-boundary', '');
+    };
+
+    const setWheelGuard = (enabled: boolean) => {
+      if (enabled) {
+        if (this.wheelAbort) return;
+        this.wheelAbort = new AbortController();
+        window.addEventListener('wheel', handleWheel, {
+          passive: false,
+          signal: this.wheelAbort.signal,
+        });
+        return;
+      }
+
+      this.wheelAbort?.abort();
+      this.wheelAbort = undefined;
+    };
+
+    const syncWheelGuard = () => {
+      setWheelGuard(!bypassOpening() && !forwardBoundaryPassed);
     };
 
     const wheelDistance = (event: WheelEvent) => {
@@ -169,6 +190,7 @@ class OpeningSequence extends HTMLElement {
 
       if (forwardBoundaryPassed && targetProgress < openingMotion.forwardBoundaryResetAt) {
         forwardBoundaryPassed = false;
+        syncWheelGuard();
       }
 
       if (forwardBoundaryPassed) {
@@ -262,6 +284,7 @@ class OpeningSequence extends HTMLElement {
     const handleMotionPreference = () => {
       lastFrameTime = undefined;
       if (reducedMotion.matches) releaseForwardBoundary();
+      syncWheelGuard();
       requestRender();
     };
 
@@ -272,14 +295,16 @@ class OpeningSequence extends HTMLElement {
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true, signal: this.abort.signal });
-    window.addEventListener('wheel', handleWheel, { passive: false, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
+    syncWheelGuard();
     render(performance.now());
   }
 
   disconnectedCallback() {
+    this.wheelAbort?.abort();
+    this.wheelAbort = undefined;
     this.abort?.abort();
     if (this.frame) window.cancelAnimationFrame(this.frame);
     this.removeAttribute('data-forward-boundary');

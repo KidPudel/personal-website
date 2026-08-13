@@ -2,9 +2,10 @@ html.composition-document,
 html.composition-document body {
   margin: 0;
   background: var(--color-field);
-  overscroll-behavior-y: auto;
 }
 
-html.composition-document {
-  scroll-behavior: smooth;
+html.homepage-document,
+html.homepage-document body {
+  background: var(--color-field);
+  overscroll-behavior-y: none;
 }

@@ -10,6 +10,7 @@ import {
   type ValueProject,
 } from '../../../content/homepage/values';
 import EvidenceObject from './EvidenceObject.astro';
+import { valueVoiceMotion } from './value-voice-motion';
 
 interface Props {
   observatory: CollectionEntry<'software'>;
@@ -27,7 +28,7 @@ const projectTitles: Record<ValueProject, string> = {
 };
 ---
 
-<value-story>
+<value-story style={`--values-stick-top: ${valueVoiceMotion.valuesStickTopVh}svh`}>
   <section id="values" class="values-story" aria-labelledby="values-title">
     <div class="value-composition">
       <div class="value-voice" data-value-voice>
@@ -103,7 +104,7 @@ const projectTitles: Record<ValueProject, string> = {
   .values-story {
     --passage-hold: 78svh;
     --voice-width: clamp(16rem, 23vw, 19rem);
-    --values-intro-lift: 13svh;
+    --values-intro-lift: 10svh;
     position: relative;
     isolation: isolate;
     width: min(calc(100% - clamp(4rem, 7vw, 6rem)), 88rem);
@@ -155,7 +156,7 @@ const projectTitles: Record<ValueProject, string> = {
   .value-voice {
     position: sticky;
     z-index: 4;
-    top: max(14svh, 6rem);
+    top: max(var(--values-stick-top), 6rem);
     align-self: start;
     width: var(--voice-width);
     min-height: 9rem;
@@ -385,7 +386,7 @@ const projectTitles: Record<ValueProject, string> = {
     }
 
     .value-voice {
-      top: max(12svh, 4.5rem);
+      top: max(var(--values-stick-top), 4.5rem);
       min-height: 6rem;
     }
 

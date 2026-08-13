@@ -9,7 +9,6 @@
     color: var(--color-ink);
     font-family: var(--font-reading);
     line-height: 1.5;
-    overscroll-behavior-y: auto;
     text-rendering: optimizeLegibility;
   }
 
