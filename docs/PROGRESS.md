@@ -4,7 +4,8 @@
 - Preserved Igor's authored drawn portrait, decorative artwork, portrait toggle, labels, and accessible image descriptions.
 - Verified the production build, both portrait-toggle states, desktop and mobile layouts, and mobile horizontal overflow.
 - Replaced the isolated sticky headings with one persistent typographic voice containing the premise and all three values.
-- Brought "Three things important to me" into the departing hero composition and changed it to the handwritten reading face.
+- Let the introduction scroll away normally instead of staying pinned over "Three things important to me".
+- Kept the values premise in the handwritten reading face, following the introduction in ordinary scroll.
 - Removed the duplicated values premise along with "Next", progress numbering, evidence counters, and instructional UI.
 - Replaced the strike-through treatment with the same soft erase-and-reveal morph for every value handoff.
 - Kept the desktop three-column evidence composition on mobile and scaled the typography, artwork, and spacing down together.

@@ -6,7 +6,7 @@
 
 ## Hero-to-values continuity
 
-- [x] Let one instance of the values premise emerge directly from the hero composition.
+- [x] Let the introduction scroll away normally, then bring "Three things important to me" in as the next passage.
 - [x] Keep the premise and all three values in one persistent typographic voice rather than separate sticky chapter headings.
 - [x] Use one erase-and-reveal transition for every handoff, without strike lines or visible section seams.
 - [x] Remove navigation-like labels, numbering, counters, and instructional indicators from the passage.
