@@ -10,6 +10,20 @@ interface Props {
 const { aspect, projectTitle } = Astro.props;
 const portrait = aspect.image.height > aspect.image.width;
 const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
+
+function evidenceTilt(seed: string): string {
+  let hash = 2166136261;
+  for (let i = 0; i < seed.length; i += 1) {
+    hash ^= seed.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  const unsigned = hash >>> 0;
+  const magnitude = 1.5 + (unsigned % 24) / 10;
+  const sign = unsigned % 2 === 0 ? -1 : 1;
+  return `${sign * magnitude}deg`;
+}
+
+const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
 ---
 
 <li
@@ -20,7 +34,7 @@ const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
   ]}
   data-aspect
 >
-  <div class="aspect__visual">
+  <div class="aspect__visual" style={`--tilt: ${tilt}`}>
     <img
       src={aspect.image.src}
       width={aspect.image.width}
@@ -31,9 +45,7 @@ const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
     />
   </div>
   <div class="aspect__copy">
-    <p class="aspect__project">{aspect.project}</p>
-    <h4>{aspect.title}</h4>
-    <p>{aspect.copy}</p>
+    <p>{aspect.caption}</p>
     {aspect.caseStudy && (
       <a href={sitePath('/case-studies/observatory/')}>
         See this in the case study <span aria-hidden="true">→</span>
@@ -51,6 +63,11 @@ const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
 
   .aspect__visual {
     width: min(100%, 31rem);
+    padding: 0.42rem;
+    border-radius: 0.95rem;
+    background: #fff;
+    box-shadow: 0 0.22rem 0.85rem rgb(17 17 15 / 0.07);
+    rotate: var(--tilt, -2deg);
   }
 
   .aspect--compact .aspect__visual {
@@ -65,41 +82,24 @@ const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
     display: block;
     width: 100%;
     height: auto;
+    border-radius: 0.58rem;
   }
 
   .aspect__copy {
-    padding-top: 1rem;
+    padding-top: 0.7rem;
   }
 
-  .aspect__project {
+  .aspect__copy p {
     margin: 0;
-    color: var(--color-muted);
-    font-family: var(--font-reading);
-    font-size: 0.8rem;
-    letter-spacing: 0.035em;
-  }
-
-  .aspect h4 {
-    max-width: 22ch;
-    margin: 0.45rem 0 0;
-    font-family: var(--font-display);
-    font-size: clamp(1.25rem, 1.5vw, 1.65rem);
-    font-weight: 400;
-    letter-spacing: -0.03em;
-    line-height: 1.12;
-  }
-
-  .aspect__copy > p:not(.aspect__project) {
-    max-width: 39rem;
-    margin: 0.85rem 0 0;
     color: var(--color-copy);
-    font-size: 0.96rem;
-    line-height: 1.58;
+    font-family: var(--font-reading);
+    font-size: 0.92rem;
+    line-height: 1.4;
   }
 
   .aspect__copy a {
     display: inline-block;
-    margin-top: 1.25rem;
+    margin-top: 0.45rem;
     font-family: var(--font-reading);
     font-size: 0.82rem;
     text-decoration-thickness: 1px;

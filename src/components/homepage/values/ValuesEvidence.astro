@@ -51,7 +51,6 @@ const projectTitles: Record<ValueProject, string> = {
                   ))}
                 </button>{value.after}
               </h3>
-              <p>{value.copy}</p>
             </div>
           ))}
         </div>
@@ -179,8 +178,7 @@ const projectTitles: Record<ValueProject, string> = {
   }
 
   .value-voice__layer h2,
-  .value-voice__layer h3,
-  .value-voice__layer p {
+  .value-voice__layer h3 {
     margin: 0;
   }
 
@@ -203,14 +201,6 @@ const projectTitles: Record<ValueProject, string> = {
   .value-voice__layer:nth-child(2) .word-cycle { min-width: 6.2em; }
   .value-voice__layer:nth-child(3) .word-cycle { min-width: 5.4em; }
   .value-voice__layer:nth-child(4) .word-cycle { min-width: 3.1em; }
-
-  .value-voice__layer > p {
-    max-width: 27rem;
-    margin: 0.9rem auto 0;
-    color: var(--color-copy);
-    font-size: 0.94rem;
-    line-height: 1.55;
-  }
 
   .word-cycle {
     position: relative;
@@ -423,12 +413,6 @@ const projectTitles: Record<ValueProject, string> = {
       line-height: 1.09;
     }
 
-    .value-voice__layer > p {
-      margin-top: 0.42rem;
-      font-size: clamp(0.56rem, 2.25vw, 0.66rem);
-      line-height: 1.4;
-    }
-
     .value-chapter,
     .value-chapter:first-child {
       grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
@@ -461,30 +445,20 @@ const projectTitles: Record<ValueProject, string> = {
     .values-story :global(.aspect__visual),
     .values-story :global(.aspect--compact .aspect__visual),
     .values-story :global(.aspect--portrait .aspect__visual) {
-      width: 100%;
+      width: 94%;
     }
 
     .values-story :global(.aspect__copy) {
-      padding-top: 0.45rem;
+      padding-top: 0.4rem;
     }
 
-    .values-story :global(.aspect__project) {
-      font-size: clamp(0.48rem, 1.9vw, 0.58rem);
-    }
-
-    .values-story :global(.aspect h4) {
-      margin-top: 0.2rem;
-      font-size: clamp(0.6rem, 2.45vw, 0.74rem);
-    }
-
-    .values-story :global(.aspect__copy > p:not(.aspect__project)) {
-      margin-top: 0.35rem;
-      font-size: clamp(0.49rem, 1.95vw, 0.59rem);
-      line-height: 1.42;
+    .values-story :global(.aspect__copy p) {
+      font-size: clamp(0.52rem, 2.05vw, 0.64rem);
+      line-height: 1.35;
     }
 
     .values-story :global(.aspect__copy a) {
-      margin-top: 0.55rem;
+      margin-top: 0.28rem;
       font-size: clamp(0.48rem, 1.9vw, 0.58rem);
     }
 

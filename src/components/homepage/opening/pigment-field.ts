@@ -10,6 +10,11 @@ const essencePalette = [
   { stop: 1, color: [253, 54, 237] },
 ] as const;
 
+export const essenceChannel = (index: number) => {
+  const color = essencePalette[index]?.color ?? essencePalette[0].color;
+  return `${color[0]} ${color[1]} ${color[2]}`;
+};
+
 const energyDirections = [
   { angle: -3.02, reach: 0.34, width: 0.1 },
   { angle: -2.72, reach: 0.66, width: 0.14 },
