@@ -4,6 +4,10 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] Move writing off the homepage onto its own `/blog/` document.
+- [x] Add “I have a blog” to the personal note as the homepage path to writing.
+- [x] Verify type checking, both production base paths, the writing document, the homepage personal-note link, desktop and mobile layout, and browser diagnostics.
+
 - [x] Replace the side-mounted Work and contact ornament with a collision-free pair centered directly after the introduction.
 - [x] Keep contact available again at the end of the homepage and on secondary documents.
 - [x] Blur between text and the Work or Connect drawing on hover, focus, and open disclosure states.

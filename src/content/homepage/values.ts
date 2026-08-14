@@ -38,7 +38,6 @@ export interface ValuePassage {
 export const valuesPremise = 'Three things important to me.';
 
 export const workPath = {
-  lead: 'That’s the short version.',
   label: 'See more work',
 } as const;
 
@@ -49,6 +48,7 @@ export const personalNote = {
     'Experienced software engineer',
     'Hobby game designer',
     'Editorial and illustrative sketcher',
+    { label: 'I have a blog', href: '/blog/' },
     'Proud boyfriend to a beautiful girlfriend',
   ],
 } as const;

@@ -36,7 +36,7 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
     <PortfolioHeader current="home" />
     <main id="main-content" class="article-main">
       <article class="writing-article" aria-labelledby="article-title">
-        <a class="writing-article__back" href={sitePath('/')}>Back to Igor</a>
+        <a class="writing-article__back" href={sitePath('/blog/')}>Writing</a>
 
         <header>
           {publishedAt && <time datetime={entry.data.publishedAt?.toISOString()}>{publishedAt}</time>}

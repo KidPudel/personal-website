@@ -10,9 +10,9 @@ interface Props {
 const { identityCage } = Astro.props;
 ---
 
-<section id="writing" class="writing" aria-labelledby="writing-title">
+<section class="writing" aria-labelledby="writing-title">
   <SectionMarker icon="blog" label="Writing" />
-  <h2 id="writing-title">{identityCage.data.title}</h2>
+  <h1 id="writing-title">{identityCage.data.title}</h1>
   <p>{identityCage.data.summary}</p>
   {identityCage.data.canonicalUrl && (
     <a href={identityCage.data.canonicalUrl}>Read on Medium <span aria-hidden="true">↗</span></a>
@@ -22,12 +22,15 @@ const { identityCage } = Astro.props;
 <style>
   .writing {
     position: relative;
-    width: min(100%, 62rem);
+    display: grid;
+    align-content: center;
+    min-height: 100svh;
+    width: min(100%, 36rem);
     margin-inline: auto;
-    padding: clamp(3rem, 6vw, 5.5rem) clamp(1.25rem, 5vw, 4rem) clamp(5rem, 10vw, 8rem);
+    padding: 6.5rem clamp(1.25rem, 5vw, 4rem) 5rem;
   }
 
-  .writing h2 {
+  .writing h1 {
     max-width: 16ch;
     margin: 0.65rem 0 0;
     font-family: var(--font-display);

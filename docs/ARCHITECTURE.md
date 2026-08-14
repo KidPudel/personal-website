@@ -14,7 +14,7 @@ Do not add public claims here.
 
 ## Approach
 
-Use Astro static generation, semantic HTML, component-scoped CSS, and small local TypeScript enhancements. The personal experience is one continuous root document; the complete portfolio is a dedicated `/work/` document. Product evidence and reading order exist before JavaScript runs.
+Use Astro static generation, semantic HTML, component-scoped CSS, and small local TypeScript enhancements. The personal experience is one continuous root document; the complete portfolio is a dedicated `/work/` document; writing is a dedicated `/blog/` document. Product evidence and reading order exist before JavaScript runs.
 
 The redesign does not use a client application framework, global state, a canvas-rendered interface, an animation library, a persistent world shell, or fragment-owned disclosure state.
 
@@ -22,9 +22,10 @@ The redesign does not use a client application framework, global state, a canvas
 
 | Address | Responsibility |
 | --- | --- |
-| `/` | Continuous personal homepage with the box opening, identity, values, writing, and persistent contact disclosure |
+| `/` | Continuous personal homepage with the box opening, identity, values, and persistent contact disclosure |
 | `/work/` | Complete work presentation with product design, systems, games, experiments, and unfinished work |
 | `/case-studies/observatory/` | Independent Observatory editorial case study |
+| `/blog/` | Independent writing document |
 | `/blog/[slug]/` | Independent approved article document |
 | Existing legacy paths | Static compatibility redirects to the closest root or work anchor |
 
@@ -33,7 +34,6 @@ The redesign removes `/secret-box/`. It remains in the repository only until the
 Root anchors are:
 
 - `/#values`
-- `/#writing`
 - `/#contact`
 
 Work anchors are:
@@ -56,9 +56,9 @@ BaseDocument
         │   ├── concrete project-aspect evidence on both sides
         │   ├── Observatory case-study path
         │   ├── replaceable screenshot placeholders
-        │   ├── concise personal list
+        │   ├── concise personal list with a path to writing
         │   └── complete-work path
-        └── WritingPreview
+        └── centered closing Work and contact pair
 
 PortfolioHeader
 ├── centered introduction Work link and ContactDisclosure
@@ -76,6 +76,10 @@ BaseDocument
     │   ├── FinishedGamesWithMotion
     │   └── EarlierAndUnfinishedExperiments
     └── WorkContact
+
+BaseDocument
+└── WritingPreview
+    └── Identity Cage with its Medium path
 ```
 
 The DOM order is also the reading order. CSS may create asymmetrical compositions but must not change semantic order.
@@ -189,7 +193,6 @@ Legacy routes should use small static redirects to the closest new root anchor:
 - `/who-i-am/` to `/#values`
 - `/work/software/` to `/work/#product-design`
 - `/work/games/` and `/games/` to `/work/#games`
-- `/blog/` to `/#writing`
 - `/connect/` to `/#contact`
 
 Preserve base-path behavior for both `/` and `/personal-website/` builds.

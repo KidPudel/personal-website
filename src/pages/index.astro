@@ -5,12 +5,11 @@ import Homepage from '../components/homepage/Homepage.astro';
 import homepageShareImage from '../assets/software-showcases/observatory/launch-film.png';
 import BaseDocument from '../layouts/BaseDocument.astro';
 
-const identityCage = await getEntry('writing', 'identity-cage');
 const observatory = await getEntry('software', 'observatory');
 const foodProduct = await getEntry('software', 'flutter-product');
 const chineseBee = await getEntry('software', 'chinese-bee');
 
-if (!identityCage || !observatory || !foodProduct || !chineseBee) {
+if (!observatory || !foodProduct || !chineseBee) {
   throw new Error('The homepage content entries could not be loaded.');
 }
 ---
@@ -22,5 +21,5 @@ if (!identityCage || !observatory || !foodProduct || !chineseBee) {
   themeColor="#F8F8F8"
   ogImage={homepageShareImage.src}
 >
-  <Homepage {identityCage} {observatory} {foodProduct} {chineseBee} />
+  <Homepage {observatory} {foodProduct} {chineseBee} />
 </BaseDocument>

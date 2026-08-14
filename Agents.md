@@ -24,7 +24,7 @@ Do not rewrite or expand the authored concept unless Igor asks. Plans and progre
 | Identity composition | `src/components/homepage/identity/IdentityIntroduction.astro` |
 | Values rhythm | `src/components/homepage/values/value-voice-motion.ts` and `ValuesEvidence.astro` |
 | An evidence object's layout | `src/components/homepage/values/EvidenceObject.astro` |
-| Writing preview | `src/components/homepage/WritingPreview.astro` |
+| Writing document | `src/pages/blog/index.astro` and `src/components/homepage/WritingPreview.astro` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
 | Work document | `src/components/homepage/WorkPortfolio.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |

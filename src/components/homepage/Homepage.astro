@@ -6,16 +6,14 @@ import IdentityIntroduction from './identity/IdentityIntroduction.astro';
 import OpeningSequence from './opening/OpeningSequence.astro';
 import PortfolioHeader from './PortfolioHeader.astro';
 import ValuesEvidence from './values/ValuesEvidence.astro';
-import WritingPreview from './WritingPreview.astro';
 
 interface Props {
-  identityCage: CollectionEntry<'writing'>;
   observatory: CollectionEntry<'software'>;
   foodProduct: CollectionEntry<'software'>;
   chineseBee: CollectionEntry<'software'>;
 }
 
-const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
+const { observatory, foodProduct, chineseBee } = Astro.props;
 ---
 
 <ElasticOverscrollBackdrop placement="top" />
@@ -28,7 +26,6 @@ const { identityCage, observatory, foodProduct, chineseBee } = Astro.props;
     </OpeningSequence>
 
     <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
-    <WritingPreview {identityCage} />
     <PortfolioHeader current="home" placement="footer" contactId="contact" />
   </main>
 
