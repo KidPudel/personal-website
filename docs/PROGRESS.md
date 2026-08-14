@@ -1,5 +1,6 @@
 # Progress
 
+- Added a one-page product-designer résumé and pointed the site résumé links to it. The two-page full-history file remains in `public/resume/`.
 - Added the Observatory launch film at the start of the case study, between the opening facts and the first chapter. The local poster links to the product introduction on YouTube and plays in place after a click, without autoplaying on load.
 - Rounded the identity photograph and the couple photograph, and gave Igor's portrait a slight left tilt.
 - Placed the point-and-click doodle beside Igor in the handwritten hello. It appears once after that sequence ends, holds briefly as a click hint, then fades out slowly. Using the photograph control dismisses it immediately. Reduced motion still shows the brief hint; no-JavaScript keeps it hidden.

@@ -21,5 +21,5 @@ export const connectLinks = [
   { label: 'X', href: publicLinks.x },
   { label: 'itch.io', href: publicLinks.itch },
   { label: 'GitHub', href: publicLinks.github },
-  { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-resume.pdf') },
+  { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume.pdf') },
 ] as const;
