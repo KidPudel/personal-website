@@ -10,7 +10,8 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 - [x] Verify keyboard behavior, reduced motion, desktop layout, mobile layout, type checking, and both supported production base paths.
 - [x] Suppress the homepage's native vertical rubber band and replace it with a custom elastic response at both document edges.
 - [x] Move the page to reveal the Essence-palette fields behind it, without covering content or adding scroll height.
-- [x] Shape both fields as soft, irregular aurora curtains rather than linear bands, with a short hold and damped return.
+- [x] Shape both fields as a connected Essence-palette curtain that fades into the page, rather than a clipped blob, separate slabs, or hard silhouettes.
+- [x] Stretch each field with the pull so the rays lengthen and contract with the spring, and dissolve pigment before the final spring pixels to prevent a settling seam.
 - [x] Keep inactive edge layers dormant and consolidate each active edge to one blurred composite layer.
 - [x] Keep the elastic page transform dormant at rest so the carried values premise remains pinned to the viewport.
 - [x] Verify type checking, both production base paths, desktop and mobile edge geometry, horizontal overflow, reduced-motion behavior, and browser diagnostics.

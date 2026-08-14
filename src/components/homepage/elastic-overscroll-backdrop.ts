@@ -1,4 +1,75 @@
-import { clamp } from '../../lib/motion';
+import { clamp, smooth } from '../../lib/motion';
+import { sampleEssenceColor, sampleEssenceNoise } from './opening/pigment-field';
+
+const rayColor = (along: number) => {
+  const t = clamp(along);
+
+  if (t < 0.36) return sampleEssenceColor((t / 0.36) * 0.3);
+
+  return sampleEssenceColor(0.54 + ((t - 0.36) / 0.64) * 0.46);
+};
+
+const rayBleed = () => Math.round(Math.min(72, Math.max(44, window.innerHeight * 0.065)));
+
+const ridgeHeight = (normalizedX: number, seed: number) => {
+  const swell = sampleEssenceNoise(normalizedX * 2.8 + seed, seed * 0.45);
+  const ridge = sampleEssenceNoise(normalizedX * 7.1 - seed, seed * 0.9);
+  const fold = sampleEssenceNoise(normalizedX * 14.2 + seed * 0.6, seed);
+
+  return clamp(0.52 + swell * 0.16 + (ridge - 0.32) * 0.26 + Math.max(0, fold - 0.55) * 0.16);
+};
+
+const drawElasticField = (
+  canvas: HTMLCanvasElement,
+  context: CanvasRenderingContext2D,
+  placement: 'top' | 'bottom',
+) => {
+  // A connected ridged curtain, not separate columns. Essence color travels from
+  // the viewport origin toward the page. The spring never repaints this bitmap.
+  const targetWidth = Math.max(36, Math.min(52, Math.round(window.innerWidth / 32)));
+  const targetHeight = 48;
+
+  if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+    canvas.width = targetWidth;
+    canvas.height = targetHeight;
+  }
+
+  const image = context.createImageData(targetWidth, targetHeight);
+  const pixels = image.data;
+  const seed = placement === 'top' ? 2.7 : 9.4;
+  const heights = new Float32Array(targetWidth);
+
+  for (let pixelX = 0; pixelX < targetWidth; pixelX += 1) {
+    heights[pixelX] = ridgeHeight(pixelX / Math.max(1, targetWidth - 1), seed);
+  }
+
+  for (let pixelY = 0; pixelY < targetHeight; pixelY += 1) {
+    const normalizedY = pixelY / Math.max(1, targetHeight - 1);
+    const depth = placement === 'top' ? normalizedY : 1 - normalizedY;
+    const seam = 1 - smooth(clamp(depth / (placement === 'top' ? 0.12 : 0.06)));
+
+    for (let pixelX = 0; pixelX < targetWidth; pixelX += 1) {
+      const index = (pixelY * targetWidth + pixelX) * 4;
+      const height = heights[pixelX];
+
+      if (depth > height) {
+        pixels[index + 3] = 0;
+        continue;
+      }
+
+      const along = clamp(depth / Math.max(height, 0.001));
+      const color = rayColor(along);
+      const tipFade = 1 - smooth(clamp((along - 0.82) / 0.18));
+
+      pixels[index] = color[0];
+      pixels[index + 1] = color[1];
+      pixels[index + 2] = color[2];
+      pixels[index + 3] = Math.round(tipFade * (1 - seam) * 255);
+    }
+  }
+
+  context.putImageData(image, 0, 0);
+};
 
 class ElasticOverscrollBackdrop extends HTMLElement {
   private abort?: AbortController;
@@ -12,6 +83,8 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const placement = this.dataset.placement === 'top' ? 'top' : 'bottom';
+    const canvas = this.querySelector<HTMLCanvasElement>('.elastic-overscroll-backdrop__field');
+    const context = canvas?.getContext('2d');
     let pull = 0;
     let target = 0;
     let velocity = 0;
@@ -27,9 +100,10 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     const paint = () => {
       const pixelRatio = window.devicePixelRatio || 1;
       const visualPull = Math.round(pull * pixelRatio) / pixelRatio;
-      const extent = clamp(visualPull / maximumPull());
+      const bleed = rayBleed();
       const active = visualPull > 0;
-      this.style.setProperty('--edge-scale', String(extent));
+      this.style.setProperty('--edge-span', `${visualPull}px`);
+      this.style.setProperty('--ray-bleed', `${bleed}px`);
       document.documentElement.style.setProperty(pullProperty, `${visualPull}px`);
 
       if (active !== wasActive) {
@@ -154,7 +228,10 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     };
 
     const handleMotionPreference = () => release();
-    const updateGeometry = () => this.style.setProperty('--edge-span', `${maximumPull()}px`);
+    const updateGeometry = () => {
+      this.style.setProperty('--ray-bleed', `${rayBleed()}px`);
+      if (canvas && context) drawElasticField(canvas, context, placement);
+    };
     const handleResize = () => {
       updateGeometry();
       paint();

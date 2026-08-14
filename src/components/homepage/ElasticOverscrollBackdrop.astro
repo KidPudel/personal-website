@@ -1,55 +1,20 @@
 ---
-import { essenceChannel } from './opening/pigment-field';
-
 interface Props {
   placement?: 'top' | 'bottom';
 }
 
 const { placement = 'bottom' } = Astro.props;
-const curtains = [
-  { left: '-4%', width: '10%', height: '72%', phase: '-3%', lean: '-5deg', colors: ['sky', 'alice', 'magenta'], opacity: 0.72 },
-  { left: '3%', width: '8%', height: '96%', phase: '3%', lean: '4deg', colors: ['magenta', 'mustard', 'flame'], opacity: 0.86 },
-  { left: '9%', width: '11%', height: '60%', phase: '-2%', lean: '-3deg', colors: ['alice', 'sky', 'magenta'], opacity: 0.7 },
-  { left: '17%', width: '8%', height: '84%', phase: '4%', lean: '5deg', colors: ['mustard', 'flame', 'cinnabar'], opacity: 0.82 },
-  { left: '23%', width: '12%', height: '99%', phase: '-4%', lean: '-4deg', colors: ['magenta', 'cinnabar', 'mustard'], opacity: 0.9 },
-  { left: '33%', width: '7%', height: '68%', phase: '2%', lean: '3deg', colors: ['sky', 'alice', 'mustard'], opacity: 0.74 },
-  { left: '38%', width: '11%', height: '89%', phase: '-3%', lean: '-5deg', colors: ['flame', 'mustard', 'magenta'], opacity: 0.84 },
-  { left: '47%', width: '8%', height: '56%', phase: '4%', lean: '4deg', colors: ['alice', 'sky', 'magenta'], opacity: 0.68 },
-  { left: '53%', width: '12%', height: '96%', phase: '-4%', lean: '-3deg', colors: ['magenta', 'mustard', 'flame'], opacity: 0.9 },
-  { left: '63%', width: '7%', height: '74%', phase: '3%', lean: '5deg', colors: ['sky', 'magenta', 'cinnabar'], opacity: 0.74 },
-  { left: '68%', width: '11%', height: '90%', phase: '-3%', lean: '-4deg', colors: ['mustard', 'flame', 'magenta'], opacity: 0.86 },
-  { left: '77%', width: '8%', height: '62%', phase: '4%', lean: '3deg', colors: ['alice', 'sky', 'mustard'], opacity: 0.7 },
-  { left: '83%', width: '12%', height: '97%', phase: '-4%', lean: '-5deg', colors: ['magenta', 'cinnabar', 'mustard'], opacity: 0.9 },
-  { left: '93%', width: '8%', height: '76%', phase: '3%', lean: '4deg', colors: ['sky', 'alice', 'magenta'], opacity: 0.76 },
-  { left: '98%', width: '10%', height: '88%', phase: '-2%', lean: '-3deg', colors: ['flame', 'mustard', 'magenta'], opacity: 0.8 },
-] as const;
-const paletteStyle = [
-  `--essence-imperial: ${essenceChannel(0)}`,
-  `--essence-sky: ${essenceChannel(1)}`,
-  `--essence-alice: ${essenceChannel(2)}`,
-  `--essence-mustard: ${essenceChannel(3)}`,
-  `--essence-flame: ${essenceChannel(4)}`,
-  `--essence-cinnabar: ${essenceChannel(5)}`,
-  `--essence-magenta: ${essenceChannel(6)}`,
-].join('; ');
 ---
 
 <elastic-overscroll-backdrop
   class="elastic-overscroll-backdrop"
   data-placement={placement}
-  style={paletteStyle}
   aria-hidden="true"
 >
-  <span class="elastic-overscroll-backdrop__curtains">
-    {curtains.map((curtain) => (
-      <span
-        class="elastic-overscroll-backdrop__curtain"
-        style={`--curtain-left: ${curtain.left}; --curtain-width: ${curtain.width}; --curtain-height: ${curtain.height}; --curtain-phase: ${curtain.phase}; --curtain-lean: ${curtain.lean}; --curtain-a: var(--essence-${curtain.colors[0]}); --curtain-b: var(--essence-${curtain.colors[1]}); --curtain-c: var(--essence-${curtain.colors[2]}); --curtain-opacity: ${curtain.opacity}`}
-      >
-        <i class="elastic-overscroll-backdrop__curtain-shape"></i>
-      </span>
-    ))}
-  </span>
+  <div class="elastic-overscroll-backdrop__backing"></div>
+  <div class="elastic-overscroll-backdrop__glow">
+    <canvas class="elastic-overscroll-backdrop__field"></canvas>
+  </div>
 </elastic-overscroll-backdrop>
 
 <script>
@@ -63,9 +28,9 @@ const paletteStyle = [
     right: 0;
     left: 0;
     display: none;
-    height: calc(var(--edge-span, min(22svh, 11.25rem)) + 0.25rem);
-    contain: strict;
+    height: calc(var(--edge-span, min(22svh, 11.25rem)) + var(--ray-bleed, 3.5rem));
     overflow: hidden;
+    contain: layout style;
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
@@ -73,16 +38,10 @@ const paletteStyle = [
 
   .elastic-overscroll-backdrop[data-placement='top'] {
     top: 0;
-    background: #6f8aff;
-    transform: scaleY(var(--edge-scale, 0));
-    transform-origin: 50% 0%;
   }
 
   .elastic-overscroll-backdrop[data-placement='bottom'] {
     bottom: 0;
-    background: var(--color-field);
-    transform: scaleY(var(--edge-scale, 0));
-    transform-origin: 50% 100%;
   }
 
   :global(.js) .elastic-overscroll-backdrop {
@@ -90,82 +49,80 @@ const paletteStyle = [
   }
 
   .elastic-overscroll-backdrop[data-edge-active] {
+    z-index: 2;
     opacity: 1;
     visibility: visible;
-    will-change: opacity, transform;
   }
 
-  .elastic-overscroll-backdrop__curtains {
+  .elastic-overscroll-backdrop__backing {
+    position: absolute;
+    right: 0;
+    left: 0;
+  }
+
+  [data-placement='top'] .elastic-overscroll-backdrop__backing {
+    top: 0;
+    height: calc(var(--elastic-top-pull, 0px) + 2px);
+    background: #6f8aff;
+  }
+
+  [data-placement='bottom'] .elastic-overscroll-backdrop__backing {
+    bottom: 0;
+    height: calc(var(--elastic-bottom-pull, 0px) + 2px);
+    background: var(--color-field);
+  }
+
+  .elastic-overscroll-backdrop__glow {
     position: absolute;
     inset: 0;
-    display: block;
-    filter: blur(clamp(0.4rem, 0.9vw, 0.85rem));
+    filter: blur(clamp(0.7rem, 1.8vw, 1.2rem));
   }
 
-  .elastic-overscroll-backdrop__curtain {
+  [data-placement='top'] .elastic-overscroll-backdrop__glow {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 calc(100% - var(--ray-bleed, 3.5rem)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 calc(100% - var(--ray-bleed, 3.5rem)),
+      transparent 100%
+    );
+  }
+
+  [data-placement='bottom'] .elastic-overscroll-backdrop__glow {
+    -webkit-mask-image: linear-gradient(
+      to top,
+      #000 0%,
+      #000 calc(100% - var(--ray-bleed, 3.5rem)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to top,
+      #000 0%,
+      #000 calc(100% - var(--ray-bleed, 3.5rem)),
+      transparent 100%
+    );
+  }
+
+  .elastic-overscroll-backdrop__field {
     position: absolute;
-    left: var(--curtain-left);
+    right: -1.25rem;
+    left: -1.25rem;
     display: block;
-    width: var(--curtain-width);
-    height: var(--curtain-height);
-    opacity: var(--curtain-opacity);
-    transform: skewX(var(--curtain-lean)) scaleX(1.08);
-  }
-
-  [data-placement='top'] .elastic-overscroll-backdrop__curtain {
-    top: -8%;
-  }
-
-  .elastic-overscroll-backdrop__curtain-shape {
-    display: block;
-    width: 100%;
+    width: calc(100% + 2.5rem);
     height: 100%;
   }
 
-  [data-placement='top'] .elastic-overscroll-backdrop__curtain-shape {
-    background:
-      linear-gradient(
-        to bottom,
-        rgb(var(--essence-imperial) / 0.96) 0%,
-        rgb(var(--curtain-a) / 0.92) calc(24% + var(--curtain-phase)),
-        rgb(var(--curtain-b) / 0.98) calc(54% + var(--curtain-phase)),
-        rgb(var(--curtain-c) / 0.82) calc(79% + var(--curtain-phase)),
-        transparent 100%
-      );
-    clip-path: polygon(4% 0, 96% 0, 91% 31%, 87% 56%, 78% 79%, 66% 100%, 58% 83%, 49% 91%, 38% 69%, 24% 51%, 10% 27%);
+  [data-placement='top'] .elastic-overscroll-backdrop__field {
+    top: 0;
   }
 
-  [data-placement='bottom'] .elastic-overscroll-backdrop__curtain {
-    bottom: -8%;
-  }
-
-  [data-placement='bottom'] .elastic-overscroll-backdrop__curtain-shape {
-    background:
-      linear-gradient(
-        to bottom,
-        transparent 0%,
-        rgb(var(--curtain-c) / 0.82) calc(21% + var(--curtain-phase)),
-        rgb(var(--curtain-b) / 0.98) calc(48% + var(--curtain-phase)),
-        rgb(var(--curtain-a) / 0.92) calc(76% + var(--curtain-phase)),
-        rgb(var(--essence-imperial) / 0.98) 100%
-      );
-    clip-path: polygon(66% 0, 78% 21%, 87% 44%, 91% 69%, 96% 100%, 4% 100%, 10% 73%, 24% 49%, 38% 31%, 49% 9%, 58% 17%);
-  }
-
-  [data-placement='top'] .elastic-overscroll-backdrop__curtain:nth-child(3n + 2) .elastic-overscroll-backdrop__curtain-shape {
-    clip-path: polygon(3% 0, 97% 0, 90% 26%, 82% 48%, 75% 73%, 60% 89%, 50% 100%, 43% 74%, 31% 62%, 20% 38%, 8% 22%);
-  }
-
-  [data-placement='top'] .elastic-overscroll-backdrop__curtain:nth-child(3n) .elastic-overscroll-backdrop__curtain-shape {
-    clip-path: polygon(4% 0, 96% 0, 92% 37%, 79% 57%, 70% 92%, 58% 76%, 49% 100%, 37% 78%, 27% 61%, 12% 30%);
-  }
-
-  [data-placement='bottom'] .elastic-overscroll-backdrop__curtain:nth-child(3n + 2) .elastic-overscroll-backdrop__curtain-shape {
-    clip-path: polygon(50% 0, 60% 11%, 75% 27%, 82% 52%, 90% 74%, 97% 100%, 3% 100%, 8% 78%, 20% 62%, 31% 38%, 43% 26%);
-  }
-
-  [data-placement='bottom'] .elastic-overscroll-backdrop__curtain:nth-child(3n) .elastic-overscroll-backdrop__curtain-shape {
-    clip-path: polygon(49% 0, 58% 24%, 70% 8%, 79% 43%, 92% 63%, 96% 100%, 4% 100%, 12% 70%, 27% 39%, 37% 22%);
+  [data-placement='bottom'] .elastic-overscroll-backdrop__field {
+    bottom: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {

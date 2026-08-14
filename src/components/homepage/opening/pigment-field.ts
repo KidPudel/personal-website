@@ -87,6 +87,9 @@ const fluidNoise = (x: number, y: number) =>
   valueNoise(x * 2.03 + 17.2, y * 2.03 - 11.8) * 0.29 +
   valueNoise(x * 4.11 - 7.4, y * 4.11 + 5.6) * 0.15;
 
+export const sampleEssenceColor = paletteColor;
+export const sampleEssenceNoise = fluidNoise;
+
 const fieldSample = (x: number, y: number, growth: number) => {
   const dx = x - 0.5;
   const dy = y - (0.53 - growth * 0.015);
