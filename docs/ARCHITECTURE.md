@@ -134,6 +134,7 @@ The opening is the first section of `/`, not another route.
 - The enhanced content layer remains inert while visually unavailable and becomes interactive once substantially revealed.
 - A skip link reaches the next personal-content section.
 - Reduced motion and no-JavaScript modes show the completed identity composition without requiring the sequence.
+- JavaScript-enabled first paint uses CSS to show the closed box on the first frame color before the opening controller hydrates. Identity is the first paint only for no-JavaScript, reduced motion, and hash navigation.
 
 Use a requestAnimationFrame-coalesced scroll listener or an equivalent small local controller. Avoid continuous layout reads after initialization. Recalculate geometry on resize through a bounded handler.
 

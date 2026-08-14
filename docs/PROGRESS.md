@@ -1,5 +1,6 @@
 # Progress
 
+- Stopped the homepage from flashing identity copy before the opening. JavaScript first paint now shows the closed box on the first-frame blue field from CSS, while no-JavaScript, reduced motion, and hash visits still start on the completed identity. Preloaded the first box frame so that drawing is ready with the field color.
 - Added a one-page product-designer résumé and pointed the site résumé links to it. The two-page full-history file remains in `public/resume/`.
 - Added the Observatory launch film at the start of the case study, between the opening facts and the first chapter. The local poster links to the product introduction on YouTube and plays in place after a click, without autoplaying on load.
 - Rounded the identity photograph and the couple photograph, and gave Igor's portrait a slight left tilt.

@@ -25,12 +25,15 @@ const frames = [
   frame10,
   frame11,
 ];
+const closedBoxColor = openingMotion.frameColors[0];
 ---
+
+<link rel="preload" href={frame1.src} as="image" fetchpriority="high" />
 
 <opening-sequence
   class="opening-sequence"
   data-frame-count={frames.length}
-  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh`}
+  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --opening-color: ${closedBoxColor}`}
 >
   <div class="opening-sequence__sticky">
     <div class="opening-sequence__reveal" data-opening-reveal>
@@ -46,6 +49,7 @@ const frames = [
           width="2048"
           height="2048"
           loading="eager"
+          fetchpriority={index === 0 ? 'high' : 'low'}
           decoding="async"
           data-opening-frame
           data-active={index === 0 ? '' : undefined}
@@ -68,7 +72,7 @@ const frames = [
     --reveal-opacity: 1;
     --art-opacity: 0;
     --identity-opacity: 1;
-    --opening-color: #4265ff;
+    --opening-color: #6f8aff;
     --world-reaction: 0;
     position: relative;
     z-index: 2;
@@ -113,7 +117,16 @@ const frames = [
   }
 
   :global(.js) .opening-sequence {
+    --reveal-opacity: 0;
+    --art-opacity: 1;
     height: var(--opening-scroll-height, 400svh);
+    background: var(--opening-color);
+  }
+
+  :global(.js.opening-bypassed) .opening-sequence {
+    --reveal-opacity: 1;
+    --art-opacity: 0;
+    background: var(--color-field);
   }
 
   :global(.js) .opening-sequence__reveal {
@@ -198,7 +211,10 @@ const frames = [
 
   @media (prefers-reduced-motion: reduce) {
     :global(.js) .opening-sequence {
+      --reveal-opacity: 1;
+      --art-opacity: 0;
       height: 100svh;
+      background: var(--color-field);
     }
 
     :global(.js) .opening-sequence__art,
