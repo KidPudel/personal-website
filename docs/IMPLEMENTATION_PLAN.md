@@ -14,4 +14,5 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 - [x] Stretch each field with the pull so the rays lengthen and contract with the spring, and dissolve pigment before the final spring pixels to prevent a settling seam.
 - [x] Keep inactive edge layers dormant and consolidate each active edge to one blurred composite layer.
 - [x] Keep the elastic page transform dormant at rest so the carried values premise remains pinned to the viewport.
+- [x] Restore swipe-to-refresh on a committed top pull, since native refresh cannot run while the custom elastic edge suppresses overscroll.
 - [x] Verify type checking, both production base paths, desktop and mobile edge geometry, horizontal overflow, reduced-motion behavior, and browser diagnostics.

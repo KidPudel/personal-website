@@ -91,7 +91,11 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     let lastTime: number | undefined;
     let touchOriginY: number | undefined;
     let wasActive = false;
+    let refreshArmed = false;
+    let refreshGestureAt = 0;
+    let reloading = false;
     const maximumPull = () => Math.min(180, Math.max(96, window.innerHeight * 0.18));
+    const refreshThreshold = () => maximumPull() * 0.78;
     const maximumScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     const pullProperty = placement === 'top' ? '--elastic-top-pull' : '--elastic-bottom-pull';
     const atEdge = () =>
@@ -124,9 +128,41 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       this.frame = window.requestAnimationFrame(render);
     };
 
+    const disarmRefresh = () => {
+      refreshArmed = false;
+      refreshGestureAt = 0;
+    };
+
+    const armRefreshIfReady = (distance: number, fromTouch: boolean) => {
+      // Native swipe-to-refresh cannot run while overscroll is suppressed.
+      // A committed top pull reloads instead. Reduced motion restores native
+      // overscroll, so it must not also trigger this custom reload.
+      if (reducedMotion.matches || placement !== 'top' || !atEdge()) {
+        disarmRefresh();
+        return;
+      }
+
+      if (!refreshGestureAt) refreshGestureAt = performance.now();
+
+      const heldLongEnough = fromTouch || performance.now() - refreshGestureAt >= 240;
+      refreshArmed = distance >= refreshThreshold() && heldLongEnough;
+    };
+
+    const reloadDocument = () => {
+      if (reloading) return;
+      reloading = true;
+      window.location.reload();
+    };
+
     const release = () => {
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = 0;
+
+      if (refreshArmed) {
+        reloadDocument();
+        return;
+      }
+
       target = 0;
       requestRender();
     };
@@ -164,10 +200,22 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       paint();
     };
 
-    const setPull = (distance: number, releaseAfterInput = false) => {
-      if (reducedMotion.matches || !atEdge()) return;
-      target = Math.min(maximumPull(), Math.max(0, distance));
-      requestRender();
+    const setPull = (
+      distance: number,
+      source: 'touch' | 'wheel' | 'inertia',
+      releaseAfterInput = false,
+    ) => {
+      if (!atEdge()) return;
+
+      const next = Math.min(maximumPull(), Math.max(0, distance));
+
+      if (source === 'touch') armRefreshIfReady(next, true);
+      if (source === 'wheel') armRefreshIfReady(next, false);
+
+      if (!reducedMotion.matches) {
+        target = next;
+        requestRender();
+      }
 
       if (!releaseAfterInput) return;
       window.clearTimeout(this.releaseTimer);
@@ -184,6 +232,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       const outwardDistance = placement === 'top' ? -wheelDistance(event) : wheelDistance(event);
 
       if (outwardDistance <= 0) {
+        disarmRefresh();
         if (pull > 0.5 || target > 0) {
           release();
         }
@@ -191,11 +240,23 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       }
 
       if (!atEdge()) return;
-      setPull(Math.max(pull, target) + outwardDistance * 0.42, true);
+
+      const fromUser = event.cancelable;
+      if (!fromUser && refreshArmed) {
+        release();
+        return;
+      }
+
+      setPull(
+        Math.max(pull, target) + outwardDistance * 0.42,
+        fromUser ? 'wheel' : 'inertia',
+        true,
+      );
     };
 
     const handleScroll = () => {
       if (!atEdge() && touchOriginY === undefined) {
+        disarmRefresh();
         release();
       }
     };
@@ -203,6 +264,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     const handleTouchStart = (event: TouchEvent) => {
       if (!atEdge() || event.touches.length !== 1) return;
       touchOriginY = event.touches[0]?.clientY;
+      disarmRefresh();
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = 0;
     };
@@ -213,10 +275,11 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       const outwardDistance = placement === 'top' ? currentY - touchOriginY : touchOriginY - currentY;
 
       if (outwardDistance > 0) {
-        setPull(outwardDistance * 0.64);
+        setPull(outwardDistance * 0.64, 'touch');
         return;
       }
 
+      disarmRefresh();
       if (pull > 0.5 || target > 0) {
         release();
       }
@@ -227,7 +290,16 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       release();
     };
 
-    const handleMotionPreference = () => release();
+    const handleTouchCancel = () => {
+      touchOriginY = undefined;
+      disarmRefresh();
+      release();
+    };
+
+    const handleMotionPreference = () => {
+      disarmRefresh();
+      release();
+    };
     const updateGeometry = () => {
       this.style.setProperty('--ray-bleed', `${rayBleed()}px`);
       if (canvas && context) drawElasticField(canvas, context, placement);
@@ -242,7 +314,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     window.addEventListener('touchstart', handleTouchStart, { passive: true, signal: this.abort.signal });
     window.addEventListener('touchmove', handleTouchMove, { passive: true, signal: this.abort.signal });
     window.addEventListener('touchend', handleTouchEnd, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchcancel', handleTouchEnd, { passive: true, signal: this.abort.signal });
+    window.addEventListener('touchcancel', handleTouchCancel, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
     updateGeometry();
