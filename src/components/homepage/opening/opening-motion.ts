@@ -28,10 +28,13 @@ export const openingMotion = {
   frameColors: [
     '#6f8aff',
     '#6f8aff',
+    '#6f8aff',
+    '#ff85d6',
     '#ff85d6',
     '#ff85d6',
     '#ffe16b',
     '#ffe16b',
+    '#5695d0',
     '#5695d0',
     '#5695d0',
   ],
