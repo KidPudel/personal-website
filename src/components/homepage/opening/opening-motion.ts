@@ -12,6 +12,7 @@ export const openingMotion = {
   settleDistance: 0.0005,
   forwardBoundaryReleaseAt: 0.7,
   forwardBoundaryResetAt: 0.56,
+  touchMomentumMs: 1800,
   essenceFrameIntervalMs: 34,
   essenceProgressStep: 0.0025,
   firstFramePixels: 20,

@@ -31,3 +31,4 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 - [x] Keep the elastic page transform dormant at rest so the carried values premise remains pinned to the viewport.
 - [x] Restore swipe-to-refresh on a committed top pull, since native refresh cannot run while the custom elastic edge suppresses overscroll.
 - [x] Verify type checking, both production base paths, desktop and mobile edge geometry, horizontal overflow, reduced-motion behavior, and browser diagnostics.
+- [x] Keep the opening wheel boundary on fine pointers only, so a fast iPhone flick through essence is not clamped against Safari momentum.

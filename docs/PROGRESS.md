@@ -1,5 +1,6 @@
 # Progress
 
+- Stopped the opening from locking iPhone scroll once essence appears. Touch and coarse pointers now follow native compositor scrolling one-to-one through the box and pigment, without the trackpad `scrollTo` clamp or the velocity follower that were fighting Safari momentum. Wheel and trackpad still intercept forward distance and hold at the phase boundary. Verify on a physical iPhone over LAN (`WEBSITE_HOST=0.0.0.0 ./website.sh --start`), not only a 390 by 844 desktop window.
 - Stopped the homepage from flashing identity copy before the opening. JavaScript first paint now shows the closed box on the first-frame blue field from CSS, while no-JavaScript, reduced motion, and hash visits still start on the completed identity. Preloaded the first box frame so that drawing is ready with the field color.
 - Added a one-page product-designer résumé and pointed the site résumé links to it. The two-page full-history file remains in `public/resume/`.
 - Added the Observatory launch film at the start of the case study, between the opening facts and the first chapter. The local poster links to the product introduction on YouTube and plays in place after a click, without autoplaying on load.

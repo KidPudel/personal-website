@@ -22,6 +22,7 @@ class OpeningSequence extends HTMLElement {
   private frame = 0;
   private abort?: AbortController;
   private wheelAbort?: AbortController;
+  private touchScrollTimeout = 0;
   private helloAnimationPlayed = false;
   private thermalHintPlayed = false;
 
@@ -38,6 +39,7 @@ class OpeningSequence extends HTMLElement {
     const page = this.closest<HTMLElement>('[data-homepage]');
     const header = page?.querySelector<HTMLElement>('[data-site-header]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const coarsePointer = window.matchMedia('(pointer: coarse)');
 
     if (!sticky || !reveal || !art || !essence || !frames.length || !page || !header) return;
 
@@ -55,6 +57,7 @@ class OpeningSequence extends HTMLElement {
     let forwardBoundaryPassed = false;
     let lastEssenceProgress = -1;
     let lastEssencePaintTime = 0;
+    let touchScrolling = false;
 
     const measure = () => {
       openingStart = window.scrollY + this.getBoundingClientRect().top;
@@ -85,6 +88,8 @@ class OpeningSequence extends HTMLElement {
 
     const bypassOpening = () => reducedMotion.matches || window.location.hash.length > 0;
 
+    const usesNativeOpeningScroll = () => coarsePointer.matches || touchScrolling;
+
     const releaseForwardBoundary = (markPassed = false) => {
       forwardBoundaryActive = false;
       if (markPassed) forwardBoundaryPassed = true;
@@ -113,7 +118,24 @@ class OpeningSequence extends HTMLElement {
     };
 
     const syncWheelGuard = () => {
-      setWheelGuard(!bypassOpening() && !forwardBoundaryPassed);
+      setWheelGuard(!bypassOpening() && !forwardBoundaryPassed && !usesNativeOpeningScroll());
+    };
+
+    const beginTouchScroll = () => {
+      touchScrolling = true;
+      window.clearTimeout(this.touchScrollTimeout);
+      this.touchScrollTimeout = 0;
+      if (forwardBoundaryActive) releaseForwardBoundary();
+      syncWheelGuard();
+    };
+
+    const endTouchScroll = () => {
+      window.clearTimeout(this.touchScrollTimeout);
+      this.touchScrollTimeout = window.setTimeout(() => {
+        this.touchScrollTimeout = 0;
+        touchScrolling = false;
+        syncWheelGuard();
+      }, openingMotion.touchMomentumMs);
     };
 
     const wheelDistance = (event: WheelEvent) => {
@@ -193,7 +215,7 @@ class OpeningSequence extends HTMLElement {
         syncWheelGuard();
       }
 
-      if (forwardBoundaryPassed) {
+      if (forwardBoundaryPassed || usesNativeOpeningScroll()) {
         visualProgress = targetProgress;
       } else if (lastFrameTime === undefined) {
         visualProgress = targetProgress;
@@ -224,7 +246,7 @@ class OpeningSequence extends HTMLElement {
     };
 
     const handleWheel = (event: WheelEvent) => {
-      if (event.deltaY <= 0 || bypassOpening()) return;
+      if (event.deltaY <= 0 || bypassOpening() || usesNativeOpeningScroll()) return;
       if (forwardBoundaryPassed) return;
       if (needsMeasurement) measure();
 
@@ -249,7 +271,10 @@ class OpeningSequence extends HTMLElement {
     const handleScroll = () => {
       if (needsMeasurement) measure();
 
-      if (!bypassOpening()) {
+      // Touch and other coarse pointers must keep native compositor scrolling.
+      // scrollTo clamping against iOS momentum locks the page into a stuttering
+      // fight until the visual follower happens to release the boundary.
+      if (!bypassOpening() && !usesNativeOpeningScroll()) {
         const openingAnimationEnd = Math.max(openingStart, openingStart + openingAnimationDistance - 1);
 
         if (forwardBoundaryActive) {
@@ -296,13 +321,19 @@ class OpeningSequence extends HTMLElement {
 
     window.addEventListener('scroll', handleScroll, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
+    window.addEventListener('touchstart', beginTouchScroll, { passive: true, signal: this.abort.signal });
+    window.addEventListener('touchend', endTouchScroll, { passive: true, signal: this.abort.signal });
+    window.addEventListener('touchcancel', endTouchScroll, { passive: true, signal: this.abort.signal });
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
+    coarsePointer.addEventListener('change', syncWheelGuard, { signal: this.abort.signal });
     syncWheelGuard();
     render(performance.now());
   }
 
   disconnectedCallback() {
+    window.clearTimeout(this.touchScrollTimeout);
+    this.touchScrollTimeout = 0;
     this.wheelAbort?.abort();
     this.wheelAbort = undefined;
     this.abort?.abort();
