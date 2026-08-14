@@ -4,6 +4,16 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] Rebuild `/work/` so type, frames, and grouping follow a clear hierarchy: one Averia page title, Crimson italic section voices, quieter project names, polaroid screenshot frames, and field-level diagrams.
+- [x] Remove in-page jump chrome, keep the résumé path, and drop the footer back-link that duplicated the fixed header.
+- [x] Verify type checking, both production base paths, desktop and mobile work layout, keyboard behavior, reduced motion, and browser diagnostics.
+
+- [x] Rebuild the homepage personal note as a centered constellation instead of a bullet list.
+- [x] Set the heading in Crimson italic and the notes in quieter gray Bright Chalk, with dotted underlines as the live cue.
+- [x] Keep software, games, and writing as paths, spawn draggable doodles from the sketcher note, and reveal the couple photograph from the boyfriend note.
+- [x] Stack the same notes one by one on narrow screens, without bullets.
+- [ ] Verify type checking, both production base paths, desktop and mobile layout, doodle spawn and drag, keyboard behavior, reduced motion, and browser diagnostics.
+
 - [x] Move writing off the homepage onto its own `/blog/` document.
 - [x] Add “I have a blog” to the personal note as the homepage path to writing.
 - [x] Verify type checking, both production base paths, the writing document, the homepage personal-note link, desktop and mobile layout, and browser diagnostics.
@@ -11,6 +21,7 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 - [x] Replace the side-mounted Work and contact ornament with a collision-free pair centered directly after the introduction.
 - [x] Keep contact available again at the end of the homepage and on secondary documents.
 - [x] Blur between text and the Work or Connect drawing on hover, focus, and open disclosure states.
+- [x] Keep that drawing swap on fine pointers only, so a mobile tap activates Work or contact immediately.
 - [x] Verify keyboard behavior, reduced motion, desktop layout, mobile layout, type checking, and both supported production base paths.
 - [x] Suppress the homepage's native vertical rubber band and replace it with a custom elastic response at both document edges.
 - [x] Move the page to reveal the Essence-palette fields behind it, without covering content or adding scroll height.

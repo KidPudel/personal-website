@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import ElasticOverscrollBackdrop from './ElasticOverscrollBackdrop.astro';
 import IdentityIntroduction from './identity/IdentityIntroduction.astro';
 import OpeningSequence from './opening/OpeningSequence.astro';
+import PersonalNote from './personal/PersonalNote.astro';
 import PortfolioHeader from './PortfolioHeader.astro';
 import ValuesEvidence from './values/ValuesEvidence.astro';
 
@@ -26,6 +27,7 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
     </OpeningSequence>
 
     <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
+    <PersonalNote />
     <PortfolioHeader current="home" placement="footer" contactId="contact" />
   </main>
 

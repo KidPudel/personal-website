@@ -1,5 +1,8 @@
 ---
 import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+import clickCue from '../../../assets/art/icons/Doodles_point_click.png';
 
 interface Props {
   text: string;
@@ -44,25 +47,35 @@ const frames = Object.entries(frameModules)
     data-identity-portrait-trigger
     hidden
   ></button>
+  <span class="hello-animation__click-cue" aria-hidden="true">
+    <Image src={clickCue} alt="" width={512} loading="eager" />
+  </span>
 </span>
 
 <script>
   class HelloAnimation extends HTMLElement {
     private animationFrame = 0;
+    private cueTimer = 0;
     private played = false;
+    private dismissed = false;
+    private host?: HTMLElement;
     private reducedMotion?: MediaQueryList;
 
     connectedCallback() {
       if (this.dataset.enhanced) return;
       this.dataset.enhanced = 'true';
+      this.host = this.parentElement ?? undefined;
       this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       this.addEventListener('hello-animation-play', this.play);
+      this.host?.addEventListener('click', this.dismissClickCue);
       this.reducedMotion.addEventListener('change', this.handleMotionChange);
     }
 
     disconnectedCallback() {
       window.cancelAnimationFrame(this.animationFrame);
+      window.clearTimeout(this.cueTimer);
       this.removeEventListener('hello-animation-play', this.play);
+      this.host?.removeEventListener('click', this.dismissClickCue);
       this.reducedMotion?.removeEventListener('change', this.handleMotionChange);
       delete this.dataset.enhanced;
     }
@@ -78,19 +91,60 @@ const frames = Object.entries(frameModules)
       this.removeAttribute('data-playing');
     }
 
+    private revealClickCue() {
+      if (this.dismissed || this.hasAttribute('data-click-cue')) return;
+      this.setAttribute('data-click-cue', '');
+      const appearMs = this.reducedMotion?.matches ? 0 : 980;
+      this.cueTimer = window.setTimeout(() => this.hideClickCue('auto'), appearMs + 2_400);
+    }
+
+    private hideClickCue = (mode: 'auto' | 'click' = 'auto') => {
+      if (mode === 'auto' && this.dismissed) return;
+      if (mode === 'click' && this.hasAttribute('data-click-cue-dismissed')) return;
+
+      this.dismissed = true;
+      window.clearTimeout(this.cueTimer);
+      this.cueTimer = 0;
+
+      if (mode === 'click') {
+        this.setAttribute('data-click-cue-dismissed', '');
+        this.removeAttribute('data-click-cue-fading');
+      } else {
+        this.setAttribute('data-click-cue-fading', '');
+      }
+
+      this.removeAttribute('data-click-cue');
+    };
+
+    private dismissClickCue = (event: Event) => {
+      const target = event.target;
+      if (!(target instanceof Element) || !target.closest('[data-identity-portrait-trigger]')) return;
+      this.hideClickCue('click');
+    };
+
     private handleMotionChange = () => {
       if (!this.reducedMotion?.matches) return;
       window.cancelAnimationFrame(this.animationFrame);
       this.showCompletedFrame();
+      if (this.played) this.revealClickCue();
     };
 
     private play = async () => {
-      if (this.played || this.reducedMotion?.matches) return;
+      if (this.played) return;
       this.played = true;
+
+      if (this.reducedMotion?.matches) {
+        this.revealClickCue();
+        return;
+      }
 
       const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
       await Promise.allSettled(frames.map((frame) => frame.decode()));
-      if (!this.isConnected || this.reducedMotion?.matches || !frames.length) return;
+      if (!this.isConnected) return;
+      if (this.reducedMotion?.matches || !frames.length) {
+        this.revealClickCue();
+        return;
+      }
 
       const frameDuration = 82;
       let activeFrame = -1;
@@ -110,6 +164,7 @@ const frames = Object.entries(frameModules)
           this.animationFrame = window.requestAnimationFrame(animate);
         } else {
           this.removeAttribute('data-playing');
+          this.revealClickCue();
         }
       };
 
@@ -128,6 +183,7 @@ const frames = Object.entries(frameModules)
     display: inline-block;
     flex: none;
     width: min(100%, 13rem);
+    overflow: visible;
   }
 
   .hello-animation {
@@ -176,15 +232,90 @@ const frames = Object.entries(frameModules)
     outline-offset: var(--focus-offset);
   }
 
+  .hello-animation__click-cue {
+    position: absolute;
+    z-index: 2;
+    top: 2.35rem;
+    left: 96%;
+    width: 2.2rem;
+    aspect-ratio: 1;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: rotate(-8deg);
+  }
+
+  .hello-animation__click-cue :global(img) {
+    display: block;
+    width: 250%;
+    max-width: none;
+    height: auto;
+    transform: translate(-13.6%, -19.8%);
+  }
+
+  .hello-animation[data-click-cue] ~ .hello-animation__click-cue {
+    animation: hello-click-cue-in 360ms ease 620ms both;
+  }
+
+  .hello-animation[data-click-cue-fading] ~ .hello-animation__click-cue {
+    animation: hello-click-cue-out 2s ease-out both;
+  }
+
+  .hello-animation[data-click-cue-dismissed] ~ .hello-animation__click-cue {
+    animation: hello-click-cue-out 280ms ease both;
+  }
+
+  @keyframes hello-click-cue-in {
+    from {
+      opacity: 0;
+      transform: translate(0.22rem, 0.16rem) rotate(-12deg) scale(0.84);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(0, 0) rotate(-8deg) scale(1);
+    }
+  }
+
+  @keyframes hello-click-cue-out {
+    from {
+      opacity: 1;
+      transform: rotate(-8deg);
+    }
+
+    to {
+      opacity: 0;
+      transform: rotate(-8deg);
+    }
+  }
+
   @media (max-width: 52rem) {
     .hello-animation-with-text {
       width: min(100%, 11rem);
+    }
+
+    .hello-animation__click-cue {
+      top: 2.05rem;
+      left: 95%;
+      width: 1.9rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .hello-animation img {
       transition: none;
+    }
+
+    .hello-animation[data-click-cue] ~ .hello-animation__click-cue {
+      animation: none;
+      opacity: 1;
+      transform: rotate(-8deg);
+    }
+
+    .hello-animation[data-click-cue-fading] ~ .hello-animation__click-cue,
+    .hello-animation[data-click-cue-dismissed] ~ .hello-animation__click-cue {
+      animation: none;
+      opacity: 0;
     }
   }
 </style>

@@ -244,25 +244,36 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     transform: translate(-31%, -31%);
   }
 
-  .site-navigation__work:hover .navigation-action__label,
   .site-navigation__work:focus-visible .navigation-action__label,
-  .contact-disclosure summary:hover .navigation-action__label,
-  .contact-disclosure summary:focus-visible .navigation-action__label,
-  .contact-disclosure:focus-within .navigation-action__label,
-  .contact-disclosure[open] .navigation-action__label {
+  .contact-disclosure summary:focus-visible .navigation-action__label {
     opacity: 0;
     filter: blur(0.4rem);
   }
 
-  .site-navigation__work:hover .navigation-action__art,
   .site-navigation__work:focus-visible .navigation-action__art,
-  .contact-disclosure summary:hover .navigation-action__art,
-  .contact-disclosure summary:focus-visible .navigation-action__art,
-  .contact-disclosure:focus-within .navigation-action__art,
-  .contact-disclosure[open] .navigation-action__art {
+  .contact-disclosure summary:focus-visible .navigation-action__art {
     opacity: 1;
     filter: blur(0);
     transform: translate(-50%, -50%) scale(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-navigation__work:hover .navigation-action__label,
+    .contact-disclosure summary:hover .navigation-action__label,
+    .contact-disclosure:focus-within .navigation-action__label,
+    .contact-disclosure[open] .navigation-action__label {
+      opacity: 0;
+      filter: blur(0.4rem);
+    }
+
+    .site-navigation__work:hover .navigation-action__art,
+    .contact-disclosure summary:hover .navigation-action__art,
+    .contact-disclosure:focus-within .navigation-action__art,
+    .contact-disclosure[open] .navigation-action__art {
+      opacity: 1;
+      filter: blur(0);
+      transform: translate(-50%, -50%) scale(1);
+    }
   }
 
   .contact-disclosure__panel {
@@ -307,15 +318,6 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   .contact-disclosure__panel a:focus-visible {
     color: var(--color-accent);
     text-decoration-color: currentColor;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .site-navigation__work:hover .navigation-action__art,
-    .contact-disclosure summary:hover .navigation-action__art {
-      opacity: 1;
-      filter: blur(0);
-      transform: translate(-50%, -50%) scale(1);
-    }
   }
 
   @keyframes contact-panel-in {

@@ -23,6 +23,7 @@ interface Props {
 }
 
 const { slug } = Astro.props;
+const diagram = slug === 'receipt-processing' || slug === 'ordering-platform' || slug === 'card-system-study';
 const snowflakes = Array.from({ length: 16 }, (_, index) => {
   const duration = 4.7 + (index % 5) * 0.6;
   return {
@@ -36,7 +37,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
 });
 ---
 
-<div class:list={['work-media', `work-media--${slug}`]}>
+<div class:list={['work-media', `work-media--${slug}`, diagram && 'work-media--diagram']}>
   {slug === 'observatory' && (
     <div class="observatory-media">
       <Image
@@ -172,11 +173,11 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
   .work-media {
     position: relative;
     min-width: 0;
-    overflow: hidden;
-    border: clamp(0.28rem, 0.45vw, 0.42rem) solid var(--media-frame, #11110f);
-    border-radius: clamp(1.15rem, 2vw, 1.75rem);
-    background: #11110f;
-    box-shadow: 0.32rem 0.38rem 0 rgba(17, 17, 15, 0.13);
+    overflow: visible;
+    padding: 0.42rem;
+    border-radius: 0.95rem;
+    background: #fff;
+    box-shadow: 0 0.22rem 0.85rem rgb(17 17 15 / 0.07);
   }
 
   .work-media :global(img),
@@ -184,21 +185,37 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
     display: block;
     width: 100%;
     height: auto;
+    border-radius: 0.58rem;
+  }
+
+  .work-media--diagram {
+    padding: 0;
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
   }
 
   .observatory-media,
   .bee-media,
-  .discourses-media {
+  .discourses-media,
+  .santa-media {
     position: relative;
+    overflow: hidden;
+    border-radius: 0.58rem;
   }
 
   .observatory-media {
-    overflow: hidden;
     background: #050708;
   }
 
-  .observatory-media__icon {
+  .observatory-media__icon,
+  .bee-media__icon {
     position: absolute;
+    border-radius: 0;
+  }
+
+  .observatory-media__icon {
     right: 4%;
     bottom: 5%;
     width: clamp(3.5rem, 10vw, 7rem) !important;
@@ -207,7 +224,6 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
   }
 
   .bee-media__icon {
-    position: absolute;
     right: 1%;
     bottom: 1%;
     width: clamp(3rem, 8vw, 5.5rem) !important;
@@ -216,21 +232,21 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
 
   .metric-media {
     display: grid;
-    min-height: 17rem;
     grid-template-columns: auto auto auto;
-    place-content: center;
     align-items: baseline;
-    gap: 0.55rem 1rem;
-    padding: 2rem;
-    border: 0;
-    background-image: radial-gradient(rgba(243, 239, 228, 0.12) 0.7px, transparent 0.7px);
-    background-size: 12px 12px;
+    gap: 0.2rem 0.7rem;
+    min-height: 4.75rem;
+    align-content: center;
+    padding: 0.15rem 0 0.35rem;
+    color: var(--color-ink);
   }
 
   .metric-media span,
   .metric-media strong {
-    font-size: clamp(1.45rem, 3vw, 2.6rem);
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.2vw, 1.85rem);
     font-weight: 400;
+    letter-spacing: -0.04em;
   }
 
   .metric-media strong {
@@ -240,31 +256,33 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
   .metric-media small {
     grid-column: 1 / -1;
     color: var(--color-muted);
-    text-align: center;
+    font-family: var(--font-reading);
+    text-align: start;
   }
 
   .flow-media {
     display: flex;
-    min-height: 17rem;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    gap: 0.7rem;
-    padding: 2rem;
-    border: 0;
+    gap: 0.55rem;
+    min-height: 4.75rem;
+    padding: 0.15rem 0 0.35rem;
+    color: var(--color-copy);
+    font-size: 0.92rem;
   }
 
   .flow-media span {
-    max-width: 8.5rem;
-    text-align: center;
+    max-width: 9rem;
   }
 
   .flow-media i {
-    width: clamp(1.5rem, 4vw, 4rem);
-    border-top: 1px dashed var(--color-accent);
+    width: clamp(1.25rem, 3vw, 2.75rem);
+    border-top: 1px dashed color-mix(in srgb, var(--color-ink) 35%, transparent);
   }
 
   .discourses-media {
-    min-height: 20rem;
+    min-height: 16rem;
+    overflow: visible;
     padding: 0 12% 8% 0;
   }
 
@@ -296,6 +314,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
     inset: 0;
     height: 100% !important;
     object-fit: cover;
+    border-radius: 0;
     image-rendering: pixelated;
   }
 
@@ -355,17 +374,14 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
   }
 
   .tic-media {
-    max-width: 27rem;
-    margin-inline: auto;
     background: #1ba58f;
   }
 
   .card-media {
     display: flex;
-    min-height: 14rem;
+    min-height: 10rem;
     align-items: center;
-    justify-content: center;
-    padding: 2rem 1rem;
+    padding: 0.4rem 0.2rem 0.4rem 0.8rem;
   }
 
   .card-media span {
@@ -403,8 +419,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
   @media (max-width: 34rem) {
     .metric-media {
       grid-template-columns: 1fr;
-      gap: 0.25rem;
-      text-align: center;
+      gap: 0.15rem;
     }
 
     .metric-media small {

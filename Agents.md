@@ -22,6 +22,8 @@ Do not rewrite or expand the authored concept unless Igor asks. Plans and progre
 | Opening colors or scroll timing | `src/components/homepage/opening/opening-motion.ts` |
 | Pigment-field look | `src/components/homepage/opening/pigment-field.ts` |
 | Identity composition | `src/components/homepage/identity/IdentityIntroduction.astro` |
+| Personal note copy | `src/content/homepage/values.ts` |
+| Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |
 | Values rhythm | `src/components/homepage/values/value-voice-motion.ts` and `ValuesEvidence.astro` |
 | An evidence object's layout | `src/components/homepage/values/EvidenceObject.astro` |
 | Writing document | `src/pages/blog/index.astro` and `src/components/homepage/WritingPreview.astro` |

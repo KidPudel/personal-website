@@ -42,16 +42,37 @@ export const workPath = {
 } as const;
 
 export const personalNote = {
-  eyebrow: 'A few things about me',
+  heading: 'A few more things about me',
   items: [
-    'Product designer',
-    'Experienced software engineer',
-    'Hobby game designer',
-    'Editorial and illustrative sketcher',
-    { label: 'I have a blog', href: '/blog/' },
-    'Proud boyfriend to a beautiful girlfriend',
+    {
+      id: 'engineer',
+      label: 'experienced software engineer',
+      href: '/work/#product-design',
+    },
+    {
+      id: 'boyfriend',
+      label: 'Proud boyfriend to the best girlfriend in the world',
+      action: 'portrait',
+    },
+    {
+      id: 'games',
+      label: 'Hobby game designer',
+      href: '/work/#games',
+    },
+    {
+      id: 'sketcher',
+      label: 'Editorial and illustrative sketcher',
+      action: 'doodles',
+    },
+    {
+      id: 'blog',
+      label: 'I have a blog',
+      href: '/blog/',
+    },
   ],
 } as const;
+
+export type PersonalNoteItem = (typeof personalNote.items)[number];
 
 export const values: readonly ValuePassage[] = [
   {
@@ -123,7 +144,7 @@ export const values: readonly ValuePassage[] = [
     id: 'clarity',
     before: 'Be ',
     words: ['clear', 'honest'],
-    after: ' with users or players.',
+    after: ' with users.',
     aspects: [
       {
         project: 'Observatory',

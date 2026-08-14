@@ -34,6 +34,7 @@ The redesign removes `/secret-box/`. It remains in the repository only until the
 Root anchors are:
 
 - `/#values`
+- `/#personal`
 - `/#contact`
 
 Work anchors are:
@@ -56,8 +57,12 @@ BaseDocument
         │   ├── concrete project-aspect evidence on both sides
         │   ├── Observatory case-study path
         │   ├── replaceable screenshot placeholders
-        │   ├── concise personal list with a path to writing
         │   └── complete-work path
+        ├── PersonalNote
+        │   ├── Crimson italic heading
+        │   ├── gray Bright Chalk constellation of interactive notes
+        │   ├── work and writing paths
+        │   └── sketcher-spawned draggable doodles
         └── centered closing Work and contact pair
 
 PortfolioHeader
@@ -98,16 +103,20 @@ The root and work pages own their #F8F8F8 and black-ink surface styles. The Obse
 
 The composition presentation uses local type roles without changing Observatory:
 
-- Averia Serif Libre (`--font-display`) for display headings;
+- Averia Serif Libre (`--font-display`) for display headings and quieter project names;
 - Aleo (`--font-reading`) for body copy, personal labels, controls, captions, and authored interactions;
-- Crimson Text (`--font-editorial`) for non-interactive values voice text, italic regular on the premise and switching phrases;
-- Bright Chalk (`--font-special`) for special elements, currently the identity summary word and the cycling values words.
+- Crimson Text (`--font-editorial`) for non-interactive values voice text, the personal-note heading, italic regular on the premise, switching phrases, and that heading, and the `/work/` section voices;
+- Bright Chalk (`--font-special`) for special elements, currently the identity summary word, the cycling values words, and the personal-note constellation.
 
 Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`.
 
 The values voice changes phrase in one stationary position. Complementary opacity curves keep the outgoing and incoming phrases continuously present while opposing blur curves obscure their overlap, creating one black-ink optical morph without a blank midpoint.
 
-`PortfolioHeader` is a quiet Work and contact pair centered directly after the homepage introduction copy, then repeated as a centered closing gesture at the bottom of the document. Secondary documents use its compact fixed variant. The existing Work and Connect drawings stay hidden until hover or keyboard focus; the Connect drawing also stays visible while its disclosure is open. Each text label uses a quiet muted dotted underline at rest, then blurs away with that underline as its drawing resolves in at the same position, without spatial travel, so it cannot overlap the introduction. Contact links expand in flow and retain static `details` behavior without JavaScript. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
+`PersonalNote` follows the values work path as its own composition. A Crimson italic heading sits in the center, with gray Bright Chalk notes around it. Interactive notes use the same muted dotted underline as other live text. Links keep working without JavaScript. The sketcher control stays inert until enhancement, then bursts the doodle artwork from that word into a local draggable field. Reduced motion shows and hides those doodles in place. The boyfriend note reveals the couple photograph from `src/assets/life/` in place, without moving the constellation. Narrow screens keep the same notes and stack them one by one without bullets.
+
+`PortfolioHeader` is a quiet Work and contact pair centered directly after the homepage introduction copy, then repeated as a centered closing gesture at the bottom of the document. Secondary documents use its compact fixed variant. The existing Work and Connect drawings stay hidden until fine-pointer hover or keyboard focus; the Connect drawing also stays visible while its disclosure is open on a fine pointer. Touch activation must follow the control immediately, without a sticky-hover drawing swap. Each text label uses a quiet muted dotted underline at rest, then blurs away with that underline as its drawing resolves in at the same position, without spatial travel, so it cannot overlap the introduction. Contact links expand in flow and retain static `details` behavior without JavaScript. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
+
+`WorkPortfolio` is a quieter document than a conventional case-study index. The page title is the only large Averia display line. Product and games chapters open with a SectionMarker and a Crimson italic voice, then the work itself. Observatory is the loud piece through media scale, not through a competing headline. Supporting products, systems, games, and experiments step down in type size. Screenshot media uses the same white polaroid frame as homepage evidence objects; dark surfaces stay inside that artwork. Diagram artifacts sit on the field without a screenshot frame. Live text uses the muted dotted underline. The document does not add in-page jump chrome. Hash anchors for product design and games remain for compatibility.
 
 ## Opening sequence
 
@@ -121,7 +130,7 @@ The opening is the first section of `/`, not another route.
 - Forward wheel and trackpad distance is reapplied synchronously during the early box-and-pigment phase so the controller owns the gesture from its first event and can reliably stop at the phase boundary. Slow input retains its one-to-one distance, while strong momentum is consumed only after reaching the final box frame and near-maximum pigment spread. The boundary is then permanently released for that forward traversal. From there, the dissolve and identity reveal track physical scroll directly so an unfinished colored field cannot lag behind and leave with the sticky section. Reverse input must move back into the bounded range before rearming it; an opposite-signed momentum event alone must not release the boundary. The non-passive wheel listener exists only while that bounded phase can still intercept input, then hands normal scrolling back to the document. Anchor navigation and reduced-motion presentation bypass it. Do not introduce forced smooth scrolling or mandatory snapping.
 - The homepage suppresses the browser's native vertical rubber band and provides one custom elastic response at each document edge. Outward wheel or touch distance displaces the complete page on the compositor, revealing a fixed Essence-palette field in the gap. Each edge draws one low-resolution canvas of a connected ridged curtain from the shared Essence swatches: Imperial Blue at the viewport origin through Cloudy Sky, Mustard, Tiger Flame, and Cinnabar to Magenta tips. Alice Blue is omitted from these thin columns so it cannot punch a white hole through the trail. A larger blur merges the ridges into one force rather than separate slabs. Display height tracks the pull so the field lengthens and contracts with the spring, and the active field sits above the page long enough for those tips to fade into the content instead of clipping on a hard edge. While any top displacement remains, the homepage, opening, and document backing stay Imperial Blue so the join cannot flash the off-white field. The canvas is rendered only on connect and resize. The spring holds for 280 milliseconds after the last outward input and returns with damped motion. Displacement is snapped to physical device pixels. The outermost canvas pixels dissolve to the matching backing before the final spring pixels. The bottom field uses the matching off-white backing. The treatment adds no scroll height and all input and boundary listeners are passive. Only the active edge is visible, and all animation work stops after the spring settles. Because native swipe-to-refresh cannot run while overscroll is suppressed, a committed top pull that holds near the spring limit reloads the document on release. Casual bounces and bottom-edge pulls do not. Reduced motion removes the decorative displacement and restores native vertical overscroll so the platform gesture remains available.
 - Fast scrolling may move the native target ahead, but the rendered opening catches up quickly rather than completing in one paint.
-- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the pigment field reveals it.
+- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the pigment field reveals it. After the handwritten hello finishes, a one-time click cue appears beside Igor to mark the photograph control. It stays decorative and pointer-transparent so the existing name control remains the target. The cue fades away gradually after a short hold, or immediately if that control is used, and does not return. Reduced motion still shows the brief hint; no-JavaScript keeps it hidden because that control is inert.
 - The enhanced content layer remains inert while visually unavailable and becomes interactive once substantially revealed.
 - A skip link reaches the next personal-content section.
 - Reduced motion and no-JavaScript modes show the completed identity composition without requiring the sequence.
@@ -134,11 +143,12 @@ The redesign removes the graphite field, paper-grain overlay, and `WorldField` p
 
 - Use a #F8F8F8 portfolio field with black ink. Dark surfaces remain local to media that genuinely needs them.
 - Use no more than one controlled accent treatment at a time.
-- Doodles are decorative CSS background images on the root or individual sections.
+- Doodles on `/work/` remain decorative CSS background images. The homepage does not use those drawings as backgrounds, so they first appear when the personal-note sketcher control spawns them as local draggable images.
 - Background images use normal scrolling and no separate state.
 - Do not render decorative doodles as pointer targets or individual layout nodes.
+- Spawned doodles are the only doodle pointer targets.
 - Do not use parallax, route-aware placement, or independent doodle animation.
-- Doodle backgrounds are hidden from assistive technology by construction.
+- Doodle backgrounds are hidden from assistive technology by construction. Spawned doodles remain decorative.
 
 ## Content and evidence
 
@@ -168,8 +178,10 @@ Allowed local enhancements include:
 - scroll-controlled box-frame and pigment-field progress;
 - custom top and bottom elastic-edge displacement;
 - one-time handwritten hello frame playback as the identity becomes visible;
+- a one-time click cue beside Igor after that sequence completes;
 - a name-triggered reveal of Igor's photograph;
 - craft-value word cycling inside the values-and-evidence composition;
+- the personal-note constellation, including sketcher-spawned draggable doodles and a boyfriend photograph reveal;
 - the side-mounted contact disclosure;
 - restrained media activation;
 
