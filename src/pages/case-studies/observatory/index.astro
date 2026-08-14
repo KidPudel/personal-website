@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 
 import observatoryTitleTexture from '../../../assets/case_study_images/ditchered_observatory_bg.png';
+import launchFilmPoster from '../../../assets/software-showcases/observatory/launch-film.png';
 import flowConsolidation from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 7.png';
 import flowNow from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 6.png';
 import outcomeComparison from '../../../assets/case_study_images/outcome_screenshots/Screenshot 2026-08-10 at 17.01.52 1.png';
@@ -32,6 +33,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
 const repositoryURL = 'https://github.com/KidPudel/Observatory';
 const releaseURL = 'https://github.com/KidPudel/Observatory/releases/latest';
 const launchFilmURL = 'https://www.youtube.com/watch?v=6LWORcxVZmY&t=5s';
+const launchFilmEmbedURL = 'https://www.youtube-nocookie.com/embed/6LWORcxVZmY?start=5&autoplay=1';
 const heroTitle = 'Observatory';
 
 const sketches = [
@@ -99,6 +101,28 @@ const sketches = [
         <div><dt>Outcome</dt><dd>Working macOS prototype, release 0.1.1</dd></div>
         <div><dt>Build</dt><dd>AI-directed development from my specifications</dd></div>
       </dl>
+
+      <figure class="hero-introduction">
+        <a
+          class="hero-introduction__link"
+          href={launchFilmURL}
+          data-introduction-film
+          data-embed-src={launchFilmEmbedURL}
+        >
+          <span class="hero-introduction__stage">
+            <Image
+              src={launchFilmPoster}
+              alt=""
+              widths={[720, 1080, 1280]}
+              sizes="(max-width: 760px) 94vw, 820px"
+              format="webp"
+            />
+            <span class="hero-introduction__play" aria-hidden="true"></span>
+          </span>
+          <span class="sr-only">Watch the Observatory product introduction on YouTube</span>
+        </a>
+        <figcaption><span>Launch film</span> Product introduction</figcaption>
+      </figure>
     </header>
 
     <section class="chapter" id="problem" data-index-section>
@@ -532,6 +556,26 @@ const sketches = [
 
   document.querySelectorAll<HTMLElement>('[data-index-section]').forEach((section) => sectionObserver.observe(section));
 
+  document.querySelectorAll<HTMLAnchorElement>('[data-introduction-film]').forEach((link) => {
+    const embedSrc = link.dataset.embedSrc;
+    const stage = link.querySelector('.hero-introduction__stage');
+    if (!embedSrc || !stage) return;
+
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const frame = document.createElement('iframe');
+      frame.className = 'hero-introduction__player';
+      frame.src = embedSrc;
+      frame.title = 'Observatory product introduction';
+      frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      frame.setAttribute('allowfullscreen', '');
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      stage.replaceChildren(frame);
+      link.replaceWith(stage);
+      frame.focus();
+    });
+  });
+
 </script>
 
 <style is:global>
@@ -709,6 +753,62 @@ const sketches = [
   .facts div + div { padding-left: 0; border-left: 0; }
   .facts dt { margin-bottom: 7px; color: var(--muted); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: none; }
   .facts dd { margin: 0; font-size: 15px; line-height: 1.4; }
+
+  .hero-introduction {
+    width: min(820px, 100%);
+    margin: 72px auto 0;
+    text-align: left;
+  }
+  .hero-introduction__link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+  .hero-introduction__stage {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    background: #111;
+    box-shadow: 0 16px 44px rgba(23, 23, 20, 0.06);
+  }
+  .hero-introduction__stage picture,
+  .hero-introduction__stage img,
+  .hero-introduction__player {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+  .hero-introduction__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: 0 8px 24px rgba(23, 23, 20, 0.18);
+    translate: -50% -50%;
+  }
+  .hero-introduction__play::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 52%;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent var(--ink);
+    translate: -40% -50%;
+  }
+  .hero-introduction__link:hover .hero-introduction__play,
+  .hero-introduction__link:focus-visible .hero-introduction__play {
+    scale: 1.06;
+  }
 
   figure { margin: 0; }
   .evidence-grid img,
@@ -911,6 +1011,7 @@ const sketches = [
     .hero h1 { font-size: clamp(62px, 19vw, 78px); }
     .hero__line { margin-top: 28px; }
     .hero__intro { margin: 44px 0 55px; }
+    .hero-introduction { margin-top: 48px; }
     .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 18px; }
     .facts div,
     .facts div + div,
@@ -987,6 +1088,7 @@ const sketches = [
   .hero__intro { max-width: 620px; margin-block: 46px 52px; font-size: clamp(20px, 1.7vw, 23px); line-height: 1.48; }
   .facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; max-width: 900px; }
   .facts div { max-width: none; }
+  .hero-introduction { margin-top: 64px; }
   .hero + .chapter { padding-top: clamp(42px, 5vw, 68px); }
 
   .chapter {
@@ -1220,6 +1322,8 @@ const sketches = [
 
   @media (prefers-reduced-motion: reduce) {
     .hero-title__letter::after { animation: none; }
+    .hero-introduction__link:hover .hero-introduction__play,
+    .hero-introduction__link:focus-visible .hero-introduction__play { scale: none; }
     .chapter-index a,
     .chapter-index a::before,
     .has-scroll-stories .scroll-story__stage figure,

@@ -170,6 +170,7 @@ Observatory receives a dedicated authored record because it has the strongest cu
 - Do not autoplay heavy video on initial load.
 - Use static posters for reduced motion.
 - Keep independent case-study media local to that document.
+- The Observatory case study opens its narrative with the launch-film poster, which links to the product introduction and plays in place only after activation.
 
 ## Interaction boundaries
 

@@ -1,5 +1,6 @@
 # Progress
 
+- Added the Observatory launch film at the start of the case study, between the opening facts and the first chapter. The local poster links to the product introduction on YouTube and plays in place after a click, without autoplaying on load.
 - Rounded the identity photograph and the couple photograph, and gave Igor's portrait a slight left tilt.
 - Placed the point-and-click doodle beside Igor in the handwritten hello. It appears once after that sequence ends, holds briefly as a click hint, then fades out slowly. Using the photograph control dismisses it immediately. Reduced motion still shows the brief hint; no-JavaScript keeps it hidden.
 - Rebuilt `/work/` around a clearer hierarchy. The page title now matches the homepage display size, section openings use Crimson italic instead of competing Averia posters, project names sit quieter, screenshots use the homepage polaroid frame, and systems diagrams sit on the field. Removed the Product design / Games jump row and the duplicate footer back-link. Verified at 1440 by 900 and 390 by 844 with no horizontal overflow, a clean Astro check, and production builds at both supported base paths.
