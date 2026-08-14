@@ -313,6 +313,25 @@ const projectTitles: Record<ValueProject, string> = {
       min-height: 6rem;
     }
 
+    :global(.js) .value-voice[data-identity-pin] {
+      width: min(20.5rem, calc(100% - 2.3rem));
+      min-height: 0;
+    }
+
+    :global(.js) .value-voice[data-identity-pin] .value-voice__layer {
+      padding: 0.2rem 0.4rem 0.35rem;
+    }
+
+    :global(.js) .value-voice[data-identity-pin] .value-voice__layer--intro h2 {
+      font-size: clamp(1.2rem, 4.8vw, 1.4rem);
+      line-height: 1.28;
+    }
+
+    :global(.homepage:has(#intro-contact[open])) .value-voice[data-identity-pin] {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .value-voice__layer {
       padding: 0.65rem 0.35rem 0.75rem;
     }

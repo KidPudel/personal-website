@@ -156,6 +156,8 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     padding: 0.25rem 0.35rem;
     color: inherit;
     text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .site-navigation__work {
@@ -312,6 +314,8 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     text-decoration-color: transparent;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.3rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .contact-disclosure__panel a:hover,
@@ -355,6 +359,28 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 0 1rem;
       background: var(--color-field);
+    }
+
+    .portfolio-navigation--intro {
+      margin-top: clamp(1.4rem, 3vh, 1.75rem);
+    }
+
+    .portfolio-navigation--intro .site-navigation {
+      gap: 1.9rem;
+      font-size: 1rem;
+    }
+
+    .portfolio-navigation--intro .site-navigation__work,
+    .portfolio-navigation--intro .contact-disclosure summary {
+      min-width: 5.25rem;
+      padding-inline: 0.45rem;
+    }
+
+    .portfolio-navigation--intro .contact-disclosure__panel {
+      width: min(20rem, 100%);
+      margin-inline: auto;
+      box-shadow: none;
+      padding-inline: 0.2rem;
     }
   }
 

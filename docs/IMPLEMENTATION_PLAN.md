@@ -4,6 +4,10 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] Keep the revealed identity composition on narrow screens, tightening the same artwork instead of substituting a stacked mobile layout.
+- [x] Make the identity type, actions, and values premise readable and tappable on 390 and 320 viewports, without colliding or overflowing.
+- [x] Verify type checking, both production base paths, 1440 / 390 / 320 identity layouts, keyboard and touch behavior, reduced motion, and browser diagnostics.
+
 - [x] Rebuild `/work/` so type, frames, and grouping follow a clear hierarchy: one Averia page title, Crimson italic section voices, quieter project names, polaroid screenshot frames, and field-level diagrams.
 - [x] Remove in-page jump chrome, keep the résumé path, and drop the footer back-link that duplicated the fixed header.
 - [x] Verify type checking, both production base paths, desktop and mobile work layout, keyboard behavior, reduced motion, and browser diagnostics.

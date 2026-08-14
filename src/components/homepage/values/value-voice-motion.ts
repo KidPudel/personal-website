@@ -7,6 +7,7 @@ export const valueVoiceMotion = {
   morphBlur: 9.5,
   morphBlurRamp: 0.64,
   identityPinTopVh: 78,
+  identityPinTopVhNarrow: 82,
   valuesStickTopVh: 36,
   identityPinRelease: 0.12,
   aspectRevealMargin: '0px 0px -14% 0px',

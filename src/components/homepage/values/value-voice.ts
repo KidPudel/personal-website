@@ -72,9 +72,12 @@ class ValueStory extends HTMLElement {
         (opening.getBoundingClientRect().bottom - viewport * valueVoiceMotion.identityPinRelease) /
           Math.max(1, viewport * (1 - valueVoiceMotion.identityPinRelease)),
       );
+      const identityPinTopVh = window.matchMedia('(max-width: 52rem)').matches
+        ? valueVoiceMotion.identityPinTopVhNarrow
+        : valueVoiceMotion.identityPinTopVh;
       const topVh =
         valueVoiceMotion.valuesStickTopVh +
-        pin * (valueVoiceMotion.identityPinTopVh - valueVoiceMotion.valuesStickTopVh);
+        pin * (identityPinTopVh - valueVoiceMotion.valuesStickTopVh);
       const parsedHeaderVisibility = Number.parseFloat(page.style.getPropertyValue('--header-visibility'));
       const headerVisibility = Number.isFinite(parsedHeaderVisibility)
         ? parsedHeaderVisibility
