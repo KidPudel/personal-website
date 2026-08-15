@@ -16,6 +16,7 @@ export const openingMotion = {
   essenceFrameIntervalMs: 34,
   essenceProgressStep: 0.0025,
   firstFramePixels: 20,
+  scrollHintSlopPx: 10,
   flipbookUntil: 0.54,
   artFadeStart: 0.51,
   artFadeDistance: 0.16,

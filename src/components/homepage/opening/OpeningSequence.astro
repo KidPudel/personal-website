@@ -59,6 +59,10 @@ const closedBoxColor = openingMotion.frameColors[0];
 
     <canvas class="opening-sequence__essence" aria-hidden="true" data-opening-essence></canvas>
 
+    <span class="opening-sequence__scroll-hint" aria-hidden="true" data-opening-scroll-hint>
+      try scrolling
+    </span>
+
     <a class="opening-sequence__skip" href="#values">Skip opening</a>
   </div>
 </opening-sequence>
@@ -112,6 +116,7 @@ const closedBoxColor = openingMotion.frameColors[0];
 
   .opening-sequence__art,
   .opening-sequence__essence,
+  .opening-sequence__scroll-hint,
   .opening-sequence__skip {
     display: none;
   }
@@ -127,6 +132,10 @@ const closedBoxColor = openingMotion.frameColors[0];
     --reveal-opacity: 1;
     --art-opacity: 0;
     background: var(--color-field);
+  }
+
+  :global(.js.opening-bypassed) .opening-sequence__scroll-hint {
+    display: none;
   }
 
   :global(.js) .opening-sequence__reveal {
@@ -188,6 +197,52 @@ const closedBoxColor = openingMotion.frameColors[0];
     opacity: 1;
   }
 
+  :global(.js) .opening-sequence__scroll-hint {
+    position: absolute;
+    z-index: 6;
+    top: var(--hint-y, 50%);
+    left: var(--hint-x, 50%);
+    display: block;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-special);
+    font-size: clamp(1.02rem, 1.6vw, 1.28rem);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .opening-sequence[data-scroll-hint] .opening-sequence__scroll-hint {
+    animation: opening-scroll-hint 2.4s ease both;
+  }
+
+  @keyframes opening-scroll-hint {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% + 0.4rem)) rotate(-12deg);
+    }
+
+    12% {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(-8deg);
+    }
+
+    46% {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(-8deg);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(-50%, calc(-50% - 0.12rem)) rotate(-6deg);
+    }
+  }
+
   :global(.js) .opening-sequence__skip {
     position: absolute;
     z-index: 11;
@@ -218,7 +273,8 @@ const closedBoxColor = openingMotion.frameColors[0];
     }
 
     :global(.js) .opening-sequence__art,
-    :global(.js) .opening-sequence__essence {
+    :global(.js) .opening-sequence__essence,
+    :global(.js) .opening-sequence__scroll-hint {
       display: none;
     }
   }

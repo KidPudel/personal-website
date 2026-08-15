@@ -35,13 +35,16 @@ class OpeningSequence extends HTMLElement {
     const reveal = this.querySelector<HTMLElement>('[data-opening-reveal]');
     const art = this.querySelector<HTMLElement>('[data-opening-art]');
     const essence = this.querySelector<HTMLCanvasElement>('[data-opening-essence]');
+    const scrollHint = this.querySelector<HTMLElement>('[data-opening-scroll-hint]');
     const frames = Array.from(this.querySelectorAll<HTMLElement>('[data-opening-frame]'));
     const page = this.closest<HTMLElement>('[data-homepage]');
     const header = page?.querySelector<HTMLElement>('[data-site-header]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const coarsePointer = window.matchMedia('(pointer: coarse)');
 
-    if (!sticky || !reveal || !art || !essence || !frames.length || !page || !header) return;
+    if (!sticky || !reveal || !art || !essence || !scrollHint || !frames.length || !page || !header) {
+      return;
+    }
 
     const essenceContext = essence.getContext('2d');
     if (!essenceContext) return;
@@ -144,6 +147,90 @@ class OpeningSequence extends HTMLElement {
       return event.deltaY;
     };
 
+    const hideScrollHint = () => {
+      this.removeAttribute('data-scroll-hint');
+    };
+
+    let hintGesture:
+      | { pointerId: number; x: number; y: number; scrollY: number }
+      | undefined;
+
+    const clearHintGesture = () => {
+      hintGesture = undefined;
+    };
+
+    const hintGestureMoved = (x: number, y: number) => {
+      if (!hintGesture) return false;
+      const slop = openingMotion.scrollHintSlopPx;
+      const dx = x - hintGesture.x;
+      const dy = y - hintGesture.y;
+      return dx * dx + dy * dy > slop * slop;
+    };
+
+    const handleHintPointerDown = (event: PointerEvent) => {
+      if (!event.isPrimary) return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      hintGesture = {
+        pointerId: event.pointerId,
+        x: event.clientX,
+        y: event.clientY,
+        scrollY: window.scrollY,
+      };
+    };
+
+    const handleHintPointerMove = (event: PointerEvent) => {
+      if (!hintGesture || event.pointerId !== hintGesture.pointerId) return;
+      if (hintGestureMoved(event.clientX, event.clientY)) clearHintGesture();
+    };
+
+    const handleHintPointerCancel = (event: PointerEvent) => {
+      if (!hintGesture || event.pointerId !== hintGesture.pointerId) return;
+      clearHintGesture();
+    };
+
+    const handleHintTouchMove = (event: TouchEvent) => {
+      const touch = event.touches.item(0);
+      if (!hintGesture || !touch) return;
+      if (hintGestureMoved(touch.clientX, touch.clientY)) clearHintGesture();
+    };
+
+    const placeScrollHint = (event: MouseEvent) => {
+      const bounds = sticky.getBoundingClientRect();
+      const pad = 16;
+      const halfWidth = scrollHint.offsetWidth / 2;
+      const halfHeight = scrollHint.offsetHeight / 2;
+      const minX = halfWidth + pad;
+      const maxX = Math.max(minX, bounds.width - halfWidth - pad);
+      const minY = halfHeight + pad;
+      const maxY = Math.max(minY, bounds.height - halfHeight - pad);
+      const x = Math.min(maxX, Math.max(minX, event.clientX - bounds.left));
+      const y = Math.min(maxY, Math.max(minY, event.clientY - bounds.top));
+      scrollHint.style.setProperty('--hint-x', `${x}px`);
+      scrollHint.style.setProperty('--hint-y', `${y}px`);
+    };
+
+    const showScrollHint = (event: MouseEvent) => {
+      if (bypassOpening()) return;
+      if (needsMeasurement) measure();
+      if (window.scrollY - openingStart > 0) return;
+      if (flipbookFrameIndex(visualProgress, frames.length, openingAnimationDistance) > 0) return;
+
+      placeScrollHint(event);
+      hideScrollHint();
+      void this.offsetWidth;
+      this.setAttribute('data-scroll-hint', '');
+    };
+
+    const handleOpeningClick = (event: MouseEvent) => {
+      const gesture = hintGesture;
+      clearHintGesture();
+      if (!gesture) return;
+      if (window.scrollY !== gesture.scrollY) return;
+      if (!(event.target instanceof Element)) return;
+      if (event.target.closest('a, button')) return;
+      showScrollHint(event);
+    };
+
     const paint = (progress: number, timestamp: number) => {
       const frameIndex = flipbookFrameIndex(progress, frames.length, openingAnimationDistance);
       const revealProgress = smooth(
@@ -155,6 +242,7 @@ class OpeningSequence extends HTMLElement {
       );
 
       frames.forEach((frame, index) => frame.toggleAttribute('data-active', index === frameIndex));
+      if (frameIndex > 0 || progress > 0) hideScrollHint();
       this.style.setProperty('--opening-color', openingMotion.frameColors[frameIndex] ?? openingMotion.frameColors[0]);
       this.style.setProperty('--reveal-opacity', String(revealProgress));
       this.style.setProperty('--art-opacity', String(artOpacity));
@@ -269,6 +357,7 @@ class OpeningSequence extends HTMLElement {
     };
 
     const handleScroll = () => {
+      if (hintGesture && window.scrollY !== hintGesture.scrollY) clearHintGesture();
       if (needsMeasurement) measure();
 
       // Touch and other coarse pointers must keep native compositor scrolling.
@@ -319,6 +408,21 @@ class OpeningSequence extends HTMLElement {
       requestRender();
     };
 
+    sticky.addEventListener('pointerdown', handleHintPointerDown, {
+      signal: this.abort.signal,
+    });
+    window.addEventListener('pointermove', handleHintPointerMove, {
+      passive: true,
+      signal: this.abort.signal,
+    });
+    window.addEventListener('pointercancel', handleHintPointerCancel, {
+      signal: this.abort.signal,
+    });
+    window.addEventListener('touchmove', handleHintTouchMove, {
+      passive: true,
+      signal: this.abort.signal,
+    });
+    sticky.addEventListener('click', handleOpeningClick, { signal: this.abort.signal });
     window.addEventListener('scroll', handleScroll, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     window.addEventListener('touchstart', beginTouchScroll, { passive: true, signal: this.abort.signal });
@@ -337,6 +441,7 @@ class OpeningSequence extends HTMLElement {
     this.wheelAbort?.abort();
     this.wheelAbort = undefined;
     this.abort?.abort();
+    this.removeAttribute('data-scroll-hint');
     if (this.frame) window.cancelAnimationFrame(this.frame);
     this.removeAttribute('data-forward-boundary');
     delete this.dataset.enhanced;

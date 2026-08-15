@@ -4,6 +4,10 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] If a visitor clicks the closed box instead of scrolling, show a tilted fading `try scrolling` note at the pointer.
+- [x] Hide that note as soon as scrolling begins, ignore finger pans, and keep it off reduced-motion, no-JS, and already-opened states.
+- [ ] Verify type checking, both production base paths, desktop and mobile opening, click-versus-scroll behavior, reduced motion, and browser diagnostics.
+
 - [x] Keep the revealed identity composition on narrow screens, tightening the same artwork instead of substituting a stacked mobile layout.
 - [x] Make the identity type, actions, and values premise readable and tappable on 390 and 320 viewports, without colliding or overflowing.
 - [x] Verify type checking, both production base paths, 1440 / 390 / 320 identity layouts, keyboard and touch behavior, reduced motion, and browser diagnostics.
