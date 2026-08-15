@@ -44,13 +44,15 @@ const closedBoxColor = openingMotion.frameColors[0];
       {frames.map((frame, index) => (
         <img
           class="opening-sequence__frame"
-          src={frame.src}
+          src={index === 0 ? frame.src : undefined}
+          data-src={frame.src}
           alt=""
           width="2048"
           height="2048"
-          loading="eager"
+          loading={index === 0 ? 'eager' : 'lazy'}
           fetchpriority={index === 0 ? 'high' : 'low'}
           decoding="async"
+          hidden={index !== 0}
           data-opening-frame
           data-active={index === 0 ? '' : undefined}
         />
@@ -138,8 +140,12 @@ const closedBoxColor = openingMotion.frameColors[0];
     display: none;
   }
 
-  :global(.js) .opening-sequence__reveal {
+  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__reveal {
     will-change: opacity;
+  }
+
+  :global(.js:not(.opening-bypassed)) .opening-sequence__reveal:not([data-visible]) {
+    content-visibility: hidden;
   }
 
   :global(.js) .opening-sequence__art {
@@ -147,18 +153,37 @@ const closedBoxColor = openingMotion.frameColors[0];
     z-index: 5;
     inset: 0;
     display: block;
+    contain: paint;
     opacity: var(--art-opacity);
-    filter:
-      drop-shadow(
-        0 0 calc(0.25rem + var(--world-reaction) * 0.7rem)
-          rgb(238 28 198 / calc(var(--world-reaction) * 0.62))
-      )
-      drop-shadow(
-        0 0 calc(0.15rem + var(--world-reaction) * 0.38rem)
-          rgb(255 230 78 / calc(var(--world-reaction) * 0.55))
-      );
     pointer-events: none;
-    will-change: filter, opacity;
+  }
+
+  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__art {
+    will-change: opacity;
+  }
+
+  :global(.js) .opening-sequence[data-world-reacting] .opening-sequence__art {
+    filter:
+      drop-shadow(0 0 0.55rem rgb(238 28 198 / 0.42))
+      drop-shadow(0 0 0.28rem rgb(255 230 78 / 0.36));
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :global(.js) .opening-sequence[data-world-reacting] .opening-sequence__art {
+      filter:
+        drop-shadow(
+          0 0 calc(0.25rem + var(--world-reaction) * 0.7rem)
+            rgb(238 28 198 / calc(var(--world-reaction) * 0.62))
+        )
+        drop-shadow(
+          0 0 calc(0.15rem + var(--world-reaction) * 0.38rem)
+            rgb(255 230 78 / calc(var(--world-reaction) * 0.55))
+        );
+    }
+
+    :global(.js) .opening-sequence[data-opening-live] .opening-sequence__art {
+      will-change: filter, opacity;
+    }
   }
 
   :global(.js) .opening-sequence__essence {
@@ -172,6 +197,9 @@ const closedBoxColor = openingMotion.frameColors[0];
     image-rendering: pixelated;
     opacity: 0;
     pointer-events: none;
+  }
+
+  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__essence {
     will-change: opacity;
   }
 
@@ -186,15 +214,18 @@ const closedBoxColor = openingMotion.frameColors[0];
   .opening-sequence__frame {
     position: absolute;
     inset: 0;
-    display: block;
+    display: none;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0;
   }
 
   .opening-sequence__frame[data-active] {
-    opacity: 1;
+    display: block;
+  }
+
+  .opening-sequence__frame[hidden] {
+    display: none;
   }
 
   :global(.js) .opening-sequence__scroll-hint {

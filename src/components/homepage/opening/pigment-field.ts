@@ -46,6 +46,9 @@ export const pigmentMotion = {
   worldReactionFadeStart: 0.62,
   worldReactionFadeDistance: 0.13,
   frontAt: 0.61,
+  maxDimension: 96,
+  maxDimensionCoarse: 56,
+  worldReactionSteps: 16,
 } as const;
 
 const paletteColor = (value: number) => {
@@ -66,6 +69,32 @@ const paletteColor = (value: number) => {
 
 const angularDistance = (first: number, second: number) =>
   Math.abs(Math.atan2(Math.sin(first - second), Math.cos(first - second)));
+
+const directionLutSize = 256;
+const directionLut = (() => {
+  const lut = new Float32Array(directionLutSize);
+
+  for (let index = 0; index < directionLutSize; index += 1) {
+    const flowAngle = (index / directionLutSize) * Math.PI * 2 - Math.PI;
+    let directionalReach = 0;
+
+    for (const direction of energyDirections) {
+      const distance = angularDistance(flowAngle, direction.angle);
+      const profile = 1 - smooth(clamp(distance / direction.width));
+      directionalReach += direction.reach * profile;
+    }
+
+    lut[index] = directionalReach;
+  }
+
+  return lut;
+})();
+
+const directionalReachAt = (flowAngle: number) => {
+  const turns = (flowAngle + Math.PI) / (Math.PI * 2);
+  const wrapped = turns - Math.floor(turns);
+  return directionLut[Math.min(directionLutSize - 1, Math.floor(wrapped * directionLutSize))];
+};
 
 const fract = (value: number) => value - Math.floor(value);
 const noiseHash = (x: number, y: number) => fract(Math.sin(x * 127.1 + y * 311.7) * 43758.5453);
@@ -90,11 +119,10 @@ const fluidNoise = (x: number, y: number) =>
 export const sampleEssenceColor = paletteColor;
 export const sampleEssenceNoise = fluidNoise;
 
-const fieldSample = (x: number, y: number, growth: number) => {
+const fieldSample = (x: number, y: number, growth: number, viewportAspect: number) => {
   const dx = x - 0.5;
   const dy = y - (0.53 - growth * 0.015);
   const skewedX = dx + dy * 0.16;
-  const viewportAspect = window.innerWidth / window.innerHeight;
   const seedVerticalRadius = Math.min(0.48, Math.max(0.12, (0.6 * viewportAspect) / 2.2));
   const verticalRadius =
     seedVerticalRadius + (0.48 - seedVerticalRadius) * smooth(clamp((growth - 0.18) / 0.82));
@@ -132,13 +160,7 @@ const fieldSample = (x: number, y: number, growth: number) => {
     Math.sin(flowAngle * 11 + radial * 3.1) * energy * 0.022 +
     Math.sin(flowAngle * 4.6 - radial * 11.5 + turbulence * 5.2) * energy * 0.035 +
     crossCurrent * energy * 0.032;
-  let directionalReach = 0;
-
-  for (const direction of energyDirections) {
-    const distance = angularDistance(flowAngle, direction.angle);
-    const profile = 1 - smooth(clamp(distance / direction.width));
-    directionalReach += direction.reach * profile;
-  }
+  const directionalReach = directionalReachAt(flowAngle);
 
   const reach =
     1 + energy * flare * directionalReach + energy * flare * Math.sin(flowAngle * 8.5 + radial * 4.4) * 0.07;
@@ -164,8 +186,12 @@ export const drawPigmentField = (
   host: HTMLElement,
   progress: number,
 ) => {
-  const targetWidth = Math.max(56, Math.min(96, Math.round(window.innerWidth / 18)));
-  const targetHeight = Math.max(56, Math.min(96, Math.round(window.innerHeight / 18)));
+  const coarse = window.matchMedia('(pointer: coarse)').matches;
+  const maxDimension = coarse ? pigmentMotion.maxDimensionCoarse : pigmentMotion.maxDimension;
+  const divisor = coarse ? 24 : 18;
+  const targetWidth = Math.max(48, Math.min(maxDimension, Math.round(window.innerWidth / divisor)));
+  const targetHeight = Math.max(48, Math.min(maxDimension, Math.round(window.innerHeight / divisor)));
+  const viewportAspect = window.innerWidth / Math.max(1, window.innerHeight);
 
   if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
     canvas.width = targetWidth;
@@ -180,7 +206,10 @@ export const drawPigmentField = (
     Math.sin(Math.PI * clamp((progress - pigmentMotion.worldReactionStart) / pigmentMotion.worldReactionDistance)) *
     (1 - smooth(clamp((progress - pigmentMotion.worldReactionFadeStart) / pigmentMotion.worldReactionFadeDistance)));
 
-  host.style.setProperty('--world-reaction', String(Math.max(0, worldReaction)));
+  const reaction = Math.max(0, worldReaction);
+  const reactionSteps = pigmentMotion.worldReactionSteps;
+  host.style.setProperty('--world-reaction', (Math.round(reaction * reactionSteps) / reactionSteps).toFixed(4));
+  host.toggleAttribute('data-world-reacting', reaction > 0.02);
   canvas.toggleAttribute('data-visible', growth > 0 && (reveal < 1 || echoEnvelope > 0.001));
   canvas.toggleAttribute('data-front', progress >= pigmentMotion.frontAt);
 
@@ -198,7 +227,7 @@ export const drawPigmentField = (
     for (let x = 0; x < canvas.width; x += 1) {
       const normalizedX = x / Math.max(1, canvas.width - 1);
       const normalizedY = y / Math.max(1, canvas.height - 1);
-      const sample = fieldSample(normalizedX, normalizedY, growth);
+      const sample = fieldSample(normalizedX, normalizedY, growth, viewportAspect);
       const band = sample.distance / radius;
       const edge = 1 - smooth(clamp((band - 0.965) / 0.1));
       const baseAlpha = edge * baseOpacity;
@@ -213,6 +242,7 @@ export const drawPigmentField = (
           normalizedX + Math.sin(normalizedY * 11 + echoLife * 4.2) * echoWarp,
           normalizedY + Math.sin(normalizedX * 9 - echoLife * 3.4) * echoWarp * 0.72,
           1,
+          viewportAspect,
         );
         echoBand = echoSample.distance / (radius * (0.9 + echoLife * 0.16));
         echoFlowAngle = echoSample.flowAngle;

@@ -4,6 +4,9 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] Stop the sticky opening from decoding the full box flipbook and handwritten hello on mobile, and reduce pigment and filter work on coarse pointers so intro scroll can stay with the compositor.
+- [ ] Verify type checking, both production base paths, desktop and mobile opening scroll, reduced motion, and browser diagnostics.
+
 - [x] Let the personal-note constellation appear once from the heading on first scroll into view, instead of sitting complete at rest.
 - [x] Keep that emerge off reduced motion, no-JavaScript, `#personal` hash visits, and keyboard focus, and keep doodle spawn and the couple photograph working after the notes land.
 - [ ] Verify type checking, both production base paths, desktop and mobile constellation emerge, doodle spawn and drag, keyboard behavior, reduced motion, and browser diagnostics.

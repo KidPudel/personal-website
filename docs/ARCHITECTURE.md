@@ -229,7 +229,9 @@ Preserve base-path behavior for both `/` and `/personal-website/` builds.
 - Keep the root static-first and dependency-free beyond Astro.
 - Preload only the reading font and first necessary opening asset.
 - Generate responsive portrait and project images.
-- Avoid decoding eight full 2048 by 2048 box frames on mobile.
+- Avoid decoding the full 2048-pixel box flipbook on mobile. Keep only the visible frame in the compositor and decode its immediate neighbours just ahead of the next cut.
+- Keep handwritten hello frames unloaded until the identity reveal, except the completed frame needed for reduced-motion and no-JavaScript reading.
+- On coarse pointers, keep the box ink reaction as a static filter and raster the pigment field at a lower cadence so intro scroll can stay with the compositor.
 - Use CSS for surfaces, masks, and simple transitions.
 - Keep scroll work to class, attribute, frame, and custom-property updates.
 - Keep elastic-edge fields hidden at rest, with no more than one softly blurred, low-resolution ray field active at a time. Do not redraw the field during spring frames.

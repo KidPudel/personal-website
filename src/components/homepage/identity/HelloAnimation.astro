@@ -25,18 +25,24 @@ const frames = Object.entries(frameModules)
 <span class="hello-animation-with-text">
   <span class="sr-only">{text}</span>
   <hello-animation class="hello-animation" aria-hidden="true">
-    {frames.map((frame, index) => (
-      <img
-        src={frame.src}
-        alt=""
-        width={frame.width}
-        height={frame.height}
-        loading="eager"
-        decoding="async"
-        data-hello-frame
-        data-active={index === frames.length - 1 ? '' : undefined}
-      />
-    ))}
+    {frames.map((frame, index) => {
+      const completed = index === frames.length - 1;
+
+      return (
+        <img
+          src={completed ? frame.src : undefined}
+          data-src={frame.src}
+          alt=""
+          width={frame.width}
+          height={frame.height}
+          loading={completed ? 'eager' : 'lazy'}
+          decoding="async"
+          hidden={!completed}
+          data-hello-frame
+          data-active={completed ? '' : undefined}
+        />
+      );
+    })}
   </hello-animation>
   <button
     class="hello-animation__name-trigger"
@@ -57,6 +63,7 @@ const frames = Object.entries(frameModules)
     private animationFrame = 0;
     private cueTimer = 0;
     private played = false;
+    private prepared = false;
     private dismissed = false;
     private host?: HTMLElement;
     private reducedMotion?: MediaQueryList;
@@ -66,6 +73,7 @@ const frames = Object.entries(frameModules)
       this.dataset.enhanced = 'true';
       this.host = this.parentElement ?? undefined;
       this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      this.addEventListener('hello-animation-prepare', this.prepare);
       this.addEventListener('hello-animation-play', this.play);
       this.host?.addEventListener('click', this.dismissClickCue);
       this.reducedMotion.addEventListener('change', this.handleMotionChange);
@@ -74,6 +82,7 @@ const frames = Object.entries(frameModules)
     disconnectedCallback() {
       window.cancelAnimationFrame(this.animationFrame);
       window.clearTimeout(this.cueTimer);
+      this.removeEventListener('hello-animation-prepare', this.prepare);
       this.removeEventListener('hello-animation-play', this.play);
       this.host?.removeEventListener('click', this.dismissClickCue);
       this.reducedMotion?.removeEventListener('change', this.handleMotionChange);
@@ -82,7 +91,11 @@ const frames = Object.entries(frameModules)
 
     private showFrame(index: number) {
       const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
-      frames.forEach((frame, frameIndex) => frame.toggleAttribute('data-active', frameIndex === index));
+      frames.forEach((frame, frameIndex) => {
+        const active = frameIndex === index;
+        frame.toggleAttribute('data-active', active);
+        frame.hidden = !active;
+      });
     }
 
     private showCompletedFrame() {
@@ -129,6 +142,18 @@ const frames = Object.entries(frameModules)
       if (this.played) this.revealClickCue();
     };
 
+    private prepare = async () => {
+      if (this.prepared) return;
+      this.prepared = true;
+
+      const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
+      frames.forEach((frame) => {
+        const source = frame.dataset.src;
+        if (source && frame.getAttribute('src') !== source) frame.src = source;
+      });
+      await Promise.allSettled(frames.map((frame) => frame.decode()));
+    };
+
     private play = async () => {
       if (this.played) return;
       this.played = true;
@@ -138,10 +163,15 @@ const frames = Object.entries(frameModules)
         return;
       }
 
-      const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
-      await Promise.allSettled(frames.map((frame) => frame.decode()));
+      await this.prepare();
       if (!this.isConnected) return;
-      if (this.reducedMotion?.matches || !frames.length) {
+      if (this.reducedMotion?.matches) {
+        this.revealClickCue();
+        return;
+      }
+
+      const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
+      if (!frames.length) {
         this.revealClickCue();
         return;
       }
@@ -198,15 +228,18 @@ const frames = Object.entries(frameModules)
     position: absolute;
     top: -79.55%;
     left: -23.53%;
-    display: block;
+    display: none;
     width: 150.59%;
     max-width: none;
     height: auto;
-    opacity: 0;
   }
 
   .hello-animation img[data-active] {
-    opacity: 1;
+    display: block;
+  }
+
+  .hello-animation img[hidden] {
+    display: none;
   }
 
   .hello-animation__name-trigger {

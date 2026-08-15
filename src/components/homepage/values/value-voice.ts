@@ -63,13 +63,26 @@ class ValueStory extends HTMLElement {
 
     const opening = document.querySelector<HTMLElement>('opening-sequence');
     const page = this.closest<HTMLElement>('[data-homepage]') ?? document.querySelector<HTMLElement>('[data-homepage]');
+    let openingOffsetTop = 0;
+    let openingHeight = 1;
+    let needsOpeningMeasure = true;
+    let lastShownLayer = -1;
+
+    const measureOpening = () => {
+      if (!opening) return;
+      openingOffsetTop = window.scrollY + opening.getBoundingClientRect().top;
+      openingHeight = opening.offsetHeight;
+      needsOpeningMeasure = false;
+    };
 
     const pinVoiceToIdentity = () => {
-      if (!opening || !page) return;
+      if (!opening || !page) return false;
+      if (needsOpeningMeasure) measureOpening();
 
       const viewport = window.innerHeight;
+      const openingBottom = openingOffsetTop + openingHeight - window.scrollY;
       const pin = clamp(
-        (opening.getBoundingClientRect().bottom - viewport * valueVoiceMotion.identityPinRelease) /
+        (openingBottom - viewport * valueVoiceMotion.identityPinRelease) /
           Math.max(1, viewport * (1 - valueVoiceMotion.identityPinRelease)),
       );
       const identityPinTopVh = window.matchMedia('(max-width: 52rem)').matches
@@ -89,12 +102,13 @@ class ValueStory extends HTMLElement {
         voice.dataset.identityPin = 'true';
         voice.style.setProperty('--voice-pin-top', `${topVh.toFixed(2)}svh`);
         voice.style.setProperty('--voice-pin-opacity', headerVisibility.toFixed(4));
-        return;
+        return true;
       }
 
       delete voice.dataset.identityPin;
       voice.style.removeProperty('--voice-pin-top');
       voice.style.removeProperty('--voice-pin-opacity');
+      return false;
     };
 
     const setLayer = (layer: HTMLElement, opacity: number, blur: number) => {
@@ -103,6 +117,9 @@ class ValueStory extends HTMLElement {
     };
 
     const showOnly = (activeIndex: number) => {
+      if (activeIndex === lastShownLayer) return;
+      lastShownLayer = activeIndex;
+
       layers.forEach((layer, index) => {
         const active = index === activeIndex;
         setLayer(layer, active ? 1 : 0, 0);
@@ -125,7 +142,12 @@ class ValueStory extends HTMLElement {
 
     const render = () => {
       this.frame = 0;
-      pinVoiceToIdentity();
+      const pinnedToIdentity = pinVoiceToIdentity();
+
+      if (pinnedToIdentity) {
+        showOnly(0);
+        return;
+      }
 
       if (reducedMotion.matches) {
         let active = 0;
@@ -153,6 +175,7 @@ class ValueStory extends HTMLElement {
       const progress = smooth(transitions[activeTransition]);
       const outgoingIndex = activeTransition;
       const incomingIndex = activeTransition + 1;
+      lastShownLayer = -1;
       const outgoingOpacity = Math.cos(progress * Math.PI * 0.5) ** 2;
       const incomingOpacity = Math.sin(progress * Math.PI * 0.5) ** 2;
       const outgoingBlur =
@@ -184,7 +207,14 @@ class ValueStory extends HTMLElement {
     };
 
     window.addEventListener('scroll', requestRender, { passive: true, signal: this.abort.signal });
-    window.addEventListener('resize', requestRender, { passive: true, signal: this.abort.signal });
+    window.addEventListener(
+      'resize',
+      () => {
+        needsOpeningMeasure = true;
+        requestRender();
+      },
+      { passive: true, signal: this.abort.signal },
+    );
     reducedMotion.addEventListener('change', requestRender, { signal: this.abort.signal });
     render();
   }

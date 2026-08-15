@@ -24,6 +24,7 @@ class OpeningSequence extends HTMLElement {
   private wheelAbort?: AbortController;
   private touchScrollTimeout = 0;
   private helloAnimationPlayed = false;
+  private helloAnimationPrepared = false;
   private thermalHintPlayed = false;
 
   connectedCallback() {
@@ -60,7 +61,10 @@ class OpeningSequence extends HTMLElement {
     let forwardBoundaryPassed = false;
     let lastEssenceProgress = -1;
     let lastEssencePaintTime = 0;
+    let lastPaintedProgress = Number.NaN;
+    let lastFrameIndex = -1;
     let touchScrolling = false;
+    const primedFrames = new Set<number>([0]);
 
     const measure = () => {
       openingStart = window.scrollY + this.getBoundingClientRect().top;
@@ -92,6 +96,48 @@ class OpeningSequence extends HTMLElement {
     const bypassOpening = () => reducedMotion.matches || window.location.hash.length > 0;
 
     const usesNativeOpeningScroll = () => coarsePointer.matches || touchScrolling;
+
+    const essenceIntervalMs = () =>
+      coarsePointer.matches
+        ? openingMotion.essenceFrameIntervalMsCoarse
+        : openingMotion.essenceFrameIntervalMs;
+
+    const essenceProgressStep = () =>
+      coarsePointer.matches
+        ? openingMotion.essenceProgressStepCoarse
+        : openingMotion.essenceProgressStep;
+
+    const frameSource = (frame: HTMLElement) =>
+      frame.getAttribute('data-src') || frame.getAttribute('src') || '';
+
+    const primeFrame = (index: number) => {
+      const frame = frames[index];
+      if (!frame || primedFrames.has(index)) return;
+
+      const source = frameSource(frame);
+      if (!source) return;
+
+      if (frame.getAttribute('src') !== source) frame.setAttribute('src', source);
+      primedFrames.add(index);
+      if (frame instanceof HTMLImageElement) void frame.decode().catch(() => undefined);
+    };
+
+    const syncFlipbook = (index: number) => {
+      primeFrame(index);
+      for (let offset = 1; offset <= openingMotion.flipbookDecodeWindow; offset += 1) {
+        primeFrame(index + offset);
+        primeFrame(index - offset);
+      }
+
+      if (index === lastFrameIndex) return;
+      lastFrameIndex = index;
+
+      frames.forEach((frame, frameIndex) => {
+        const active = frameIndex === index;
+        frame.toggleAttribute('data-active', active);
+        frame.hidden = !active;
+      });
+    };
 
     const releaseForwardBoundary = (markPassed = false) => {
       forwardBoundaryActive = false;
@@ -240,27 +286,18 @@ class OpeningSequence extends HTMLElement {
       const headerVisibility = smooth(
         clamp((progress - openingMotion.headerRevealStart) / openingMotion.headerRevealDistance),
       );
-
-      frames.forEach((frame, index) => frame.toggleAttribute('data-active', index === frameIndex));
-      if (frameIndex > 0 || progress > 0) hideScrollHint();
-      this.style.setProperty('--opening-color', openingMotion.frameColors[frameIndex] ?? openingMotion.frameColors[0]);
-      this.style.setProperty('--reveal-opacity', String(revealProgress));
-      this.style.setProperty('--art-opacity', String(artOpacity));
-      this.style.setProperty('--identity-opacity', '1');
-      const essenceProgressChanged = Math.abs(progress - lastEssenceProgress) >= openingMotion.essenceProgressStep;
-      const essenceFrameDue = timestamp - lastEssencePaintTime >= openingMotion.essenceFrameIntervalMs;
       const essenceTerminalState = progress === 0 || progress === 1;
+      const essenceProgressChanged = Math.abs(progress - lastEssenceProgress) >= essenceProgressStep();
+      const essenceFrameDue = timestamp - lastEssencePaintTime >= essenceIntervalMs();
+      const shouldPaintEssence =
+        (essenceTerminalState && lastEssenceProgress !== progress) ||
+        (!essenceTerminalState && essenceProgressChanged && essenceFrameDue);
+      const progressUnchanged = progress === lastPaintedProgress;
 
-      if (essenceTerminalState || (essenceProgressChanged && essenceFrameDue)) {
-        drawPigmentField(essence, essenceContext, this, progress);
-        lastEssenceProgress = progress;
-        lastEssencePaintTime = timestamp;
+      if (!this.helloAnimationPrepared && revealProgress >= 0.45) {
+        this.helloAnimationPrepared = true;
+        reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-prepare'));
       }
-      page.style.setProperty('--header-visibility', String(headerVisibility));
-      header.inert = headerVisibility < openingMotion.headerInteractiveAt;
-      header.toggleAttribute('aria-hidden', headerVisibility < openingMotion.headerInteractiveAt);
-      reveal.inert = revealProgress < openingMotion.identityInteractiveAt;
-      this.toggleAttribute('data-complete', progress >= openingMotion.completeAt);
 
       if (!this.helloAnimationPlayed && revealProgress >= 0.72) {
         this.helloAnimationPlayed = true;
@@ -271,6 +308,30 @@ class OpeningSequence extends HTMLElement {
         this.thermalHintPlayed = true;
         reveal.querySelector('playful-word')?.dispatchEvent(new CustomEvent('thermal-hint'));
       }
+
+      if (progressUnchanged && !shouldPaintEssence) return;
+
+      lastPaintedProgress = progress;
+      syncFlipbook(frameIndex);
+      if (frameIndex > 0 || progress > 0) hideScrollHint();
+      this.style.setProperty('--opening-color', openingMotion.frameColors[frameIndex] ?? openingMotion.frameColors[0]);
+      this.style.setProperty('--reveal-opacity', String(revealProgress));
+      this.style.setProperty('--art-opacity', String(artOpacity));
+      this.style.setProperty('--identity-opacity', '1');
+      this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
+      reveal.toggleAttribute('data-visible', revealProgress > 0.02);
+
+      if (shouldPaintEssence) {
+        drawPigmentField(essence, essenceContext, this, progress);
+        lastEssenceProgress = progress;
+        lastEssencePaintTime = timestamp;
+      }
+
+      page.style.setProperty('--header-visibility', String(headerVisibility));
+      header.inert = headerVisibility < openingMotion.headerInteractiveAt;
+      header.toggleAttribute('aria-hidden', headerVisibility < openingMotion.headerInteractiveAt);
+      reveal.inert = revealProgress < openingMotion.identityInteractiveAt;
+      this.toggleAttribute('data-complete', progress >= openingMotion.completeAt);
     };
 
     const showCompletedOpening = () => {
@@ -385,6 +446,14 @@ class OpeningSequence extends HTMLElement {
           activateForwardBoundary();
           window.scrollTo({ top: openingAnimationEnd, left: window.scrollX, behavior: 'instant' });
         }
+      }
+
+      if (
+        this.hasAttribute('data-complete') &&
+        !forwardBoundaryActive &&
+        window.scrollY >= openingStart + openingDistance - 1
+      ) {
+        return;
       }
 
       requestRender();
