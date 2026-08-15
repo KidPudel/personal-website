@@ -1,52 +1,33 @@
 import { clamp } from '../../../lib/motion';
 
 export const openingMotion = {
-  scrollHeightVh: 400,
-  boundedScrollViewports: 2,
-  transitionScrollViewports: 1,
-  restingScrollViewports: 0,
-  scrollResponseSeconds: 0.18,
-  minProgressPerSecond: 0.14,
-  maxProgressPerSecond: 0.72,
-  maxFrameDeltaSeconds: 0.04,
-  settleDistance: 0.0005,
-  forwardBoundaryReleaseAt: 0.7,
-  forwardBoundaryResetAt: 0.56,
-  touchMomentumMs: 1800,
-  essenceFrameIntervalMs: 34,
-  essenceFrameIntervalMsCoarse: 50,
-  essenceProgressStep: 0.0025,
-  essenceProgressStepCoarse: 0.008,
-  flipbookDecodeWindow: 1,
-  firstFramePixels: 20,
+  scrollHeightVh: 300,
+  firstFramePixels: 24,
   scrollHintSlopPx: 10,
-  flipbookUntil: 0.54,
-  artFadeStart: 0.51,
-  artFadeDistance: 0.16,
-  identityRevealStart: 0.68,
-  identityRevealDistance: 0.17,
-  headerRevealStart: 0.78,
-  headerRevealDistance: 0.13,
+  scrollHintOffsetXPx: 56,
+  scrollHintOffsetYPx: -40,
+  scrollHintPhrases: [
+    'try scrolling',
+    'no, really',
+    'dude',
+    'just do it',
+    'don’t want to scroll?',
+    'okay',
+    'then just hire me',
+  ] as const,
+  flipbookDecodeWindow: 1,
+  flipbookUntil: 0.28,
+  contentRevealFrame: 7,
+  boxFallDistanceVh: 32,
+  boxFallPower: 1.2,
+  identityRevealDistance: 0.7,
+  identityBeats: [0, 0.22, 0.44, 0.66, 0.86] as const,
+  identityBeatGapMs: 560,
   completeAt: 0.995,
-  headerInteractiveAt: 0.86,
-  identityInteractiveAt: 0.9,
-  frameColors: [
-    '#6f8aff',
-    '#6f8aff',
-    '#6f8aff',
-    '#ff85d6',
-    '#ff85d6',
-    '#ff85d6',
-    '#ffe16b',
-    '#ffe16b',
-    '#5695d0',
-    '#5695d0',
-    '#5695d0',
-  ],
+  headerBeat: 4,
 } as const;
 
 const firstFrameUntil = (animationDistance: number) =>
-  openingMotion.forwardBoundaryReleaseAt *
   clamp(openingMotion.firstFramePixels / Math.max(1, animationDistance));
 
 export const flipbookFrameIndex = (
@@ -67,3 +48,30 @@ export const flipbookFrameIndex = (
 
   return 1 + Math.min(lastFrame - 1, Math.floor(remaining * lastFrame));
 };
+
+export const contentRevealStart = (frameCount: number, animationDistance: number) => {
+  const frame = openingMotion.contentRevealFrame;
+  if (frameCount <= 1 || frame <= 1) return 0;
+
+  const lidLiftAt = firstFrameUntil(animationDistance);
+  if (frame >= frameCount) return openingMotion.flipbookUntil;
+
+  const remaining = (frame - 2) / Math.max(1, frameCount - 1);
+  return lidLiftAt + remaining * (openingMotion.flipbookUntil - lidLiftAt);
+};
+
+export const identityBeatCount = (identityReveal: number) => {
+  if (identityReveal <= 0) return 0;
+
+  let count = 0;
+  for (const start of openingMotion.identityBeats) {
+    if (identityReveal >= start) count += 1;
+  }
+  return count;
+};
+
+export const boxFallAmount = (progress: number) =>
+  progress <= 0 ? 0 : progress >= 1 ? 1 : progress ** openingMotion.boxFallPower;
+
+export const isScrollHintHire = (index: number) =>
+  index === openingMotion.scrollHintPhrases.length - 1;

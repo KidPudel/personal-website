@@ -1,111 +1,74 @@
-import { clamp, smooth } from '../../../lib/motion';
-import { flipbookFrameIndex, openingMotion } from './opening-motion';
-import { drawPigmentField } from './pigment-field';
-
-const approach = (current: number, target: number, elapsedSeconds: number) => {
-  const delta = target - current;
-  const distance = Math.abs(delta);
-
-  if (distance <= openingMotion.settleDistance) return target;
-
-  const preferredSpeed = distance / openingMotion.scrollResponseSeconds;
-  const boundedSpeed = Math.min(
-    openingMotion.maxProgressPerSecond,
-    Math.max(openingMotion.minProgressPerSecond, preferredSpeed),
-  );
-  const step = Math.min(distance, boundedSpeed * elapsedSeconds);
-
-  return current + Math.sign(delta) * step;
-};
+import { clamp } from '../../../lib/motion';
+import {
+  boxFallAmount,
+  contentRevealStart,
+  flipbookFrameIndex,
+  identityBeatCount,
+  isScrollHintHire,
+  openingMotion,
+} from './opening-motion';
 
 class OpeningSequence extends HTMLElement {
   private frame = 0;
   private abort?: AbortController;
-  private wheelAbort?: AbortController;
-  private touchScrollTimeout = 0;
   private helloAnimationPlayed = false;
   private helloAnimationPrepared = false;
   private thermalHintPlayed = false;
+  private visibleBeats = 0;
+  private lastBeatAt = 0;
+  private beatTimer = 0;
 
   connectedCallback() {
     if (this.dataset.enhanced) return;
     this.dataset.enhanced = 'true';
     this.abort = new AbortController();
 
-    const sticky = this.querySelector<HTMLElement>('.opening-sequence__sticky');
+    const boxStage = this.querySelector<HTMLElement>('[data-opening-art]');
+    const runway = this.querySelector<HTMLElement>('[data-opening-runway]');
     const reveal = this.querySelector<HTMLElement>('[data-opening-reveal]');
-    const art = this.querySelector<HTMLElement>('[data-opening-art]');
-    const essence = this.querySelector<HTMLCanvasElement>('[data-opening-essence]');
     const scrollHint = this.querySelector<HTMLElement>('[data-opening-scroll-hint]');
+    const hintCard = this.querySelector<HTMLElement>('[data-opening-scroll-hint-card]');
+    const hintPhrase = this.querySelector<HTMLElement>('[data-opening-scroll-hint-phrase]');
+    const hintContact = this.querySelector<HTMLElement>('[data-opening-scroll-hint-contact]');
     const frames = Array.from(this.querySelectorAll<HTMLElement>('[data-opening-frame]'));
     const page = this.closest<HTMLElement>('[data-homepage]');
     const header = page?.querySelector<HTMLElement>('[data-site-header]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const coarsePointer = window.matchMedia('(pointer: coarse)');
 
-    if (!sticky || !reveal || !art || !essence || !scrollHint || !frames.length || !page || !header) {
+    if (
+      !boxStage ||
+      !runway ||
+      !reveal ||
+      !scrollHint ||
+      !hintCard ||
+      !hintPhrase ||
+      !hintContact ||
+      !frames.length ||
+      !page ||
+      !header
+    ) {
       return;
     }
 
-    const essenceContext = essence.getContext('2d');
-    if (!essenceContext) return;
-
     let openingStart = 0;
     let openingDistance = 1;
-    let openingAnimationDistance = 1;
-    let openingTransitionDistance = 1;
-    let visualProgress = 0;
-    let lastFrameTime: number | undefined;
     let needsMeasurement = true;
-    let forwardBoundaryActive = false;
-    let forwardBoundaryPassed = false;
-    let lastEssenceProgress = -1;
-    let lastEssencePaintTime = 0;
     let lastPaintedProgress = Number.NaN;
     let lastFrameIndex = -1;
-    let touchScrolling = false;
     const primedFrames = new Set<number>([0]);
 
     const measure = () => {
-      openingStart = window.scrollY + this.getBoundingClientRect().top;
-      openingDistance = Math.max(1, this.offsetHeight - window.innerHeight);
-      const authoredScrollViewports =
-        openingMotion.boundedScrollViewports +
-        openingMotion.transitionScrollViewports +
-        openingMotion.restingScrollViewports;
-      const viewportUnit = openingDistance / authoredScrollViewports;
-      openingAnimationDistance = Math.max(1, viewportUnit * openingMotion.boundedScrollViewports);
-      openingTransitionDistance = Math.max(1, viewportUnit * openingMotion.transitionScrollViewports);
+      openingStart = window.scrollY + runway.getBoundingClientRect().top;
+      openingDistance = Math.max(1, runway.offsetHeight - window.innerHeight);
       needsMeasurement = false;
     };
 
     const scrollProgress = () => {
-      const travelled = window.scrollY - openingStart;
-
-      if (travelled <= openingAnimationDistance) {
-        return openingMotion.forwardBoundaryReleaseAt * clamp(travelled / openingAnimationDistance);
-      }
-
-      const transitionProgress = clamp((travelled - openingAnimationDistance) / openingTransitionDistance);
-      return (
-        openingMotion.forwardBoundaryReleaseAt +
-        (1 - openingMotion.forwardBoundaryReleaseAt) * transitionProgress
-      );
+      if (needsMeasurement) measure();
+      return Math.min(1, Math.max(0, (window.scrollY - openingStart) / openingDistance));
     };
 
     const bypassOpening = () => reducedMotion.matches || window.location.hash.length > 0;
-
-    const usesNativeOpeningScroll = () => coarsePointer.matches || touchScrolling;
-
-    const essenceIntervalMs = () =>
-      coarsePointer.matches
-        ? openingMotion.essenceFrameIntervalMsCoarse
-        : openingMotion.essenceFrameIntervalMs;
-
-    const essenceProgressStep = () =>
-      coarsePointer.matches
-        ? openingMotion.essenceProgressStepCoarse
-        : openingMotion.essenceProgressStep;
 
     const frameSource = (frame: HTMLElement) =>
       frame.getAttribute('data-src') || frame.getAttribute('src') || '';
@@ -139,62 +102,16 @@ class OpeningSequence extends HTMLElement {
       });
     };
 
-    const releaseForwardBoundary = (markPassed = false) => {
-      forwardBoundaryActive = false;
-      if (markPassed) forwardBoundaryPassed = true;
-      this.removeAttribute('data-forward-boundary');
-      syncWheelGuard();
-    };
+    let hintIndex = 0;
 
-    const activateForwardBoundary = () => {
-      forwardBoundaryActive = true;
-      this.setAttribute('data-forward-boundary', '');
-    };
+    const hideScrollHint = (resetSequence = false) => {
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && hintContact.contains(focused)) focused.blur();
 
-    const setWheelGuard = (enabled: boolean) => {
-      if (enabled) {
-        if (this.wheelAbort) return;
-        this.wheelAbort = new AbortController();
-        window.addEventListener('wheel', handleWheel, {
-          passive: false,
-          signal: this.wheelAbort.signal,
-        });
-        return;
-      }
-
-      this.wheelAbort?.abort();
-      this.wheelAbort = undefined;
-    };
-
-    const syncWheelGuard = () => {
-      setWheelGuard(!bypassOpening() && !forwardBoundaryPassed && !usesNativeOpeningScroll());
-    };
-
-    const beginTouchScroll = () => {
-      touchScrolling = true;
-      window.clearTimeout(this.touchScrollTimeout);
-      this.touchScrollTimeout = 0;
-      if (forwardBoundaryActive) releaseForwardBoundary();
-      syncWheelGuard();
-    };
-
-    const endTouchScroll = () => {
-      window.clearTimeout(this.touchScrollTimeout);
-      this.touchScrollTimeout = window.setTimeout(() => {
-        this.touchScrollTimeout = 0;
-        touchScrolling = false;
-        syncWheelGuard();
-      }, openingMotion.touchMomentumMs);
-    };
-
-    const wheelDistance = (event: WheelEvent) => {
-      if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * 16;
-      if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) return event.deltaY * window.innerHeight;
-      return event.deltaY;
-    };
-
-    const hideScrollHint = () => {
       this.removeAttribute('data-scroll-hint');
+      scrollHint.setAttribute('aria-hidden', 'true');
+      hintContact.hidden = true;
+      if (resetSequence) hintIndex = 0;
     };
 
     let hintGesture:
@@ -241,16 +158,26 @@ class OpeningSequence extends HTMLElement {
     };
 
     const placeScrollHint = (event: MouseEvent) => {
-      const bounds = sticky.getBoundingClientRect();
+      const bounds = boxStage.getBoundingClientRect();
       const pad = 16;
-      const halfWidth = scrollHint.offsetWidth / 2;
-      const halfHeight = scrollHint.offsetHeight / 2;
+      const halfWidth = hintCard.offsetWidth / 2;
+      const halfHeight = hintCard.offsetHeight / 2;
       const minX = halfWidth + pad;
       const maxX = Math.max(minX, bounds.width - halfWidth - pad);
       const minY = halfHeight + pad;
       const maxY = Math.max(minY, bounds.height - halfHeight - pad);
-      const x = Math.min(maxX, Math.max(minX, event.clientX - bounds.left));
-      const y = Math.min(maxY, Math.max(minY, event.clientY - bounds.top));
+      const clickX = event.clientX - bounds.left;
+      const clickY = event.clientY - bounds.top;
+      const offsetX = openingMotion.scrollHintOffsetXPx;
+      const offsetY = openingMotion.scrollHintOffsetYPx;
+      const x = Math.min(
+        maxX,
+        Math.max(minX, clickX + (clickX + offsetX > maxX ? -offsetX : offsetX)),
+      );
+      const y = Math.min(
+        maxY,
+        Math.max(minY, clickY + (clickY + offsetY < minY ? -offsetY : offsetY)),
+      );
       scrollHint.style.setProperty('--hint-x', `${x}px`);
       scrollHint.style.setProperty('--hint-y', `${y}px`);
     };
@@ -259,12 +186,19 @@ class OpeningSequence extends HTMLElement {
       if (bypassOpening()) return;
       if (needsMeasurement) measure();
       if (window.scrollY - openingStart > 0) return;
-      if (flipbookFrameIndex(visualProgress, frames.length, openingAnimationDistance) > 0) return;
+      if (flipbookFrameIndex(scrollProgress(), frames.length, openingDistance) > 0) return;
 
-      placeScrollHint(event);
+      const phrases = openingMotion.scrollHintPhrases;
+      const isHire = isScrollHintHire(hintIndex);
+      hintPhrase.textContent = phrases[hintIndex] ?? phrases[0];
+      hintIndex = (hintIndex + 1) % phrases.length;
+
       hideScrollHint();
+      hintContact.hidden = !isHire;
+      scrollHint.toggleAttribute('aria-hidden', !isHire);
+      if (!isHire) placeScrollHint(event);
       void this.offsetWidth;
-      this.setAttribute('data-scroll-hint', '');
+      this.setAttribute('data-scroll-hint', isHire ? 'hire' : 'note');
     };
 
     const handleOpeningClick = (event: MouseEvent) => {
@@ -277,69 +211,101 @@ class OpeningSequence extends HTMLElement {
       showScrollHint(event);
     };
 
-    const paint = (progress: number, timestamp: number) => {
-      const frameIndex = flipbookFrameIndex(progress, frames.length, openingAnimationDistance);
-      const revealProgress = smooth(
-        clamp((progress - openingMotion.identityRevealStart) / openingMotion.identityRevealDistance),
+    const queueNextBeat = () => {
+      if (this.beatTimer) return;
+      const wait = Math.max(
+        16,
+        openingMotion.identityBeatGapMs - (performance.now() - this.lastBeatAt),
       );
-      const artOpacity = 1 - smooth(clamp((progress - openingMotion.artFadeStart) / openingMotion.artFadeDistance));
-      const headerVisibility = smooth(
-        clamp((progress - openingMotion.headerRevealStart) / openingMotion.headerRevealDistance),
-      );
-      const essenceTerminalState = progress === 0 || progress === 1;
-      const essenceProgressChanged = Math.abs(progress - lastEssenceProgress) >= essenceProgressStep();
-      const essenceFrameDue = timestamp - lastEssencePaintTime >= essenceIntervalMs();
-      const shouldPaintEssence =
-        (essenceTerminalState && lastEssenceProgress !== progress) ||
-        (!essenceTerminalState && essenceProgressChanged && essenceFrameDue);
-      const progressUnchanged = progress === lastPaintedProgress;
+      this.beatTimer = window.setTimeout(() => {
+        this.beatTimer = 0;
+        lastPaintedProgress = Number.NaN;
+        requestRender();
+      }, wait);
+    };
 
-      if (!this.helloAnimationPrepared && revealProgress >= 0.45) {
+    const paint = (progress: number, immediate = false) => {
+      const frameIndex = flipbookFrameIndex(progress, frames.length, openingDistance);
+      const identityReveal = clamp(
+        (progress - contentRevealStart(frames.length, openingDistance)) /
+          Math.max(openingMotion.identityRevealDistance, 0.0001),
+      );
+      const targetBeats = identityBeatCount(identityReveal);
+      const now = performance.now();
+      let stepped = false;
+
+      if (immediate) {
+        if (this.beatTimer) {
+          window.clearTimeout(this.beatTimer);
+          this.beatTimer = 0;
+        }
+        this.visibleBeats = targetBeats;
+        this.lastBeatAt = now;
+      } else if (this.visibleBeats !== targetBeats) {
+        const ready =
+          this.visibleBeats === 0 || now - this.lastBeatAt >= openingMotion.identityBeatGapMs;
+        if (ready) {
+          this.visibleBeats += this.visibleBeats < targetBeats ? 1 : -1;
+          this.lastBeatAt = now;
+          stepped = true;
+        }
+      }
+
+      if (progress === lastPaintedProgress && !stepped) {
+        if (this.visibleBeats !== targetBeats) queueNextBeat();
+        return;
+      }
+      lastPaintedProgress = progress;
+
+      const helloOpacity = this.visibleBeats >= 1 ? 1 : 0;
+      const titleOpacity = this.visibleBeats >= 2 ? 1 : 0;
+      const summaryOpacity = this.visibleBeats >= 3 ? 1 : 0;
+      const headerVisibility = this.visibleBeats >= openingMotion.headerBeat ? 1 : 0;
+      const premiseOpacity = this.visibleBeats >= 5 ? 1 : 0;
+      const boxFall = boxFallAmount(progress);
+      const headerInteractive = this.visibleBeats >= openingMotion.headerBeat;
+
+      if (!this.helloAnimationPrepared && identityReveal > 0) {
         this.helloAnimationPrepared = true;
         reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-prepare'));
       }
 
-      if (!this.helloAnimationPlayed && revealProgress >= 0.72) {
+      if (!this.helloAnimationPlayed && helloOpacity === 1) {
         this.helloAnimationPlayed = true;
         reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-play'));
       }
 
-      if (!this.thermalHintPlayed && revealProgress >= 0.94) {
+      if (!this.thermalHintPlayed && titleOpacity === 1) {
         this.thermalHintPlayed = true;
         reveal.querySelector('playful-word')?.dispatchEvent(new CustomEvent('thermal-hint'));
       }
 
-      if (progressUnchanged && !shouldPaintEssence) return;
-
-      lastPaintedProgress = progress;
       syncFlipbook(frameIndex);
-      if (frameIndex > 0 || progress > 0) hideScrollHint();
-      this.style.setProperty('--opening-color', openingMotion.frameColors[frameIndex] ?? openingMotion.frameColors[0]);
-      this.style.setProperty('--reveal-opacity', String(revealProgress));
-      this.style.setProperty('--art-opacity', String(artOpacity));
-      this.style.setProperty('--identity-opacity', '1');
+      if (frameIndex > 0 || progress > 0) hideScrollHint(true);
+
+      this.style.setProperty('--identity-reveal', identityReveal.toFixed(4));
+      this.style.setProperty('--identity-opacity', helloOpacity.toFixed(4));
+      this.style.setProperty('--hello-opacity', helloOpacity.toFixed(4));
+      this.style.setProperty('--title-opacity', titleOpacity.toFixed(4));
+      this.style.setProperty('--summary-opacity', summaryOpacity.toFixed(4));
+      this.style.setProperty('--art-opacity', '1');
+      this.style.setProperty('--box-fall', boxFall.toFixed(4));
       this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
-      reveal.toggleAttribute('data-visible', revealProgress > 0.02);
+      reveal.toggleAttribute('data-visible', frameIndex >= frames.length - 1 || identityReveal > 0);
 
-      if (shouldPaintEssence) {
-        drawPigmentField(essence, essenceContext, this, progress);
-        lastEssenceProgress = progress;
-        lastEssencePaintTime = timestamp;
-      }
-
-      page.style.setProperty('--header-visibility', String(headerVisibility));
-      header.inert = headerVisibility < openingMotion.headerInteractiveAt;
-      header.toggleAttribute('aria-hidden', headerVisibility < openingMotion.headerInteractiveAt);
-      reveal.inert = revealProgress < openingMotion.identityInteractiveAt;
+      page.style.setProperty('--header-visibility', headerVisibility.toFixed(4));
+      page.style.setProperty('--premise-opacity', premiseOpacity.toFixed(4));
+      header.inert = !headerInteractive;
+      header.toggleAttribute('aria-hidden', !headerInteractive);
+      reveal.inert = this.visibleBeats < 1;
       this.toggleAttribute('data-complete', progress >= openingMotion.completeAt);
+
+      if (this.visibleBeats !== targetBeats) queueNextBeat();
     };
 
     const showCompletedOpening = () => {
-      visualProgress = 1;
       this.frame = 0;
-      lastFrameTime = undefined;
-      releaseForwardBoundary();
-      paint(visualProgress, performance.now());
+      paint(1, true);
     };
 
     const requestRender = () => {
@@ -347,7 +313,7 @@ class OpeningSequence extends HTMLElement {
       this.frame = window.requestAnimationFrame(render);
     };
 
-    const render = (timestamp: number) => {
+    const render = () => {
       this.frame = 0;
 
       if (bypassOpening()) {
@@ -355,129 +321,42 @@ class OpeningSequence extends HTMLElement {
         return;
       }
 
-      if (needsMeasurement) measure();
-
-      const targetProgress = scrollProgress();
-
-      if (forwardBoundaryPassed && targetProgress < openingMotion.forwardBoundaryResetAt) {
-        forwardBoundaryPassed = false;
-        syncWheelGuard();
-      }
-
-      if (forwardBoundaryPassed || usesNativeOpeningScroll()) {
-        visualProgress = targetProgress;
-      } else if (lastFrameTime === undefined) {
-        visualProgress = targetProgress;
-      } else {
-        const elapsedSeconds = Math.min(
-          openingMotion.maxFrameDeltaSeconds,
-          Math.max(0, (timestamp - lastFrameTime) / 1000),
-        );
-        visualProgress = approach(visualProgress, targetProgress, elapsedSeconds);
-      }
-
-      lastFrameTime = timestamp;
-      paint(visualProgress, timestamp);
-
-      if (
-        forwardBoundaryActive &&
-        visualProgress >= openingMotion.forwardBoundaryReleaseAt - openingMotion.settleDistance
-      ) {
-        releaseForwardBoundary(true);
-      }
-
-      if (
-        forwardBoundaryActive ||
-        (!forwardBoundaryPassed && Math.abs(targetProgress - visualProgress) > openingMotion.settleDistance)
-      ) {
-        requestRender();
-      }
-    };
-
-    const handleWheel = (event: WheelEvent) => {
-      if (event.deltaY <= 0 || bypassOpening() || usesNativeOpeningScroll()) return;
-      if (forwardBoundaryPassed) return;
-      if (needsMeasurement) measure();
-
-      const openingAnimationEnd = Math.max(openingStart, openingStart + openingAnimationDistance - 1);
-      const controlledDistance = wheelDistance(event);
-      if (controlledDistance <= 0) return;
-
-      // Cancel from the first forward event in the gesture. Trackpad momentum
-      // events may become non-cancelable after an earlier event is allowed to
-      // scroll natively, so waiting for the event that crosses the boundary is
-      // too late. Reapply the same distance synchronously and clamp only at the
-      // end of the bounded box-opening phase.
-      event.preventDefault();
-      const nextScrollY = Math.min(openingAnimationEnd, window.scrollY + controlledDistance);
-      window.scrollTo({ top: nextScrollY, left: window.scrollX, behavior: 'instant' });
-
-      if (nextScrollY >= openingAnimationEnd - 1) activateForwardBoundary();
-
-      requestRender();
-    };
-
-    const handleScroll = () => {
-      if (hintGesture && window.scrollY !== hintGesture.scrollY) clearHintGesture();
-      if (needsMeasurement) measure();
-
-      // Touch and other coarse pointers must keep native compositor scrolling.
-      // scrollTo clamping against iOS momentum locks the page into a stuttering
-      // fight until the visual follower happens to release the boundary.
-      if (!bypassOpening() && !usesNativeOpeningScroll()) {
-        const openingAnimationEnd = Math.max(openingStart, openingStart + openingAnimationDistance - 1);
-
-        if (forwardBoundaryActive) {
-          if (window.scrollY > openingAnimationEnd + 1) {
-            window.scrollTo({ top: openingAnimationEnd, left: window.scrollX, behavior: 'instant' });
-          } else if (window.scrollY < openingAnimationEnd - 1) {
-            // Reverse input is allowed to move the document first. This avoids
-            // releasing the boundary because of a momentary opposite-signed
-            // trackpad delta that did not actually move back into the opening.
-            releaseForwardBoundary();
-          }
-        } else if (
-          !forwardBoundaryPassed &&
-          visualProgress < openingMotion.forwardBoundaryReleaseAt &&
-          window.scrollY > openingAnimationEnd
-        ) {
-          // Keyboard, scrollbar, and programmatic movement do not pass through
-          // the wheel guard, so keep a small positional fallback for them.
-          activateForwardBoundary();
-          window.scrollTo({ top: openingAnimationEnd, left: window.scrollX, behavior: 'instant' });
-        }
-      }
+      const progress = scrollProgress();
+      paint(progress);
 
       if (
         this.hasAttribute('data-complete') &&
-        !forwardBoundaryActive &&
         window.scrollY >= openingStart + openingDistance - 1
       ) {
         return;
       }
+    };
 
+    const handleScroll = () => {
+      if (hintGesture && window.scrollY !== hintGesture.scrollY) clearHintGesture();
       requestRender();
     };
 
     const handleResize = () => {
       needsMeasurement = true;
+      lastPaintedProgress = Number.NaN;
       requestRender();
     };
 
     const handleMotionPreference = () => {
-      lastFrameTime = undefined;
-      if (reducedMotion.matches) releaseForwardBoundary();
-      syncWheelGuard();
+      lastPaintedProgress = Number.NaN;
       requestRender();
     };
 
     const handleHashChange = () => {
-      lastFrameTime = undefined;
-      releaseForwardBoundary();
+      lastPaintedProgress = Number.NaN;
       requestRender();
     };
 
-    sticky.addEventListener('pointerdown', handleHintPointerDown, {
+    boxStage.addEventListener('pointerdown', handleHintPointerDown, {
+      signal: this.abort.signal,
+    });
+    scrollHint.addEventListener('pointerdown', handleHintPointerDown, {
       signal: this.abort.signal,
     });
     window.addEventListener('pointermove', handleHintPointerMove, {
@@ -491,28 +370,26 @@ class OpeningSequence extends HTMLElement {
       passive: true,
       signal: this.abort.signal,
     });
-    sticky.addEventListener('click', handleOpeningClick, { signal: this.abort.signal });
+    boxStage.addEventListener('click', handleOpeningClick, { signal: this.abort.signal });
+    scrollHint.addEventListener('click', handleOpeningClick, { signal: this.abort.signal });
     window.addEventListener('scroll', handleScroll, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchstart', beginTouchScroll, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchend', endTouchScroll, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchcancel', endTouchScroll, { passive: true, signal: this.abort.signal });
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
-    coarsePointer.addEventListener('change', syncWheelGuard, { signal: this.abort.signal });
-    syncWheelGuard();
-    render(performance.now());
+    render();
   }
 
   disconnectedCallback() {
-    window.clearTimeout(this.touchScrollTimeout);
-    this.touchScrollTimeout = 0;
-    this.wheelAbort?.abort();
-    this.wheelAbort = undefined;
     this.abort?.abort();
     this.removeAttribute('data-scroll-hint');
+    this.querySelector<HTMLElement>('[data-opening-scroll-hint]')?.setAttribute(
+      'aria-hidden',
+      'true',
+    );
+    const contact = this.querySelector<HTMLElement>('[data-opening-scroll-hint-contact]');
+    if (contact) contact.hidden = true;
+    if (this.beatTimer) window.clearTimeout(this.beatTimer);
     if (this.frame) window.cancelAnimationFrame(this.frame);
-    this.removeAttribute('data-forward-boundary');
     delete this.dataset.enhanced;
   }
 }

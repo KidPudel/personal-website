@@ -19,8 +19,8 @@ Do not rewrite or expand the authored concept unless Igor asks. Plans and progre
 | --- | --- |
 | Homepage identity copy | `src/content/homepage/identity.ts` |
 | Values copy or which evidence belongs to a value | `src/content/homepage/values.ts` |
-| Opening colors or scroll timing | `src/components/homepage/opening/opening-motion.ts` |
-| Pigment-field look | `src/components/homepage/opening/pigment-field.ts` |
+| Opening scroll timing or closed-box click phrases | `src/components/homepage/opening/opening-motion.ts` |
+| Elastic-edge colors | `src/components/homepage/opening/pigment-field.ts` |
 | Identity composition | `src/components/homepage/identity/IdentityIntroduction.astro` |
 | Personal note copy | `src/content/homepage/values.ts` |
 | Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |

@@ -62,6 +62,8 @@ class ValueStory extends HTMLElement {
     }
 
     const opening = document.querySelector<HTMLElement>('opening-sequence');
+    const openingRunway =
+      opening?.querySelector<HTMLElement>('[data-opening-runway]') ?? opening;
     const page = this.closest<HTMLElement>('[data-homepage]') ?? document.querySelector<HTMLElement>('[data-homepage]');
     let openingOffsetTop = 0;
     let openingHeight = 1;
@@ -69,9 +71,9 @@ class ValueStory extends HTMLElement {
     let lastShownLayer = -1;
 
     const measureOpening = () => {
-      if (!opening) return;
-      openingOffsetTop = window.scrollY + opening.getBoundingClientRect().top;
-      openingHeight = opening.offsetHeight;
+      if (!openingRunway) return;
+      openingOffsetTop = window.scrollY + openingRunway.getBoundingClientRect().top;
+      openingHeight = openingRunway.offsetHeight;
       needsOpeningMeasure = false;
     };
 
@@ -91,9 +93,9 @@ class ValueStory extends HTMLElement {
       const topVh =
         valueVoiceMotion.valuesStickTopVh +
         pin * (identityPinTopVh - valueVoiceMotion.valuesStickTopVh);
-      const parsedHeaderVisibility = Number.parseFloat(page.style.getPropertyValue('--header-visibility'));
-      const headerVisibility = Number.isFinite(parsedHeaderVisibility)
-        ? parsedHeaderVisibility
+      const parsedPremiseOpacity = Number.parseFloat(page.style.getPropertyValue('--premise-opacity'));
+      const premiseOpacity = Number.isFinite(parsedPremiseOpacity)
+        ? parsedPremiseOpacity
         : opening.hasAttribute('data-complete')
           ? 1
           : 0;
@@ -101,7 +103,7 @@ class ValueStory extends HTMLElement {
       if (pin > 0.001) {
         voice.dataset.identityPin = 'true';
         voice.style.setProperty('--voice-pin-top', `${topVh.toFixed(2)}svh`);
-        voice.style.setProperty('--voice-pin-opacity', headerVisibility.toFixed(4));
+        voice.style.setProperty('--voice-pin-opacity', premiseOpacity.toFixed(4));
         return true;
       }
 

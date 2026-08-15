@@ -24,9 +24,8 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
   <main id="main-content">
     <OpeningSequence>
       <IdentityIntroduction />
+      <ValuesEvidence slot="journey" {observatory} {foodProduct} {chineseBee} />
     </OpeningSequence>
-
-    <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
     <PersonalNote />
     <PortfolioHeader current="home" placement="footer" contactId="contact" />
   </main>
@@ -53,6 +52,11 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
       0
     );
     will-change: transform;
+  }
+
+  :global(.js:not(.opening-bypassed)) .homepage {
+    --header-visibility: 0;
+    --premise-opacity: 0;
   }
 
   :global(.homepage-document[data-elastic-top-edge]) .homepage {

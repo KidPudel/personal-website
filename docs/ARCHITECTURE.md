@@ -50,14 +50,9 @@ BaseDocument
     ├── PortfolioHeader
     └── main
         ├── OpeningSequence
-        │   ├── scroll-controlled box frames
-        │   └── circular reveal containing IdentityIntroduction
-        ├── ValuesEvidence
-        │   ├── three sticky interactive value chapters
-        │   ├── concrete project-aspect evidence on both sides
-        │   ├── Observatory case-study path
-        │   ├── replaceable screenshot placeholders
-        │   └── complete-work path
+        │   ├── native-scroll box fall through frames 1–7
+        │   ├── IdentityIntroduction emerging from frame 7
+        │   └── ValuesEvidence bursting from the open box
         ├── PersonalNote
         │   ├── Crimson italic heading
         │   ├── gray Bright Chalk constellation of interactive notes
@@ -108,9 +103,9 @@ The composition presentation uses local type roles without changing Observatory:
 - Crimson Text (`--font-editorial`) for non-interactive values voice text, the personal-note heading, italic regular on the premise, switching phrases, and that heading, and the `/work/` section voices;
 - Bright Chalk (`--font-special`) for special elements, currently the identity summary word, the cycling values words, and the personal-note constellation.
 
-Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`; personal-note emerge timing lives in `personal-note-motion.ts`.
+Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; elastic-edge palette sampling lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`; personal-note emerge timing lives in `personal-note-motion.ts`.
 
-The values voice changes phrase in one stationary position. Complementary opacity curves keep the outgoing and incoming phrases continuously present while opposing blur curves obscure their overlap, creating one black-ink optical morph without a blank midpoint.
+The values voice changes phrase in one stationary position. Complementary opacity curves keep the outgoing and incoming phrases continuously present while opposing blur curves obscure their overlap, creating one black-ink optical morph without a blank midpoint. Evidence objects burst around that voice and travel once from the docked open box into their rest positions.
 
 `PersonalNote` follows the values work path as its own composition. A Crimson italic heading sits in the center, with gray Bright Chalk notes around it. On first scroll into view, those notes travel once from the heading into their constellation positions. Interactive notes use the same muted dotted underline as other live text. Links keep working without JavaScript. The sketcher control stays inert until enhancement, then bursts the doodle artwork from that word into a local draggable field. Reduced motion shows the completed constellation and shows and hides those doodles in place. The boyfriend note reveals the couple photograph from `src/assets/life/` in place, without moving the constellation. Narrow screens keep the same notes and stack them one by one without bullets. Hash visits to `#personal`, keyboard focus, and no-JavaScript reading show the completed notes without the emerge.
 
@@ -122,19 +117,18 @@ The values voice changes phrase in one stationary position. Complementary opacit
 
 The opening is the first section of `/`, not another route.
 
-- Source frames: `src/assets/art/Doodles-box-opening/box_frame1.png` through `box_frame11.png`.
-- Frames have transparent backgrounds and may be inverted or recolored. Render the authored 2048-pixel PNGs losslessly; lossy resizing softens the relatively small line drawing inside each full-frame canvas.
-- The opening controller maps each frame to one saturated field color. Colors cut with the flipbook frame rather than running as a separate ambient animation or interpolating through muddy intermediate tones. The closed first frame yields after a short early-scroll interval so the lid begins to lift within the first 20–40 pixels; the remaining frames keep even spacing through the flipbook range.
-- A four-viewport sticky section has three authored scroll spans. The first two scrollable viewports open the box and expand the pigment. On wheel and trackpad, a velocity-bounded visual follower keeps intermediate box frames visible, then a hard stop holds the document until that follower reaches the phase boundary. Touch and other coarse pointers map those same spans to native scroll one-to-one, without that follower or a positional clamp, because `scrollTo` correction fights compositor momentum on iOS and can lock the gesture into stuttering. The third span maps native scroll directly to the pigment dissolve and identity reveal, without a speed cap. The values premise then shares the revealed identity field instead of waiting behind another full viewport. Slow early wheel input stays close to native progress, while strong wheel and trackpad input catches up at a capped rate.
-- The stable implementation uses all eleven authored frames and begins the final pigment handoff during the later opening frames. A deliberately low-resolution canvas field grows from the open box, using a connected polar field with a quieter center and asymmetric directional reaches that become fluid tendrils and fan-like rays as it expands. A restrained multi-scale domain warp bends those reaches into broad folds, soft eddies, and uneven channels without obscuring the outward burst. Color follows one continuous layered progression using the approved swatches: Imperial Blue, Cloudy Sky, Alice Blue, Mustard, Tiger Flame, Cinnabar, and a thin terminal Magenta accent. It does not repeat color around angular wedges or include a purple field wash. During emergence the canvas sits behind the box drawing, while a broad light response and restrained chromatic shadow make the field and ink react to it. The canvas moves in front only after it becomes the page transition. It briefly grows beyond full coverage, then clears into the off-white homepage through a short, low-opacity echo made from warped fragments of the same radial field. The canvas is decorative, pointer-transparent, and redraws only with scroll, resize, or state changes.
-- Forward wheel and trackpad distance is reapplied synchronously during the early box-and-pigment phase so the controller owns the gesture from its first event and can reliably stop at the phase boundary. Slow input retains its one-to-one distance, while strong momentum is consumed only after reaching the final box frame and near-maximum pigment spread. The boundary is then permanently released for that forward traversal. From there, the dissolve and identity reveal track physical scroll directly so an unfinished colored field cannot lag behind and leave with the sticky section. Reverse input must move back into the bounded range before rearming it; an opposite-signed momentum event alone must not release the boundary. The non-passive wheel listener exists only on fine pointers, and only while that bounded phase can still intercept input, then hands normal scrolling back to the document. Keyboard and scrollbar movement keep a small positional fallback. Touch scrolling does not. Anchor navigation and reduced-motion presentation bypass it. Do not introduce forced smooth scrolling or mandatory snapping.
+- Source frames: `src/assets/art/Doodles-box-opening/box_frame1.png` through `box_frame7.png`. Later authored frames flatten the box and are not used.
+- Frames have transparent backgrounds. Render the authored 2048-pixel PNGs losslessly; lossy resizing softens the relatively small line drawing inside each full-frame canvas.
+- The opening stays on the off-white field. It does not cut field colors with the flipbook, and it does not draw a pigment or essence canvas. Essence swatches remain only for the custom elastic edges and for the identity thermal word.
+- A short sticky runway maps native scroll one-to-one to the sequence. The closed first frame yields after a short early-scroll interval so the lid begins to lift within the first 20–40 pixels; frames 2–7 keep even spacing through the flipbook range, then the drawing holds on the open seventh frame. The box drawing translates downward as those frames play, so the box falls while it opens, and it remains docked at the bottom through the values chapters. Do not intercept wheel input, follow scroll with a velocity cap, or clamp `scrollTo` during the opening.
+- Identity copy stays hidden through the early closed and lid-lift frames. It begins to appear at authored frame 7, one complete beat at a time: hello, then the title, then the summary, then Work and contact, then the carried values premise. Scroll unlocks each beat as the box falls further into its docked rest, and a short pause still keeps the next line from landing until the previous one has appeared, even if the rest of the runway is already scrolled. The values premise still shares the revealed identity field instead of waiting behind another full viewport.
+- Values evidence sits in a burst around the sticky voice, with nearer objects closer to the docked box. On first scroll into a chapter, those objects travel once from the box origin into their rest positions. Reduced motion, no-JavaScript, and hash visits show the completed burst without the fly.
 - The homepage suppresses the browser's native vertical rubber band and provides one custom elastic response at each document edge. Outward wheel or touch distance displaces the complete page on the compositor, revealing a fixed Essence-palette field in the gap. Each edge draws one low-resolution canvas of a connected ridged curtain from the shared Essence swatches: Imperial Blue at the viewport origin through Cloudy Sky, Mustard, Tiger Flame, and Cinnabar to Magenta tips. Alice Blue is omitted from these thin columns so it cannot punch a white hole through the trail. A larger blur merges the ridges into one force rather than separate slabs. Display height tracks the pull so the field lengthens and contracts with the spring, and the active field sits above the page long enough for those tips to fade into the content instead of clipping on a hard edge. While any top displacement remains, the homepage, opening, and document backing stay Imperial Blue so the join cannot flash the off-white field. The canvas is rendered only on connect and resize. The spring holds for 280 milliseconds after the last outward input and returns with damped motion. Displacement is snapped to physical device pixels. The outermost canvas pixels dissolve to the matching backing before the final spring pixels. The bottom field uses the matching off-white backing. The treatment adds no scroll height and all input and boundary listeners are passive. Only the active edge is visible, and all animation work stops after the spring settles. Because native swipe-to-refresh cannot run while overscroll is suppressed, a committed top pull that holds near the spring limit reloads the document on release. Casual bounces and bottom-edge pulls do not. Reduced motion removes the decorative displacement and restores native vertical overscroll so the platform gesture remains available.
-- Fast scrolling may move the native target ahead, but the rendered opening catches up quickly rather than completing in one paint.
-- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together in the resting hero as the pigment field reveals it. A still click or tap on the closed box, instead of scrolling, briefly shows a tilted Bright Chalk `try scrolling` note at the pointer. Pointer movement, pointer cancel, or any scroll during that gesture suppresses it, so a finger pan does not flash the hint. It is decorative, pointer-transparent, and hidden from assistive technology. It does not appear once the lid has lifted, after scrolling starts, or when the opening is bypassed. No-JavaScript and reduced motion never show it. After the handwritten hello finishes, a one-time click cue appears beside Igor to mark the photograph control. It stays decorative and pointer-transparent so the existing name control remains the target. The cue fades away gradually after a short hold, or immediately if that control is used, and does not return. Reduced motion still shows the brief hint; no-JavaScript keeps it hidden because that control is inert.
+- The unopened box has no floating identity label. `Hello, I’m Igor.` and `Product designer.` appear together as the identity emerges from the falling box. A still click or tap on the closed box, instead of scrolling, shows a tilted Bright Chalk note near the pointer. Repeated clicks cycle a looping sequence: `try scrolling`, `no, really`, `dude`, `just do it`, `don’t want to scroll?`, `okay`, then `then just hire me` with the Let’s talk links. Earlier beats fade on their own. The hire beat stays in the open field above the closed box until the next click or scroll so those links can be used, then the sequence starts again. Pointer movement, pointer cancel, or any scroll during that gesture suppresses it, so a finger pan does not flash the hint. Scrolling hides the note and resets the sequence. Earlier beats are decorative, pointer-transparent, and hidden from assistive technology. The hire links are real contact controls from the shared Let’s talk list. The note does not appear once the lid has lifted, after scrolling starts, or when the opening is bypassed. No-JavaScript and reduced motion never show it. After the handwritten hello finishes, a one-time click cue appears beside Igor to mark the photograph control. It stays decorative and pointer-transparent so the existing name control remains the target. The cue fades away gradually after a short hold, or immediately if that control is used, and does not return. Reduced motion still shows the brief hint; no-JavaScript keeps it hidden because that control is inert.
 - The enhanced content layer remains inert while visually unavailable and becomes interactive once substantially revealed.
 - A skip link reaches the next personal-content section.
 - Reduced motion and no-JavaScript modes show the completed identity composition without requiring the sequence.
-- JavaScript-enabled first paint uses CSS to show the closed box on the first frame color before the opening controller hydrates. Identity is the first paint only for no-JavaScript, reduced motion, and hash navigation.
+- JavaScript-enabled first paint uses CSS to show the closed box on the off-white field before the opening controller hydrates. Identity is the first paint only for no-JavaScript, reduced motion, and hash navigation.
 
 Use a requestAnimationFrame-coalesced scroll listener or an equivalent small local controller. Avoid continuous layout reads after initialization. Recalculate geometry on resize through a bounded handler.
 
@@ -177,7 +171,7 @@ Observatory receives a dedicated authored record because it has the strongest cu
 
 Allowed local enhancements include:
 
-- scroll-controlled box-frame and pigment-field progress;
+- scroll-controlled box-frame progress, fall, and identity emerge;
 - custom top and bottom elastic-edge displacement;
 - one-time handwritten hello frame playback as the identity becomes visible;
 - a click-triggered scroll hint on the closed box;
@@ -199,7 +193,9 @@ Do not reintroduce:
 - route-aware doodles;
 - global pointer effects;
 - a client router;
-- nested scroll surfaces.
+- nested scroll surfaces;
+- opening wheel interceptors, velocity followers, or `scrollTo` clamps;
+- an opening pigment-field canvas or per-frame field-color cuts.
 
 ## Compatibility
 
@@ -231,7 +227,7 @@ Preserve base-path behavior for both `/` and `/personal-website/` builds.
 - Generate responsive portrait and project images.
 - Avoid decoding the full 2048-pixel box flipbook on mobile. Keep only the visible frame in the compositor and decode its immediate neighbours just ahead of the next cut.
 - Keep handwritten hello frames unloaded until the identity reveal, except the completed frame needed for reduced-motion and no-JavaScript reading.
-- On coarse pointers, keep the box ink reaction as a static filter and raster the pigment field at a lower cadence so intro scroll can stay with the compositor.
+- Keep opening scroll native. Do not add a wheel interceptor, velocity follower, or `scrollTo` clamp to hold box frames.
 - Use CSS for surfaces, masks, and simple transitions.
 - Keep scroll work to class, attribute, frame, and custom-property updates.
 - Keep elastic-edge fields hidden at rest, with no more than one softly blurred, low-resolution ray field active at a time. Do not redraw the field during spring frames.

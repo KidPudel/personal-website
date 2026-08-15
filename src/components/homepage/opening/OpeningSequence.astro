@@ -6,26 +6,10 @@ import frame4 from '../../../assets/art/Doodles-box-opening/box_frame4.png';
 import frame5 from '../../../assets/art/Doodles-box-opening/box_frame5.png';
 import frame6 from '../../../assets/art/Doodles-box-opening/box_frame6.png';
 import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
-import frame8 from '../../../assets/art/Doodles-box-opening/box_frame8.png';
-import frame9 from '../../../assets/art/Doodles-box-opening/box_frame9.png';
-import frame10 from '../../../assets/art/Doodles-box-opening/box_frame10.png';
-import frame11 from '../../../assets/art/Doodles-box-opening/box_frame11.png';
+import { connectLinks } from '../../../config/site';
 import { openingMotion } from './opening-motion';
 
-const frames = [
-  frame1,
-  frame2,
-  frame3,
-  frame4,
-  frame5,
-  frame6,
-  frame7,
-  frame8,
-  frame9,
-  frame10,
-  frame11,
-];
-const closedBoxColor = openingMotion.frameColors[0];
+const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
 ---
 
 <link rel="preload" href={frame1.src} as="image" fetchpriority="high" />
@@ -33,40 +17,54 @@ const closedBoxColor = openingMotion.frameColors[0];
 <opening-sequence
   class="opening-sequence"
   data-frame-count={frames.length}
-  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --opening-color: ${closedBoxColor}`}
+  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --box-fall-distance: ${openingMotion.boxFallDistanceVh}vh`}
 >
-  <div class="opening-sequence__sticky">
-    <div class="opening-sequence__reveal" data-opening-reveal>
-      <slot />
-    </div>
-
-    <div class="opening-sequence__art" aria-hidden="true" data-opening-art>
-      {frames.map((frame, index) => (
-        <img
-          class="opening-sequence__frame"
-          src={index === 0 ? frame.src : undefined}
-          data-src={frame.src}
-          alt=""
-          width="2048"
-          height="2048"
-          loading={index === 0 ? 'eager' : 'lazy'}
-          fetchpriority={index === 0 ? 'high' : 'low'}
-          decoding="async"
-          hidden={index !== 0}
-          data-opening-frame
-          data-active={index === 0 ? '' : undefined}
-        />
-      ))}
-    </div>
-
-    <canvas class="opening-sequence__essence" aria-hidden="true" data-opening-essence></canvas>
-
-    <span class="opening-sequence__scroll-hint" aria-hidden="true" data-opening-scroll-hint>
-      try scrolling
-    </span>
-
-    <a class="opening-sequence__skip" href="#values">Skip opening</a>
+  <div class="opening-sequence__box" aria-hidden="true" data-opening-art>
+    {frames.map((frame, index) => (
+      <img
+        class="opening-sequence__frame"
+        src={index === 0 ? frame.src : undefined}
+        data-src={frame.src}
+        alt=""
+        width="2048"
+        height="2048"
+        loading={index === 0 ? 'eager' : 'lazy'}
+        fetchpriority={index === 0 ? 'high' : 'low'}
+        decoding="async"
+        hidden={index !== 0}
+        data-opening-frame
+        data-active={index === 0 ? '' : undefined}
+      />
+    ))}
   </div>
+
+  <div class="opening-sequence__scroll-hint" data-opening-scroll-hint aria-hidden="true">
+    <div class="opening-sequence__scroll-hint-card" data-opening-scroll-hint-card>
+      <span class="opening-sequence__scroll-hint-phrase" data-opening-scroll-hint-phrase>
+        {openingMotion.scrollHintPhrases[0]}
+      </span>
+      <nav
+        class="opening-sequence__scroll-hint-contact"
+        data-opening-scroll-hint-contact
+        hidden
+        aria-label="Let’s talk"
+      >
+        {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      </nav>
+    </div>
+  </div>
+
+  <div class="opening-sequence__runway" data-opening-runway>
+    <div class="opening-sequence__sticky">
+      <div class="opening-sequence__reveal" data-opening-reveal>
+        <slot />
+      </div>
+
+      <a class="opening-sequence__skip" href="#values">Skip opening</a>
+    </div>
+  </div>
+
+  <slot name="journey" />
 </opening-sequence>
 
 <script>
@@ -75,36 +73,41 @@ const closedBoxColor = openingMotion.frameColors[0];
 
 <style>
   .opening-sequence {
-    --reveal-opacity: 1;
-    --art-opacity: 0;
+    --hello-opacity: 1;
+    --title-opacity: 1;
+    --summary-opacity: 1;
+    --identity-reveal: 1;
     --identity-opacity: 1;
-    --opening-color: #6f8aff;
-    --world-reaction: 0;
+    --art-opacity: 0;
+    --box-fall: 0;
+    --box-fall-distance: 32vh;
     position: relative;
     z-index: 2;
     display: block;
-    height: 100svh;
     background: var(--color-field);
   }
 
   :global(.homepage-document[data-elastic-top-edge]) .opening-sequence {
-    background: var(--opening-color);
+    background: #6f8aff;
+  }
+
+  .opening-sequence__box,
+  .opening-sequence__scroll-hint,
+  .opening-sequence__skip {
+    display: none;
+  }
+
+  .opening-sequence__runway {
+    height: 100svh;
   }
 
   .opening-sequence__sticky {
     position: sticky;
+    z-index: 4;
     top: 0;
     height: 100svh;
     overflow: clip;
-    background:
-      radial-gradient(
-        ellipse 62% 55% at 50% 53%,
-        rgb(255 240 73 / calc(var(--world-reaction) * 0.5)) 0%,
-        rgb(255 50 185 / calc(var(--world-reaction) * 0.32)) 34%,
-        rgb(43 96 235 / calc(var(--world-reaction) * 0.18)) 58%,
-        transparent 78%
-      ),
-      var(--opening-color);
+    pointer-events: none;
   }
 
   .opening-sequence__reveal {
@@ -112,103 +115,65 @@ const closedBoxColor = openingMotion.frameColors[0];
     z-index: 10;
     inset: 0;
     overflow: hidden;
-    background: var(--color-field);
-    opacity: var(--reveal-opacity);
-  }
-
-  .opening-sequence__art,
-  .opening-sequence__essence,
-  .opening-sequence__scroll-hint,
-  .opening-sequence__skip {
-    display: none;
+    pointer-events: auto;
   }
 
   :global(.js) .opening-sequence {
-    --reveal-opacity: 0;
+    --hello-opacity: 0;
+    --title-opacity: 0;
+    --summary-opacity: 0;
+    --identity-reveal: 0;
+    --identity-opacity: 0;
     --art-opacity: 1;
-    height: var(--opening-scroll-height, 400svh);
-    background: var(--opening-color);
+    --box-fall: 0;
+  }
+
+  :global(.js) .opening-sequence__runway {
+    height: var(--opening-scroll-height, 300svh);
   }
 
   :global(.js.opening-bypassed) .opening-sequence {
-    --reveal-opacity: 1;
+    --hello-opacity: 1;
+    --title-opacity: 1;
+    --summary-opacity: 1;
+    --identity-reveal: 1;
+    --identity-opacity: 1;
     --art-opacity: 0;
-    background: var(--color-field);
+    --box-fall: 0;
   }
 
-  :global(.js.opening-bypassed) .opening-sequence__scroll-hint {
+  :global(.js.opening-bypassed) .opening-sequence__runway {
+    height: 100svh;
+  }
+
+  :global(.js.opening-bypassed) .opening-sequence__scroll-hint,
+  :global(.js.opening-bypassed) .opening-sequence__box {
     display: none;
-  }
-
-  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__reveal {
-    will-change: opacity;
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence__reveal:not([data-visible]) {
     content-visibility: hidden;
+    pointer-events: none;
   }
 
-  :global(.js) .opening-sequence__art {
-    position: absolute;
-    z-index: 5;
-    inset: 0;
+  :global(.js) .opening-sequence__box {
+    position: sticky;
+    z-index: 1;
+    top: 0;
     display: block;
-    contain: paint;
+    height: 100svh;
+    margin-bottom: -100svh;
+    overflow: clip;
     opacity: var(--art-opacity);
-    pointer-events: none;
+    pointer-events: auto;
   }
 
-  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__art {
+  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__box {
     will-change: opacity;
   }
 
-  :global(.js) .opening-sequence[data-world-reacting] .opening-sequence__art {
-    filter:
-      drop-shadow(0 0 0.55rem rgb(238 28 198 / 0.42))
-      drop-shadow(0 0 0.28rem rgb(255 230 78 / 0.36));
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    :global(.js) .opening-sequence[data-world-reacting] .opening-sequence__art {
-      filter:
-        drop-shadow(
-          0 0 calc(0.25rem + var(--world-reaction) * 0.7rem)
-            rgb(238 28 198 / calc(var(--world-reaction) * 0.62))
-        )
-        drop-shadow(
-          0 0 calc(0.15rem + var(--world-reaction) * 0.38rem)
-            rgb(255 230 78 / calc(var(--world-reaction) * 0.55))
-        );
-    }
-
-    :global(.js) .opening-sequence[data-opening-live] .opening-sequence__art {
-      will-change: filter, opacity;
-    }
-  }
-
-  :global(.js) .opening-sequence__essence {
-    position: absolute;
-    z-index: 4;
-    inset: -4vmax;
-    display: block;
-    width: calc(100% + 8vmax);
-    height: calc(100% + 8vmax);
-    filter: blur(clamp(0.6rem, 1.25vw, 1.2rem)) saturate(1.08) contrast(1.01);
-    image-rendering: pixelated;
-    opacity: 0;
+  :global(.js) .opening-sequence[data-complete] .opening-sequence__box {
     pointer-events: none;
-  }
-
-  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__essence {
-    will-change: opacity;
-  }
-
-  :global(.js) .opening-sequence__essence[data-visible] {
-    opacity: 1;
-  }
-
-  :global(.js) .opening-sequence__essence[data-front] {
-    z-index: 15;
   }
 
   .opening-sequence__frame {
@@ -218,6 +183,9 @@ const closedBoxColor = openingMotion.frameColors[0];
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: translate3d(0, calc(var(--box-fall, 0) * var(--box-fall-distance, 32vh)), 0)
+      scale(calc(1 - var(--box-fall, 0) * 0.28));
+    transform-origin: 50% 58%;
   }
 
   .opening-sequence__frame[data-active] {
@@ -228,28 +196,99 @@ const closedBoxColor = openingMotion.frameColors[0];
     display: none;
   }
 
+  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__frame[data-active] {
+    will-change: transform;
+  }
+
   :global(.js) .opening-sequence__scroll-hint {
+    position: sticky;
+    z-index: 2;
+    top: 0;
+    display: block;
+    height: 100svh;
+    margin-bottom: -100svh;
+    overflow: clip;
+    pointer-events: none;
+  }
+
+  .opening-sequence__scroll-hint-card {
     position: absolute;
-    z-index: 6;
     top: var(--hint-y, 50%);
     left: var(--hint-x, 50%);
-    display: block;
+    display: grid;
+    justify-items: center;
+    gap: 0.9rem;
     margin: 0;
     color: var(--color-ink);
+    opacity: 0;
+    text-align: center;
+    transform: translate(-50%, -50%) rotate(-8deg);
+    user-select: none;
+  }
+
+  .opening-sequence__scroll-hint-phrase {
+    margin: 0;
     font-family: var(--font-special);
     font-size: clamp(1.02rem, 1.6vw, 1.28rem);
     font-weight: 400;
     letter-spacing: 0.02em;
     line-height: 1;
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, -50%) rotate(-8deg);
-    user-select: none;
     white-space: nowrap;
   }
 
-  .opening-sequence[data-scroll-hint] .opening-sequence__scroll-hint {
+  .opening-sequence__scroll-hint-contact {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: max-content;
+    max-width: min(40rem, calc(100vw - 2.5rem));
+    gap: 0.35rem 1.15rem;
+    padding: 0.8rem 1rem 0.85rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
+    background: color-mix(in srgb, var(--color-field) 97%, transparent);
+    box-shadow: 0 0.9rem 1.8rem color-mix(in srgb, var(--color-ink) 8%, transparent);
+    font-family: var(--font-reading);
+    font-size: clamp(0.88rem, 0.18vw + 0.84rem, 0.98rem);
+    letter-spacing: 0.01em;
+  }
+
+  .opening-sequence__scroll-hint-contact[hidden] {
+    display: none !important;
+  }
+
+  .opening-sequence__scroll-hint-contact a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    padding: 0.25rem 0;
+    color: inherit;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3rem;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .opening-sequence__scroll-hint-contact a:hover,
+  .opening-sequence__scroll-hint-contact a:focus-visible {
+    color: var(--color-accent);
+    text-decoration-color: currentColor;
+  }
+
+  .opening-sequence[data-scroll-hint='note'] .opening-sequence__scroll-hint-card {
     animation: opening-scroll-hint 2.4s ease both;
+  }
+
+  .opening-sequence[data-scroll-hint='hire'] .opening-sequence__scroll-hint-card {
+    top: clamp(2.25rem, 10vh, 5.5rem);
+    left: 50%;
+    pointer-events: auto;
+    animation: opening-scroll-hint-in 0.45s ease both;
+  }
+
+  .opening-sequence[data-scroll-hint='hire'] .opening-sequence__scroll-hint-phrase {
+    font-size: clamp(1.28rem, 2.8vw, 1.8rem);
   }
 
   @keyframes opening-scroll-hint {
@@ -274,6 +313,29 @@ const closedBoxColor = openingMotion.frameColors[0];
     }
   }
 
+  @keyframes opening-scroll-hint-in {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 0.5rem) rotate(-12deg);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0) rotate(-6deg);
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .opening-sequence__scroll-hint-contact {
+      display: grid;
+      width: min(17rem, calc(100vw - 2rem));
+      max-width: none;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 1rem;
+      background: var(--color-field);
+    }
+  }
+
   :global(.js) .opening-sequence__skip {
     position: absolute;
     z-index: 11;
@@ -282,7 +344,7 @@ const closedBoxColor = openingMotion.frameColors[0];
     display: block;
     padding: 0.65rem 0.8rem;
     background: var(--color-ink);
-    color: #ffd84f;
+    color: var(--color-field);
     font-family: var(--font-reading);
     font-size: 0.68rem;
     opacity: 0;
@@ -297,14 +359,20 @@ const closedBoxColor = openingMotion.frameColors[0];
 
   @media (prefers-reduced-motion: reduce) {
     :global(.js) .opening-sequence {
-      --reveal-opacity: 1;
+      --hello-opacity: 1;
+      --title-opacity: 1;
+      --summary-opacity: 1;
+      --identity-reveal: 1;
+      --identity-opacity: 1;
       --art-opacity: 0;
-      height: 100svh;
-      background: var(--color-field);
+      --box-fall: 0;
     }
 
-    :global(.js) .opening-sequence__art,
-    :global(.js) .opening-sequence__essence,
+    :global(.js) .opening-sequence__runway {
+      height: 100svh;
+    }
+
+    :global(.js) .opening-sequence__box,
     :global(.js) .opening-sequence__scroll-hint {
       display: none;
     }

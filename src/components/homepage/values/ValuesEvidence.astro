@@ -91,9 +91,11 @@ const projectTitles: Record<ValueProject, string> = {
   }
 
   .values-story {
-    --passage-hold: 62svh;
+    --passage-hold: 48svh;
     --voice-width: clamp(16.5rem, 25vw, 22rem);
     --values-intro-lift: 10svh;
+    --fly-duration: 640ms;
+    --fly-stagger: 70ms;
     position: relative;
     isolation: isolate;
     width: min(calc(100% - clamp(4rem, 7vw, 6rem)), 88rem);
@@ -130,6 +132,7 @@ const projectTitles: Record<ValueProject, string> = {
     left: 0;
     right: 0;
     opacity: var(--voice-pin-opacity, 0);
+    transition: opacity 480ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .value-voice__stack {
@@ -221,14 +224,14 @@ const projectTitles: Record<ValueProject, string> = {
   .value-chapter:first-child {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
-    grid-template-rows: repeat(2, minmax(24rem, auto));
-    gap: clamp(1.75rem, 3.4vw, 3.25rem);
+    grid-template-rows: minmax(18rem, auto) minmax(16rem, auto) minmax(14rem, auto);
+    gap: clamp(1rem, 2.4vw, 2.25rem);
     align-items: start;
-    padding: var(--passage-hold) 0 clamp(3rem, 6vw, 5.5rem);
+    padding: var(--passage-hold) 0 36svh;
   }
 
   .value-chapter:first-child {
-    grid-template-rows: repeat(3, minmax(24rem, auto));
+    grid-template-rows: minmax(17rem, auto) minmax(15rem, auto) minmax(14rem, auto);
   }
 
   .aspects {
@@ -238,51 +241,90 @@ const projectTitles: Record<ValueProject, string> = {
     list-style: none;
   }
 
+  .value-chapter :global(.aspect) {
+    --from-x: 0px;
+    --from-y: 36vh;
+  }
+
   .value-chapter :global(.aspect:nth-child(1)) {
     grid-column: 1;
     grid-row: 1;
+    justify-self: end;
+    width: min(100%, 31rem);
+    --from-x: 22vw;
+    --from-y: 42vh;
   }
 
   .value-chapter :global(.aspect:nth-child(2)) {
     grid-column: 3;
     grid-row: 1;
-    margin-top: clamp(12rem, 18vw, 17rem);
+    justify-self: start;
+    width: min(100%, 27rem);
+    margin-top: clamp(6rem, 10vw, 11rem);
+    --from-x: -24vw;
+    --from-y: 38vh;
   }
 
   .value-chapter :global(.aspect:nth-child(3)) {
     grid-column: 1;
     grid-row: 2;
-    margin-top: 2rem;
+    justify-self: end;
+    width: min(88%, 22rem);
+    margin-top: clamp(0.5rem, 2vw, 2rem);
+    --from-x: 12vw;
+    --from-y: 22vh;
   }
 
-  .value-chapter:nth-child(even) :global(.aspect:nth-child(1)),
-  .value-chapter:nth-child(even) :global(.aspect:nth-child(3)) {
+  .value-chapter:nth-child(even) :global(.aspect:nth-child(1)) {
     grid-column: 3;
+    justify-self: start;
+    --from-x: -22vw;
   }
 
   .value-chapter:nth-child(even) :global(.aspect:nth-child(2)) {
     grid-column: 1;
+    justify-self: end;
+    --from-x: 24vw;
+  }
+
+  .value-chapter:nth-child(even) :global(.aspect:nth-child(3)) {
+    grid-column: 3;
+    justify-self: start;
+    --from-x: -12vw;
   }
 
   .value-chapter:first-child :global(.aspect:nth-child(4)) {
     grid-column: 3;
     grid-row: 2;
-    margin-top: clamp(12rem, 18vw, 17rem);
+    justify-self: start;
+    width: min(88%, 23rem);
+    margin-top: clamp(5rem, 8vw, 9rem);
+    --from-x: -16vw;
+    --from-y: 24vh;
   }
 
   .value-chapter:first-child :global(.aspect:nth-child(5)) {
     grid-column: 1;
     grid-row: 3;
-    margin-top: 2rem;
+    justify-self: end;
+    width: min(82%, 20rem);
+    --from-x: 10vw;
+    --from-y: 16vh;
   }
 
   :global(.js) value-story[data-enhanced] :global(.aspect) {
-    opacity: 0.18;
-    transform: translateY(2.25rem) rotate(0.35deg);
+    opacity: 0;
+    transform: translate3d(var(--from-x), var(--from-y), 0) scale(0.2);
     transition:
-      opacity 480ms ease,
-      transform 620ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      opacity 420ms ease var(--fly-delay, 0ms),
+      transform var(--fly-duration) cubic-bezier(0.22, 1.12, 0.32, 1) var(--fly-delay, 0ms);
   }
+
+  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(1)) { --fly-delay: 0ms; }
+  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(2)) { --fly-delay: 220ms; }
+  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(3)) { --fly-delay: 440ms; }
+  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(4)) { --fly-delay: 660ms; }
+  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(5)) { --fly-delay: 880ms; }
 
   :global(.js) value-story[data-enhanced] :global(.aspect[data-revealed]) {
     opacity: 1;
@@ -352,13 +394,13 @@ const projectTitles: Record<ValueProject, string> = {
     .value-chapter,
     .value-chapter:first-child {
       grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
-      grid-template-rows: repeat(2, minmax(19rem, auto));
+      grid-template-rows: repeat(2, minmax(17rem, auto));
       gap: clamp(0.55rem, 2.6vw, 1rem);
-      padding: var(--passage-hold) 0 clamp(3rem, 14vw, 4.5rem);
+      padding: var(--passage-hold) 0 28svh;
     }
 
     .value-chapter:first-child {
-      grid-template-rows: repeat(3, minmax(19rem, auto));
+      grid-template-rows: repeat(3, minmax(17rem, auto));
     }
 
     .value-chapter :global(.aspect:nth-child(n)),
@@ -367,6 +409,8 @@ const projectTitles: Record<ValueProject, string> = {
       width: 100%;
       margin-top: 0;
       justify-self: stretch;
+      --from-x: 0px;
+      --from-y: 28vh;
     }
 
     .value-chapter :global(.aspect:nth-child(2)),
@@ -403,6 +447,10 @@ const projectTitles: Record<ValueProject, string> = {
     :global(.js) .value-voice[data-enhanced] .value-voice__layer {
       filter: none;
       will-change: auto;
+    }
+
+    :global(.js) .value-voice[data-identity-pin] {
+      transition: none;
     }
 
     :global(.js) value-story[data-enhanced] :global(.aspect) {

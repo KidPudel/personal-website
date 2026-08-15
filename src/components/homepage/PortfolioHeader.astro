@@ -108,8 +108,8 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     opacity: var(--header-visibility, 1);
     transform: translateY(calc((1 - var(--header-visibility, 1)) * 1.25rem));
     transition:
-      opacity 180ms linear,
-      transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .portfolio-navigation--fixed {

@@ -45,7 +45,7 @@ The site should feel:
 
 
 - Mix/blend of quite calm minimalism with maximalism "anti-portfolio" portfolio
-- Restrained-with-one-loud-moment — website is primary calm and aesthetic with intentional clash with loud memorable experience (opening the box with the splash of colors)
+- Restrained, with a tactile opening — the closed box falls and unfolds as you scroll, and the identity emerges from it without a color splash or a locked scroll
 - The balance between playful-chaotic-warm with quiet confidence that is still artistic and unique.
 
 ## Artistic continuity

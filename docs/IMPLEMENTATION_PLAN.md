@@ -4,6 +4,14 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] Replace the opening pigment splash and per-frame field colors with a native-scroll fall-and-open.
+- [x] Reveal identity copy one beat at a time from frame 7, even when scroll jumps ahead.
+- [x] Play only box frames 1–7, hold the open drawing, and dock it at the bottom through values.
+- [x] Start unfolding on the first scroll, begin identity at frame 7, and reveal copy in order as the box falls further.
+- [x] Recompose values evidence as a burst that flies once from the open box.
+- [x] Keep Essence swatches for elastic edges and the identity thermal word, and keep the closed-box scroll hint.
+- [x] Verify type checking, both production base paths, desktop and mobile opening scroll, reduced motion, and browser diagnostics.
+
 - [x] Stop the sticky opening from decoding the full box flipbook and handwritten hello on mobile, and reduce pigment and filter work on coarse pointers so intro scroll can stay with the compositor.
 - [ ] Verify type checking, both production base paths, desktop and mobile opening scroll, reduced motion, and browser diagnostics.
 
@@ -14,7 +22,9 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 - [x] Tighten the values scroll: shorter empty holds between values, a slightly wider voice so the longest phrase wraps to two lines, and earlier later-value handoffs.
 - [x] Verify type checking, both production base paths, 1440 / 390 / 320 values layouts, and no voice/evidence overlap.
 
-- [x] If a visitor clicks the closed box instead of scrolling, show a tilted fading `try scrolling` note at the pointer.
+- [x] If a visitor clicks the closed box instead of scrolling, show a tilted fading `try scrolling` note near the pointer.
+- [x] Cycle further closed-box clicks through a looping phrase sequence, and show the Let’s talk links on `then just hire me`.
+- [x] Offset those earlier notes beside the pointer instead of sitting directly under it.
 - [x] Hide that note as soon as scrolling begins, ignore finger pans, and keep it off reduced-motion, no-JS, and already-opened states.
 - [ ] Verify type checking, both production base paths, desktop and mobile opening, click-versus-scroll behavior, reduced motion, and browser diagnostics.
 
