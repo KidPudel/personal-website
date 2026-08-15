@@ -155,8 +155,11 @@ function doodlePlacement(src: string, index: number, count: number) {
   }
 
   .personal-note__slot {
+    --rest-x: 0px;
+    --rest-y: 0px;
     width: max-content;
     max-width: min(16.5rem, 100%);
+    translate: var(--rest-x) var(--rest-y);
   }
 
   .personal-note__slot--engineer {
@@ -165,8 +168,9 @@ function doodlePlacement(src: string, index: number, count: number) {
     justify-self: end;
     align-self: end;
     max-width: 11.5rem;
+    --rest-x: -0.35rem;
+    --rest-y: 0.7rem;
     rotate: -2.6deg;
-    translate: -0.35rem 0.7rem;
   }
 
   .personal-note__slot--boyfriend {
@@ -176,8 +180,9 @@ function doodlePlacement(src: string, index: number, count: number) {
     justify-self: start;
     align-self: end;
     max-width: 15.5rem;
+    --rest-x: 0.45rem;
+    --rest-y: 0.15rem;
     rotate: 2.2deg;
-    translate: 0.45rem 0.15rem;
   }
 
   .personal-note__slot--games {
@@ -185,8 +190,9 @@ function doodlePlacement(src: string, index: number, count: number) {
     grid-row: 3;
     justify-self: end;
     align-self: start;
+    --rest-x: -0.7rem;
+    --rest-y: 0.35rem;
     rotate: -1.8deg;
-    translate: -0.7rem 0.35rem;
   }
 
   .personal-note__slot--blog {
@@ -194,8 +200,9 @@ function doodlePlacement(src: string, index: number, count: number) {
     grid-row: 3;
     justify-self: center;
     align-self: start;
+    --rest-x: 0px;
+    --rest-y: 0.85rem;
     rotate: -2deg;
-    translate: 0 0.85rem;
   }
 
   .personal-note__slot--sketcher {
@@ -204,8 +211,9 @@ function doodlePlacement(src: string, index: number, count: number) {
     justify-self: start;
     align-self: start;
     max-width: 14.5rem;
+    --rest-x: 0.55rem;
+    --rest-y: -0.15rem;
     rotate: 2.8deg;
-    translate: 0.55rem -0.15rem;
   }
 
   .personal-note__item {
@@ -239,6 +247,12 @@ function doodlePlacement(src: string, index: number, count: number) {
     color: var(--note-ink);
     opacity: 1;
     cursor: pointer;
+  }
+
+  :global(html.js personal-note:not([data-constellation='revealed'])) .personal-note__item,
+  :global(html.js personal-note:not([data-constellation='revealed'])) .personal-note__item:disabled {
+    opacity: 0;
+    pointer-events: none;
   }
 
   .personal-note__item:hover,
@@ -378,12 +392,13 @@ function doodlePlacement(src: string, index: number, count: number) {
     .personal-note__slot--games,
     .personal-note__slot--blog,
     .personal-note__slot--sketcher {
+      --rest-x: 0px;
+      --rest-y: 0px;
       max-width: 16.5rem;
       justify-self: center;
       align-self: center;
       text-align: center;
       rotate: 0deg;
-      translate: 0;
     }
 
     .personal-note__slot--engineer {
@@ -439,6 +454,11 @@ function doodlePlacement(src: string, index: number, count: number) {
   }
 
   @media (prefers-reduced-motion: reduce) {
+    :global(html.js personal-note:not([data-constellation='revealed'])) .personal-note__item {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
     .personal-note__doodle {
       left: var(--rest-x);
       top: var(--rest-y);

@@ -49,7 +49,7 @@ const projectTitles: Record<ValueProject, string> = {
                   {value.words.map((word, wordIndex) => (
                     <span data-word-option hidden={wordIndex !== 0}>{word}</span>
                   ))}
-                </button>{value.after}
+                </button><span class="value-voice__after">{value.after}</span>
               </h3>
             </div>
           ))}
@@ -91,8 +91,8 @@ const projectTitles: Record<ValueProject, string> = {
   }
 
   .values-story {
-    --passage-hold: 78svh;
-    --voice-width: clamp(16rem, 23vw, 19rem);
+    --passage-hold: 62svh;
+    --voice-width: clamp(16.5rem, 25vw, 22rem);
     --values-intro-lift: 10svh;
     position: relative;
     isolation: isolate;
@@ -139,7 +139,7 @@ const projectTitles: Record<ValueProject, string> = {
 
   .value-voice__layer {
     min-width: 0;
-    padding: 1.1rem 0.9rem 1.25rem;
+    padding: 1rem 0.55rem 1.1rem;
     pointer-events: auto;
   }
 
@@ -163,7 +163,7 @@ const projectTitles: Record<ValueProject, string> = {
     font-style: italic;
     font-weight: 400;
     letter-spacing: -0.01em;
-    line-height: 1.22;
+    line-height: 1.12;
   }
 
   .word-cycle {
@@ -196,6 +196,10 @@ const projectTitles: Record<ValueProject, string> = {
     display: none;
   }
 
+  .value-voice__after {
+    white-space: nowrap;
+  }
+
   :global(.js) .value-voice[data-enhanced] .value-voice__stack {
     display: grid;
   }
@@ -217,14 +221,14 @@ const projectTitles: Record<ValueProject, string> = {
   .value-chapter:first-child {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
-    grid-template-rows: repeat(2, minmax(30rem, auto));
-    gap: clamp(2rem, 4vw, 4rem);
+    grid-template-rows: repeat(2, minmax(24rem, auto));
+    gap: clamp(1.75rem, 3.4vw, 3.25rem);
     align-items: start;
-    padding: var(--passage-hold) 0 clamp(4rem, 8vw, 7rem);
+    padding: var(--passage-hold) 0 clamp(3rem, 6vw, 5.5rem);
   }
 
   .value-chapter:first-child {
-    grid-template-rows: repeat(3, minmax(30rem, auto));
+    grid-template-rows: repeat(3, minmax(24rem, auto));
   }
 
   .aspects {
@@ -302,7 +306,7 @@ const projectTitles: Record<ValueProject, string> = {
 
   @media (max-width: 50rem) {
     .values-story {
-      --passage-hold: 72svh;
+      --passage-hold: 58svh;
       --voice-width: clamp(7.5rem, 36vw, 9rem);
       width: 100%;
       padding-inline: clamp(0.45rem, 2.2vw, 0.9rem);

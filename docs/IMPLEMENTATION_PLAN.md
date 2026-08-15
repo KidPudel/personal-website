@@ -4,6 +4,13 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 
 ## Current milestone
 
+- [x] Let the personal-note constellation appear once from the heading on first scroll into view, instead of sitting complete at rest.
+- [x] Keep that emerge off reduced motion, no-JavaScript, `#personal` hash visits, and keyboard focus, and keep doodle spawn and the couple photograph working after the notes land.
+- [ ] Verify type checking, both production base paths, desktop and mobile constellation emerge, doodle spawn and drag, keyboard behavior, reduced motion, and browser diagnostics.
+
+- [x] Tighten the values scroll: shorter empty holds between values, a slightly wider voice so the longest phrase wraps to two lines, and earlier later-value handoffs.
+- [x] Verify type checking, both production base paths, 1440 / 390 / 320 values layouts, and no voice/evidence overlap.
+
 - [x] If a visitor clicks the closed box instead of scrolling, show a tilted fading `try scrolling` note at the pointer.
 - [x] Hide that note as soon as scrolling begins, ignore finger pans, and keep it off reduced-motion, no-JS, and already-opened states.
 - [ ] Verify type checking, both production base paths, desktop and mobile opening, click-versus-scroll behavior, reduced motion, and browser diagnostics.

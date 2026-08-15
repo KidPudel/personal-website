@@ -1,8 +1,8 @@
 export const valueVoiceMotion = {
   firstHandoffViewportStart: 0.3,
-  laterHandoffViewportStart: 0.66,
+  laterHandoffViewportStart: 0.56,
   firstHandoffDistance: 0.42,
-  laterHandoffDistance: 0.46,
+  laterHandoffDistance: 0.4,
   reducedMotionThreshold: 0.52,
   morphBlur: 9.5,
   morphBlurRamp: 0.64,

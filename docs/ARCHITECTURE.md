@@ -108,11 +108,11 @@ The composition presentation uses local type roles without changing Observatory:
 - Crimson Text (`--font-editorial`) for non-interactive values voice text, the personal-note heading, italic regular on the premise, switching phrases, and that heading, and the `/work/` section voices;
 - Bright Chalk (`--font-special`) for special elements, currently the identity summary word, the cycling values words, and the personal-note constellation.
 
-Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`.
+Shared surface tokens are `--color-field` (#F8F8F8), `--color-ink`, `--color-copy`, `--color-muted`, and `--color-accent`. Homepage identity and values copy live in `src/content/homepage/`. Opening scroll timing lives in `opening-motion.ts`; pigment drawing lives in `pigment-field.ts`; values rhythm lives in `value-voice-motion.ts`; personal-note emerge timing lives in `personal-note-motion.ts`.
 
 The values voice changes phrase in one stationary position. Complementary opacity curves keep the outgoing and incoming phrases continuously present while opposing blur curves obscure their overlap, creating one black-ink optical morph without a blank midpoint.
 
-`PersonalNote` follows the values work path as its own composition. A Crimson italic heading sits in the center, with gray Bright Chalk notes around it. Interactive notes use the same muted dotted underline as other live text. Links keep working without JavaScript. The sketcher control stays inert until enhancement, then bursts the doodle artwork from that word into a local draggable field. Reduced motion shows and hides those doodles in place. The boyfriend note reveals the couple photograph from `src/assets/life/` in place, without moving the constellation. Narrow screens keep the same notes and stack them one by one without bullets.
+`PersonalNote` follows the values work path as its own composition. A Crimson italic heading sits in the center, with gray Bright Chalk notes around it. On first scroll into view, those notes travel once from the heading into their constellation positions. Interactive notes use the same muted dotted underline as other live text. Links keep working without JavaScript. The sketcher control stays inert until enhancement, then bursts the doodle artwork from that word into a local draggable field. Reduced motion shows the completed constellation and shows and hides those doodles in place. The boyfriend note reveals the couple photograph from `src/assets/life/` in place, without moving the constellation. Narrow screens keep the same notes and stack them one by one without bullets. Hash visits to `#personal`, keyboard focus, and no-JavaScript reading show the completed notes without the emerge.
 
 `PortfolioHeader` is a quiet Work and contact pair centered directly after the homepage introduction copy, then repeated as a centered closing gesture at the bottom of the document. Secondary documents use its compact fixed variant. The existing Work and Connect drawings stay hidden until fine-pointer hover or keyboard focus; the Connect drawing also stays visible while its disclosure is open on a fine pointer. Touch activation must follow the control immediately, without a sticky-hover drawing swap. Each text label uses a quiet muted dotted underline at rest, then blurs away with that underline as its drawing resolves in at the same position, without spatial travel, so it cannot overlap the introduction. Contact links expand in flow and retain static `details` behavior without JavaScript. `SectionMarker` renders existing icon assets as non-interactive section indicators with the preserved hover wobble and reduced-motion fallback.
 
@@ -184,7 +184,7 @@ Allowed local enhancements include:
 - a one-time click cue beside Igor after that sequence completes;
 - a name-triggered reveal of Igor's photograph;
 - craft-value word cycling inside the values-and-evidence composition;
-- the personal-note constellation, including sketcher-spawned draggable doodles and a boyfriend photograph reveal;
+- the personal-note constellation, including a one-time emerge from the heading, sketcher-spawned draggable doodles, and a boyfriend photograph reveal;
 - the side-mounted contact disclosure;
 - restrained media activation;
 

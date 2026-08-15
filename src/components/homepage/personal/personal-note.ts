@@ -1,5 +1,9 @@
+import { personalNoteMotion } from './personal-note-motion';
+
 class PersonalNote extends HTMLElement {
   private abort?: AbortController;
+  private constellationObserver?: IntersectionObserver;
+  private constellationAnimations: Animation[] = [];
   private drag: {
     doodle: HTMLElement;
     pointerId: number;
@@ -18,6 +22,7 @@ class PersonalNote extends HTMLElement {
     const doodles = this.querySelectorAll<HTMLElement>('[data-personal-doodle]');
     const portrait = this.querySelector<HTMLElement>('[data-personal-portrait]');
     const field = this.querySelector<HTMLElement>('[data-doodle-field]');
+    this.setupConstellation(signal);
 
     if (doodleTrigger && field && doodles.length) {
       doodleTrigger.disabled = false;
@@ -53,9 +58,194 @@ class PersonalNote extends HTMLElement {
   }
 
   disconnectedCallback() {
+    this.constellationObserver?.disconnect();
+    this.constellationObserver = undefined;
+    this.cancelConstellationAnimations();
     this.abort?.abort();
     this.drag = null;
     delete this.dataset.enhanced;
+  }
+
+  private setupConstellation(signal: AbortSignal) {
+    const heading = this.querySelector<HTMLElement>('#personal-title');
+    const slots = this.querySelectorAll<HTMLElement>('.personal-note__slot');
+    if (!heading || slots.length === 0) {
+      this.dataset.constellation = 'revealed';
+      return;
+    }
+
+    const reveal = (immediate = false) => this.revealConstellation(slots, immediate);
+
+    if (this.reducedMotion() || location.hash === '#personal') {
+      reveal(true);
+      return;
+    }
+
+    this.collapseConstellation(heading, slots);
+    this.dataset.constellation = 'pending';
+
+    const tryReveal = (immediate = false) => {
+      if (this.dataset.constellation === 'revealed') return;
+      reveal(immediate);
+    };
+
+    this.constellationObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) tryReveal();
+      },
+      {
+        threshold: personalNoteMotion.observerThreshold,
+        rootMargin: personalNoteMotion.observerRootMargin,
+      },
+    );
+    this.constellationObserver.observe(heading);
+
+    this.addEventListener('focusin', () => tryReveal(true), { signal });
+    window.addEventListener(
+      'hashchange',
+      () => {
+        if (location.hash === '#personal') tryReveal(true);
+      },
+      { signal },
+    );
+    window.addEventListener(
+      'resize',
+      () => {
+        if (this.dataset.constellation !== 'pending') return;
+        this.collapseConstellation(heading, slots);
+      },
+      { signal, passive: true },
+    );
+
+    void document.fonts?.ready.then(() => {
+      if (this.dataset.constellation === 'pending') this.collapseConstellation(heading, slots);
+    });
+
+    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener(
+      'change',
+      (event) => {
+        if (event.matches) reveal(true);
+      },
+      { signal },
+    );
+  }
+
+  private cancelConstellationAnimations() {
+    for (const animation of this.constellationAnimations) animation.cancel();
+    this.constellationAnimations = [];
+  }
+
+  private usedTranslate(value: string): [number, number] {
+    if (!value || value === 'none') return [0, 0];
+    const parts = value.trim().split(/\s+/);
+    return [Number.parseFloat(parts[0]) || 0, Number.parseFloat(parts[1]) || 0];
+  }
+
+  private restConstellation(slots: Iterable<HTMLElement>) {
+    this.cancelConstellationAnimations();
+    for (const slot of slots) {
+      slot.style.removeProperty('translate');
+      delete slot.dataset.emergeDelay;
+      delete slot.dataset.restTranslate;
+      const item = slot.querySelector<HTMLElement>('.personal-note__item');
+      item?.style.removeProperty('scale');
+      item?.style.removeProperty('opacity');
+    }
+  }
+
+  private collapseConstellation(heading: HTMLElement, slots: NodeListOf<HTMLElement>) {
+    this.restConstellation(slots);
+    void heading.offsetWidth;
+
+    const headingRect = heading.getBoundingClientRect();
+    const originX = headingRect.left + headingRect.width / 2;
+    const originY = headingRect.top + headingRect.height / 2;
+
+    [...slots]
+      .map((slot) => {
+        const rect = slot.getBoundingClientRect();
+        const [restX, restY] = this.usedTranslate(getComputedStyle(slot).translate);
+        const x = rect.left + rect.width / 2;
+        const y = rect.top + rect.height / 2;
+        return {
+          slot,
+          restX,
+          restY,
+          dx: originX - x,
+          dy: originY - y,
+          distance: Math.hypot(originX - x, originY - y),
+        };
+      })
+      .sort((first, second) => first.distance - second.distance)
+      .forEach((item, index) => {
+        item.slot.style.translate = `${item.restX + item.dx}px ${item.restY + item.dy}px`;
+        item.slot.dataset.restTranslate = `${item.restX}px ${item.restY}px`;
+        item.slot.dataset.emergeDelay = String(index * personalNoteMotion.staggerMs);
+        const note = item.slot.querySelector<HTMLElement>('.personal-note__item');
+        if (!note) return;
+        note.style.scale = String(personalNoteMotion.emergeScale);
+        note.style.opacity = '0';
+      });
+  }
+
+  private revealConstellation(slots: NodeListOf<HTMLElement>, immediate = false) {
+    if (this.dataset.constellation === 'revealed') return;
+
+    this.constellationObserver?.disconnect();
+    this.constellationObserver = undefined;
+
+    if (immediate) {
+      this.restConstellation(slots);
+      this.dataset.constellation = 'revealed';
+      return;
+    }
+
+    const starts = [...slots].map((slot) => ({
+      slot,
+      item: slot.querySelector<HTMLElement>('.personal-note__item'),
+      from: slot.style.translate || getComputedStyle(slot).translate,
+      to: slot.dataset.restTranslate || getComputedStyle(slot).translate,
+      delay: Number(slot.dataset.emergeDelay || 0),
+    }));
+
+    this.dataset.constellation = 'revealed';
+
+    for (const start of starts) {
+      const travel = start.slot.animate(
+        [{ translate: start.from }, { translate: start.to }],
+        {
+          duration: personalNoteMotion.durationMs,
+          delay: start.delay,
+          easing: personalNoteMotion.easing,
+          fill: 'forwards',
+        },
+      );
+      this.constellationAnimations.push(travel);
+
+      const fade = start.item?.animate(
+        [
+          { scale: personalNoteMotion.emergeScale, opacity: 0 },
+          { scale: 1, opacity: 1 },
+        ],
+        {
+          duration: personalNoteMotion.durationMs,
+          delay: start.delay,
+          easing: personalNoteMotion.easing,
+          fill: 'forwards',
+        },
+      );
+      if (fade) this.constellationAnimations.push(fade);
+
+      void travel.finished
+        .then(() => {
+          start.slot.style.removeProperty('translate');
+          start.item?.style.removeProperty('scale');
+          start.item?.style.removeProperty('opacity');
+          travel.cancel();
+          fade?.cancel();
+        })
+        .catch(() => undefined);
+    }
   }
 
   private reducedMotion() {
