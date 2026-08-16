@@ -21,11 +21,10 @@ export const openingMotion = {
   boxFallDistanceVh: 32,
   boxFallPower: 1.2,
   identityRevealDistance: 0.7,
-  identityBeats: [0, 0.22, 0.44, 0.66, 0.86] as const,
-  identityBeatGapMs: 560,
+  identityBeats: [0, 0.2, 0.4, 0.6, 0.8] as const,
+  identityBeatReveal: 0.14,
+  introExitDistanceVh: 62,
   completeAt: 0.995,
-  headerBeat: 4,
-  premiseBeat: 5,
 } as const;
 
 const firstFrameUntil = (animationDistance: number) =>
@@ -61,14 +60,9 @@ export const contentRevealStart = (frameCount: number, animationDistance: number
   return lidLiftAt + remaining * (openingMotion.flipbookUntil - lidLiftAt);
 };
 
-export const identityBeatCount = (identityReveal: number) => {
-  if (identityReveal <= 0) return 0;
-
-  let count = 0;
-  for (const start of openingMotion.identityBeats) {
-    if (identityReveal >= start) count += 1;
-  }
-  return count;
+export const identityBeatProgress = (identityReveal: number, index: number) => {
+  const start = openingMotion.identityBeats[index] ?? 1;
+  return clamp((identityReveal - start) / openingMotion.identityBeatReveal);
 };
 
 export const boxFallAmount = (progress: number) =>

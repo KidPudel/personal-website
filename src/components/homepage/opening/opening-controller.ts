@@ -1,9 +1,9 @@
-import { clamp } from '../../../lib/motion';
+import { clamp, smooth } from '../../../lib/motion';
 import {
   boxFallAmount,
   contentRevealStart,
   flipbookFrameIndex,
-  identityBeatCount,
+  identityBeatProgress,
   isScrollHintHire,
   openingMotion,
 } from './opening-motion';
@@ -14,9 +14,6 @@ class OpeningSequence extends HTMLElement {
   private helloAnimationPlayed = false;
   private helloAnimationPrepared = false;
   private thermalHintPlayed = false;
-  private visibleBeats = 0;
-  private lastBeatAt = 0;
-  private beatTimer = 0;
 
   connectedCallback() {
     if (this.dataset.enhanced) return;
@@ -26,6 +23,8 @@ class OpeningSequence extends HTMLElement {
     const boxStage = this.querySelector<HTMLElement>('[data-opening-art]');
     const runway = this.querySelector<HTMLElement>('[data-opening-runway]');
     const reveal = this.querySelector<HTMLElement>('[data-opening-reveal]');
+    const identityIntro = reveal?.querySelector<HTMLElement>('.identity__intro') ?? null;
+    const identityPortrait = reveal?.querySelector<HTMLElement>('.identity__portrait') ?? null;
     const scrollHint = this.querySelector<HTMLElement>('[data-opening-scroll-hint]');
     const hintCard = this.querySelector<HTMLElement>('[data-opening-scroll-hint-card]');
     const hintPhrase = this.querySelector<HTMLElement>('[data-opening-scroll-hint-phrase]');
@@ -34,11 +33,13 @@ class OpeningSequence extends HTMLElement {
     const page = this.closest<HTMLElement>('[data-homepage]');
     const header = page?.querySelector<HTMLElement>('[data-site-header]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let alignedHash = '';
 
     if (
       !boxStage ||
       !runway ||
       !reveal ||
+      !identityIntro ||
       !scrollHint ||
       !hintCard ||
       !hintPhrase ||
@@ -53,12 +54,29 @@ class OpeningSequence extends HTMLElement {
     let openingStart = 0;
     let openingDistance = 1;
     let needsMeasurement = true;
-    let lastPaintedProgress = Number.NaN;
+    const paintIntroExit = (bypassed: boolean) => {
+      const edge = openingStart + openingDistance;
+      const distance = Math.max(1, window.innerHeight * openingMotion.introExitDistanceVh / 100);
+      const progress = bypassed ? 0 : clamp((window.scrollY - edge) / distance);
+      const opacity = 1 - progress;
+      const translate = `${(-progress * 108).toFixed(3)}%`;
+      const introHasLeft = progress >= 0.999;
+
+      identityIntro.style.setProperty('--intro-exit-y', translate);
+      identityIntro.style.opacity = opacity.toFixed(4);
+      identityPortrait?.style.setProperty('--intro-exit-y', translate);
+      identityPortrait?.style.setProperty('--intro-exit-opacity', opacity.toFixed(4));
+      this.toggleAttribute('data-intro-exiting', progress > 0 && progress < 1);
+      this.toggleAttribute('data-intro-left', introHasLeft);
+      identityIntro.inert = introHasLeft;
+      identityIntro.toggleAttribute('aria-hidden', introHasLeft);
+      return progress;
+    };
     let lastFrameIndex = -1;
     const primedFrames = new Set<number>([0]);
 
     const measure = () => {
-      openingStart = window.scrollY + runway.getBoundingClientRect().top;
+      openingStart = window.scrollY + this.getBoundingClientRect().top;
       openingDistance = Math.max(1, runway.offsetHeight - window.innerHeight);
       needsMeasurement = false;
     };
@@ -211,82 +229,43 @@ class OpeningSequence extends HTMLElement {
       showScrollHint(event);
     };
 
-    const queueNextBeat = () => {
-      if (this.beatTimer) return;
-      const wait = Math.max(
-        16,
-        openingMotion.identityBeatGapMs - (performance.now() - this.lastBeatAt),
-      );
-      this.beatTimer = window.setTimeout(() => {
-        this.beatTimer = 0;
-        lastPaintedProgress = Number.NaN;
-        requestRender();
-      }, wait);
-    };
-
-    const paint = (progress: number, immediate = false) => {
+    const paint = (progress: number) => {
       const frameIndex = flipbookFrameIndex(progress, frames.length, openingDistance);
       const identityReveal = clamp(
         (progress - contentRevealStart(frames.length, openingDistance)) /
           Math.max(openingMotion.identityRevealDistance, 0.0001),
       );
-      const targetBeats = identityBeatCount(identityReveal);
-      const now = performance.now();
-      let stepped = false;
-
-      if (immediate) {
-        if (this.beatTimer) {
-          window.clearTimeout(this.beatTimer);
-          this.beatTimer = 0;
-        }
-        this.visibleBeats = targetBeats;
-        this.lastBeatAt = now;
-      } else if (this.visibleBeats !== targetBeats) {
-        const ready =
-          this.visibleBeats === 0 || now - this.lastBeatAt >= openingMotion.identityBeatGapMs;
-        if (ready) {
-          this.visibleBeats += this.visibleBeats < targetBeats ? 1 : -1;
-          this.lastBeatAt = now;
-          stepped = true;
-        }
-      }
-
-      if (!immediate && progress === lastPaintedProgress && !stepped) {
-        if (this.visibleBeats !== targetBeats) queueNextBeat();
-        return;
-      }
-      lastPaintedProgress = progress;
-
       const bypassed = bypassOpening();
-      const helloOpacity = this.visibleBeats >= 1 ? 1 : 0;
-      const titleOpacity = this.visibleBeats >= 2 ? 1 : 0;
-      const summaryOpacity = this.visibleBeats >= 3 ? 1 : 0;
-      const headerVisibility = bypassed
-        ? 1
-        : this.visibleBeats >= openingMotion.headerBeat &&
-            this.visibleBeats < openingMotion.premiseBeat
-          ? 1
-          : 0;
-      const identityHold = bypassed
-        ? 1
-        : this.visibleBeats >= 1 && this.visibleBeats < openingMotion.premiseBeat
-          ? 1
-          : 0;
-      const premiseOpacity = bypassed ? 0 : this.visibleBeats >= openingMotion.premiseBeat ? 1 : 0;
+      const introExit = paintIntroExit(bypassed);
+      const helloOpacity = bypassed ? 1 : identityBeatProgress(identityReveal, 0);
+      const titleOpacity = bypassed ? 1 : identityBeatProgress(identityReveal, 1);
+      const summaryOpacity = bypassed ? 1 : identityBeatProgress(identityReveal, 2);
+      const headerVisibility = bypassed ? 1 : identityBeatProgress(identityReveal, 3);
+      const premiseOpacity = bypassed ? 1 : identityBeatProgress(identityReveal, 4);
+      const identityHold = bypassed ? 1 : clamp(identityReveal / 0.08);
       const boxFall = boxFallAmount(progress);
-      const headerInteractive = headerVisibility === 1;
+      const journeyStart = openingStart + runway.offsetHeight;
+      const boxFadeStart = journeyStart - window.innerHeight * 0.18;
+      const boxFadeDistance = Math.max(1, window.innerHeight * 0.38);
+      const boxFade = bypassed
+        ? 1
+        : smooth(clamp((window.scrollY - boxFadeStart) / boxFadeDistance));
+      const artOpacity = 1 - boxFade;
+      const headerInteractive = headerVisibility >= 0.98 && introExit < 0.9;
 
       if (!this.helloAnimationPrepared && identityReveal > 0) {
         this.helloAnimationPrepared = true;
         reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-prepare'));
       }
 
-      if (!this.helloAnimationPlayed && helloOpacity === 1) {
+      if (!this.helloAnimationPlayed && helloOpacity > 0.05) {
         this.helloAnimationPlayed = true;
-        reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-play'));
+        if (!bypassed) {
+          reveal.querySelector('hello-animation')?.dispatchEvent(new CustomEvent('hello-animation-play'));
+        }
       }
 
-      if (!this.thermalHintPlayed && titleOpacity === 1) {
+      if (!this.thermalHintPlayed && titleOpacity >= 0.85) {
         this.thermalHintPlayed = true;
         reveal.querySelector('playful-word')?.dispatchEvent(new CustomEvent('thermal-hint'));
       }
@@ -299,30 +278,47 @@ class OpeningSequence extends HTMLElement {
       this.style.setProperty('--hello-opacity', helloOpacity.toFixed(4));
       this.style.setProperty('--title-opacity', titleOpacity.toFixed(4));
       this.style.setProperty('--summary-opacity', summaryOpacity.toFixed(4));
-      this.style.setProperty('--art-opacity', '1');
+      this.style.setProperty('--premise-opacity', premiseOpacity.toFixed(4));
+      this.style.setProperty('--art-opacity', artOpacity.toFixed(4));
       this.style.setProperty('--box-fall', boxFall.toFixed(4));
       this.style.setProperty('--identity-hold', identityHold.toFixed(4));
-      this.style.setProperty('--premise-line-opacity', premiseOpacity.toFixed(4));
       this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
+      this.toggleAttribute('data-box-fading', boxFade > 0 && boxFade < 1);
       reveal.toggleAttribute('data-visible', frameIndex >= frames.length - 1 || identityReveal > 0);
 
       page.style.setProperty('--header-visibility', headerVisibility.toFixed(4));
-      page.style.setProperty('--premise-opacity', premiseOpacity.toFixed(4));
       header.inert = !headerInteractive;
       header.toggleAttribute('aria-hidden', !headerInteractive);
-      reveal.inert = bypassed
-        ? false
-        : this.visibleBeats < 1 || this.visibleBeats >= openingMotion.premiseBeat;
-      this.toggleAttribute('data-identity-held', identityHold === 1);
+      reveal.inert = bypassed ? false : helloOpacity < 0.98;
+      this.toggleAttribute('data-identity-held', identityHold >= 0.98);
       this.toggleAttribute('data-complete', bypassed || progress >= openingMotion.completeAt);
+    };
 
-      if (this.visibleBeats !== targetBeats) queueNextBeat();
+    const paintFromScroll = () => paint(scrollProgress());
+
+    const settleOpening = () => {
+      needsMeasurement = true;
+      paintFromScroll();
     };
 
     const showCompletedOpening = () => {
       this.frame = 0;
-      lastPaintedProgress = Number.NaN;
-      paint(1, true);
+      paint(1);
+    };
+
+    const alignBypassedHash = () => {
+      if (!window.location.hash || alignedHash === window.location.hash) return;
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const target = document.getElementById(id);
+      if (!target) return;
+
+      alignedHash = window.location.hash;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          const top = window.scrollY + target.getBoundingClientRect().top;
+          window.scrollTo(0, top);
+        });
+      });
     };
 
     const requestRender = () => {
@@ -339,11 +335,11 @@ class OpeningSequence extends HTMLElement {
         header.inert = false;
         header.removeAttribute('aria-hidden');
         showCompletedOpening();
+        alignBypassedHash();
         return;
       }
 
-      const progress = scrollProgress();
-      paint(progress);
+      paintFromScroll();
 
       if (
         this.hasAttribute('data-complete') &&
@@ -360,19 +356,12 @@ class OpeningSequence extends HTMLElement {
 
     const handleResize = () => {
       needsMeasurement = true;
-      lastPaintedProgress = Number.NaN;
       requestRender();
     };
 
-    const handleMotionPreference = () => {
-      lastPaintedProgress = Number.NaN;
-      requestRender();
-    };
+    const handleMotionPreference = () => requestRender();
 
-    const handleHashChange = () => {
-      lastPaintedProgress = Number.NaN;
-      requestRender();
-    };
+    const handleHashChange = () => requestRender();
 
     boxStage.addEventListener('pointerdown', handleHintPointerDown, {
       signal: this.abort.signal,
@@ -397,7 +386,22 @@ class OpeningSequence extends HTMLElement {
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
-    render();
+    window.addEventListener('pageshow', settleOpening, { signal: this.abort.signal });
+    if (document.readyState === 'complete') {
+      settleOpening();
+    } else {
+      window.addEventListener('load', settleOpening, {
+        once: true,
+        signal: this.abort.signal,
+      });
+    }
+    settleOpening();
+    requestRender();
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        settleOpening();
+      });
+    });
   }
 
   disconnectedCallback() {
@@ -409,7 +413,6 @@ class OpeningSequence extends HTMLElement {
     );
     const contact = this.querySelector<HTMLElement>('[data-opening-scroll-hint-contact]');
     if (contact) contact.hidden = true;
-    if (this.beatTimer) window.clearTimeout(this.beatTimer);
     if (this.frame) window.cancelAnimationFrame(this.frame);
     delete this.dataset.enhanced;
   }

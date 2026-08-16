@@ -29,18 +29,33 @@ use_project_node() {
   return 1
 }
 
+listening_pid() {
+  command -v lsof >/dev/null 2>&1 || return 1
+  lsof -tiTCP:"$PORT" -sTCP:LISTEN 2>/dev/null | sed -n '1p'
+}
+
 cd "$PROJECT_DIR" || exit 1
 use_project_node || exit 1
 
 case ${1:-} in
   --start)
+    existing_pid=$(listening_pid || true)
+    if [ -n "$existing_pid" ]; then
+      printf 'Website already available at http://%s:%s/ (pid %s).\n' "$HOST" "$PORT" "$existing_pid"
+      exit 0
+    fi
     pnpm dev --background --host "$HOST" --port "$PORT"
     ;;
   --stop|--kill|--end)
     pnpm exec astro dev stop
     ;;
   --status)
-    pnpm exec astro dev status
+    existing_pid=$(listening_pid || true)
+    if [ -n "$existing_pid" ]; then
+      printf 'Website listening at http://%s:%s/ (pid %s).\n' "$HOST" "$PORT" "$existing_pid"
+    else
+      pnpm exec astro dev status
+    fi
     ;;
   --logs)
     pnpm exec astro dev logs

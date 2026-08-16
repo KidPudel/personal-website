@@ -1,14 +1,11 @@
 export const valueVoiceMotion = {
-  firstHandoffViewportStart: 0.3,
+  firstHandoffViewportStart: 0.42,
   laterHandoffViewportStart: 0.56,
-  firstHandoffDistance: 0.42,
+  firstHandoffDistance: 0.38,
   laterHandoffDistance: 0.4,
   reducedMotionThreshold: 0.52,
   morphBlur: 9.5,
   morphBlurRamp: 0.64,
-  valuesStickTopVh: 36,
   aspectRevealMargin: '0px 0px -8% 0px',
   aspectRevealThreshold: 0.08,
-  flyDurationMs: 640,
-  flyStaggerMs: 220,
 } as const;

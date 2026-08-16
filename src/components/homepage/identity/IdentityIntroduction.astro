@@ -4,24 +4,28 @@ import { Image } from 'astro:assets';
 import realPortrait from '../../../assets/art/avatar_irl.png';
 import { identity } from '../../../content/homepage/identity';
 import PortfolioHeader from '../PortfolioHeader.astro';
+import ValueVoice from '../values/ValueVoice.astro';
 import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
 ---
 
 <identity-introduction class="identity-shell">
   <section id="intro" class="identity" aria-labelledby="intro-title">
-    <div class="identity__copy">
-      <p class="identity__hello">
-        <HelloAnimation text={identity.hello} />
-        <span>{identity.role}</span>
-      </p>
-      <h1 id="intro-title">
-        {identity.title.before}<span class="identity__title-mark"><PlayfulWord word={identity.title.word} />,</span>{identity.title.after.replace(/^,/, '')}
-      </h1>
-      <p class="identity__summary">
-        {identity.summary.before}<span class="identity__word">{identity.summary.word}</span>{identity.summary.after}
-      </p>
-      <PortfolioHeader current="home" placement="intro" contactId="intro-contact" />
+    <div class="identity__copy" data-identity-copy>
+      <div class="identity__intro">
+        <p class="identity__hello">
+          <HelloAnimation text={identity.hello} />
+          <span>{identity.role}</span>
+        </p>
+        <h1 id="intro-title">
+          {identity.title.before}<span class="identity__title-mark"><PlayfulWord word={identity.title.word} />,</span>{identity.title.after.replace(/^,/, '')}
+        </h1>
+        <p class="identity__summary">
+          {identity.summary.before}<span class="identity__word">{identity.summary.word}</span>{identity.summary.after}
+        </p>
+        <PortfolioHeader current="home" placement="intro" contactId="intro-contact" />
+      </div>
+      <ValueVoice />
     </div>
     <figure id="identity-portrait" class="identity__portrait" aria-hidden="true">
       <Image
@@ -80,6 +84,7 @@ import PlayfulWord from './PlayfulWord.astro';
 <style>
   .identity-shell {
     display: block;
+    width: 100%;
   }
 
   .identity {
@@ -87,7 +92,7 @@ import PlayfulWord from './PlayfulWord.astro';
     isolation: isolate;
     display: grid;
     min-height: 0;
-    grid-template-columns: minmax(0, 36rem);
+    grid-template-columns: min(36rem, 100%);
     justify-content: center;
     align-content: start;
     align-items: start;
@@ -96,6 +101,25 @@ import PlayfulWord from './PlayfulWord.astro';
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  .identity__copy {
+    position: relative;
+    width: min(100%, 49rem);
+  }
+
+  .identity__intro {
+    overflow: visible;
+    transform: translate3d(0, var(--intro-exit-y, 0%), 0);
+    transform-origin: center top;
+  }
+
+  :global(.js:not(.opening-bypassed) opening-sequence[data-intro-left] .identity__intro) {
+    visibility: hidden;
+  }
+
+  :global(.js:not(.opening-bypassed) opening-sequence[data-intro-left] .identity__portrait) {
+    display: none;
   }
 
   .identity__portrait {
@@ -125,15 +149,10 @@ import PlayfulWord from './PlayfulWord.astro';
   }
 
   .identity-shell[data-portrait-visible] .identity__portrait {
-    opacity: var(--identity-opacity, 1);
+    opacity: calc(var(--identity-opacity, 1) * var(--intro-exit-opacity, 1));
     visibility: visible;
-    transform: scale(1) rotate(-2deg);
+    transform: translate3d(0, var(--intro-exit-y, 0%), 0) scale(1) rotate(-2deg);
     transition-delay: 80ms, 40ms, 0s;
-  }
-
-  .identity__copy {
-    position: relative;
-    width: min(100%, 49rem);
   }
 
   .identity__hello {
@@ -148,9 +167,6 @@ import PlayfulWord from './PlayfulWord.astro';
     letter-spacing: 0.025em;
     opacity: var(--hello-opacity, 1);
     transform: translate3d(0, calc((1 - var(--hello-opacity, 1)) * 0.85rem), 0);
-    transition:
-      opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .identity__hello span {
@@ -161,9 +177,7 @@ import PlayfulWord from './PlayfulWord.astro';
 
   .identity h1 {
     max-width: 24ch;
-    margin: calc(var(--title-opacity, 1) * 1.2rem) 0 0;
-    max-height: calc(var(--title-opacity, 1) * 8em);
-    overflow: hidden;
+    margin: 1.2rem 0 0;
     font-family: var(--font-display);
     font-size: clamp(2.05rem, 2.9vw, 3.15rem);
     font-weight: 400;
@@ -171,11 +185,6 @@ import PlayfulWord from './PlayfulWord.astro';
     line-height: 1.04;
     opacity: var(--title-opacity, 1);
     transform: translate3d(0, calc((1 - var(--title-opacity, 1)) * 1.1rem), 0);
-    transition:
-      opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      max-height 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      margin 480ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .identity__title-mark {
@@ -184,19 +193,12 @@ import PlayfulWord from './PlayfulWord.astro';
 
   .identity__summary {
     max-width: 35rem;
-    margin: calc(var(--summary-opacity, 1) * 1.5rem) 0 0;
-    max-height: calc(var(--summary-opacity, 1) * 8em);
-    overflow: hidden;
+    margin: 1.5rem 0 0;
     color: var(--color-copy);
     font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
     line-height: 1.68;
     opacity: var(--summary-opacity, 1);
     transform: translate3d(0, calc((1 - var(--summary-opacity, 1)) * 0.95rem), 0);
-    transition:
-      opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      max-height 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      margin 480ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .identity__word {
@@ -235,14 +237,14 @@ import PlayfulWord from './PlayfulWord.astro';
 
     .identity h1 {
       max-width: 13.5em;
-      margin-top: calc(var(--title-opacity, 1) * 1.05rem);
+      margin-top: 1.05rem;
       font-size: clamp(1.7rem, 7.8vw, 2.05rem);
       line-height: 1.14;
     }
 
     .identity__summary {
       max-width: 36em;
-      margin-top: calc(var(--summary-opacity, 1) * 1.15rem);
+      margin-top: 1.15rem;
       font-size: 1.0625rem;
       line-height: 1.55;
     }
@@ -260,12 +262,12 @@ import PlayfulWord from './PlayfulWord.astro';
     }
 
     .identity h1 {
-      margin-top: calc(var(--title-opacity, 1) * 0.9rem);
+      margin-top: 0.9rem;
       font-size: clamp(1.58rem, 7vw, 1.85rem);
     }
 
     .identity__summary {
-      margin-top: calc(var(--summary-opacity, 1) * 0.95rem);
+      margin-top: 0.95rem;
     }
   }
 
@@ -285,7 +287,7 @@ import PlayfulWord from './PlayfulWord.astro';
     }
 
     .identity__summary {
-      margin-top: calc(var(--summary-opacity, 1) * 1.15rem);
+      margin-top: 1.15rem;
       font-size: 0.95rem;
     }
   }
@@ -296,8 +298,6 @@ import PlayfulWord from './PlayfulWord.astro';
     .identity h1,
     .identity__summary {
       transform: none;
-      max-height: none;
-      overflow: visible;
       transition: none;
     }
 

@@ -1,0 +1,152 @@
+---
+import { values, valuesPremise } from '../../../content/homepage/values';
+---
+
+<div class="value-voice" data-value-voice>
+  <div class="value-voice__stack">
+    <div class="value-voice__layer value-voice__layer--intro" data-voice-layer>
+      <h2 id="values-title">{valuesPremise}</h2>
+    </div>
+
+    {values.map((value) => (
+      <div class="value-voice__layer" data-voice-layer>
+        <h3 id={`value-${value.id}`}>
+          {value.before}<button
+            type="button"
+            class="word-cycle"
+            data-word-cycle
+            aria-label={`${value.words[0]}. Change this word.`}
+            disabled
+          >
+            {value.words.map((word, wordIndex) => (
+              <span data-word-option hidden={wordIndex !== 0}>{word}</span>
+            ))}
+          </button><span class="value-voice__after">{value.after}</span>
+        </h3>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .value-voice {
+    width: 100%;
+    margin: 0.7rem 0 0;
+    text-align: center;
+    pointer-events: none;
+    opacity: var(--premise-opacity, 1);
+  }
+
+  .value-voice__stack {
+    display: grid;
+    width: 100%;
+  }
+
+  .value-voice__layer {
+    width: 100%;
+    padding: 0.15rem 0.35rem 0.35rem;
+    pointer-events: auto;
+  }
+
+  .value-voice__layer h2,
+  .value-voice__layer h3 {
+    margin: 0;
+    text-shadow:
+      0 0 0.9rem var(--color-field),
+      0 0 1.8rem var(--color-field);
+  }
+
+  .value-voice__layer h2 {
+    max-width: 35rem;
+    margin-inline: auto;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+
+  .value-voice__layer h3 {
+    font-family: var(--font-editorial);
+    font-size: clamp(1.55rem, 2.3vw, 2.25rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.12;
+  }
+
+  .word-cycle {
+    padding: 0 0 0.04em;
+    border: 0;
+    border-bottom: 0.1rem dotted var(--color-muted);
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font-family: var(--font-special);
+    font-size: inherit;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: inherit;
+    cursor: pointer;
+  }
+
+  .word-cycle:disabled {
+    color: inherit;
+    cursor: default;
+  }
+
+  .word-cycle:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 0.2rem;
+  }
+
+  .word-cycle [data-word-option][hidden] {
+    display: none;
+  }
+
+  .value-voice__after {
+    white-space: nowrap;
+  }
+
+  :global(.js) .value-voice:not([data-enhanced]) .value-voice__layer:not(.value-voice__layer--intro) {
+    display: none;
+  }
+
+  :global(.js) .value-voice[data-enhanced] .value-voice__layer {
+    grid-area: 1 / 1;
+    color: var(--color-ink);
+    filter: blur(var(--voice-blur, 0));
+    opacity: var(--voice-opacity, 0);
+  }
+
+  :global(.js:not(.opening-bypassed)) .value-voice[data-enhanced] .value-voice__layer--intro {
+    opacity: calc(var(--voice-opacity, 0) * var(--premise-opacity, 1));
+  }
+
+  @media (max-width: 50rem) {
+    .value-voice {
+      margin-top: 0.55rem;
+    }
+
+    .value-voice__layer {
+      padding: 0.1rem 0.2rem 0.25rem;
+    }
+
+    .value-voice__layer h2 {
+      font-size: clamp(1.08rem, 4.8vw, 1.3rem);
+    }
+
+    .value-voice__layer h3 {
+      font-size: clamp(1.08rem, 5vw, 1.35rem);
+      line-height: 1.12;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .value-voice[data-enhanced] .value-voice__layer {
+      filter: none;
+    }
+  }
+</style>

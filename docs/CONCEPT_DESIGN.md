@@ -1,6 +1,6 @@
 # Design concept
 
-## Current priority and approved redesign direction
+## Stable product direction
 
 Approved by Igor on 2026-08-11.
 
@@ -41,11 +41,11 @@ The site should feel:
 - exploring the world navigiting through it by unfolding the path as you go.
 
 
-## Art direction and visual language and interaction design
+## Art direction and current interaction hypothesis
 
 
 - Mix/blend of quite calm minimalism with maximalism "anti-portfolio" portfolio
-- Restrained, with a tactile opening — the closed box falls and unfolds as you scroll, and the identity emerges from it without a color splash or a locked scroll
+- The current opening hypothesis is tactile: a closed box falls and unfolds as you scroll, and the identity emerges from it without a color splash or locked scroll. Igor may replace this choreography with a different visual idea while preserving the product goal and intended feeling.
 - The balance between playful-chaotic-warm with quiet confidence that is still artistic and unique.
 
 ## Artistic continuity
@@ -56,4 +56,4 @@ The homepage is one authored artistic expression, not a sequence of product-mark
 - Do not add "next" labels, numbered progress indicators, step counters, section-navigation chrome, or similar conversion-interface patterns to explain the page.
 - Do not repeat a heading at the end of one composition and the beginning of another. If text introduces what follows, keep one instance and let that same instance transform or carry into the next passage.
 - Semantic sections may remain for accessibility and document structure, but they must not create visible seams or dictate the artistic composition.
-- Responsive variants should preserve the same composition and interaction logic wherever practical, scaling and tightening the artwork instead of substituting a different section sequence.
+- Responsive variants should preserve narrative, hierarchy, and character. They may recompose spatially when scaling the desktop artwork would weaken readability, evidence, or interaction quality.

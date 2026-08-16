@@ -61,22 +61,6 @@ class ValueStory extends HTMLElement {
       this.querySelectorAll<HTMLElement>('[data-aspect]').forEach((aspect) => this.observer?.observe(aspect));
     }
 
-    const updateVoiceArrive = () => {
-      const opening = this.closest<HTMLElement>('opening-sequence');
-      if (!opening) return;
-
-      if (document.documentElement.classList.contains('opening-bypassed') || reducedMotion.matches) {
-        opening.style.setProperty('--values-voice-arrive', '1');
-        voice.removeAttribute('data-arrived');
-        return;
-      }
-
-      const restTop = Number.parseFloat(getComputedStyle(voice).top) || window.innerHeight * 0.36;
-      const arrive = clamp(1 - (voice.getBoundingClientRect().top - restTop) / 48);
-      opening.style.setProperty('--values-voice-arrive', arrive.toFixed(4));
-      voice.toggleAttribute('data-arrived', arrive >= 0.98);
-    };
-
     let lastShownLayer = -1;
 
     const setLayer = (layer: HTMLElement, opacity: number, blur: number) => {
@@ -92,6 +76,8 @@ class ValueStory extends HTMLElement {
         const active = index === activeIndex;
         setLayer(layer, active ? 1 : 0, 0);
         layer.style.pointerEvents = active ? 'auto' : 'none';
+        if (active) layer.removeAttribute('aria-hidden');
+        else layer.setAttribute('aria-hidden', 'true');
         layer.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
           button.tabIndex = active ? 0 : -1;
         });
@@ -110,7 +96,6 @@ class ValueStory extends HTMLElement {
 
     const render = () => {
       this.frame = 0;
-      updateVoiceArrive();
 
       if (reducedMotion.matches) {
         let active = 0;
@@ -158,6 +143,8 @@ class ValueStory extends HTMLElement {
 
         const interactive = index === (progress < 0.5 ? outgoingIndex : incomingIndex);
         layer.style.pointerEvents = interactive ? 'auto' : 'none';
+        if (interactive) layer.removeAttribute('aria-hidden');
+        else layer.setAttribute('aria-hidden', 'true');
         layer.querySelectorAll<HTMLButtonElement>('[data-word-cycle]').forEach((button) => {
           button.tabIndex = interactive ? 0 : -1;
         });
@@ -179,6 +166,8 @@ class ValueStory extends HTMLElement {
     this.abort?.abort();
     this.observer?.disconnect();
     if (this.frame) window.cancelAnimationFrame(this.frame);
+    const voice = this.querySelector<HTMLElement>('[data-value-voice]');
+    if (voice) delete voice.dataset.enhanced;
     delete this.dataset.enhanced;
   }
 }

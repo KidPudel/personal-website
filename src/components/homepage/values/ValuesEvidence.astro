@@ -4,12 +4,10 @@ import type { CollectionEntry } from 'astro:content';
 import { sitePath } from '../../../config/site';
 import {
   values,
-  valuesPremise,
   workPath,
   type ValueProject,
 } from '../../../content/homepage/values';
 import EvidenceObject from './EvidenceObject.astro';
-import { valueVoiceMotion } from './value-voice-motion';
 
 interface Props {
   observatory: CollectionEntry<'software'>;
@@ -27,73 +25,35 @@ const projectTitles: Record<ValueProject, string> = {
 };
 ---
 
-<value-story style={`--values-stick-top: ${valueVoiceMotion.valuesStickTopVh}svh`}>
-  <section id="values" class="values-story" aria-labelledby="values-title">
-    <div class="value-composition">
-      <div class="value-voice" data-value-voice>
-        <div class="value-voice__stack">
-          <div class="value-voice__layer value-voice__layer--intro" data-voice-layer>
-            <h2 id="values-title">{valuesPremise}</h2>
-          </div>
-
-          {values.map((value) => (
-            <div class="value-voice__layer" data-voice-layer>
-              <h3 id={`value-${value.id}`}>
-                {value.before}<button
-                  type="button"
-                  class="word-cycle"
-                  data-word-cycle
-                  aria-label={`${value.words[0]}. Change this word.`}
-                  disabled
-                >
-                  {value.words.map((word, wordIndex) => (
-                    <span data-word-option hidden={wordIndex !== 0}>{word}</span>
-                  ))}
-                </button><span class="value-voice__after">{value.after}</span>
-              </h3>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div class="value-chapters">
-        {values.map((value) => (
-          <section
-            class="value-chapter"
-            aria-labelledby={`value-${value.id}`}
-            data-value-passage
-          >
-            <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
-              {value.aspects.map((aspect) => (
-                <EvidenceObject aspect={aspect} projectTitle={projectTitles[aspect.project]} />
-              ))}
-            </ol>
-          </section>
-        ))}
-      </div>
+<section id="values" class="values-story" aria-labelledby="values-title">
+  <div class="value-composition">
+    <div class="value-chapters">
+      {values.map((value) => (
+        <section
+          class="value-chapter"
+          aria-labelledby={`value-${value.id}`}
+          data-value-passage
+        >
+          <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
+            {value.aspects.map((aspect) => (
+              <EvidenceObject aspect={aspect} projectTitle={projectTitles[aspect.project]} />
+            ))}
+          </ol>
+        </section>
+      ))}
     </div>
+  </div>
 
-    <p class="work-path">
-      <a href={sitePath('/work/')}>{workPath.label}</a>
-    </p>
-  </section>
-</value-story>
-
-<script>
-  import './value-voice';
-</script>
+  <p class="work-path">
+    <a href={sitePath('/work/')}>{workPath.label}</a>
+  </p>
+</section>
 
 <style>
-  value-story {
-    position: relative;
-    display: block;
-  }
-
   .values-story {
-    --passage-hold: 48svh;
+    --passage-hold: 28svh;
     --voice-width: clamp(16.5rem, 25vw, 22rem);
-    --fly-duration: 640ms;
-    --fly-stagger: 70ms;
+    --fly-duration: 520ms;
     position: relative;
     isolation: isolate;
     width: min(calc(100% - clamp(4rem, 7vw, 6rem)), 88rem);
@@ -104,119 +64,6 @@ const projectTitles: Record<ValueProject, string> = {
   .value-composition {
     position: relative;
     display: grid;
-  }
-
-  .value-voice,
-  .value-chapters {
-    grid-area: 1 / 1;
-  }
-
-  .value-voice {
-    position: sticky;
-    z-index: 4;
-    top: max(var(--values-stick-top), 6rem);
-    align-self: start;
-    width: var(--voice-width);
-    min-height: 9rem;
-    margin-inline: auto;
-    text-align: center;
-    pointer-events: none;
-  }
-
-  .value-voice__layer--intro h2 {
-    position: relative;
-    left: 50%;
-    width: min(36rem, calc(100vw - 2.5rem));
-    font-family: var(--font-editorial);
-    font-size: clamp(1.35rem, 2vw, 1.85rem);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.25;
-    text-shadow:
-      0 0 1rem var(--color-field),
-      0 0 2.2rem var(--color-field);
-    transform: translateX(-50%);
-  }
-
-  :global(.js:not(.opening-bypassed)) .value-voice {
-    opacity: calc(var(--values-voice-arrive, 0) * var(--premise-line-opacity, 0));
-    transition: opacity 780ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  :global(.js:not(.opening-bypassed)) .value-voice:not([data-arrived]) .value-voice__layer {
-    pointer-events: none;
-  }
-
-  .value-voice__stack {
-    display: grid;
-    align-items: center;
-  }
-
-  .value-voice__layer {
-    min-width: 0;
-    padding: 1rem 0.55rem 1.1rem;
-    pointer-events: auto;
-  }
-
-  .value-voice__layer h2,
-  .value-voice__layer h3 {
-    margin: 0;
-  }
-
-  .value-voice__layer h3 {
-    font-family: var(--font-editorial);
-    font-size: clamp(1.55rem, 2.3vw, 2.25rem);
-    font-style: italic;
-    font-weight: 400;
-    letter-spacing: -0.01em;
-    line-height: 1.12;
-  }
-
-  .word-cycle {
-    padding: 0 0 0.04em;
-    border: 0;
-    border-bottom: 0.1rem dotted var(--color-muted);
-    border-radius: 0;
-    background: transparent;
-    color: inherit;
-    font-family: var(--font-special);
-    font-size: inherit;
-    font-style: normal;
-    font-weight: 400;
-    letter-spacing: -0.015em;
-    line-height: inherit;
-    cursor: pointer;
-  }
-
-  .word-cycle:disabled {
-    color: inherit;
-    cursor: default;
-  }
-
-  .word-cycle:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 0.2rem;
-  }
-
-  .word-cycle [data-word-option][hidden] {
-    display: none;
-  }
-
-  .value-voice__after {
-    white-space: nowrap;
-  }
-
-  :global(.js) .value-voice[data-enhanced] .value-voice__stack {
-    display: grid;
-  }
-
-  :global(.js) .value-voice[data-enhanced] .value-voice__layer {
-    grid-area: 1 / 1;
-    color: var(--color-ink);
-    filter: blur(var(--voice-blur, 0));
-    opacity: var(--voice-opacity, 0);
-    will-change: filter, opacity;
   }
 
   .value-chapters {
@@ -316,21 +163,21 @@ const projectTitles: Record<ValueProject, string> = {
     --from-y: 16vh;
   }
 
-  :global(.js) value-story[data-enhanced] :global(.aspect) {
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect) {
     opacity: 0;
-    transform: translate3d(var(--from-x), var(--from-y), 0) scale(0.2);
+    transform: translate3d(var(--from-x), var(--from-y), 0) scale(0.92);
     transition:
-      opacity 420ms ease var(--fly-delay, 0ms),
-      transform var(--fly-duration) cubic-bezier(0.22, 1.12, 0.32, 1) var(--fly-delay, 0ms);
+      opacity 300ms cubic-bezier(0.23, 1, 0.32, 1) var(--fly-delay, 0ms),
+      transform var(--fly-duration) cubic-bezier(0.23, 1, 0.32, 1) var(--fly-delay, 0ms);
   }
 
-  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(1)) { --fly-delay: 0ms; }
-  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(2)) { --fly-delay: 220ms; }
-  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(3)) { --fly-delay: 440ms; }
-  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(4)) { --fly-delay: 660ms; }
-  :global(.js) value-story[data-enhanced] :global(.aspect:nth-child(5)) { --fly-delay: 880ms; }
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect:nth-child(1)) { --fly-delay: 0ms; }
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect:nth-child(2)) { --fly-delay: 60ms; }
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect:nth-child(3)) { --fly-delay: 120ms; }
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect:nth-child(4)) { --fly-delay: 180ms; }
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect:nth-child(5)) { --fly-delay: 240ms; }
 
-  :global(.js) value-story[data-enhanced] :global(.aspect[data-revealed]) {
+  :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect[data-revealed]) {
     opacity: 1;
     transform: none;
   }
@@ -352,40 +199,22 @@ const projectTitles: Record<ValueProject, string> = {
 
   @media (max-width: 50rem) {
     .values-story {
-      --passage-hold: 58svh;
-      --voice-width: clamp(7.5rem, 36vw, 9rem);
+      --passage-hold: 72svh;
       width: 100%;
-      padding-inline: clamp(0.45rem, 2.2vw, 0.9rem);
-    }
-
-    .value-voice {
-      top: max(var(--values-stick-top), 4.5rem);
-      min-height: 6rem;
-    }
-
-    .value-voice__layer {
-      padding: 0.65rem 0.35rem 0.75rem;
-    }
-
-    .value-voice__layer--intro h2 {
-      font-size: clamp(1.05rem, 4.4vw, 1.28rem);
-    }
-
-    .value-voice__layer h3 {
-      font-size: clamp(0.82rem, 3.8vw, 1.05rem);
-      line-height: 1.09;
+      padding-inline: clamp(0.75rem, 4vw, 1.25rem);
     }
 
     .value-chapter,
     .value-chapter:first-child {
-      grid-template-columns: minmax(0, 1fr) var(--voice-width) minmax(0, 1fr);
-      grid-template-rows: repeat(2, minmax(17rem, auto));
-      gap: clamp(0.55rem, 2.6vw, 1rem);
-      padding: var(--passage-hold) 0 28svh;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
+      grid-auto-rows: minmax(14rem, auto);
+      gap: clamp(3.5rem, 12svh, 6rem);
+      padding: var(--passage-hold) 0 34svh;
     }
 
     .value-chapter:first-child {
-      grid-template-rows: repeat(3, minmax(17rem, auto));
+      grid-template-rows: none;
     }
 
     .value-chapter :global(.aspect:nth-child(n)),
@@ -393,18 +222,22 @@ const projectTitles: Record<ValueProject, string> = {
     .value-chapter:first-child :global(.aspect:nth-child(n)) {
       width: 100%;
       margin-top: 0;
-      justify-self: stretch;
+      grid-column: 1;
+      grid-row: auto;
       --from-x: 0px;
-      --from-y: 28vh;
+      --from-y: 22vh;
     }
 
-    .value-chapter :global(.aspect:nth-child(2)),
-    .value-chapter:first-child :global(.aspect:nth-child(2)) {
-      margin-top: 7rem;
+    .value-chapter :global(.aspect:nth-child(odd)),
+    .value-chapter:first-child :global(.aspect:nth-child(odd)) {
+      justify-self: start;
+      width: min(76vw, 19rem);
     }
 
-    .value-chapter:first-child :global(.aspect:nth-child(4)) {
-      margin-top: 7rem;
+    .value-chapter :global(.aspect:nth-child(even)),
+    .value-chapter:first-child :global(.aspect:nth-child(even)) {
+      justify-self: end;
+      width: min(76vw, 19rem);
     }
 
     .values-story :global(.aspect__visual),
@@ -418,23 +251,18 @@ const projectTitles: Record<ValueProject, string> = {
     }
 
     .values-story :global(.aspect__copy p) {
-      font-size: clamp(0.52rem, 2.05vw, 0.64rem);
-      line-height: 1.35;
+      font-size: clamp(0.78rem, 3.4vw, 0.9rem);
+      line-height: 1.45;
     }
 
     .values-story :global(.aspect__copy a) {
-      margin-top: 0.28rem;
-      font-size: clamp(0.48rem, 1.9vw, 0.58rem);
+      margin-top: 0.4rem;
+      font-size: clamp(0.72rem, 3vw, 0.82rem);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .value-voice[data-enhanced] .value-voice__layer {
-      filter: none;
-      will-change: auto;
-    }
-
-    :global(.js) value-story[data-enhanced] :global(.aspect) {
+    :global(.js) :global(value-story[data-enhanced]) .value-chapter :global(.aspect) {
       opacity: 1;
       transform: none;
       transition: none;
