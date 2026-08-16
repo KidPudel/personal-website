@@ -17,7 +17,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
 <opening-sequence
   class="opening-sequence"
   data-frame-count={frames.length}
-  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --box-fall-distance: ${openingMotion.boxFallDistanceVh}vh`}
+  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --box-fall-distance: ${openingMotion.boxFallDistanceVh}vh; --box-support-distance: ${openingMotion.boxSupportDistanceVh}vh; --box-support-scale-loss: ${openingMotion.boxSupportScaleLoss}`}
 >
   <value-story class="opening-sequence__stage">
     <div class="opening-sequence__scene">
@@ -87,14 +87,13 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
     --identity-opacity: 1;
     --art-opacity: 0;
     --box-fall: 0;
+    --box-support: 0;
     --box-fall-distance: 32vh;
+    --box-support-distance: 0vh;
+    --box-support-scale-loss: 0.22;
     position: relative;
     display: block;
     background: var(--color-field);
-  }
-
-  :global(.homepage-document[data-elastic-top-edge]) .opening-sequence {
-    background: #6f8aff;
   }
 
   .opening-sequence__box,
@@ -119,6 +118,13 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
     z-index: 2;
   }
 
+  /* The journey is a long scroll runway above the sticky value voice. Its
+     interactive descendants opt in individually; the runway itself must not
+     swallow input intended for the word control below it. */
+  :global(.js) :global(value-story[data-enhanced]) .opening-sequence__journey {
+    pointer-events: none;
+  }
+
   :global(.js) .opening-sequence {
     --hello-opacity: 0;
     --title-opacity: 0;
@@ -129,6 +135,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
     --identity-opacity: 0;
     --art-opacity: 1;
     --box-fall: 0;
+    --box-support: 0;
   }
 
   :global(.js) .opening-sequence__stage {
@@ -141,7 +148,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
 
   :global(.js) .opening-sequence__scene {
     position: sticky;
-    z-index: 3;
     top: 0;
     display: grid;
     height: 100svh;
@@ -175,8 +181,8 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
     will-change: opacity;
   }
 
-  :global(.js) .opening-sequence[data-box-fading] .opening-sequence__box {
-    will-change: opacity;
+  :global(.js) .opening-sequence[data-box-settling] .opening-sequence__motion {
+    will-change: transform;
   }
 
   :global(.js) .opening-sequence[data-complete] .opening-sequence__box {
@@ -204,6 +210,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
     --identity-opacity: 1;
     --art-opacity: 0;
     --box-fall: 0;
+    --box-support: 0;
   }
 
   :global(.js.opening-bypassed) .opening-sequence__scene {
@@ -245,8 +252,22 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
   .opening-sequence__motion {
     position: absolute;
     inset: 0;
-    transform: translate3d(0, calc(var(--box-fall, 0) * var(--box-fall-distance, 32vh)), 0)
-      scale(calc(1 - var(--box-fall, 0) * 0.28));
+    transform: translate3d(
+        0,
+        calc(
+          var(--box-fall, 0) * var(--box-fall-distance, 32vh) +
+          var(--box-support, 0) * var(--box-support-distance, 0vh) +
+          var(--box-after-values-y, 0px) +
+          var(--box-closing-y, 0px)
+        ),
+        0
+      )
+      scale(
+        calc(
+          1 - var(--box-fall, 0) * 0.28 -
+          var(--box-support, 0) * var(--box-support-scale-loss, 0.22)
+        )
+      );
     transform-origin: 50% 58%;
   }
 
@@ -440,6 +461,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
       --identity-opacity: 1;
       --art-opacity: 0;
       --box-fall: 0;
+      --box-support: 0;
     }
 
     :global(.js) .opening-sequence__stage {

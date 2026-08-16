@@ -1,0 +1,405 @@
+---
+import frame1 from '../../assets/art/Doodles-baloon-fly/baloon_frame1.png';
+import frame2 from '../../assets/art/Doodles-baloon-fly/baloon_frame2.png';
+import frame3 from '../../assets/art/Doodles-baloon-fly/baloon_frame3.png';
+import frame4 from '../../assets/art/Doodles-baloon-fly/baloon_frame4.png';
+import frame5 from '../../assets/art/Doodles-baloon-fly/baloon_frame5.png';
+import frame6 from '../../assets/art/Doodles-baloon-fly/baloon_frame6.png';
+import frame7 from '../../assets/art/Doodles-baloon-fly/baloon_frame7.png';
+
+const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
+---
+
+<balloon-return class="balloon-return">
+  <a class="balloon-return__trigger" href="#intro" aria-label="Return to the introduction">
+    <span class="balloon-return__art" aria-hidden="true">
+      {frames.map((frame, index) => (
+        <img
+          class="balloon-return__frame"
+          src={index === 0 ? frame.src : undefined}
+          data-src={frame.src}
+          alt=""
+          width="512"
+          height="512"
+          loading={index === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          hidden={index !== 0}
+          data-balloon-frame
+          data-active={index === 0 ? '' : undefined}
+        />
+      ))}
+    </span>
+  </a>
+</balloon-return>
+
+<script>
+  import { balloonReturnMotion } from './balloon-return-motion';
+
+  class BalloonReturn extends HTMLElement {
+    private abort?: AbortController;
+    private sequenceAbort?: AbortController;
+    private frame = 0;
+    private lastFrameIndex = -1;
+
+    connectedCallback() {
+      if (this.dataset.enhanced) return;
+
+      const trigger = this.querySelector<HTMLAnchorElement>('.balloon-return__trigger');
+      const opening = document.querySelector<HTMLElement>('opening-sequence');
+      const runway = opening?.querySelector<HTMLElement>('[data-opening-runway]');
+      const intro = document.getElementById('intro');
+      const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-balloon-frame]'));
+      if (!trigger || !opening || !runway || !intro || frames.length !== 7) return;
+
+      this.dataset.enhanced = '';
+      this.abort = new AbortController();
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const primedFrames = new Set<number>([0]);
+
+      const frameSource = (frame: HTMLImageElement) =>
+        frame.dataset.src || frame.getAttribute('src') || '';
+
+      const primeFrame = (index: number) => {
+        const frame = frames[index];
+        if (!frame || primedFrames.has(index)) return;
+
+        const source = frameSource(frame);
+        if (!source) return;
+        frame.src = source;
+        primedFrames.add(index);
+        void frame.decode().catch(() => undefined);
+      };
+
+      const syncFrame = (index: number) => {
+        primeFrame(index);
+        primeFrame(index - 1);
+        primeFrame(index + 1);
+        if (index === this.lastFrameIndex) return;
+
+        this.lastFrameIndex = index;
+        frames.forEach((frame, frameIndex) => {
+          const active = frameIndex === index;
+          frame.toggleAttribute('data-active', active);
+          frame.hidden = !active;
+        });
+      };
+
+      const introScrollY = () => {
+        const openingTop = window.scrollY + opening.getBoundingClientRect().top;
+        return Math.max(0, openingTop + runway.offsetHeight - window.innerHeight);
+      };
+
+      const syncVisibility = (force = false) => {
+        if (
+          !force &&
+          (this.hasAttribute('data-running') || this.hasAttribute('data-resetting'))
+        ) return;
+
+        const distanceFromBottom =
+          document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+        const visible = distanceFromBottom <= balloonReturnMotion.revealFromBottomPx;
+        this.toggleAttribute('data-visible', visible);
+        this.inert = !visible;
+        this.toggleAttribute('aria-hidden', !visible);
+      };
+
+      const requestVisibility = () => {
+        if (this.frame) return;
+        this.frame = window.requestAnimationFrame(() => {
+          this.frame = 0;
+          syncVisibility();
+        });
+      };
+
+      const wait = (duration: number, signal: AbortSignal) =>
+        new Promise<void>((resolve, reject) => {
+          const timer = window.setTimeout(resolve, duration);
+          signal.addEventListener('abort', () => {
+            window.clearTimeout(timer);
+            reject(signal.reason);
+          }, { once: true });
+        });
+
+      const playArrival = async (signal: AbortSignal) => {
+        for (const index of [2, 3, 4]) {
+          syncFrame(index);
+          await wait(balloonReturnMotion.frameDurationMs, signal);
+        }
+      };
+
+      const riseWithScroll = (
+        startScrollY: number,
+        targetScrollY: number,
+        signal: AbortSignal,
+      ) => new Promise<number>((resolve, reject) => {
+        const startedAt = performance.now();
+        const scrollDistance = Math.max(1, startScrollY - targetScrollY);
+        const riseDistance = window.innerHeight * balloonReturnMotion.riseDistanceVh / 100;
+        let lastProgressAt = startedAt;
+        let previousProgress = -1;
+
+        const cancel = () => reject(signal.reason);
+        signal.addEventListener('abort', cancel, { once: true });
+
+        const render = (now: number) => {
+          if (signal.aborted) return;
+
+          const progress = Math.min(
+            1,
+            Math.max(0, (startScrollY - window.scrollY) / scrollDistance),
+          );
+          if (progress > previousProgress + 0.001) {
+            previousProgress = progress;
+            lastProgressAt = now;
+          }
+
+          const y = -riseDistance * progress;
+          trigger.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0)`;
+          syncFrame(Math.floor((now - startedAt) / balloonReturnMotion.frameDurationMs) % 2);
+
+          const arrived = Math.abs(window.scrollY - targetScrollY) <= 2;
+          if (arrived) {
+            signal.removeEventListener('abort', cancel);
+            resolve(y);
+            return;
+          }
+
+          if (now - lastProgressAt > 800) {
+            signal.removeEventListener('abort', cancel);
+            reject(new DOMException('The return scroll was interrupted.', 'AbortError'));
+            return;
+          }
+
+          window.requestAnimationFrame(render);
+        };
+
+        window.requestAnimationFrame(render);
+        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+      });
+
+      const fall = async (startY: number, signal: AbortSignal) => {
+        const bounds = trigger.getBoundingClientRect();
+        const finalY = startY + window.innerHeight - bounds.top + balloonReturnMotion.fallPastViewportPx;
+        const animation = trigger.animate(
+          [
+            { transform: `translate3d(0, ${startY.toFixed(2)}px, 0)` },
+            { transform: `translate3d(0, ${finalY.toFixed(2)}px, 0)` },
+          ],
+          {
+            duration: balloonReturnMotion.fallDurationMs,
+            easing: 'cubic-bezier(0.77, 0, 0.175, 1)',
+            fill: 'forwards',
+          },
+        );
+        const startedAt = performance.now();
+        let loopFrame = 0;
+
+        const renderLoop = (now: number) => {
+          if (signal.aborted || animation.playState === 'finished') return;
+          syncFrame(5 + Math.floor((now - startedAt) / balloonReturnMotion.frameDurationMs) % 2);
+          loopFrame = window.requestAnimationFrame(renderLoop);
+        };
+        loopFrame = window.requestAnimationFrame(renderLoop);
+
+        const cancel = () => animation.cancel();
+        signal.addEventListener('abort', cancel, { once: true });
+        try {
+          await animation.finished;
+        } finally {
+          signal.removeEventListener('abort', cancel);
+          window.cancelAnimationFrame(loopFrame);
+          animation.cancel();
+        }
+      };
+
+      const reset = async () => {
+        this.setAttribute('data-resetting', '');
+        trigger.style.removeProperty('transform');
+        syncFrame(0);
+        await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
+      };
+
+      const stopSequence = () => {
+        if (!this.hasAttribute('data-running')) return;
+        window.scrollTo({ top: window.scrollY, behavior: 'auto' });
+        this.sequenceAbort?.abort(new DOMException('The return was interrupted.', 'AbortError'));
+      };
+
+      const runSequence = async () => {
+        this.sequenceAbort?.abort();
+        this.sequenceAbort = new AbortController();
+        const { signal } = this.sequenceAbort;
+        this.setAttribute('data-running', '');
+        this.setAttribute('data-visible', '');
+        trigger.setAttribute('aria-disabled', 'true');
+        trigger.setAttribute('aria-label', 'Returning to the introduction');
+
+        const interrupt = () => stopSequence();
+        window.addEventListener('wheel', interrupt, { passive: true, signal });
+        window.addEventListener('touchstart', interrupt, { passive: true, signal });
+        window.addEventListener('pointerdown', interrupt, { signal });
+        window.addEventListener('keydown', interrupt, { signal });
+
+        try {
+          const startScrollY = window.scrollY;
+          const targetScrollY = introScrollY();
+          const startY = startScrollY <= targetScrollY + 2
+            ? 0
+            : await riseWithScroll(startScrollY, targetScrollY, signal);
+          intro.focus({ preventScroll: true });
+          await playArrival(signal);
+          await fall(startY, signal);
+          await reset();
+        } catch {
+          trigger.getAnimations().forEach((animation) => animation.cancel());
+          trigger.style.removeProperty('transform');
+          syncFrame(0);
+        } finally {
+          this.removeAttribute('data-running');
+          trigger.removeAttribute('aria-disabled');
+          trigger.setAttribute('aria-label', 'Return to the introduction');
+          if (!signal.aborted) this.sequenceAbort?.abort();
+          syncVisibility(true);
+          this.removeAttribute('data-resetting');
+        }
+      };
+
+      trigger.addEventListener('click', (event) => {
+        if (this.hasAttribute('data-running')) {
+          event.preventDefault();
+          return;
+        }
+
+        event.preventDefault();
+        const target = introScrollY();
+        if (reducedMotion.matches || event.detail === 0) {
+          window.scrollTo({ top: target, behavior: 'auto' });
+          intro.focus({ preventScroll: true });
+          syncFrame(2);
+          window.setTimeout(() => {
+            syncFrame(0);
+            syncVisibility();
+          }, balloonReturnMotion.frameDurationMs);
+          return;
+        }
+
+        void runSequence();
+      }, { signal: this.abort.signal });
+
+      window.addEventListener('scroll', requestVisibility, {
+        passive: true,
+        signal: this.abort.signal,
+      });
+      window.addEventListener('resize', requestVisibility, {
+        passive: true,
+        signal: this.abort.signal,
+      });
+      reducedMotion.addEventListener('change', requestVisibility, {
+        signal: this.abort.signal,
+      });
+      document.fonts.ready.then(requestVisibility);
+      syncFrame(0);
+      syncVisibility();
+    }
+
+    disconnectedCallback() {
+      this.sequenceAbort?.abort();
+      this.abort?.abort();
+      if (this.frame) window.cancelAnimationFrame(this.frame);
+      delete this.dataset.enhanced;
+    }
+  }
+
+  if (!customElements.get('balloon-return')) {
+    customElements.define('balloon-return', BalloonReturn);
+  }
+</script>
+
+<style>
+  .balloon-return {
+    position: fixed;
+    z-index: 70;
+    right: clamp(0.4rem, 1.6vw, 1.2rem);
+    bottom: max(0.35rem, env(safe-area-inset-bottom));
+    display: block;
+    width: clamp(5.4rem, 7.8vw, 7rem);
+    aspect-ratio: 1;
+  }
+
+  .balloon-return__trigger {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .balloon-return__art,
+  .balloon-return__frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .balloon-return__art {
+    position: relative;
+  }
+
+  .balloon-return__frame {
+    position: absolute;
+    inset: 0;
+    max-width: none;
+    object-fit: contain;
+  }
+
+  .balloon-return__frame:not([data-active]),
+  .balloon-return__frame[hidden] {
+    display: none;
+  }
+
+  :global(.js) .balloon-return {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 0.75rem, 0) scale(0.96);
+    transition:
+      opacity 180ms linear,
+      transform 180ms var(--ease-out);
+  }
+
+  :global(.js) .balloon-return[data-visible],
+  :global(.js) .balloon-return[data-running] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  :global(.js) .balloon-return[data-running] {
+    pointer-events: none;
+  }
+
+  :global(.js) .balloon-return[data-resetting] {
+    opacity: 0;
+    transition: none;
+  }
+
+  .balloon-return__trigger:focus-visible {
+    border-radius: 0.4rem;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (max-width: 44rem) {
+    .balloon-return {
+      right: 0.25rem;
+      width: 5.65rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .balloon-return {
+      transform: none;
+      transition: opacity 180ms linear;
+    }
+  }
+</style>

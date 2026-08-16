@@ -37,10 +37,6 @@ export interface ValuePassage {
 
 export const valuesPremise = 'Three things important to me.';
 
-export const workPath = {
-  label: 'See more work',
-} as const;
-
 export const personalNote = {
   heading: 'A few more things about me',
   items: [

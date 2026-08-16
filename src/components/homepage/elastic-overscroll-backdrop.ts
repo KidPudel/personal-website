@@ -113,9 +113,6 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       if (active !== wasActive) {
         wasActive = active;
         this.toggleAttribute('data-edge-active', active);
-        if (placement === 'top') {
-          document.documentElement.toggleAttribute('data-elastic-top-edge', active);
-        }
         document.documentElement.toggleAttribute(
           'data-elastic-edge',
           Boolean(document.querySelector('elastic-overscroll-backdrop[data-edge-active]')),
@@ -329,9 +326,6 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     document.documentElement.style.removeProperty(
       this.dataset.placement === 'top' ? '--elastic-top-pull' : '--elastic-bottom-pull',
     );
-    if (this.dataset.placement === 'top') {
-      document.documentElement.removeAttribute('data-elastic-top-edge');
-    }
     delete this.dataset.enhanced;
     this.removeAttribute('data-edge-active');
     document.documentElement.toggleAttribute(

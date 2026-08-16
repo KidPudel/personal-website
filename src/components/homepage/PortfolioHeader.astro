@@ -52,8 +52,12 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 </portfolio-navigation>
 
 <script>
+  import { clamp, smooth } from '../../lib/motion';
+  import { closingNavigationMotion } from './portfolio-navigation-motion';
+
   class PortfolioNavigation extends HTMLElement {
     private abort?: AbortController;
+    private closingFrame = 0;
 
     connectedCallback() {
       this.abort?.abort();
@@ -80,10 +84,142 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 
       window.addEventListener('hashchange', revealContact, { signal: this.abort.signal });
       revealContact();
+
+      if (this.classList.contains('portfolio-navigation--footer')) {
+        this.setupClosingReveal(this.abort.signal);
+      }
     }
 
     disconnectedCallback() {
       this.abort?.abort();
+      if (this.closingFrame) window.cancelAnimationFrame(this.closingFrame);
+      this.closest('value-story')
+        ?.querySelector<HTMLElement>('.opening-sequence__motion')
+        ?.style.removeProperty('--box-closing-y');
+      delete this.dataset.closingLive;
+    }
+
+    private setupClosingReveal(signal: AbortSignal) {
+      const navigation = this.querySelector<HTMLElement>('.site-navigation');
+      const work = this.querySelector<HTMLElement>('.site-navigation__work');
+      const contact = this.querySelector<HTMLElement>('.contact-disclosure');
+      const boxMotion = this.closest('value-story')?.querySelector<HTMLElement>(
+        '.opening-sequence__motion',
+      );
+      const activeFrame = () =>
+        this.closest('value-story')?.querySelector<HTMLElement>(
+          '[data-opening-frame][data-active]',
+        );
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const actions = [work, contact].filter((action): action is HTMLElement => Boolean(action));
+
+      if (!navigation || !boxMotion || actions.length !== 2 || !activeFrame()) return;
+      this.dataset.closingLive = '';
+      let currentBoxLift =
+        Number.parseFloat(boxMotion.style.getPropertyValue('--box-closing-y')) || 0;
+
+      const clear = () => {
+        actions.forEach((action) => {
+          action.style.removeProperty('opacity');
+          action.style.removeProperty('transform');
+          action.style.removeProperty('pointer-events');
+        });
+        navigation.removeAttribute('aria-hidden');
+        this.inert = false;
+        boxMotion.style.removeProperty('--box-closing-y');
+        currentBoxLift = 0;
+      };
+
+      const render = () => {
+        this.closingFrame = 0;
+        if (reducedMotion.matches) {
+          clear();
+          return;
+        }
+
+        const frame = activeFrame();
+        if (!frame) return;
+        const frameBounds = frame.getBoundingClientRect();
+        const navigationBounds = navigation.getBoundingClientRect();
+        const start = window.innerHeight * closingNavigationMotion.targetViewportStart;
+        const end = window.innerHeight * closingNavigationMotion.targetViewportEnd;
+        const progress = smooth(
+          clamp((start - navigationBounds.top) / Math.max(1, start - end)),
+        );
+        currentBoxLift =
+          Number.parseFloat(boxMotion.style.getPropertyValue('--box-closing-y')) || 0;
+        const nextBoxLift =
+          -window.innerHeight * closingNavigationMotion.boxLiftVh * progress;
+        const frameShift = nextBoxLift - currentBoxLift;
+        const settledFrameTop = frameBounds.top + frameShift;
+        const sourceY =
+          settledFrameTop + frameBounds.height * closingNavigationMotion.sourceY;
+        const timedOpacity = smooth(
+          clamp(
+            (progress - closingNavigationMotion.opacityStart) /
+              closingNavigationMotion.opacityDistance,
+          ),
+        );
+        const scale =
+          closingNavigationMotion.sourceScale +
+          (1 - closingNavigationMotion.sourceScale) * progress;
+
+        actions.forEach((action, index) => {
+          const direction = index === 0 ? -1 : 1;
+          const sourceX =
+            frameBounds.left +
+            frameBounds.width * (0.5 + direction * closingNavigationMotion.sourceXOffset);
+          const layoutX =
+            navigationBounds.left + action.offsetLeft + action.offsetWidth / 2;
+          const layoutY =
+            navigationBounds.top + action.offsetTop + action.offsetHeight / 2;
+          const targetX = layoutX;
+          const targetY =
+            settledFrameTop +
+            frameBounds.height * closingNavigationMotion.boxVisualTop -
+            closingNavigationMotion.settledGapPx -
+            action.offsetHeight / 2;
+          const currentX = sourceX + (targetX - sourceX) * progress;
+          const currentY = sourceY + (targetY - sourceY) * progress;
+          const visualBoxTop =
+            settledFrameTop +
+            frameBounds.height * closingNavigationMotion.boxVisualTop;
+          const clearance = visualBoxTop - (currentY + action.offsetHeight / 2);
+          const clearanceOpacity = smooth(
+            clamp(clearance / closingNavigationMotion.clearanceFadePx),
+          );
+          const opacity = timedOpacity * clearanceOpacity;
+
+          action.style.opacity = opacity.toFixed(4);
+          action.style.transform = `translate3d(${(currentX - layoutX).toFixed(2)}px, ${(currentY - layoutY).toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
+          action.style.pointerEvents =
+            progress >= closingNavigationMotion.interactiveAt ? 'auto' : 'none';
+        });
+
+        const interactive = progress >= closingNavigationMotion.interactiveAt;
+        this.inert = !interactive;
+        navigation.toggleAttribute(
+          'aria-hidden',
+          actions.every((action) => Number(action.style.opacity) <= 0.02),
+        );
+        boxMotion.style.setProperty(
+          '--box-closing-y',
+          `${nextBoxLift.toFixed(2)}px`,
+        );
+        currentBoxLift = nextBoxLift;
+      };
+
+      const requestRender = () => {
+        if (signal.aborted) return;
+        if (this.closingFrame) return;
+        this.closingFrame = window.requestAnimationFrame(render);
+      };
+
+      window.addEventListener('scroll', requestRender, { passive: true, signal });
+      window.addEventListener('resize', requestRender, { passive: true, signal });
+      reducedMotion.addEventListener('change', requestRender, { signal });
+      document.fonts.ready.then(requestRender);
+      render();
     }
   }
 
@@ -128,9 +264,21 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 
   .portfolio-navigation--footer {
     display: grid;
-    min-height: clamp(18rem, 42svh, 29rem);
-    place-items: center;
-    padding: 6rem 1.25rem 9rem;
+    min-height: clamp(30rem, 72svh, 44rem);
+    align-items: end;
+    padding: clamp(12rem, 28svh, 18rem) clamp(1.5rem, 8vw, 7rem) max(4.5rem, 8svh);
+  }
+
+  .portfolio-navigation--footer .site-navigation {
+    width: max-content;
+    max-width: 100%;
+    justify-self: center;
+    justify-content: center;
+  }
+
+  .portfolio-navigation--footer[data-closing-live] .site-navigation__work,
+  .portfolio-navigation--footer[data-closing-live] .contact-disclosure {
+    will-change: transform, opacity;
   }
 
   .site-navigation {
@@ -337,8 +485,19 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     }
 
     .portfolio-navigation--footer {
-      min-height: 20rem;
-      padding-bottom: 8rem;
+      min-height: 68svh;
+      padding: 12rem 1.25rem max(4.5rem, 9svh);
+    }
+
+    .portfolio-navigation--footer .site-navigation {
+      width: max-content;
+      gap: 1.9rem;
+    }
+
+    .portfolio-navigation--footer .site-navigation__work,
+    .portfolio-navigation--footer .contact-disclosure summary {
+      min-width: 5.25rem;
+      padding-inline: 0.45rem;
     }
 
     .site-navigation {

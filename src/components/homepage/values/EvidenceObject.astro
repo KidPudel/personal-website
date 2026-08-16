@@ -33,8 +33,9 @@ const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
     compact && 'aspect--compact',
   ]}
   data-aspect
+  data-target-tilt={tilt}
 >
-  <div class="aspect__visual" style={`--tilt: ${tilt}`}>
+  <div class="aspect__visual">
     <img
       src={aspect.image.src}
       width={aspect.image.width}
@@ -59,34 +60,34 @@ const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
     position: relative;
     min-width: 0;
     align-self: start;
+    padding: 0.48rem 0.48rem 0.62rem;
+    border-radius: 0.95rem;
+    background: #fff;
+    box-shadow: 0 0.3rem 1.15rem rgb(17 17 15 / 0.09);
   }
 
   .aspect__visual {
-    width: min(100%, 31rem);
-    padding: 0.42rem;
-    border-radius: 0.95rem;
-    background: #fff;
-    box-shadow: 0 0.22rem 0.85rem rgb(17 17 15 / 0.07);
-    rotate: var(--tilt, -2deg);
+    width: 100%;
   }
 
   .aspect--compact .aspect__visual {
-    width: min(88%, 25rem);
+    width: 100%;
   }
 
   .aspect--portrait .aspect__visual {
-    width: min(68%, 18rem);
+    width: 100%;
   }
 
   .aspect__visual img {
     display: block;
     width: 100%;
-    height: auto;
+    height: min(22svh, 12rem);
+    object-fit: contain;
     border-radius: 0.58rem;
   }
 
   .aspect__copy {
-    padding-top: 0.7rem;
+    padding: 0.62rem 0.18rem 0;
   }
 
   .aspect__copy p {

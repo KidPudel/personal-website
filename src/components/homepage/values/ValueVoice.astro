@@ -1,8 +1,35 @@
 ---
 import { values, valuesPremise } from '../../../content/homepage/values';
+import { valueVoiceMotion } from './value-voice-motion';
 ---
 
-<div class="value-voice" data-value-voice>
+<div
+  class="value-voice"
+  data-value-voice
+  style={`--word-morph-reduced-duration: ${valueVoiceMotion.wordMorphReducedDurationMs}ms`}
+>
+  <svg class="word-morph-filter" aria-hidden="true" focusable="false">
+    <defs>
+      <filter
+        id="word-morph-threshold"
+        x="-50%"
+        y="-150%"
+        width="200%"
+        height="400%"
+        color-interpolation-filters="sRGB"
+      >
+        <feColorMatrix
+          in="SourceGraphic"
+          type="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 255 -140"
+        />
+      </filter>
+    </defs>
+  </svg>
+
   <div class="value-voice__stack">
     <div class="value-voice__layer value-voice__layer--intro" data-voice-layer>
       <h2 id="values-title">{valuesPremise}</h2>
@@ -18,9 +45,11 @@ import { values, valuesPremise } from '../../../content/homepage/values';
             aria-label={`${value.words[0]}. Change this word.`}
             disabled
           >
-            {value.words.map((word, wordIndex) => (
-              <span data-word-option hidden={wordIndex !== 0}>{word}</span>
-            ))}
+            <span class="word-cycle__morph">
+              {value.words.map((word, wordIndex) => (
+                <span data-word-option hidden={wordIndex !== 0}>{word}</span>
+              ))}
+            </span>
           </button><span class="value-voice__after">{value.after}</span>
         </h3>
       </div>
@@ -34,12 +63,20 @@ import { values, valuesPremise } from '../../../content/homepage/values';
     margin: 0.7rem 0 0;
     text-align: center;
     pointer-events: none;
-    opacity: var(--premise-opacity, 1);
+    opacity: calc(var(--premise-opacity, 1) * var(--voice-story-opacity, 1));
   }
 
   .value-voice__stack {
     display: grid;
     width: 100%;
+  }
+
+  .word-morph-filter {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
   }
 
   .value-voice__layer {
@@ -77,6 +114,7 @@ import { values, valuesPremise } from '../../../content/homepage/values';
   }
 
   .word-cycle {
+    display: inline-block;
     padding: 0 0 0.04em;
     border: 0;
     border-bottom: 0.1rem dotted var(--color-muted);
@@ -89,6 +127,7 @@ import { values, valuesPremise } from '../../../content/homepage/values';
     font-weight: 400;
     letter-spacing: -0.015em;
     line-height: inherit;
+    vertical-align: baseline;
     cursor: pointer;
   }
 
@@ -102,8 +141,40 @@ import { values, valuesPremise } from '../../../content/homepage/values';
     outline-offset: 0.2rem;
   }
 
+  .word-cycle [data-word-option] {
+    grid-area: 1 / 1;
+    justify-self: center;
+  }
+
+  .word-cycle__morph {
+    display: grid;
+  }
+
   .word-cycle [data-word-option][hidden] {
     display: none;
+  }
+
+  :global(.js) .word-cycle[data-morph-ready] [data-word-option] {
+    display: inline-block;
+    opacity: 0;
+    visibility: hidden;
+    filter: none;
+  }
+
+  :global(.js) .word-cycle[data-morph-ready] [data-word-option][data-word-visible] {
+    visibility: visible;
+  }
+
+  :global(.js) .word-cycle[data-morph-ready] [data-word-option][data-word-active] {
+    opacity: 1;
+  }
+
+  :global(.js) .word-cycle[data-morphing] .word-cycle__morph {
+    filter: url('#word-morph-threshold') blur(0.6px);
+  }
+
+  :global(.js) .word-cycle[data-morphing] [data-word-option] {
+    will-change: filter, opacity;
   }
 
   .value-voice__after {
@@ -145,6 +216,15 @@ import { values, valuesPremise } from '../../../content/homepage/values';
   }
 
   @media (prefers-reduced-motion: reduce) {
+    :global(.js) .word-cycle[data-morph-ready] [data-word-option] {
+      filter: none;
+      transition: opacity var(--word-morph-reduced-duration) cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    :global(.js) .word-cycle[data-morphing] .word-cycle__morph {
+      filter: none;
+    }
+
     :global(.js) .value-voice[data-enhanced] .value-voice__layer {
       filter: none;
     }

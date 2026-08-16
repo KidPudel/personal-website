@@ -45,7 +45,7 @@ The site should feel:
 
 
 - Mix/blend of quite calm minimalism with maximalism "anti-portfolio" portfolio
-- The current opening hypothesis is tactile: a closed box falls and unfolds as you scroll, and the identity emerges from it without a color splash or locked scroll. Igor may replace this choreography with a different visual idea while preserving the product goal and intended feeling.
+- The current homepage hypothesis is tactile: a closed box falls and unfolds as you scroll, then remains as a calm source for the identity, value evidence, and personal notes. Igor may replace this choreography with a different visual idea while preserving the product goal and intended feeling.
 - The balance between playful-chaotic-warm with quiet confidence that is still artistic and unique.
 
 ## Artistic continuity

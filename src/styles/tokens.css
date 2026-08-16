@@ -97,5 +97,7 @@
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
     --drawn-icon-wobble-duration: 1600ms;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   }
 }

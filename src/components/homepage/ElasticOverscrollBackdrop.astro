@@ -63,7 +63,7 @@ const { placement = 'bottom' } = Astro.props;
   [data-placement='top'] .elastic-overscroll-backdrop__backing {
     top: 0;
     height: calc(var(--elastic-top-pull, 0px) + 2px);
-    background: #6f8aff;
+    background: var(--color-field);
   }
 
   [data-placement='bottom'] .elastic-overscroll-backdrop__backing {

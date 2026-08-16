@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
+import BalloonReturn from './BalloonReturn.astro';
 import ElasticOverscrollBackdrop from './ElasticOverscrollBackdrop.astro';
 import IdentityIntroduction from './identity/IdentityIntroduction.astro';
 import OpeningSequence from './opening/OpeningSequence.astro';
@@ -24,11 +25,15 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
   <main id="main-content">
     <OpeningSequence>
       <IdentityIntroduction />
-      <ValuesEvidence slot="journey" {observatory} {foodProduct} {chineseBee} />
+      <Fragment slot="journey">
+        <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
+        <PersonalNote />
+        <PortfolioHeader current="home" placement="footer" contactId="contact" />
+      </Fragment>
     </OpeningSequence>
-    <PersonalNote />
-    <PortfolioHeader current="home" placement="footer" contactId="contact" />
   </main>
+
+  <BalloonReturn />
 
 </div>
 
@@ -58,12 +63,4 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
     --header-visibility: 0;
   }
 
-  :global(.homepage-document[data-elastic-top-edge]) .homepage {
-    background: #6f8aff;
-  }
-
-  :global(html.homepage-document[data-elastic-top-edge]),
-  :global(html.homepage-document[data-elastic-top-edge] body) {
-    background: #6f8aff;
-  }
 </style>

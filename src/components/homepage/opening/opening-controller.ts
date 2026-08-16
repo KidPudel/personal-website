@@ -244,13 +244,16 @@ class OpeningSequence extends HTMLElement {
       const premiseOpacity = bypassed ? 1 : identityBeatProgress(identityReveal, 4);
       const identityHold = bypassed ? 1 : clamp(identityReveal / 0.08);
       const boxFall = boxFallAmount(progress);
-      const journeyStart = openingStart + runway.offsetHeight;
-      const boxFadeStart = journeyStart - window.innerHeight * 0.18;
-      const boxFadeDistance = Math.max(1, window.innerHeight * 0.38);
-      const boxFade = bypassed
-        ? 1
-        : smooth(clamp((window.scrollY - boxFadeStart) / boxFadeDistance));
-      const artOpacity = 1 - boxFade;
+      const introExitDistance = Math.max(
+        1,
+        window.innerHeight * openingMotion.introExitDistanceVh / 100,
+      );
+      const boxSupportStart = openingStart + openingDistance + introExitDistance * 0.35;
+      const boxSupportDistance = introExitDistance * 0.65;
+      const boxSupport = bypassed
+        ? 0
+        : smooth(clamp((window.scrollY - boxSupportStart) / boxSupportDistance));
+      const artOpacity = bypassed ? 0 : 1;
       const headerInteractive = headerVisibility >= 0.98 && introExit < 0.9;
 
       if (!this.helloAnimationPrepared && identityReveal > 0) {
@@ -281,9 +284,10 @@ class OpeningSequence extends HTMLElement {
       this.style.setProperty('--premise-opacity', premiseOpacity.toFixed(4));
       this.style.setProperty('--art-opacity', artOpacity.toFixed(4));
       this.style.setProperty('--box-fall', boxFall.toFixed(4));
+      this.style.setProperty('--box-support', boxSupport.toFixed(4));
       this.style.setProperty('--identity-hold', identityHold.toFixed(4));
       this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
-      this.toggleAttribute('data-box-fading', boxFade > 0 && boxFade < 1);
+      this.toggleAttribute('data-box-settling', boxSupport > 0 && boxSupport < 1);
       reveal.toggleAttribute('data-visible', frameIndex >= frames.length - 1 || identityReveal > 0);
 
       page.style.setProperty('--header-visibility', headerVisibility.toFixed(4));
