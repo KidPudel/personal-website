@@ -1,4 +1,5 @@
 ---
+import { getImage } from 'astro:assets';
 import frame1 from '../../../assets/art/Doodles-box-opening/box_frame1.png';
 import frame2 from '../../../assets/art/Doodles-box-opening/box_frame2.png';
 import frame3 from '../../../assets/art/Doodles-box-opening/box_frame3.png';
@@ -10,20 +11,23 @@ import { connectLinks } from '../../../config/site';
 import { openingMotion } from './opening-motion';
 
 const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
+const optimizedFrames = await Promise.all(
+  frames.map((frame) => getImage({ src: frame, width: 1024, format: 'webp', quality: 'max' })),
+);
 ---
 
-<link rel="preload" href={frame1.src} as="image" fetchpriority="high" />
+<link rel="preload" href={optimizedFrames[0].src} as="image" fetchpriority="high" />
 
 <opening-sequence
   class="opening-sequence"
-  data-frame-count={frames.length}
+  data-frame-count={optimizedFrames.length}
   style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --box-fall-distance: ${openingMotion.boxFallDistanceVh}vh; --box-support-distance: ${openingMotion.boxSupportDistanceVh}vh; --box-support-scale-loss: ${openingMotion.boxSupportScaleLoss}`}
 >
   <value-story class="opening-sequence__stage">
     <div class="opening-sequence__scene">
       <div class="opening-sequence__box" aria-hidden="true" data-opening-art>
         <div class="opening-sequence__motion">
-          {frames.map((frame, index) => (
+          {optimizedFrames.map((frame, index) => (
             <img
               class="opening-sequence__frame"
               src={index === 0 ? frame.src : undefined}
@@ -286,6 +290,12 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
 
   .opening-sequence__frame[data-active] {
     display: block;
+    transition: transform 160ms var(--ease-out);
+  }
+
+  .opening-sequence[data-portrait-over-box] .opening-sequence__frame[data-active] {
+    transform: scale(0.97);
+    transform-origin: center;
   }
 
   .opening-sequence__frame[hidden] {
@@ -497,6 +507,11 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .opening-sequence[data-portrait-over-box] .opening-sequence__frame[data-active] {
+      transform: none;
+      transition: none;
+    }
+
     :global(.js) .opening-sequence {
       --hello-opacity: 1;
       --title-opacity: 1;

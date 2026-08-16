@@ -1,15 +1,22 @@
 ---
+import { Image } from 'astro:assets';
 import type { ValueAspect } from '../../../content/homepage/values';
 import { sitePath } from '../../../config/site';
 
 interface Props {
   aspect: ValueAspect;
   projectTitle: string;
+  position: number;
 }
 
-const { aspect, projectTitle } = Astro.props;
+const { aspect, projectTitle, position } = Astro.props;
 const portrait = aspect.image.height > aspect.image.width;
 const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
+const imageSizes = position === 0
+  ? '(max-width: 50rem) 64vw, 27vw'
+  : position < 3
+    ? '(max-width: 50rem) 44vw, 21vw'
+    : '(max-width: 50rem) 35vw, 17vw';
 
 function evidenceTilt(seed: string): string {
   let hash = 2166136261;
@@ -36,11 +43,12 @@ const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
   data-target-tilt={tilt}
 >
   <div class="aspect__visual">
-    <img
-      src={aspect.image.src}
-      width={aspect.image.width}
-      height={aspect.image.height}
+    <Image
+      src={aspect.image}
       alt={`${aspect.shot} from ${projectTitle}`}
+      widths={[240, 360, 480, 640, 768]}
+      sizes={imageSizes}
+      format="webp"
       loading="lazy"
       decoding="async"
     />

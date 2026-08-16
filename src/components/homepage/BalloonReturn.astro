@@ -246,7 +246,6 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
           const startY = startScrollY <= targetScrollY + 2
             ? 0
             : await riseWithScroll(startScrollY, targetScrollY, signal);
-          intro.focus({ preventScroll: true });
           await playArrival(signal);
           await fall(startY, signal);
           await reset();
@@ -274,7 +273,7 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
         const target = introScrollY();
         if (reducedMotion.matches || event.detail === 0) {
           window.scrollTo({ top: target, behavior: 'auto' });
-          intro.focus({ preventScroll: true });
+          if (event.detail === 0) intro.focus({ preventScroll: true });
           syncFrame(2);
           window.setTimeout(() => {
             syncFrame(0);

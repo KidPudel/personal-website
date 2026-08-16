@@ -33,8 +33,12 @@ const projectTitles: Record<ValueProject, string> = {
           data-value-passage
         >
           <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`} data-evidence-deck>
-            {value.aspects.map((aspect) => (
-              <EvidenceObject aspect={aspect} projectTitle={projectTitles[aspect.project]} />
+            {value.aspects.map((aspect, index) => (
+              <EvidenceObject
+                aspect={aspect}
+                projectTitle={projectTitles[aspect.project]}
+                position={index}
+              />
             ))}
           </ol>
         </section>
@@ -64,11 +68,15 @@ const projectTitles: Record<ValueProject, string> = {
 
   .value-chapter {
     position: relative;
-    min-height: 120svh;
+    min-height: 50svh;
   }
 
   .value-chapter:first-child {
-    min-height: 140svh;
+    min-height: 75svh;
+  }
+
+  .value-chapter:last-child {
+    min-height: 90svh;
   }
 
   .aspects {
@@ -106,7 +114,7 @@ const projectTitles: Record<ValueProject, string> = {
     translate: -50% 0;
     pointer-events: none;
     transform-origin: 50% 24%;
-    will-change: transform, opacity;
+    will-change: transform, opacity, clip-path;
   }
 
   :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(1)) {
@@ -150,11 +158,15 @@ const projectTitles: Record<ValueProject, string> = {
     }
 
     .value-chapter {
-      min-height: 128svh;
+      min-height: 48svh;
     }
 
     .value-chapter:first-child {
-      min-height: 150svh;
+      min-height: 85svh;
+    }
+
+    .value-chapter:last-child {
+      min-height: 80svh;
     }
 
     .aspects {
@@ -237,6 +249,7 @@ const projectTitles: Record<ValueProject, string> = {
       opacity: 1;
       translate: none;
       transform: none;
+      clip-path: none;
       will-change: auto;
     }
   }

@@ -98,6 +98,7 @@ class OpeningSequence extends HTMLElement {
       const source = frameSource(frame);
       if (!source) return;
 
+      if (frame instanceof HTMLImageElement) frame.loading = 'eager';
       if (frame.getAttribute('src') !== source) frame.setAttribute('src', source);
       primedFrames.add(index);
       if (frame instanceof HTMLImageElement) void frame.decode().catch(() => undefined);
@@ -119,6 +120,10 @@ class OpeningSequence extends HTMLElement {
         frame.hidden = !active;
       });
     };
+
+    // A single touch swipe can cross several animation frames. Keep these
+    // small assets low-priority, but fetch and decode them before that happens.
+    frames.forEach((_, index) => primeFrame(index));
 
     let hintIndex = 0;
 

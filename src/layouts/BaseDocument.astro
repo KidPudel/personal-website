@@ -24,12 +24,18 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 <html lang="en" class={pageClass}>
   <head>
     <script is:inline>
+      const skipTargetRequested = location.hash === '#main-content';
+
       document.documentElement.classList.add('js');
       if (
         location.hash ||
         window.matchMedia('(prefers-reduced-motion: reduce)').matches
       ) {
         document.documentElement.classList.add('opening-bypassed');
+      }
+
+      if (skipTargetRequested) {
+        history.replaceState(history.state, '', `${location.pathname}${location.search}`);
       }
     </script>
     <meta charset="UTF-8" />
@@ -55,5 +61,34 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <slot />
+    <script is:inline>
+      const skipLink = document.querySelector('.skip-link');
+      const mainContent = document.getElementById('main-content');
+
+      const focusMainContent = () => {
+        if (!mainContent) return;
+
+        const hadTabIndex = mainContent.hasAttribute('tabindex');
+        if (!hadTabIndex) mainContent.setAttribute('tabindex', '-1');
+
+        mainContent.focus({ preventScroll: true });
+        mainContent.scrollIntoView({ block: 'start' });
+
+        if (!hadTabIndex) {
+          mainContent.addEventListener('blur', () => mainContent.removeAttribute('tabindex'), {
+            once: true,
+          });
+        }
+      };
+
+      skipLink?.addEventListener('click', (event) => {
+        if (!mainContent) return;
+        event.preventDefault();
+        history.replaceState(history.state, '', `${location.pathname}${location.search}`);
+        requestAnimationFrame(focusMainContent);
+      });
+
+      if (skipTargetRequested) requestAnimationFrame(focusMainContent);
+    </script>
   </body>
 </html>

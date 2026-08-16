@@ -63,7 +63,7 @@ const frames = Object.entries(frameModules)
     private animationFrame = 0;
     private cueTimer = 0;
     private played = false;
-    private prepared = false;
+    private preparePromise?: Promise<void>;
     private dismissed = false;
     private host?: HTMLElement;
     private reducedMotion?: MediaQueryList;
@@ -77,6 +77,13 @@ const frames = Object.entries(frameModules)
       this.addEventListener('hello-animation-play', this.play);
       this.host?.addEventListener('click', this.dismissClickCue);
       this.reducedMotion.addEventListener('change', this.handleMotionChange);
+
+      if (this.reducedMotion.matches) {
+        this.showCompletedFrame();
+      } else {
+        this.showFrame(0);
+        void this.prepare();
+      }
     }
 
     disconnectedCallback() {
@@ -142,16 +149,20 @@ const frames = Object.entries(frameModules)
       if (this.played) this.revealClickCue();
     };
 
-    private prepare = async () => {
-      if (this.prepared) return;
-      this.prepared = true;
+    private prepare = () => {
+      if (this.preparePromise) return this.preparePromise;
 
       const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
       frames.forEach((frame) => {
         const source = frame.dataset.src;
+        frame.loading = 'eager';
         if (source && frame.getAttribute('src') !== source) frame.src = source;
       });
-      await Promise.allSettled(frames.map((frame) => frame.decode()));
+
+      this.preparePromise = Promise.allSettled(frames.map((frame) => frame.decode())).then(
+        () => undefined,
+      );
+      return this.preparePromise;
     };
 
     private play = async () => {

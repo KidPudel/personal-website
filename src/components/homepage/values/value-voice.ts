@@ -7,6 +7,9 @@ const settleWithOvershoot = (value: number) => {
   return 1 + (back + 1) * shifted ** 3 + back * shifted ** 2;
 };
 
+const mix = (from: number, to: number, progress: number) =>
+  from + (to - from) * progress;
+
 class ValueStory extends HTMLElement {
   private abort?: AbortController;
   private frame = 0;
@@ -28,7 +31,6 @@ class ValueStory extends HTMLElement {
       element: passage.querySelector<HTMLElement>('[data-evidence-deck]'),
       cards: Array.from(passage.querySelectorAll<HTMLElement>('[data-aspect]')),
     }));
-    const valuesStory = this.querySelector<HTMLElement>('#values');
     const personalNote = this.querySelector<HTMLElement>('personal-note');
     const boxMotion = this.querySelector<HTMLElement>('.opening-sequence__motion');
     const activeFrame = () =>
@@ -37,7 +39,6 @@ class ValueStory extends HTMLElement {
 
     if (
       !voice ||
-      !valuesStory ||
       !personalNote ||
       !boxMotion ||
       layers.length !== passages.length + 1 ||
@@ -185,13 +186,10 @@ class ValueStory extends HTMLElement {
       });
     };
 
-    const transitionProgress = (passage: HTMLElement, index: number) => {
+    const firstTransitionProgress = (passage: HTMLElement) => {
       const top = passage.getBoundingClientRect().top;
-      const start =
-        window.innerHeight *
-        (index === 0 ? valueVoiceMotion.firstHandoffViewportStart : valueVoiceMotion.laterHandoffViewportStart);
-      const distance =
-        window.innerHeight * (index === 0 ? valueVoiceMotion.firstHandoffDistance : valueVoiceMotion.laterHandoffDistance);
+      const start = window.innerHeight * valueVoiceMotion.firstHandoffViewportStart;
+      const distance = window.innerHeight * valueVoiceMotion.firstHandoffDistance;
       return clamp((start - top) / Math.max(1, distance));
     };
 
@@ -200,24 +198,58 @@ class ValueStory extends HTMLElement {
         cards.forEach((card) => {
           card.style.removeProperty('opacity');
           card.style.removeProperty('transform');
+          card.style.removeProperty('clip-path');
           card.style.removeProperty('pointer-events');
         });
       });
     };
 
-    const deckProgress = (passage: HTMLElement, index: number) => {
+    const firstDeckProgress = (passage: HTMLElement) => {
       const top = passage.getBoundingClientRect().top;
-      const start =
-        window.innerHeight *
-        (index === 0
-          ? valueVoiceMotion.firstDeckViewportStart
-          : valueVoiceMotion.laterDeckViewportStart);
-      const end =
-        window.innerHeight *
-        (index === 0
-          ? valueVoiceMotion.firstDeckViewportEnd
-          : valueVoiceMotion.laterDeckViewportEnd);
+      const start = window.innerHeight * valueVoiceMotion.firstDeckViewportStart;
+      const end = window.innerHeight * valueVoiceMotion.firstDeckViewportEnd;
       return clamp((start - top) / Math.max(1, start - end));
+    };
+
+    const deckReturnProgress = (index: number) => {
+      // Keep each value on one continuous scroll rhythm. Chapter layout can
+      // provide semantic structure without adding dead space between decks.
+      const firstPassageTopVh = passages[0].getBoundingClientRect().top / window.innerHeight;
+      const firstDeckDistanceVh =
+        valueVoiceMotion.firstDeckViewportStart - valueVoiceMotion.firstDeckViewportEnd;
+      const firstDeckMaximumFanLayer = Math.ceil((decks[0].cards.length - 1) / 2);
+      const firstDeckFanComplete =
+        valueVoiceMotion.deckFanStart +
+        firstDeckMaximumFanLayer * valueVoiceMotion.deckFanLayerStagger +
+        valueVoiceMotion.deckFanDistance;
+      const firstReturnStartVh =
+        firstDeckDistanceVh * firstDeckFanComplete +
+        valueVoiceMotion.deckHoldDistanceVh;
+      const cycleDistanceVh =
+        valueVoiceMotion.deckReturnDistanceVh + valueVoiceMotion.deckHoldDistanceVh;
+      const distanceFromFirstDeckStartVh =
+        valueVoiceMotion.firstDeckViewportStart - firstPassageTopVh;
+      const returnStartVh = firstReturnStartVh + index * cycleDistanceVh;
+      return clamp(
+        (distanceFromFirstDeckStartVh - returnStartVh) /
+          valueVoiceMotion.deckReturnDistanceVh,
+      );
+    };
+
+    const deckEntryProgress = (passage: HTMLElement, index: number) => {
+      if (index === 0) return firstDeckProgress(passage);
+      return clamp(
+        (deckReturnProgress(index - 1) - valueVoiceMotion.deckIncomingStart) /
+          valueVoiceMotion.deckIncomingDistance,
+      );
+    };
+
+    const transitionProgress = (passage: HTMLElement, index: number) => {
+      if (index === 0) return firstTransitionProgress(passage);
+      return clamp(
+        (deckReturnProgress(index - 1) - valueVoiceMotion.deckVoiceHandoffStart) /
+          valueVoiceMotion.deckVoiceHandoffDistance,
+      );
     };
 
     const paintDecks = () => {
@@ -226,13 +258,12 @@ class ValueStory extends HTMLElement {
 
       const frameBounds = frame.getBoundingClientRect();
       const sourceX = frameBounds.left + frameBounds.width * 0.5;
-      const sourceY = frameBounds.top + frameBounds.height * 0.5;
-      const visibleVoiceBottom = layers.reduce((bottom, layer) => {
-        const opacity = Number.parseFloat(getComputedStyle(layer).opacity);
-        return opacity > 0.02
-          ? Math.max(bottom, layer.getBoundingClientRect().bottom)
-          : bottom;
-      }, 0);
+      const boxMouthY =
+        frameBounds.top + frameBounds.height * valueVoiceMotion.deckBoxMouthRatio;
+      const voiceBounds = voice.getBoundingClientRect();
+      const visibleVoiceBottom = Number.parseFloat(getComputedStyle(voice).opacity) > 0.02
+        ? voiceBounds.bottom
+        : 0;
       const voiceGap =
         window.innerWidth <= 800
           ? valueVoiceMotion.deckVoiceGapMobilePx
@@ -240,84 +271,142 @@ class ValueStory extends HTMLElement {
 
       decks.forEach(({ element, cards }, passageIndex) => {
         if (!element) return;
-        const progress = deckProgress(passages[passageIndex], passageIndex);
+        const progress = deckEntryProgress(passages[passageIndex], passageIndex);
+        const exitProgress = deckReturnProgress(passageIndex);
         const deckBounds = element.getBoundingClientRect();
         const leadCard = cards[0];
         const leadTop = leadCard
           ? deckBounds.top + leadCard.offsetTop
           : deckBounds.top;
         const clearanceShift = Math.max(0, visibleVoiceBottom + voiceGap - leadTop);
+        const maximumFanLayer = Math.ceil((cards.length - 1) / 2);
 
         cards.forEach((card, cardIndex) => {
+          const enteringLaterDeck = passageIndex > 0;
           const riseProgress = clamp(
-            (progress - valueVoiceMotion.deckRiseStart) /
-              valueVoiceMotion.deckRiseDistance,
+            (progress -
+              (enteringLaterDeck
+                ? valueVoiceMotion.deckIncomingRiseStart
+                : valueVoiceMotion.deckRiseStart)) /
+              (enteringLaterDeck
+                ? valueVoiceMotion.deckIncomingRiseDistance
+                : valueVoiceMotion.deckRiseDistance),
           );
           const fanLayer = Math.ceil(cardIndex / 2);
           const fanProgress = clamp(
             (progress -
-              valueVoiceMotion.deckFanStart -
+              (enteringLaterDeck
+                ? valueVoiceMotion.deckIncomingFanStart
+                : valueVoiceMotion.deckFanStart) -
               fanLayer * valueVoiceMotion.deckFanLayerStagger) /
-              valueVoiceMotion.deckFanDistance,
+              (enteringLaterDeck
+                ? valueVoiceMotion.deckIncomingFanDistance
+                : valueVoiceMotion.deckFanDistance),
           );
           const rise = settleWithOvershoot(riseProgress);
           const fan = settleWithOvershoot(fanProgress);
           const visibility = smooth(
             clamp(
               (progress -
-                valueVoiceMotion.deckRiseStart -
+                (enteringLaterDeck
+                  ? valueVoiceMotion.deckIncomingRiseStart
+                  : valueVoiceMotion.deckRiseStart) -
                 cardIndex * valueVoiceMotion.deckOpacityStagger) /
                 valueVoiceMotion.deckOpacityDistance,
             ),
           );
-          const exitStart =
-            valueVoiceMotion.deckExitStart + cardIndex * valueVoiceMotion.deckExitStagger;
-          const exit = smooth(
-              clamp((progress - exitStart) / valueVoiceMotion.deckExitDistance),
+          const reverseFanLayer = Math.max(0, maximumFanLayer - fanLayer);
+          const gather = smooth(
+            clamp(
+              (exitProgress -
+                reverseFanLayer * valueVoiceMotion.deckGatherLayerStagger) /
+                valueVoiceMotion.deckGatherDistance,
+            ),
           );
-          const opacity = visibility * (1 - exit);
+          const tuck = smooth(
+            clamp(
+              (exitProgress - valueVoiceMotion.deckTuckStart) /
+                valueVoiceMotion.deckTuckDistance,
+            ),
+          );
+          const hide = smooth(
+            clamp(
+              (exitProgress - valueVoiceMotion.deckHideStart) /
+                valueVoiceMotion.deckHideDistance,
+            ),
+          );
+          const opacity = visibility * (1 - hide);
           const targetX = deckBounds.left + card.offsetLeft;
           const targetY =
-            deckBounds.top +
-            card.offsetTop +
-            card.offsetHeight * 0.24 +
-            clearanceShift;
+            deckBounds.top + card.offsetTop + card.offsetHeight * 0.24;
           const stackOffsetX = (cardIndex - (cards.length - 1) / 2) * 5;
           const stackOffsetY = cardIndex * 3;
           const stackX = window.innerWidth * 0.5 + stackOffsetX;
           const stackY =
             window.innerHeight * valueVoiceMotion.deckStackViewportY + stackOffsetY;
-          const risenX = sourceX + (stackX - sourceX) * rise;
-          const risenY = sourceY + (stackY - sourceY) * rise;
-          const currentX = risenX + (targetX - risenX) * fan;
-          const currentY = risenY + (targetY - risenY) * fan;
-          const translateX = currentX - targetX;
-          const translateY = currentY - targetY;
           const targetTilt = Number.parseFloat(card.dataset.targetTilt ?? '0');
           const stackedTilt = (cardIndex - (cards.length - 1) / 2) * 0.45;
-          const rotation = stackedTilt + (targetTilt - stackedTilt) * fan;
-          const scale =
+          const enteredRotation = mix(stackedTilt, targetTilt, fan);
+          const rotation = mix(enteredRotation, stackedTilt, gather);
+          const enteredScale =
             valueVoiceMotion.deckSourceScale +
             (valueVoiceMotion.deckStackScale - valueVoiceMotion.deckSourceScale) * rise +
             (1 - valueVoiceMotion.deckStackScale) * fan;
+          const gatheredScale = mix(
+            enteredScale,
+            valueVoiceMotion.deckStackScale,
+            gather,
+          );
+          const scale = mix(
+            gatheredScale,
+            valueVoiceMotion.deckTuckScale,
+            tuck,
+          );
+          const cardSourceY =
+            boxMouthY +
+            card.offsetHeight * 0.24 * valueVoiceMotion.deckSourceScale +
+            valueVoiceMotion.deckBoxMouthInsetPx;
+          const risenX = sourceX + (stackX - sourceX) * rise;
+          const risenY = cardSourceY + (stackY - cardSourceY) * rise;
+          const enteredX = mix(risenX, targetX, fan);
+          const enteredY = mix(risenY, targetY, fan);
+          const gatheredX = mix(enteredX, stackX, gather);
+          const gatheredY = mix(enteredY, stackY, gather);
+          const currentX = mix(gatheredX, sourceX, tuck);
+          const currentY = mix(gatheredY, cardSourceY, tuck);
+          const translateX = currentX - targetX;
+          const translateY =
+            currentY - targetY + clearanceShift * fan * (1 - gather);
+          const projectedTop = currentY - card.offsetHeight * 0.24 * scale;
+          const projectedHeight = Math.max(1, card.offsetHeight * scale);
+          const visibleAboveBox = clamp((boxMouthY - projectedTop) / projectedHeight);
+          const entryOcclusion = 1 - smooth(riseProgress);
+          const exitOcclusion = clamp(tuck * 2.5);
+          const occlusionWeight = Math.max(entryOcclusion, exitOcclusion);
+          const clippedFraction = (1 - visibleAboveBox) * occlusionWeight;
 
           card.style.opacity = opacity.toFixed(4);
+          card.style.clipPath = `inset(0 0 ${(clippedFraction * 100).toFixed(3)}% 0)`;
           card.style.transform = `translate3d(${translateX.toFixed(2)}px, ${translateY.toFixed(2)}px, 0) scale(${scale.toFixed(4)}) rotate(${rotation.toFixed(3)}deg)`;
-          card.style.pointerEvents = fanProgress > 0.96 && exit < 0.08 ? 'auto' : 'none';
+          card.style.pointerEvents = fanProgress > 0.96 && exitProgress < 0.04
+            ? 'auto'
+            : 'none';
         });
       });
     };
 
     const paintVoiceExit = () => {
-      const bottom = valuesStory.getBoundingClientRect().bottom;
-      const start = window.innerHeight * valueVoiceMotion.voiceExitViewportStart;
-      const distance = window.innerHeight * valueVoiceMotion.voiceExitDistance;
-      const exit = smooth(clamp((start - bottom) / Math.max(1, distance)));
+      const exit = smooth(
+        clamp(
+          (deckReturnProgress(decks.length - 1) - valueVoiceMotion.deckVoiceHandoffStart) /
+            valueVoiceMotion.deckVoiceHandoffDistance,
+        ),
+      );
       voice.style.setProperty('--voice-story-opacity', (1 - exit).toFixed(4));
     };
 
     const paintVoicePosition = () => {
-      const firstHandoff = smooth(transitionProgress(passages[0], 0));
+      const firstHandoff = smooth(firstTransitionProgress(passages[0]));
       const liftDistance =
         window.innerWidth <= 800
           ? valueVoiceMotion.voiceLiftMobileVh
@@ -354,9 +443,9 @@ class ValueStory extends HTMLElement {
         return;
       }
 
-      paintDecks();
-      paintVoiceExit();
       paintVoicePosition();
+      paintVoiceExit();
+      paintDecks();
       paintBoxAfterValues();
 
       const transitions = passages.map(transitionProgress);
