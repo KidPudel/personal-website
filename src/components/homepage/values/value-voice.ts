@@ -61,57 +61,23 @@ class ValueStory extends HTMLElement {
       this.querySelectorAll<HTMLElement>('[data-aspect]').forEach((aspect) => this.observer?.observe(aspect));
     }
 
-    const opening = document.querySelector<HTMLElement>('opening-sequence');
-    const openingRunway =
-      opening?.querySelector<HTMLElement>('[data-opening-runway]') ?? opening;
-    const page = this.closest<HTMLElement>('[data-homepage]') ?? document.querySelector<HTMLElement>('[data-homepage]');
-    let openingOffsetTop = 0;
-    let openingHeight = 1;
-    let needsOpeningMeasure = true;
-    let lastShownLayer = -1;
+    const updateVoiceArrive = () => {
+      const opening = this.closest<HTMLElement>('opening-sequence');
+      if (!opening) return;
 
-    const measureOpening = () => {
-      if (!openingRunway) return;
-      openingOffsetTop = window.scrollY + openingRunway.getBoundingClientRect().top;
-      openingHeight = openingRunway.offsetHeight;
-      needsOpeningMeasure = false;
-    };
-
-    const pinVoiceToIdentity = () => {
-      if (!opening || !page) return false;
-      if (needsOpeningMeasure) measureOpening();
-
-      const viewport = window.innerHeight;
-      const openingBottom = openingOffsetTop + openingHeight - window.scrollY;
-      const pin = clamp(
-        (openingBottom - viewport * valueVoiceMotion.identityPinRelease) /
-          Math.max(1, viewport * (1 - valueVoiceMotion.identityPinRelease)),
-      );
-      const identityPinTopVh = window.matchMedia('(max-width: 52rem)').matches
-        ? valueVoiceMotion.identityPinTopVhNarrow
-        : valueVoiceMotion.identityPinTopVh;
-      const topVh =
-        valueVoiceMotion.valuesStickTopVh +
-        pin * (identityPinTopVh - valueVoiceMotion.valuesStickTopVh);
-      const parsedPremiseOpacity = Number.parseFloat(page.style.getPropertyValue('--premise-opacity'));
-      const premiseOpacity = Number.isFinite(parsedPremiseOpacity)
-        ? parsedPremiseOpacity
-        : opening.hasAttribute('data-complete')
-          ? 1
-          : 0;
-
-      if (pin > 0.001) {
-        voice.dataset.identityPin = 'true';
-        voice.style.setProperty('--voice-pin-top', `${topVh.toFixed(2)}svh`);
-        voice.style.setProperty('--voice-pin-opacity', premiseOpacity.toFixed(4));
-        return true;
+      if (document.documentElement.classList.contains('opening-bypassed') || reducedMotion.matches) {
+        opening.style.setProperty('--values-voice-arrive', '1');
+        voice.removeAttribute('data-arrived');
+        return;
       }
 
-      delete voice.dataset.identityPin;
-      voice.style.removeProperty('--voice-pin-top');
-      voice.style.removeProperty('--voice-pin-opacity');
-      return false;
+      const restTop = Number.parseFloat(getComputedStyle(voice).top) || window.innerHeight * 0.36;
+      const arrive = clamp(1 - (voice.getBoundingClientRect().top - restTop) / 48);
+      opening.style.setProperty('--values-voice-arrive', arrive.toFixed(4));
+      voice.toggleAttribute('data-arrived', arrive >= 0.98);
     };
+
+    let lastShownLayer = -1;
 
     const setLayer = (layer: HTMLElement, opacity: number, blur: number) => {
       layer.style.setProperty('--voice-opacity', opacity.toFixed(4));
@@ -144,12 +110,7 @@ class ValueStory extends HTMLElement {
 
     const render = () => {
       this.frame = 0;
-      const pinnedToIdentity = pinVoiceToIdentity();
-
-      if (pinnedToIdentity) {
-        showOnly(0);
-        return;
-      }
+      updateVoiceArrive();
 
       if (reducedMotion.matches) {
         let active = 0;
@@ -209,14 +170,7 @@ class ValueStory extends HTMLElement {
     };
 
     window.addEventListener('scroll', requestRender, { passive: true, signal: this.abort.signal });
-    window.addEventListener(
-      'resize',
-      () => {
-        needsOpeningMeasure = true;
-        requestRender();
-      },
-      { passive: true, signal: this.abort.signal },
-    );
+    window.addEventListener('resize', requestRender, { passive: true, signal: this.abort.signal });
     reducedMotion.addEventListener('change', requestRender, { signal: this.abort.signal });
     render();
   }

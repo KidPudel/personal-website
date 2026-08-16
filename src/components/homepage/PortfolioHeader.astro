@@ -104,12 +104,16 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   .portfolio-navigation--intro {
     position: relative;
     width: 100%;
-    margin-top: clamp(1.75rem, 4.5vh, 2.25rem);
+    margin-top: calc(var(--header-visibility, 1) * 1.35rem);
+    max-height: calc(var(--header-visibility, 1) * 24rem);
+    overflow: hidden;
     opacity: var(--header-visibility, 1);
     transform: translateY(calc((1 - var(--header-visibility, 1)) * 1.25rem));
     transition:
       opacity 480ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 480ms cubic-bezier(0.16, 1, 0.3, 1);
+      transform 480ms cubic-bezier(0.16, 1, 0.3, 1),
+      max-height 480ms cubic-bezier(0.16, 1, 0.3, 1),
+      margin 480ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .portfolio-navigation--fixed {
@@ -174,7 +178,7 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   }
 
   .portfolio-navigation--intro .site-navigation {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .portfolio-navigation--intro .contact-disclosure {
@@ -362,7 +366,7 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     }
 
     .portfolio-navigation--intro {
-      margin-top: clamp(1.4rem, 3vh, 1.75rem);
+      margin-top: calc(var(--header-visibility, 1) * clamp(1.4rem, 3vh, 1.75rem));
     }
 
     .portfolio-navigation--intro .site-navigation {

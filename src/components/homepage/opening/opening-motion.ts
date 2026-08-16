@@ -25,6 +25,7 @@ export const openingMotion = {
   identityBeatGapMs: 560,
   completeAt: 0.995,
   headerBeat: 4,
+  premiseBeat: 5,
 } as const;
 
 const firstFrameUntil = (animationDistance: number) =>

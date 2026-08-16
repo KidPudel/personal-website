@@ -251,19 +251,30 @@ class OpeningSequence extends HTMLElement {
         }
       }
 
-      if (progress === lastPaintedProgress && !stepped) {
+      if (!immediate && progress === lastPaintedProgress && !stepped) {
         if (this.visibleBeats !== targetBeats) queueNextBeat();
         return;
       }
       lastPaintedProgress = progress;
 
+      const bypassed = bypassOpening();
       const helloOpacity = this.visibleBeats >= 1 ? 1 : 0;
       const titleOpacity = this.visibleBeats >= 2 ? 1 : 0;
       const summaryOpacity = this.visibleBeats >= 3 ? 1 : 0;
-      const headerVisibility = this.visibleBeats >= openingMotion.headerBeat ? 1 : 0;
-      const premiseOpacity = this.visibleBeats >= 5 ? 1 : 0;
+      const headerVisibility = bypassed
+        ? 1
+        : this.visibleBeats >= openingMotion.headerBeat &&
+            this.visibleBeats < openingMotion.premiseBeat
+          ? 1
+          : 0;
+      const identityHold = bypassed
+        ? 1
+        : this.visibleBeats >= 1 && this.visibleBeats < openingMotion.premiseBeat
+          ? 1
+          : 0;
+      const premiseOpacity = bypassed ? 0 : this.visibleBeats >= openingMotion.premiseBeat ? 1 : 0;
       const boxFall = boxFallAmount(progress);
-      const headerInteractive = this.visibleBeats >= openingMotion.headerBeat;
+      const headerInteractive = headerVisibility === 1;
 
       if (!this.helloAnimationPrepared && identityReveal > 0) {
         this.helloAnimationPrepared = true;
@@ -290,6 +301,8 @@ class OpeningSequence extends HTMLElement {
       this.style.setProperty('--summary-opacity', summaryOpacity.toFixed(4));
       this.style.setProperty('--art-opacity', '1');
       this.style.setProperty('--box-fall', boxFall.toFixed(4));
+      this.style.setProperty('--identity-hold', identityHold.toFixed(4));
+      this.style.setProperty('--premise-line-opacity', premiseOpacity.toFixed(4));
       this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
       reveal.toggleAttribute('data-visible', frameIndex >= frames.length - 1 || identityReveal > 0);
 
@@ -297,14 +310,18 @@ class OpeningSequence extends HTMLElement {
       page.style.setProperty('--premise-opacity', premiseOpacity.toFixed(4));
       header.inert = !headerInteractive;
       header.toggleAttribute('aria-hidden', !headerInteractive);
-      reveal.inert = this.visibleBeats < 1;
-      this.toggleAttribute('data-complete', progress >= openingMotion.completeAt);
+      reveal.inert = bypassed
+        ? false
+        : this.visibleBeats < 1 || this.visibleBeats >= openingMotion.premiseBeat;
+      this.toggleAttribute('data-identity-held', identityHold === 1);
+      this.toggleAttribute('data-complete', bypassed || progress >= openingMotion.completeAt);
 
       if (this.visibleBeats !== targetBeats) queueNextBeat();
     };
 
     const showCompletedOpening = () => {
       this.frame = 0;
+      lastPaintedProgress = Number.NaN;
       paint(1, true);
     };
 
@@ -317,6 +334,10 @@ class OpeningSequence extends HTMLElement {
       this.frame = 0;
 
       if (bypassOpening()) {
+        document.documentElement.classList.add('opening-bypassed');
+        reveal.inert = false;
+        header.inert = false;
+        header.removeAttribute('aria-hidden');
         showCompletedOpening();
         return;
       }

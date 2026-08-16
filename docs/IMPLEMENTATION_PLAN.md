@@ -5,7 +5,8 @@ Use `CONCEPT_DESIGN.md` for the authored experience, `ARCHITECTURE.md` for imple
 ## Current milestone
 
 - [x] Replace the opening pigment splash and per-frame field colors with a native-scroll fall-and-open.
-- [x] Reveal identity copy one beat at a time from frame 7, even when scroll jumps ahead.
+- [x] Collapse the opening to one sticky scene with identity copy in the top field and the box in the lower field, and stop pinning the values heading over identity.
+- [x] Recede identity on the fifth beat so a centered values premise sits above the open box, then hand that line to the sticky values voice.
 - [x] Play only box frames 1–7, hold the open drawing, and dock it at the bottom through values.
 - [x] Start unfolding on the first scroll, begin identity at frame 7, and reveal copy in order as the box falls further.
 - [x] Recompose values evidence as a burst that flies once from the open box.
