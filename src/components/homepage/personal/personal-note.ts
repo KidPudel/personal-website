@@ -84,12 +84,19 @@ class PersonalNote extends HTMLElement {
 
     type Target = { documentX: number; documentY: number };
     let headingTarget: Target = { documentX: 0, documentY: 0 };
+    let headingWidth = 0;
+    let headingHeight = 0;
+    let headingLayoutHeight = 0;
     let slotTargets: Target[] = [];
     let forceVisible = false;
 
     const clearMotion = () => {
       heading.style.removeProperty('opacity');
       heading.style.removeProperty('transform');
+      heading.style.removeProperty('position');
+      heading.style.removeProperty('top');
+      heading.style.removeProperty('left');
+      heading.style.removeProperty('width');
       slots.forEach((slot) => {
         slot.style.removeProperty('transform');
         slot.style.removeProperty('pointer-events');
@@ -106,6 +113,9 @@ class PersonalNote extends HTMLElement {
         documentX: headingRect.left + headingRect.width / 2 + window.scrollX,
         documentY: headingRect.top + headingRect.height / 2 + window.scrollY,
       };
+      headingWidth = headingRect.width;
+      headingHeight = headingRect.height;
+      headingLayoutHeight = heading.offsetHeight;
       slotTargets = slots.map((slot) => {
         const rect = slot.getBoundingClientRect();
         return {
@@ -149,19 +159,35 @@ class PersonalNote extends HTMLElement {
       const visualBoxTop =
         bounds.top + bounds.height * personalNoteMotion.boxVisualTop;
       const safeHeadingY =
-        visualBoxTop - heading.offsetHeight / 2 - personalNoteMotion.headingRestGapPx;
+        visualBoxTop - headingLayoutHeight / 2 - personalNoteMotion.headingRestGapPx;
       const headingY = Math.min(layoutHeadingY, safeHeadingY);
       const headingScale =
         personalNoteMotion.sourceScale +
         (1 - personalNoteMotion.sourceScale) * headingRise;
       const currentHeadingX = sourceX + (headingX - sourceX) * headingRise;
       const currentHeadingY = sourceY + (headingY - sourceY) * headingRise;
-      const headingClearance = visualBoxTop - (currentHeadingY + heading.offsetHeight / 2);
+      const headingClearance = visualBoxTop - (currentHeadingY + headingLayoutHeight / 2);
       const clearanceOpacity = smooth(
         clamp(headingClearance / personalNoteMotion.headingClearanceFadePx),
       );
       heading.style.opacity = (timedHeadingOpacity * clearanceOpacity).toFixed(4);
-      heading.style.transform = `translate3d(${(currentHeadingX - headingX).toFixed(2)}px, ${(currentHeadingY - layoutHeadingY).toFixed(2)}px, 0) scale(${headingScale.toFixed(4)})`;
+      // A viewport layer keeps asynchronous page scrolling from fighting the
+      // heading's counter-translation during the wide-screen flight.
+      const useViewportLayer =
+        window.innerWidth > 800 && (headingRise < 1 || layoutHeadingY > safeHeadingY);
+      if (useViewportLayer) {
+        heading.style.position = 'fixed';
+        heading.style.top = '0';
+        heading.style.left = '0';
+        heading.style.width = `${headingWidth.toFixed(2)}px`;
+        heading.style.transform = `translate3d(${(currentHeadingX - headingWidth / 2).toFixed(2)}px, ${(currentHeadingY - headingHeight / 2).toFixed(2)}px, 0) scale(${headingScale.toFixed(4)})`;
+      } else {
+        heading.style.removeProperty('position');
+        heading.style.removeProperty('top');
+        heading.style.removeProperty('left');
+        heading.style.removeProperty('width');
+        heading.style.transform = `translate3d(${(currentHeadingX - headingX).toFixed(2)}px, ${(currentHeadingY - layoutHeadingY).toFixed(2)}px, 0) scale(${headingScale.toFixed(4)})`;
+      }
 
       const notesRise = smooth(
         clamp(
@@ -176,7 +202,7 @@ class PersonalNote extends HTMLElement {
         ),
       );
       const clusterX = headingX;
-      const clusterY = headingY + heading.offsetHeight * 1.8;
+      const clusterY = headingY + headingLayoutHeight * 1.8;
 
       slots.forEach((slot, index) => {
         const target = slotTargets[index];

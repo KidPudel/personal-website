@@ -334,13 +334,9 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    width: max-content;
-    max-width: min(40rem, calc(100vw - 2.5rem));
-    gap: 0.35rem 1.15rem;
-    padding: 0.8rem 1rem 0.85rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
-    background: color-mix(in srgb, var(--color-field) 97%, transparent);
-    box-shadow: 0 0.9rem 1.8rem color-mix(in srgb, var(--color-ink) 8%, transparent);
+    width: min(34rem, calc(100vw - 2rem));
+    gap: 0.15rem clamp(0.85rem, 2vw, 1.45rem);
+    padding: 0;
     font-family: var(--font-reading);
     font-size: clamp(0.88rem, 0.18vw + 0.84rem, 0.98rem);
     letter-spacing: 0.01em;
@@ -351,22 +347,63 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
   }
 
   .opening-sequence__scroll-hint-contact a {
+    --contact-link-y: 0rem;
+    --contact-link-rotation: 0deg;
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
-    padding: 0.25rem 0;
+    padding: 0.35rem 0.08rem 0.2rem;
     color: inherit;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.3rem;
+    line-height: 1.2;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 58%, transparent);
+    text-decoration-thickness: 0.08rem;
+    text-underline-offset: 0.28rem;
+    transform: translateY(var(--contact-link-y)) rotate(var(--contact-link-rotation));
+    transition:
+      color 150ms ease,
+      text-decoration-color 150ms ease,
+      transform 160ms var(--ease-out);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
+  .opening-sequence__scroll-hint-contact a:nth-child(1) {
+    --contact-link-y: 0.16rem;
+    --contact-link-rotation: -1.2deg;
+  }
+
+  .opening-sequence__scroll-hint-contact a:nth-child(2) {
+    --contact-link-y: -0.16rem;
+    --contact-link-rotation: 0.8deg;
+  }
+
+  .opening-sequence__scroll-hint-contact a:nth-child(3) {
+    --contact-link-y: 0.22rem;
+    --contact-link-rotation: -0.7deg;
+  }
+
+  .opening-sequence__scroll-hint-contact a:nth-child(4) {
+    --contact-link-y: -0.08rem;
+    --contact-link-rotation: 1.1deg;
+  }
+
+  .opening-sequence__scroll-hint-contact a:nth-child(5) {
+    --contact-link-y: 0.14rem;
+    --contact-link-rotation: -0.8deg;
+  }
+
+  .opening-sequence__scroll-hint-contact a:nth-child(6) {
+    --contact-link-y: -0.12rem;
+    --contact-link-rotation: 0.7deg;
+  }
+
   .opening-sequence__scroll-hint-contact a:hover,
   .opening-sequence__scroll-hint-contact a:focus-visible {
-    color: var(--color-accent);
-    text-decoration-color: currentColor;
+    color: var(--color-ink);
+    text-decoration-color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+    transform: translateY(calc(var(--contact-link-y) - 0.12rem)) rotate(var(--contact-link-rotation));
   }
 
   .opening-sequence[data-scroll-hint='note'] .opening-sequence__scroll-hint-card {
@@ -421,11 +458,20 @@ const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
   @media (max-width: 44rem) {
     .opening-sequence__scroll-hint-contact {
       display: grid;
-      width: min(17rem, calc(100vw - 2rem));
+      width: min(19rem, calc(100vw - 2rem));
       max-width: none;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0 1rem;
-      background: var(--color-field);
+      gap: 0.1rem 1.25rem;
+    }
+
+    .opening-sequence__scroll-hint-contact a:nth-child(odd) {
+      justify-self: end;
+      text-align: right;
+    }
+
+    .opening-sequence__scroll-hint-contact a:nth-child(even) {
+      justify-self: start;
+      text-align: left;
     }
   }
 

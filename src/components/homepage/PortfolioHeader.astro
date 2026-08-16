@@ -330,12 +330,14 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     position: relative;
     top: auto;
     right: auto;
-    left: 0;
-    transform: none;
+    left: 50%;
+    margin-top: 0.4rem;
+    transform: translateX(-50%);
+    transform-origin: 50% 0;
   }
 
   .portfolio-navigation--intro:has(.contact-disclosure[open]) {
-    margin-bottom: 2.5rem;
+    margin-bottom: 1rem;
   }
 
   .contact-disclosure summary {
@@ -345,6 +347,10 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 
   .contact-disclosure summary::-webkit-details-marker {
     display: none;
+  }
+
+  .contact-disclosure summary:focus-visible {
+    outline: none;
   }
 
   .navigation-action__label {
@@ -400,6 +406,9 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   .site-navigation__work:focus-visible .navigation-action__art,
   .contact-disclosure summary:focus-visible .navigation-action__art {
     opacity: 1;
+    outline: 0.16rem dotted var(--color-focus);
+    outline-offset: 0.08rem;
+    border-radius: 50%;
     filter: blur(0);
     transform: translate(-50%, -50%) scale(1);
   }
@@ -426,24 +435,33 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   .contact-disclosure__panel {
     position: absolute;
     z-index: 2;
-    top: calc(100% + 0.7rem);
+    top: calc(100% + 0.85rem);
     left: 50%;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    width: max-content;
-    gap: 1.15rem;
-    padding: 0.8rem 1rem 0.85rem;
-    border-top: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
-    background: color-mix(in srgb, var(--color-field) 97%, transparent);
-    box-shadow: 0 0.9rem 1.8rem color-mix(in srgb, var(--color-ink) 8%, transparent);
+    width: min(34rem, calc(100vw - 2rem));
+    gap: 0.15rem clamp(0.85rem, 2vw, 1.45rem);
+    padding: 0;
     transform: translateX(-50%);
-    animation: contact-panel-in 160ms ease-out;
+    transform-origin: 50% 0;
+    animation: contact-panel-in 180ms var(--ease-out) both;
   }
 
   .portfolio-navigation--fixed .contact-disclosure__panel {
     right: 0;
     left: auto;
+    justify-content: flex-end;
     transform: none;
+    transform-origin: 100% 0;
+  }
+
+  .portfolio-navigation--footer .contact-disclosure__panel {
+    top: auto;
+    bottom: calc(100% + 1.1rem);
+    transform-origin: 50% 100%;
+    animation-name: contact-panel-in-from-below;
   }
 
   .contact-disclosure:not([open]) .contact-disclosure__panel {
@@ -451,26 +469,81 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   }
 
   .contact-disclosure__panel a {
+    --contact-link-y: 0rem;
+    --contact-link-rotation: 0deg;
+    position: relative;
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
-    padding: 0.25rem 0;
+    padding: 0.35rem 0.08rem 0.2rem;
     color: inherit;
-    text-decoration-color: transparent;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.3rem;
+    font-size: clamp(0.9rem, 0.18vw + 0.87rem, 0.98rem);
+    line-height: 1.2;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 58%, transparent);
+    text-decoration-thickness: 0.08rem;
+    text-underline-offset: 0.28rem;
+    transform: translateY(var(--contact-link-y)) rotate(var(--contact-link-rotation));
+    transition:
+      color 150ms ease,
+      text-decoration-color 150ms ease,
+      transform 160ms var(--ease-out);
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
+  .contact-disclosure__panel a:nth-child(1) {
+    --contact-link-y: 0.16rem;
+    --contact-link-rotation: -1.2deg;
+  }
+
+  .contact-disclosure__panel a:nth-child(2) {
+    --contact-link-y: -0.16rem;
+    --contact-link-rotation: 0.8deg;
+  }
+
+  .contact-disclosure__panel a:nth-child(3) {
+    --contact-link-y: 0.22rem;
+    --contact-link-rotation: -0.7deg;
+  }
+
+  .contact-disclosure__panel a:nth-child(4) {
+    --contact-link-y: -0.08rem;
+    --contact-link-rotation: 1.1deg;
+  }
+
+  .contact-disclosure__panel a:nth-child(5) {
+    --contact-link-y: 0.14rem;
+    --contact-link-rotation: -0.8deg;
+  }
+
+  .contact-disclosure__panel a:nth-child(6) {
+    --contact-link-y: -0.12rem;
+    --contact-link-rotation: 0.7deg;
+  }
+
   .contact-disclosure__panel a:hover,
   .contact-disclosure__panel a:focus-visible {
-    color: var(--color-accent);
-    text-decoration-color: currentColor;
+    color: var(--color-ink);
+    text-decoration-color: color-mix(in srgb, var(--color-ink) 78%, transparent);
+    transform: translateY(calc(var(--contact-link-y) - 0.12rem)) rotate(var(--contact-link-rotation));
   }
 
   @keyframes contact-panel-in {
-    from { opacity: 0; translate: 0 -0.35rem; }
+    from {
+      opacity: 0;
+      translate: 0 -0.35rem;
+      scale: 0.98;
+    }
+  }
+
+  @keyframes contact-panel-in-from-below {
+    from {
+      opacity: 0;
+      translate: 0 0.35rem;
+      scale: 0.98;
+    }
   }
 
   @media (max-width: 44rem) {
@@ -511,10 +584,36 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 
     .contact-disclosure__panel {
       display: grid;
-      width: min(17rem, calc(100vw - 2rem));
+      width: min(19rem, calc(100vw - 2rem));
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0 1rem;
-      background: var(--color-field);
+      gap: 0.1rem 1.25rem;
+    }
+
+    .contact-disclosure__panel a:nth-child(odd) {
+      justify-self: end;
+      text-align: right;
+    }
+
+    .contact-disclosure__panel a:nth-child(even) {
+      justify-self: start;
+      text-align: left;
+    }
+
+    .portfolio-navigation--footer .contact-disclosure__panel {
+      bottom: calc(100% + 2rem);
+    }
+
+    .portfolio-navigation--fixed .contact-disclosure__panel {
+      width: max-content;
+      max-width: calc(100vw - 1rem);
+      grid-template-columns: repeat(3, max-content);
+      gap: 0 clamp(0.55rem, 3vw, 0.85rem);
+    }
+
+    .portfolio-navigation--fixed .contact-disclosure__panel a {
+      justify-self: center;
+      font-size: 0.82rem;
+      text-align: center;
     }
 
     .portfolio-navigation--intro {
@@ -533,10 +632,8 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     }
 
     .portfolio-navigation--intro .contact-disclosure__panel {
-      width: min(20rem, 100%);
+      width: min(19rem, calc(100vw - 2rem));
       margin-inline: auto;
-      box-shadow: none;
-      padding-inline: 0.2rem;
     }
   }
 
