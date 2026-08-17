@@ -190,9 +190,14 @@ const essenceStyle = [
       // A zero-height inline block sits exactly on the browser's text baseline.
       // Measuring it avoids approximating CSS line layout with canvas metrics.
       // Canvas rasterizes Averia's glyphs fractionally lower than the DOM at
-      // the same baseline, so compensate in proportion to the rendered size.
+      // the same baseline in the wider composition, so compensate there in
+      // proportion to the rendered size. The narrow layout needs the measured
+      // baseline without that optical adjustment.
+      const baselineCompensation = window.matchMedia('(max-width: 52rem)').matches
+        ? 0
+        : fontSize * 0.045;
       const baseline =
-        paddingTop + baselineProbe.getBoundingClientRect().top - bounds.top - fontSize * 0.045;
+        paddingTop + baselineProbe.getBoundingClientRect().top - bounds.top - baselineCompensation;
       baselineProbe.remove();
       const centers: number[] = [];
       const radii: number[] = [];
@@ -491,13 +496,6 @@ const essenceStyle = [
     position: relative;
     display: inline-block;
     vertical-align: baseline;
-  }
-
-  @media (max-width: 52rem) {
-    .thermal-word {
-      margin: -0.7rem -0.25rem;
-      padding: 0.7rem 0.25rem;
-    }
   }
 
   .thermal-word__base {
