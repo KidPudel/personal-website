@@ -22,6 +22,9 @@ Use `CONCEPT_DESIGN.md` for stable intent, `ARCHITECTURE.md` for durable boundar
 - [x] Keep enhanced value-story timing surfaces click-through while restoring pointer input only to active evidence cards.
 - [x] Derive the evidence fan's vertical clearance from the currently visible value phrase, including wrapped word variants.
 - [x] Replace the personal note's one-shot bounce, extreme scale, and intersection trigger with the shared calm motion language.
+- [x] Bridge the narrow-screen personal portrait reflow with compositor-only motion and an opacity-only reduced-motion result.
+- [x] Give contact disclosures an interruptible exit that returns through the same edge as their entrance.
+- [x] Add resisted over-drag and a short release settle to the decorative personal doodles.
 - [x] Separate durable product and technical constraints from replaceable visual hypotheses in project guidance.
 - [x] Verify desktop, mobile, bypass/reduced-motion structure, keyboard focus, browser diagnostics, type checking, and both production base paths.
 

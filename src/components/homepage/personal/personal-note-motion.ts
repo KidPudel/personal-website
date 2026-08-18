@@ -18,4 +18,9 @@ export const personalNoteMotion = {
   sourceScale: 0.96,
   clusterScale: 0.985,
   clusterGapPx: 4,
+  portraitReflowDurationMs: 280,
+  reducedInteractionDurationMs: 120,
+  doodleBoundaryInsetPx: 24,
+  doodleBoundaryResistance: 0.42,
+  doodleReleaseDurationMs: 280,
 } as const;

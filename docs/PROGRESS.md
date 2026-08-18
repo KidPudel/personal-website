@@ -1,6 +1,6 @@
 # Progress
 
-Last updated: 2026-08-16
+Last updated: 2026-08-18
 
 ## Current state
 
@@ -21,6 +21,9 @@ Last updated: 2026-08-16
 - Full-height value timing chapters no longer intercept the clickable value words; active evidence cards retain their own link interaction.
 - The evidence fan now measures the visible value phrase and maintains a viewport-appropriate gap below it, so wrapped word variants cannot be covered by the lead card.
 - The previous one-shot personal constellation bounce, `scale(0.16)` entrance, and intersection trigger have been removed.
+- On narrow screens, opening or closing the couple portrait now bridges the resulting note reflow with a 280ms compositor-only FLIP transition. Reduced motion uses a short opacity bridge instead of positional movement.
+- Contact disclosures now remain mounted through an interruptible 180ms exit and return through the same edge as their entrance. Reduced motion keeps a 120ms opacity-only transition.
+- Draggable personal doodles now resist beyond their 24px field boundary and settle back over 280ms after release. Reduced motion retains the hard boundary with a brief opacity pulse.
 - Inactive value-voice layers are hidden from the current accessibility state.
 - The work, writing, Observatory case study, personal-note interactions, contact disclosure, and verified content remain intact.
 - Project guidance now treats exact visual choreography as replaceable and keeps architecture limited to durable technical boundaries.
@@ -31,6 +34,7 @@ Last updated: 2026-08-16
 - Feel-checked the distinct stacked-deck and spreading beats at 1280 by 720 and 390 by 844. Confirmed all five cards remain present, the fan settles without horizontal overflow, and card links only become interactive after settling.
 - Verified the balloon return at 1280 by 720 and 390 by 844, including bottom-only visibility, scroll-linked ascent, arrival frames, falling loop, focus transfer, interruption, no horizontal overflow, and a flash-free hidden reset.
 - Confirmed that the box stays centered, all five first-value evidence objects remain present, closing actions visibly rise from the box before settling around it, motion reverses cleanly with scroll, and neither viewport has horizontal overflow.
+- Verified the personal portrait disclosure at 390 by 844, including its 8.5rem layout bridge, final accessibility state, and zero horizontal overflow. Verified the shared contact disclosure open and close behavior in the introduction at 1280 by 800.
 - `astro check` reports zero diagnostics.
 - Production builds complete for `/` and `/personal-website/`.
 - Browser diagnostics contain no new relevant warnings or errors after the rebuild.
