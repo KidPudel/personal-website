@@ -19,6 +19,7 @@ interface EdgeLayer {
 const FIELD_SEAM = 0.58;
 const PALETTE_SPAN = FIELD_SEAM * 0.9;
 const RUBBERBAND_CONSTANT = 0.55;
+const EDGE_SLOP = 16;
 
 const rayBleed = () => Math.round(Math.min(72, Math.max(44, window.innerHeight * 0.065)));
 const seamFeather = () => Math.round(Math.min(96, Math.max(64, window.innerHeight * 0.09)));
@@ -126,12 +127,16 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     let lastTime: number | undefined;
     let wheelDistance = 0;
     let touchOriginY: number | undefined;
-    let touchPlacement: Placement | undefined;
+    let touchStartScroll = 0;
+    let touchPullOffset = 0;
 
     const maximumPull = () => Math.min(180, Math.max(96, window.innerHeight * 0.18));
+    const rubberbandDimension = () => Math.max(window.innerHeight, 1);
     const maximumScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     const atEdge = (placement: Placement) =>
-      placement === 'top' ? window.scrollY <= 1 : window.scrollY >= maximumScroll() - 1;
+      placement === 'top'
+        ? window.scrollY <= EDGE_SLOP
+        : window.scrollY >= maximumScroll() - EDGE_SLOP;
 
     const resetLayer = (layer: EdgeLayer) => {
       layer.backing.style.transform = 'scaleY(0)';
@@ -219,8 +224,15 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       paint();
     };
 
-    const setPull = (placement: Placement, rawDistance: number, releaseAfterInput = false) => {
-      if (!atEdge(placement) || reducedMotion.matches) return;
+    const setPull = (
+      placement: Placement,
+      rawDistance: number,
+      source: 'touch' | 'wheel',
+      releaseAfterInput = false,
+    ) => {
+      if (reducedMotion.matches) return;
+      if (source === 'wheel' && !atEdge(placement)) return;
+      if (source === 'touch' && !atEdge(placement) && activePlacement !== placement) return;
 
       if (activePlacement && activePlacement !== placement) {
         pull = 0;
@@ -228,8 +240,19 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       }
 
       activePlacement = placement;
-      target = rubberband(Math.max(0, rawDistance), maximumPull());
-      requestRender();
+      target = Math.min(
+        maximumPull(),
+        rubberband(Math.max(0, rawDistance), rubberbandDimension()),
+      );
+
+      if (source === 'touch') {
+        pull = target;
+        velocity = 0;
+        lastTime = undefined;
+        paint();
+      } else {
+        requestRender();
+      }
 
       if (!releaseAfterInput) return;
       window.clearTimeout(this.releaseTimer);
@@ -257,7 +280,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       }
 
       wheelDistance += Math.abs(distance);
-      setPull(placement, wheelDistance, true);
+      setPull(placement, wheelDistance, 'wheel', true);
     };
 
     const handleScroll = () => {
@@ -267,39 +290,52 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     const handleTouchStart = (event: TouchEvent) => {
       if (event.touches.length !== 1) return;
 
-      touchPlacement = atEdge('top') ? 'top' : atEdge('bottom') ? 'bottom' : undefined;
-      if (!touchPlacement) return;
-
       touchOriginY = event.touches[0]?.clientY;
+      touchStartScroll = window.scrollY;
+      touchPullOffset = pull;
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = 0;
+
+      if (pull > 0) {
+        target = pull;
+        velocity = 0;
+        lastTime = undefined;
+      }
     };
 
     const handleTouchMove = (event: TouchEvent) => {
-      if (touchOriginY === undefined || !touchPlacement || event.touches.length !== 1) return;
+      if (touchOriginY === undefined || event.touches.length !== 1 || reducedMotion.matches) return;
 
       const currentY = event.touches[0]?.clientY ?? touchOriginY;
-      const outwardDistance =
-        touchPlacement === 'top' ? currentY - touchOriginY : touchOriginY - currentY;
+      const delta = currentY - touchOriginY;
+      const topOverscroll =
+        delta - touchStartScroll + (activePlacement === 'top' ? touchPullOffset : 0);
+      const bottomOverscroll =
+        -delta - (maximumScroll() - touchStartScroll) + (activePlacement === 'bottom' ? touchPullOffset : 0);
+      const placement =
+        topOverscroll > 0 && (atEdge('top') || activePlacement === 'top')
+          ? 'top'
+          : bottomOverscroll > 0 && (atEdge('bottom') || activePlacement === 'bottom')
+            ? 'bottom'
+            : undefined;
 
-      if (outwardDistance > 0) {
-        setPull(touchPlacement, outwardDistance * 1.6);
+      if (!placement) {
+        if (activePlacement) release();
         return;
       }
 
-      release();
+      // iOS stops delivering touchmove (or cancels the gesture) once the page
+      // cannot scroll. Keep the bounce glued to the finger only while pulling
+      // past the document edge; native scrolling in the middle is untouched.
+      if (event.cancelable) event.preventDefault();
+      setPull(placement, placement === 'top' ? topOverscroll : bottomOverscroll, 'touch');
     };
 
-    const handleTouchEnd = () => {
+    const endTouch = () => {
       touchOriginY = undefined;
-      touchPlacement = undefined;
-      release();
-    };
-
-    const handleTouchCancel = () => {
-      touchOriginY = undefined;
-      touchPlacement = undefined;
-      release();
+      touchStartScroll = 0;
+      touchPullOffset = 0;
+      if (pull > 0 || target > 0 || activePlacement) release();
     };
 
     const handleMotionPreference = () => release();
@@ -326,10 +362,18 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
     window.addEventListener('wheel', handleWheel, { passive: true, signal: this.abort.signal });
     window.addEventListener('scroll', handleScroll, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchstart', handleTouchStart, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true, signal: this.abort.signal });
-    window.addEventListener('touchcancel', handleTouchCancel, { passive: true, signal: this.abort.signal });
+    window.addEventListener('touchstart', handleTouchStart, {
+      capture: true,
+      passive: true,
+      signal: this.abort.signal,
+    });
+    window.addEventListener('touchmove', handleTouchMove, {
+      capture: true,
+      passive: false,
+      signal: this.abort.signal,
+    });
+    window.addEventListener('touchend', endTouch, { passive: true, signal: this.abort.signal });
+    window.addEventListener('touchcancel', endTouch, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
 
