@@ -284,9 +284,11 @@ const optimizedFrames = await Promise.all(
     grid-area: 1 / 1;
     z-index: 1;
     overflow: hidden;
+    overflow: clip;
     container-type: size;
     opacity: var(--art-opacity);
     pointer-events: auto;
+    touch-action: pan-y;
   }
 
   :global(.js) .opening-sequence[data-opening-live] .opening-sequence__box {
