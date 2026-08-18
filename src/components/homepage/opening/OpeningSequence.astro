@@ -7,6 +7,8 @@ import frame4 from '../../../assets/art/Doodles-box-opening/box_frame4.png';
 import frame5 from '../../../assets/art/Doodles-box-opening/box_frame5.png';
 import frame6 from '../../../assets/art/Doodles-box-opening/box_frame6.png';
 import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
+import skyPoster from '../../../assets/art/dithered-sky-poster.webp';
+import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
 import { connectLinks } from '../../../config/site';
 import { openingMotion } from './opening-motion';
 
@@ -17,6 +19,13 @@ const optimizedFrames = await Promise.all(
 ---
 
 <link rel="preload" href={optimizedFrames[0].src} as="image" fetchpriority="high" />
+<link
+  rel="preload"
+  href={skyVideoUrl}
+  as="video"
+  type="video/mp4"
+  media="(prefers-reduced-motion: no-preference)"
+/>
 
 <opening-sequence
   class="opening-sequence"
@@ -25,6 +34,42 @@ const optimizedFrames = await Promise.all(
 >
   <value-story class="opening-sequence__stage">
     <div class="opening-sequence__scene">
+      <div class="opening-sequence__sky" aria-hidden="true">
+        <video
+          data-opening-sky
+          data-src={skyVideoUrl}
+          poster={skyPoster.src}
+          preload="auto"
+          autoplay
+          muted
+          loop
+          playsinline
+          disablepictureinpicture
+          disableRemotePlayback
+          tabindex="-1"
+        ></video>
+        <script is:inline>
+          (() => {
+            const script = document.currentScript;
+            const video = script?.previousElementSibling;
+            if (
+              !(video instanceof HTMLVideoElement) ||
+              window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ) {
+              return;
+            }
+
+            const source = video.dataset.src;
+            if (!source) return;
+
+            video.muted = true;
+            video.src = source;
+            video.load();
+            void video.play().catch(() => undefined);
+          })();
+        </script>
+      </div>
+
       <div class="opening-sequence__box" aria-hidden="true" data-opening-art>
         <div class="opening-sequence__motion">
           {optimizedFrames.map((frame, index) => (
@@ -95,12 +140,14 @@ const optimizedFrames = await Promise.all(
     --box-fall-distance: 32vh;
     --box-support-distance: 0vh;
     --box-support-scale-loss: 0.22;
+    --sky-opacity: 0;
     position: relative;
     display: block;
     background: var(--color-field);
   }
 
   .opening-sequence__box,
+  .opening-sequence__sky,
   .opening-sequence__scroll-hint,
   .opening-sequence__skip {
     display: none;
@@ -168,6 +215,28 @@ const optimizedFrames = await Promise.all(
     min-width: 0;
     opacity: var(--identity-hold, 1);
     pointer-events: none;
+  }
+
+  :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
+    position: relative;
+    z-index: 0;
+    grid-area: 1 / 1;
+    display: block;
+    overflow: hidden;
+    opacity: var(--sky-opacity, 0);
+    pointer-events: none;
+  }
+
+  :global(.js:not(.opening-bypassed)) .opening-sequence[data-sky-fading] .opening-sequence__sky {
+    will-change: opacity;
+  }
+
+  .opening-sequence__sky video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   :global(.js) .opening-sequence__box {
@@ -549,6 +618,7 @@ const optimizedFrames = await Promise.all(
     }
 
     :global(.js) .opening-sequence__box,
+    :global(.js) .opening-sequence__sky,
     :global(.js) .opening-sequence__scroll-hint {
       display: none;
     }

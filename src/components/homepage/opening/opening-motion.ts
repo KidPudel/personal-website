@@ -22,6 +22,8 @@ export const openingMotion = {
   boxFallPower: 1.2,
   boxSupportDistanceVh: 0,
   boxSupportScaleLoss: 0.22,
+  skyOpacityAtTop: 0.5,
+  skyOpacityAtIntro: 0.3,
   identityRevealDistance: 0.7,
   identityBeats: [0, 0.2, 0.4, 0.6, 0.8] as const,
   identityBeatReveal: 0.14,

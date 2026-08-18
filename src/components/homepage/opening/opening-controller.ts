@@ -11,6 +11,7 @@ import {
 class OpeningSequence extends HTMLElement {
   private frame = 0;
   private abort?: AbortController;
+  private skyVideo?: HTMLVideoElement;
   private helloAnimationPlayed = false;
   private helloAnimationPrepared = false;
   private thermalHintPlayed = false;
@@ -29,6 +30,7 @@ class OpeningSequence extends HTMLElement {
     const hintCard = this.querySelector<HTMLElement>('[data-opening-scroll-hint-card]');
     const hintPhrase = this.querySelector<HTMLElement>('[data-opening-scroll-hint-phrase]');
     const hintContact = this.querySelector<HTMLElement>('[data-opening-scroll-hint-contact]');
+    const skyVideo = this.querySelector<HTMLVideoElement>('[data-opening-sky]');
     const frames = Array.from(this.querySelectorAll<HTMLElement>('[data-opening-frame]'));
     const page = this.closest<HTMLElement>('[data-homepage]');
     const header = page?.querySelector<HTMLElement>('[data-site-header]');
@@ -44,12 +46,39 @@ class OpeningSequence extends HTMLElement {
       !hintCard ||
       !hintPhrase ||
       !hintContact ||
+      !skyVideo ||
       !frames.length ||
       !page ||
       !header
     ) {
       return;
     }
+
+    this.skyVideo = skyVideo;
+    skyVideo.muted = true;
+    skyVideo.loop = true;
+    skyVideo.playsInline = true;
+
+    let skyPlaybackRequested = false;
+    const setSkyPlayback = (active: boolean) => {
+      if (active === skyPlaybackRequested) return;
+      skyPlaybackRequested = active;
+
+      if (!active) {
+        skyVideo.pause();
+        return;
+      }
+
+      const source = skyVideo.dataset.src;
+      if (!skyVideo.getAttribute('src') && source) {
+        skyVideo.src = source;
+        skyVideo.load();
+      }
+
+      void skyVideo.play().catch(() => {
+        if (skyPlaybackRequested) skyPlaybackRequested = false;
+      });
+    };
 
     let openingStart = 0;
     let openingDistance = 1;
@@ -248,6 +277,23 @@ class OpeningSequence extends HTMLElement {
       const headerVisibility = bypassed ? 1 : identityBeatProgress(identityReveal, 3);
       const premiseOpacity = bypassed ? 1 : identityBeatProgress(identityReveal, 4);
       const identityHold = bypassed ? 1 : clamp(identityReveal / 0.08);
+      const skyIntroStart = Math.max(
+        contentRevealStart(frames.length, openingDistance),
+        0.0001,
+      );
+      const skyProgressToIntro = clamp(progress / skyIntroStart);
+      const skyProgressThroughIntro = clamp(
+        (progress - skyIntroStart) / openingMotion.identityRevealDistance,
+      );
+      const skyOpacityBeforeIntro =
+        openingMotion.skyOpacityAtTop +
+        (openingMotion.skyOpacityAtIntro - openingMotion.skyOpacityAtTop) *
+          skyProgressToIntro;
+      const skyOpacity = bypassed
+        ? 0
+        : progress <= skyIntroStart
+          ? skyOpacityBeforeIntro
+          : openingMotion.skyOpacityAtIntro * (1 - skyProgressThroughIntro);
       const boxFall = boxFallAmount(progress);
       const introExitDistance = Math.max(
         1,
@@ -291,6 +337,12 @@ class OpeningSequence extends HTMLElement {
       this.style.setProperty('--box-fall', boxFall.toFixed(4));
       this.style.setProperty('--box-support', boxSupport.toFixed(4));
       this.style.setProperty('--identity-hold', identityHold.toFixed(4));
+      this.style.setProperty('--sky-opacity', skyOpacity.toFixed(4));
+      this.toggleAttribute(
+        'data-sky-fading',
+        skyOpacity > 0 && skyOpacity < openingMotion.skyOpacityAtTop,
+      );
+      setSkyPlayback(skyOpacity > 0.001 && document.visibilityState === 'visible');
       this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
       this.toggleAttribute('data-box-settling', boxSupport > 0 && boxSupport < 1);
       reveal.toggleAttribute('data-visible', frameIndex >= frames.length - 1 || identityReveal > 0);
@@ -370,6 +422,15 @@ class OpeningSequence extends HTMLElement {
 
     const handleMotionPreference = () => requestRender();
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'visible') {
+        setSkyPlayback(false);
+        return;
+      }
+
+      requestRender();
+    };
+
     const handleHashChange = () => requestRender();
 
     boxStage.addEventListener('pointerdown', handleHintPointerDown, {
@@ -395,6 +456,12 @@ class OpeningSequence extends HTMLElement {
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
+    document.addEventListener('visibilitychange', handleVisibilityChange, {
+      signal: this.abort.signal,
+    });
+    window.addEventListener('pagehide', () => setSkyPlayback(false), {
+      signal: this.abort.signal,
+    });
     window.addEventListener('pageshow', settleOpening, { signal: this.abort.signal });
     if (document.readyState === 'complete') {
       settleOpening();
@@ -415,6 +482,10 @@ class OpeningSequence extends HTMLElement {
 
   disconnectedCallback() {
     this.abort?.abort();
+    this.skyVideo?.pause();
+    this.skyVideo?.removeAttribute('src');
+    this.skyVideo?.load();
+    this.skyVideo = undefined;
     this.removeAttribute('data-scroll-hint');
     this.querySelector<HTMLElement>('[data-opening-scroll-hint]')?.setAttribute(
       'aria-hidden',
