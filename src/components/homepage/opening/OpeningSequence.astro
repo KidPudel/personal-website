@@ -8,6 +8,7 @@ import frame5 from '../../../assets/art/Doodles-box-opening/box_frame5.png';
 import frame6 from '../../../assets/art/Doodles-box-opening/box_frame6.png';
 import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
 import skyPoster from '../../../assets/art/dithered-sky-poster.webp';
+import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
 import { connectLinks } from '../../../config/site';
 import { openingMotion } from './opening-motion';
@@ -24,7 +25,14 @@ const optimizedFrames = await Promise.all(
   href={skyVideoUrl}
   as="video"
   type="video/mp4"
-  media="(prefers-reduced-motion: no-preference)"
+  media="(min-width: 45rem) and (prefers-reduced-motion: no-preference)"
+/>
+<link
+  rel="preload"
+  href={skyMobileVideoUrl}
+  as="video"
+  type="video/mp4"
+  media="(max-width: 44.999rem) and (prefers-reduced-motion: no-preference)"
 />
 
 <opening-sequence
@@ -35,9 +43,20 @@ const optimizedFrames = await Promise.all(
   <value-story class="opening-sequence__stage">
     <div class="opening-sequence__scene">
       <div class="opening-sequence__sky" aria-hidden="true">
+        <img
+          class="opening-sequence__sky-poster"
+          src={skyPoster.src}
+          alt=""
+          width="1280"
+          height="720"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
         <video
           data-opening-sky
           data-src={skyVideoUrl}
+          data-mobile-src={skyMobileVideoUrl}
           poster={skyPoster.src}
           preload="auto"
           autoplay
@@ -59,13 +78,18 @@ const optimizedFrames = await Promise.all(
               return;
             }
 
-            const source = video.dataset.src;
+            const source = window.matchMedia('(max-width: 44.999rem)').matches
+              ? video.dataset.mobileSrc
+              : video.dataset.src;
             if (!source) return;
 
             video.muted = true;
             video.src = source;
             video.load();
-            void video.play().catch(() => undefined);
+            void video.play().then(
+              () => video.removeAttribute('data-autoplay-blocked'),
+              () => video.setAttribute('data-autoplay-blocked', ''),
+            );
           })();
         </script>
       </div>
@@ -231,12 +255,27 @@ const optimizedFrames = await Promise.all(
     will-change: opacity;
   }
 
+  .opening-sequence__sky-poster,
   .opening-sequence__sky video {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .opening-sequence__sky video {
+    pointer-events: none;
+  }
+
+  .opening-sequence__sky video[data-autoplay-blocked] {
+    display: none;
+  }
+
+  .opening-sequence__sky video::-webkit-media-controls,
+  .opening-sequence__sky video::-webkit-media-controls-start-playback-button {
+    display: none !important;
+    -webkit-appearance: none;
   }
 
   :global(.js) .opening-sequence__box {

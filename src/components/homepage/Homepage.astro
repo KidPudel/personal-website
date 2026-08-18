@@ -18,8 +18,7 @@ interface Props {
 const { observatory, foodProduct, chineseBee } = Astro.props;
 ---
 
-<ElasticOverscrollBackdrop placement="top" />
-<ElasticOverscrollBackdrop placement="bottom" />
+<ElasticOverscrollBackdrop />
 
 <div class="homepage" data-homepage>
   <main id="main-content">
@@ -51,11 +50,6 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
   }
 
   :global(.homepage-document[data-elastic-edge]) .homepage {
-    transform: translate3d(
-      0,
-      calc(var(--elastic-top-pull, 0px) - var(--elastic-bottom-pull, 0px)),
-      0
-    );
     will-change: transform;
   }
 

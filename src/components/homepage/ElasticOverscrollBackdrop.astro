@@ -1,19 +1,18 @@
----
-interface Props {
-  placement?: 'top' | 'bottom';
-}
+<elastic-overscroll-backdrop aria-hidden="true">
+  <div class="elastic-overscroll-backdrop" data-elastic-layer data-placement="top">
+    <div class="elastic-overscroll-backdrop__backing"></div>
+    <div class="elastic-overscroll-backdrop__glow">
+      <canvas class="elastic-overscroll-backdrop__field"></canvas>
+    </div>
+    <div class="elastic-overscroll-backdrop__seam"></div>
+  </div>
 
-const { placement = 'bottom' } = Astro.props;
----
-
-<elastic-overscroll-backdrop
-  class="elastic-overscroll-backdrop"
-  data-placement={placement}
-  aria-hidden="true"
->
-  <div class="elastic-overscroll-backdrop__backing"></div>
-  <div class="elastic-overscroll-backdrop__glow">
-    <canvas class="elastic-overscroll-backdrop__field"></canvas>
+  <div class="elastic-overscroll-backdrop" data-elastic-layer data-placement="bottom">
+    <div class="elastic-overscroll-backdrop__backing"></div>
+    <div class="elastic-overscroll-backdrop__glow">
+      <canvas class="elastic-overscroll-backdrop__field"></canvas>
+    </div>
+    <div class="elastic-overscroll-backdrop__seam"></div>
   </div>
 </elastic-overscroll-backdrop>
 
@@ -28,9 +27,8 @@ const { placement = 'bottom' } = Astro.props;
     right: 0;
     left: 0;
     display: none;
-    height: calc(var(--edge-span, min(22svh, 11.25rem)) + var(--ray-bleed, 3.5rem));
     overflow: hidden;
-    contain: layout style;
+    contain: strict;
     opacity: 0;
     pointer-events: none;
     visibility: hidden;
@@ -58,54 +56,77 @@ const { placement = 'bottom' } = Astro.props;
     position: absolute;
     right: 0;
     left: 0;
+    background: var(--color-field);
+    transform: scaleY(0);
   }
 
   [data-placement='top'] .elastic-overscroll-backdrop__backing {
     top: 0;
-    height: calc(var(--elastic-top-pull, 0px) + 2px);
-    background: var(--color-field);
+    transform-origin: center top;
   }
 
   [data-placement='bottom'] .elastic-overscroll-backdrop__backing {
     bottom: 0;
-    height: calc(var(--elastic-bottom-pull, 0px) + 2px);
-    background: var(--color-field);
+    transform-origin: center bottom;
   }
 
   .elastic-overscroll-backdrop__glow {
     position: absolute;
-    inset: 0;
-    filter: blur(clamp(0.7rem, 1.8vw, 1.2rem));
+    right: 0;
+    left: 0;
+    filter: blur(clamp(0.7rem, 1.8vw, 1.2rem)) saturate(90%);
+    transform: scaleY(0);
   }
 
   [data-placement='top'] .elastic-overscroll-backdrop__glow {
+    top: 0;
+    transform-origin: center top;
+  }
+
+  [data-placement='bottom'] .elastic-overscroll-backdrop__glow {
+    bottom: 0;
+    transform-origin: center bottom;
+  }
+
+  .elastic-overscroll-backdrop[data-edge-active] .elastic-overscroll-backdrop__backing,
+  .elastic-overscroll-backdrop[data-edge-active] .elastic-overscroll-backdrop__glow,
+  .elastic-overscroll-backdrop[data-edge-active] .elastic-overscroll-backdrop__seam {
+    will-change: transform;
+  }
+
+  .elastic-overscroll-backdrop__seam {
+    position: absolute;
+    right: 0;
+    left: 0;
+    opacity: 0;
+    -webkit-backdrop-filter: blur(clamp(1rem, 2vw, 1.5rem)) saturate(108%);
+    backdrop-filter: blur(clamp(1rem, 2vw, 1.5rem)) saturate(108%);
     -webkit-mask-image: linear-gradient(
       to bottom,
-      #000 0%,
-      #000 calc(100% - var(--ray-bleed, 3.5rem)),
+      transparent 0%,
+      #000 32%,
+      #000 68%,
       transparent 100%
     );
     mask-image: linear-gradient(
       to bottom,
-      #000 0%,
-      #000 calc(100% - var(--ray-bleed, 3.5rem)),
+      transparent 0%,
+      #000 32%,
+      #000 68%,
       transparent 100%
     );
   }
 
-  [data-placement='bottom'] .elastic-overscroll-backdrop__glow {
-    -webkit-mask-image: linear-gradient(
-      to top,
-      #000 0%,
-      #000 calc(100% - var(--ray-bleed, 3.5rem)),
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to top,
-      #000 0%,
-      #000 calc(100% - var(--ray-bleed, 3.5rem)),
-      transparent 100%
-    );
+  [data-placement='top'] .elastic-overscroll-backdrop__seam {
+    top: 0;
+  }
+
+  [data-placement='bottom'] .elastic-overscroll-backdrop__seam {
+    bottom: 0;
+  }
+
+  .elastic-overscroll-backdrop[data-edge-active] .elastic-overscroll-backdrop__seam {
+    opacity: 1;
   }
 
   .elastic-overscroll-backdrop__field {

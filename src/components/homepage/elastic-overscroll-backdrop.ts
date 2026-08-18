@@ -1,15 +1,27 @@
 import { clamp, smooth } from '../../lib/motion';
 import { sampleEssenceColor, sampleEssenceNoise } from './opening/pigment-field';
 
-const rayColor = (along: number) => {
-  const t = clamp(along);
+type Placement = 'top' | 'bottom';
 
-  if (t < 0.36) return sampleEssenceColor((t / 0.36) * 0.3);
+interface EdgeLayer {
+  backing: HTMLElement;
+  canvas: HTMLCanvasElement;
+  context: CanvasRenderingContext2D;
+  glow: HTMLElement;
+  host: HTMLElement;
+  placement: Placement;
+  seam: HTMLElement;
+}
 
-  return sampleEssenceColor(0.54 + ((t - 0.36) / 0.64) * 0.46);
-};
+// The page boundary crosses the field before its transparent tips. This lets
+// the last soft colour continue over the moving page instead of exposing a
+// bright horizontal strip between the pigment and the opening sky.
+const FIELD_SEAM = 0.58;
+const PALETTE_SPAN = FIELD_SEAM * 0.9;
+const RUBBERBAND_CONSTANT = 0.55;
 
 const rayBleed = () => Math.round(Math.min(72, Math.max(44, window.innerHeight * 0.065)));
+const seamFeather = () => Math.round(Math.min(96, Math.max(64, window.innerHeight * 0.09)));
 
 const ridgeHeight = (normalizedX: number, seed: number) => {
   const swell = sampleEssenceNoise(normalizedX * 2.8 + seed, seed * 0.45);
@@ -22,12 +34,12 @@ const ridgeHeight = (normalizedX: number, seed: number) => {
 const drawElasticField = (
   canvas: HTMLCanvasElement,
   context: CanvasRenderingContext2D,
-  placement: 'top' | 'bottom',
+  placement: Placement,
 ) => {
-  // A connected ridged curtain, not separate columns. Essence color travels from
-  // the viewport origin toward the page. The spring never repaints this bitmap.
+  // The bitmap is deliberately small and softly enlarged. It preserves the
+  // drawn, uneven ridge while the continuous palette removes horizontal bands.
   const targetWidth = Math.max(36, Math.min(52, Math.round(window.innerWidth / 32)));
-  const targetHeight = 48;
+  const targetHeight = 56;
 
   if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
     canvas.width = targetWidth;
@@ -46,7 +58,7 @@ const drawElasticField = (
   for (let pixelY = 0; pixelY < targetHeight; pixelY += 1) {
     const normalizedY = pixelY / Math.max(1, targetHeight - 1);
     const depth = placement === 'top' ? normalizedY : 1 - normalizedY;
-    const seam = 1 - smooth(clamp(depth / (placement === 'top' ? 0.12 : 0.06)));
+    const originFade = smooth(clamp(depth / 0.1));
 
     for (let pixelX = 0; pixelX < targetWidth; pixelX += 1) {
       const index = (pixelY * targetWidth + pixelX) * 4;
@@ -58,18 +70,25 @@ const drawElasticField = (
       }
 
       const along = clamp(depth / Math.max(height, 0.001));
-      const color = rayColor(along);
+      // Stretch the whole essence range into the overscroll above the page, so
+      // flame, cinnabar, and magenta read in the bounce instead of only in the
+      // faded tip that continues over the sky.
+      const color = sampleEssenceColor(clamp(depth / PALETTE_SPAN));
       const tipFade = 1 - smooth(clamp((along - 0.82) / 0.18));
 
       pixels[index] = color[0];
       pixels[index + 1] = color[1];
       pixels[index + 2] = color[2];
-      pixels[index + 3] = Math.round(tipFade * (1 - seam) * 255);
+      pixels[index + 3] = Math.round(originFade * tipFade * 255);
     }
   }
 
   context.putImageData(image, 0, 0);
 };
+
+const rubberband = (distance: number, dimension: number) =>
+  (distance * dimension * RUBBERBAND_CONSTANT) /
+  (dimension + RUBBERBAND_CONSTANT * Math.abs(distance));
 
 class ElasticOverscrollBackdrop extends HTMLElement {
   private abort?: AbortController;
@@ -82,42 +101,73 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     this.abort = new AbortController();
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const placement = this.dataset.placement === 'top' ? 'top' : 'bottom';
-    const canvas = this.querySelector<HTMLCanvasElement>('.elastic-overscroll-backdrop__field');
-    const context = canvas?.getContext('2d');
+    const homepage = document.querySelector<HTMLElement>('[data-homepage]');
+    const layers = new Map<Placement, EdgeLayer>();
+
+    this.querySelectorAll<HTMLElement>('[data-elastic-layer]').forEach((host) => {
+      const placement: Placement = host.dataset.placement === 'top' ? 'top' : 'bottom';
+      const backing = host.querySelector<HTMLElement>('.elastic-overscroll-backdrop__backing');
+      const glow = host.querySelector<HTMLElement>('.elastic-overscroll-backdrop__glow');
+      const seam = host.querySelector<HTMLElement>('.elastic-overscroll-backdrop__seam');
+      const canvas = host.querySelector<HTMLCanvasElement>('.elastic-overscroll-backdrop__field');
+      const context = canvas?.getContext('2d');
+
+      if (backing && glow && seam && canvas && context) {
+        layers.set(placement, { backing, canvas, context, glow, host, placement, seam });
+      }
+    });
+
+    if (!homepage || layers.size !== 2) return;
+
+    let activePlacement: Placement | undefined;
     let pull = 0;
     let target = 0;
     let velocity = 0;
     let lastTime: number | undefined;
+    let wheelDistance = 0;
     let touchOriginY: number | undefined;
-    let wasActive = false;
-    let refreshArmed = false;
-    let refreshGestureAt = 0;
-    let reloading = false;
+    let touchPlacement: Placement | undefined;
+
     const maximumPull = () => Math.min(180, Math.max(96, window.innerHeight * 0.18));
-    const refreshThreshold = () => maximumPull() * 0.78;
     const maximumScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const pullProperty = placement === 'top' ? '--elastic-top-pull' : '--elastic-bottom-pull';
-    const atEdge = () =>
+    const atEdge = (placement: Placement) =>
       placement === 'top' ? window.scrollY <= 1 : window.scrollY >= maximumScroll() - 1;
+
+    const resetLayer = (layer: EdgeLayer) => {
+      layer.backing.style.transform = 'scaleY(0)';
+      layer.glow.style.transform = 'scaleY(0)';
+      layer.seam.style.transform = '';
+      layer.host.removeAttribute('data-edge-active');
+    };
 
     const paint = () => {
       const pixelRatio = window.devicePixelRatio || 1;
       const visualPull = Math.round(pull * pixelRatio) / pixelRatio;
-      const bleed = rayBleed();
-      const active = visualPull > 0;
-      this.style.setProperty('--edge-span', `${visualPull}px`);
-      this.style.setProperty('--ray-bleed', `${bleed}px`);
-      document.documentElement.style.setProperty(pullProperty, `${visualPull}px`);
+      const activeLayer = activePlacement ? layers.get(activePlacement) : undefined;
+      const scale = clamp(visualPull / maximumPull());
 
-      if (active !== wasActive) {
-        wasActive = active;
-        this.toggleAttribute('data-edge-active', active);
-        document.documentElement.toggleAttribute(
-          'data-elastic-edge',
-          Boolean(document.querySelector('elastic-overscroll-backdrop[data-edge-active]')),
-        );
-      }
+      layers.forEach((layer) => {
+        if (layer === activeLayer && visualPull > 0) {
+          layer.backing.style.transform = `scaleY(${scale})`;
+          layer.glow.style.transform = `scaleY(${scale})`;
+          const feather = seamFeather();
+          const seamOffset =
+            layer.placement === 'top'
+              ? visualPull - feather / 2
+              : -visualPull + feather / 2;
+          layer.seam.style.transform = `translate3d(0, ${seamOffset}px, 0)`;
+          layer.host.setAttribute('data-edge-active', '');
+          return;
+        }
+
+        resetLayer(layer);
+      });
+
+      homepage.style.transform = activePlacement
+        ? `translate3d(0, ${activePlacement === 'top' ? visualPull : -visualPull}px, 0)`
+        : '';
+
+      document.documentElement.toggleAttribute('data-elastic-edge', visualPull > 0);
     };
 
     const requestRender = () => {
@@ -125,41 +175,10 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       this.frame = window.requestAnimationFrame(render);
     };
 
-    const disarmRefresh = () => {
-      refreshArmed = false;
-      refreshGestureAt = 0;
-    };
-
-    const armRefreshIfReady = (distance: number, fromTouch: boolean) => {
-      // Native swipe-to-refresh cannot run while overscroll is suppressed.
-      // A committed top pull reloads instead. Reduced motion restores native
-      // overscroll, so it must not also trigger this custom reload.
-      if (reducedMotion.matches || placement !== 'top' || !atEdge()) {
-        disarmRefresh();
-        return;
-      }
-
-      if (!refreshGestureAt) refreshGestureAt = performance.now();
-
-      const heldLongEnough = fromTouch || performance.now() - refreshGestureAt >= 240;
-      refreshArmed = distance >= refreshThreshold() && heldLongEnough;
-    };
-
-    const reloadDocument = () => {
-      if (reloading) return;
-      reloading = true;
-      window.location.reload();
-    };
-
     const release = () => {
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = 0;
-
-      if (refreshArmed) {
-        reloadDocument();
-        return;
-      }
-
+      wheelDistance = 0;
       target = 0;
       requestRender();
     };
@@ -172,6 +191,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         target = 0;
         velocity = 0;
         lastTime = undefined;
+        activePlacement = undefined;
         paint();
         return;
       }
@@ -194,113 +214,111 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       pull = target;
       velocity = 0;
       lastTime = undefined;
+
+      if (pull === 0) activePlacement = undefined;
       paint();
     };
 
-    const setPull = (
-      distance: number,
-      source: 'touch' | 'wheel' | 'inertia',
-      releaseAfterInput = false,
-    ) => {
-      if (!atEdge()) return;
+    const setPull = (placement: Placement, rawDistance: number, releaseAfterInput = false) => {
+      if (!atEdge(placement) || reducedMotion.matches) return;
 
-      const next = Math.min(maximumPull(), Math.max(0, distance));
-
-      if (source === 'touch') armRefreshIfReady(next, true);
-      if (source === 'wheel') armRefreshIfReady(next, false);
-
-      if (!reducedMotion.matches) {
-        target = next;
-        requestRender();
+      if (activePlacement && activePlacement !== placement) {
+        pull = 0;
+        velocity = 0;
       }
+
+      activePlacement = placement;
+      target = rubberband(Math.max(0, rawDistance), maximumPull());
+      requestRender();
 
       if (!releaseAfterInput) return;
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = window.setTimeout(release, 280);
     };
 
-    const wheelDistance = (event: WheelEvent) => {
+    const normalizedWheelDistance = (event: WheelEvent) => {
       if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * 16;
       if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) return event.deltaY * window.innerHeight;
       return event.deltaY;
     };
 
     const handleWheel = (event: WheelEvent) => {
-      const outwardDistance = placement === 'top' ? -wheelDistance(event) : wheelDistance(event);
+      const distance = normalizedWheelDistance(event);
+      const placement =
+        distance < 0 && atEdge('top')
+          ? 'top'
+          : distance > 0 && atEdge('bottom')
+            ? 'bottom'
+            : undefined;
 
-      if (outwardDistance <= 0) {
-        disarmRefresh();
-        if (pull > 0.5 || target > 0) {
-          release();
-        }
+      if (!placement) {
+        if (activePlacement) release();
         return;
       }
 
-      if (!atEdge()) return;
-
-      const fromUser = event.cancelable;
-      if (!fromUser && refreshArmed) {
-        release();
-        return;
-      }
-
-      setPull(
-        Math.max(pull, target) + outwardDistance * 0.42,
-        fromUser ? 'wheel' : 'inertia',
-        true,
-      );
+      wheelDistance += Math.abs(distance);
+      setPull(placement, wheelDistance, true);
     };
 
     const handleScroll = () => {
-      if (!atEdge() && touchOriginY === undefined) {
-        disarmRefresh();
-        release();
-      }
+      if (activePlacement && !atEdge(activePlacement) && touchOriginY === undefined) release();
     };
 
     const handleTouchStart = (event: TouchEvent) => {
-      if (!atEdge() || event.touches.length !== 1) return;
+      if (event.touches.length !== 1) return;
+
+      touchPlacement = atEdge('top') ? 'top' : atEdge('bottom') ? 'bottom' : undefined;
+      if (!touchPlacement) return;
+
       touchOriginY = event.touches[0]?.clientY;
-      disarmRefresh();
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = 0;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
-      if (touchOriginY === undefined || event.touches.length !== 1) return;
+      if (touchOriginY === undefined || !touchPlacement || event.touches.length !== 1) return;
+
       const currentY = event.touches[0]?.clientY ?? touchOriginY;
-      const outwardDistance = placement === 'top' ? currentY - touchOriginY : touchOriginY - currentY;
+      const outwardDistance =
+        touchPlacement === 'top' ? currentY - touchOriginY : touchOriginY - currentY;
 
       if (outwardDistance > 0) {
-        setPull(outwardDistance * 0.64, 'touch');
+        setPull(touchPlacement, outwardDistance * 1.6);
         return;
       }
 
-      disarmRefresh();
-      if (pull > 0.5 || target > 0) {
-        release();
-      }
+      release();
     };
 
     const handleTouchEnd = () => {
       touchOriginY = undefined;
+      touchPlacement = undefined;
       release();
     };
 
     const handleTouchCancel = () => {
       touchOriginY = undefined;
-      disarmRefresh();
+      touchPlacement = undefined;
       release();
     };
 
-    const handleMotionPreference = () => {
-      disarmRefresh();
-      release();
-    };
+    const handleMotionPreference = () => release();
+
     const updateGeometry = () => {
-      this.style.setProperty('--ray-bleed', `${rayBleed()}px`);
-      if (canvas && context) drawElasticField(canvas, context, placement);
+      const maximum = maximumPull();
+      const bleed = rayBleed();
+      const feather = seamFeather();
+      const fieldExtent = maximum / FIELD_SEAM;
+
+      layers.forEach((layer) => {
+        layer.host.style.height = `${fieldExtent + bleed}px`;
+        layer.backing.style.height = `${maximum}px`;
+        layer.glow.style.height = `${fieldExtent}px`;
+        layer.seam.style.height = `${feather}px`;
+        drawElasticField(layer.canvas, layer.context, layer.placement);
+      });
     };
+
     const handleResize = () => {
       updateGeometry();
       paint();
@@ -314,6 +332,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     window.addEventListener('touchcancel', handleTouchCancel, { passive: true, signal: this.abort.signal });
     window.addEventListener('resize', handleResize, { passive: true, signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
+
     updateGeometry();
     paint();
   }
@@ -323,15 +342,12 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     this.abort?.abort();
     if (this.frame) window.cancelAnimationFrame(this.frame);
     this.frame = 0;
-    document.documentElement.style.removeProperty(
-      this.dataset.placement === 'top' ? '--elastic-top-pull' : '--elastic-bottom-pull',
-    );
+
+    const homepage = document.querySelector<HTMLElement>('[data-homepage]');
+    if (homepage) homepage.style.transform = '';
+
     delete this.dataset.enhanced;
-    this.removeAttribute('data-edge-active');
-    document.documentElement.toggleAttribute(
-      'data-elastic-edge',
-      Boolean(document.querySelector('elastic-overscroll-backdrop[data-edge-active]')),
-    );
+    document.documentElement.removeAttribute('data-elastic-edge');
   }
 }
 

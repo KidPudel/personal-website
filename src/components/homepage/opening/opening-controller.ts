@@ -60,6 +60,7 @@ class OpeningSequence extends HTMLElement {
     skyVideo.playsInline = true;
 
     let skyPlaybackRequested = false;
+    let skyShouldPlay = false;
     const setSkyPlayback = (active: boolean) => {
       if (active === skyPlaybackRequested) return;
       skyPlaybackRequested = active;
@@ -69,15 +70,22 @@ class OpeningSequence extends HTMLElement {
         return;
       }
 
-      const source = skyVideo.dataset.src;
+      const source = window.matchMedia('(max-width: 44.999rem)').matches
+        ? skyVideo.dataset.mobileSrc
+        : skyVideo.dataset.src;
       if (!skyVideo.getAttribute('src') && source) {
         skyVideo.src = source;
         skyVideo.load();
       }
 
-      void skyVideo.play().catch(() => {
-        if (skyPlaybackRequested) skyPlaybackRequested = false;
-      });
+      skyVideo.removeAttribute('data-autoplay-blocked');
+      void skyVideo.play().then(
+        () => skyVideo.removeAttribute('data-autoplay-blocked'),
+        () => {
+          skyVideo.setAttribute('data-autoplay-blocked', '');
+          if (skyPlaybackRequested) skyPlaybackRequested = false;
+        },
+      );
     };
 
     let openingStart = 0;
@@ -342,7 +350,8 @@ class OpeningSequence extends HTMLElement {
         'data-sky-fading',
         skyOpacity > 0 && skyOpacity < openingMotion.skyOpacityAtTop,
       );
-      setSkyPlayback(skyOpacity > 0.001 && document.visibilityState === 'visible');
+      skyShouldPlay = skyOpacity > 0.001 && document.visibilityState === 'visible';
+      setSkyPlayback(skyShouldPlay);
       this.toggleAttribute('data-opening-live', progress > 0 && progress < openingMotion.completeAt);
       this.toggleAttribute('data-box-settling', boxSupport > 0 && boxSupport < 1);
       reveal.toggleAttribute('data-visible', frameIndex >= frames.length - 1 || identityReveal > 0);
@@ -431,6 +440,13 @@ class OpeningSequence extends HTMLElement {
       requestRender();
     };
 
+    const retryBlockedSkyPlayback = () => {
+      if (!skyShouldPlay || !skyVideo.hasAttribute('data-autoplay-blocked')) return;
+
+      skyPlaybackRequested = false;
+      setSkyPlayback(true);
+    };
+
     const handleHashChange = () => requestRender();
 
     boxStage.addEventListener('pointerdown', handleHintPointerDown, {
@@ -457,6 +473,16 @@ class OpeningSequence extends HTMLElement {
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
     reducedMotion.addEventListener('change', handleMotionPreference, { signal: this.abort.signal });
     document.addEventListener('visibilitychange', handleVisibilityChange, {
+      signal: this.abort.signal,
+    });
+    window.addEventListener('pointerdown', retryBlockedSkyPlayback, {
+      capture: true,
+      passive: true,
+      signal: this.abort.signal,
+    });
+    window.addEventListener('touchstart', retryBlockedSkyPlayback, {
+      capture: true,
+      passive: true,
       signal: this.abort.signal,
     });
     window.addEventListener('pagehide', () => setSkyPlayback(false), {

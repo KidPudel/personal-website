@@ -25,6 +25,7 @@ Use `CONCEPT_DESIGN.md` for stable intent, `ARCHITECTURE.md` for durable boundar
 - [x] Bridge the narrow-screen personal portrait reflow with compositor-only motion and an opacity-only reduced-motion result.
 - [x] Give contact disclosures an interruptible exit that returns through the same edge as their entrance.
 - [x] Add resisted over-drag and a short release settle to the decorative personal doodles.
+- [x] Rebuild the elastic page edges around one interruptible controller, continuous pigment, progressive resistance, and compositor-only frame updates.
 - [x] Separate durable product and technical constraints from replaceable visual hypotheses in project guidance.
 - [x] Verify desktop, mobile, bypass/reduced-motion structure, keyboard focus, browser diagnostics, type checking, and both production base paths.
 
