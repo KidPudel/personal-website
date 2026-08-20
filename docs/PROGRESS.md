@@ -33,6 +33,7 @@ Last updated: 2026-08-20
 - Two Sticks now uses six evidence-led chapters that distinguish the MPGU diploma team's pedagogical research from Igor's product and engineering work, follow one saved character through the working loop, and separate shipped scope from unbuilt teaching features. Chinese Bee remains only as the historical implementation name. Reconstructed personas and empathy maps have been removed.
 - Historical evidence boundaries are stated without asking for artifacts that no longer exist. SuperGood uses surviving production screens and public feedback; Two Sticks uses surviving screens and public source code and states that the paid backend is no longer hosted.
 - Two Sticks is the public project name and canonical case-study route. The former Chinese Bee route remains available for old links, while repository identifiers retain their historical names.
+- Case-study dates are explicit in the opening metadata: Observatory took place in 2026; SuperGood and Two Sticks took place in 2024.
 - Project guidance now treats exact visual choreography as replaceable and keeps architecture limited to durable technical boundaries.
 
 ## Verification
