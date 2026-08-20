@@ -1,0 +1,1129 @@
+---
+import beeIcon from '../../../assets/software-showcases/chinesebe_icon.png';
+import chatAndPractice from '../../../assets/evidence/cb3.png';
+import dictation from '../../../assets/evidence/cb2.png';
+import searchSave from '../../../assets/evidence/cb1.png';
+import notebookBlank from '../../../assets/case_study_images/chinesebee/notebook-blank.png';
+import notebookFilled from '../../../assets/case_study_images/chinesebee/notebook-filled.png';
+import { sitePath } from '../../../config/site';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+---
+
+<BaseDocument
+  title="Two Sticks case study | Igor Kupchinenko"
+  description="How I designed and built Two Sticks, a Telegram prototype that turns character copywork into search, a saved set, flashcards, and handwriting with a score."
+  pageClass="chinesebee-case-study"
+  themeColor="#F7F1E4"
+  ogImage={dictation.src}
+  canonicalPath={sitePath('/case-studies/two-sticks/')}
+>
+<nav class="topbar" aria-label="Case study navigation"><a href={sitePath('/work/')}>← Work</a><span>Two Sticks / Case study</span><a href="https://github.com/KidPudel/chinesebee_bot">Source ↗</a></nav><nav class="chapter-index" aria-label="Case study sections">
+  <p>Case study</p>
+  <ol>
+    <li><a href="#context" data-index-link="context"><span>01</span><span class="chapter-index__name">Context</span></a></li>
+    <li><a href="#research" data-index-link="research"><span>02</span><span class="chapter-index__name">Ground</span></a></li>
+    <li><a href="#direction" data-index-link="direction"><span>03</span><span class="chapter-index__name">Direction</span></a></li>
+    <li><a href="#journey" data-index-link="journey"><span>04</span><span class="chapter-index__name">Product</span></a></li>
+    <li><a href="#outcome" data-index-link="outcome"><span>05</span><span class="chapter-index__name">Outcome</span></a></li>
+    <li><a href="#reflection" data-index-link="reflection"><span>06</span><span class="chapter-index__name">Reflection</span></a></li>
+  </ol>
+</nav><main id="main-content"><header class="hero"><p class="eyebrow">Product design · Telegram learning prototype</p><h1 class="hero-title">Two Sticks</h1><p class="hero__line">Write the character, without leaving the chat.</p><p class="hero__intro">Two Sticks was a Telegram prototype for learning Chinese characters. A 2024 MPGU diploma supplied the pedagogical ground. I turned that ground into a product and built the bot, the API, and the handwriting web app inside Telegram. The implementation originally used the name Chinese Bee.</p><dl class="facts"><div><dt>Role</dt><dd>Product direction, UX/UI, bot, API, handwriting app</dd></div><div><dt>When</dt><dd>2024, with a diploma project at MPGU</dd></div><div><dt>Research</dt><dd>2024 MPGU diploma: copybooks, methods, competitors, masterclass</dd></div><div><dt>Outcome</dt><dd>Shipped prototype, no longer hosted</dd></div></dl><figure class="hero-stage"><img src={searchSave.src} alt="Two Sticks in Telegram: search matches, a character card with Save, and flashcard practice." sizes="(max-width: 760px) 94vw, 820px" loading="lazy" decoding="async" width="1536" height="1024"><img src={beeIcon.src} alt="" loading="lazy" decoding="async" width="180" height="179" class="hero-stage__icon"><figcaption>Surviving product screens from the Telegram interaction.</figcaption></figure></header><section class="chapter" id="context" data-index-section>
+  <header class="chapter__label">
+    <span>01</span>
+    <p>Context</p>
+  </header>
+  <div class="chapter__body">
+    <h2>Recognition was easy to practise. Writing was still left on paper.</h2>
+    <div class="prose">
+      <p>
+        Learning a Chinese character means connecting shape, stroke order, sound, structure, and meaning. A dictionary can explain the character. It cannot make the learner reproduce it.
+      </p>
+      <p>
+        Printed copybooks keep the hand involved, but they are fixed, easy to lose, and slow to check. The product opportunity was not another language course. It was a short path from finding a character to writing it inside the messenger the learner already opened.
+      </p>
+    </div>
+    <dl class="scope">
+      <div><dt>Goal</dt><dd>Let a beginner look up a character, save it, understand it, recall it, and write it without installing another learning app.</dd></div>
+      <div><dt>I owned</dt><dd>Product direction, information architecture, interface, Telegram bot, FastAPI, PostgreSQL word set, Vue handwriting app, and recognition scoring.</dd></div>
+      <div><dt>Research authors</dt><dd>Смакова, Шаталова, and Шинкарева. Their 2024 MPGU diploma was called Two Sticks / Две палочки.</dd></div>
+      <div><dt>Constraint</dt><dd>Stay inside Telegram and keep writing in the core loop. A friendly dictionary was not enough.</dd></div>
+    </dl>
+    <blockquote>How can a saved character travel all the way to the learner’s hand?</blockquote>
+  </div>
+</section><section class="chapter" id="research" data-index-section>
+  <header class="chapter__label">
+    <span>02</span>
+    <p>Ground</p>
+  </header>
+  <div class="chapter__body">
+    <h2>The pedagogical research was not mine. Translating it into behaviour was.</h2>
+    <div class="prose">
+      <p>
+        I worked from the diploma team’s study of copybook problems, memorisation methods, Skritter, Duolingo, HelloChinese, Telegram bots, and an open-day masterclass. Fifteen of twenty participants expressed interest. I do not present that work as my own usability study.
+      </p>
+    </div>
+
+    <div class="qa">
+      <p class="research-label">Research ground → product behaviour</p>
+      <dl>
+        <div><dt>Copywork</dt><dd>Writing had to remain an action. The loop ends on a canvas, not on a correct multiple-choice answer.</dd></div>
+        <div><dt>Cards</dt><dd>A personal saved set feeds flashcards in the same chat instead of creating a separate course.</dd></div>
+        <div><dt>Radicals and structure</dt><dd>The notebook sheet exposes how a character is composed before the learner draws it.</dd></div>
+        <div><dt>Mnemonics and examples</dt><dd>The generated sheet keeps shape, meaning, similar characters, and use together.</dd></div>
+      </dl>
+    </div>
+
+    <div class="compare">
+      <p class="research-label">The useful competitive gap</p>
+      <article>
+        <h3>Skritter</h3>
+        <p>The writing specialist and the quality bar for stroke practice. It goes deeper than Two Sticks and requires a separate paid product.</p>
+      </article>
+      <article>
+        <h3>Telegram bots</h3>
+        <p>Easy to enter, but mostly lists, vocabulary, and commands. The missing piece was copywork connected to a personal set.</p>
+      </article>
+    </div>
+
+    <div class="finding">
+      <p>The product question</p>
+      <strong>Could Telegram remain the shell while writing, not translation, became the centre?</strong>
+    </div>
+  </div>
+</section><section class="chapter chapter--dark" id="direction" data-index-section>
+  <header class="chapter__label">
+    <span>03</span>
+    <p>Direction</p>
+  </header>
+  <div class="chapter__body">
+    <h2>I cut a broad diploma brief into one loop that could ship.</h2>
+    <ol class="principles">
+      <li><span>1</span><div><h3>Telegram is the shell</h3><p>Search, saved words, flashcards, prompts, and notebook delivery stay in the chat a learner already uses.</p></div></li>
+      <li><span>2</span><div><h3>The saved set is the spine</h3><p>One personal list feeds recall, notebook work, and dictation. Practice cannot start from an empty feature.</p></div></li>
+      <li><span>3</span><div><h3>Writing closes the loop</h3><p>Search and cards prepare the character. The Web App asks the hand to reproduce it and returns a narrow recognition score.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="chapter chapter--wide" id="journey" data-index-section>
+  <header class="chapter__label">
+    <span>04</span>
+    <p>Product</p>
+  </header>
+  <div class="chapter__body">
+    <h2>One saved character moves through four kinds of work.</h2>
+    <p class="wide-copy">
+      The product is not a list of bot commands. It is a loop: find, keep, understand, recall, write. These are the working surfaces I built around that loop.
+    </p>
+  </div>
+
+  <ol class="journey-map">
+    <li>
+      <p>01 Find + keep</p>
+      <h3>Start from a word the learner already knows</h3>
+      <dl>
+        <div><dt>Decision</dt><dd>Search returns matches, then a details card with Chinese, pinyin, meaning, HSK level, and Save.</dd></div>
+        <div><dt>Why</dt><dd>A lookup that cannot feed practice is a dead end. Saving stays on the character card.</dd></div>
+      </dl>
+      <figure><img src={searchSave.src} alt="Two Sticks search results, character details, save action, and saved-set practice." sizes="(max-width: 760px) 70vw, 220px" loading="lazy" decoding="async" width="1536" height="1024"></figure>
+    </li>
+    <li>
+      <p>02 Recall</p>
+      <h3>Make the set large enough to produce a real choice</h3>
+      <dl>
+        <div><dt>Decision</dt><dd>Flashcards use the learner’s saved words and wait until five exist. The empty state says exactly how many are missing.</dd></div>
+        <div><dt>Why</dt><dd>A flashcard feature with no plausible alternatives is interface theatre.</dd></div>
+      </dl>
+      <figure><img src={chatAndPractice.src} alt="Two Sticks chat practice next to the handwriting Web App." sizes="(max-width: 760px) 70vw, 220px" loading="lazy" decoding="async" width="1216" height="1294"></figure>
+    </li>
+    <li class="is-sheet">
+      <p>03 Understand</p>
+      <h3>Parse the character before asking for memory</h3>
+      <dl>
+        <div><dt>Decision</dt><dd>Generate a notebook sheet with structure, elements, similar characters, mnemonic, examples, and a writing grid.</dd></div>
+        <div><dt>Why</dt><dd>The sheet turns pedagogical terms into a working object the learner can keep in the same chat.</dd></div>
+      </dl>
+      <figure><img src={notebookFilled.src} alt="Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid." sizes="(max-width: 760px) 88vw, 320px" loading="lazy" decoding="async" width="1600" height="1012"></figure>
+    </li>
+    <li>
+      <p>04 Write</p>
+      <h3>Ask the hand, then score the result honestly</h3>
+      <dl>
+        <div><dt>Decision</dt><dd>The Telegram Web App draws from the same saved set: prompt, canvas, clear, check, next.</dd></div>
+        <div><dt>Limit</dt><dd>The API recognises similarity to the target character. It does not teach or verify stroke order.</dd></div>
+      </dl>
+      <figure><img src={dictation.src} alt="Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score." sizes="(max-width: 760px) 70vw, 220px" loading="lazy" decoding="async" width="533" height="800"></figure>
+    </li>
+  </ol>
+
+  <div class="validation-board">
+    <article class="validation-case">
+      <p><strong>Historical status.</strong> The prototype is no longer hosted. Keeping the bot, API, and Web App online requires paid infrastructure, so this case study documents the interaction through surviving screens and public source code.</p>
+    </article>
+  </div>
+</section><section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
+  <header class="chapter__label">
+    <span>05</span>
+    <p>Outcome</p>
+  </header>
+  <div class="chapter__body">
+    <h2>A working bot, API, and handwriting app. Not the whole diploma brief.</h2>
+    <div class="prose">
+      <p>
+        Two Sticks reached a working Russian Telegram prototype with a FastAPI backend and a Vue Web App. Search, details, save, a five-word flashcard gate, facts, a character primer, notebook sheets, and handwriting scoring were implemented and the source remains public.
+      </p>
+    </div>
+    <dl class="scope">
+      <div><dt>Shipped</dt><dd>Lookup, saved set, flashcards, notebook delivery, character guidance, and Web App dictation with an OCR score.</dd></div>
+      <div><dt>Did not ship</dt><dd>Live teacher supervision, an HSK statistics dashboard, and the planned growth engine. Those stayed in the wider diploma brief.</dd></div>
+    </dl>
+  </div>
+  <div class="outcome-board">
+    <figure><img src={notebookBlank.src} alt="Blank Two Sticks notebook sheet ready for character study." sizes="(max-width: 760px) 94vw, 920px" loading="lazy" decoding="async" width="1600" height="1022"><figcaption><span>05.1</span> A generated copybook page that stays with the learner.</figcaption></figure>
+    <figure><img src={dictation.src} alt="Dictation Web App showing handwriting and an accuracy score." sizes="(max-width: 760px) 70vw, 360px" loading="lazy" decoding="async" width="533" height="800"><figcaption><span>05.2</span> The same saved set reaches the hand.</figcaption></figure>
+  </div>
+</section><section class="chapter reflection" id="reflection" data-index-section>
+  <header class="chapter__label">
+    <span>06</span>
+    <p>Reflection</p>
+  </header>
+  <div class="chapter__body">
+    <h2>The useful part was not making a friendlier dictionary.</h2>
+    <div class="prose">
+      <p>The product’s unit became a saved set a person could eventually write. Search, cards, and notebook sheets only matter because they feed that movement.</p>
+      <p>I own the product direction, information architecture, interface, bot, API, and handwriting app. The diploma team owns the pedagogical research and the masterclass result. My contribution was translating their ground into behaviour and building it.</p>
+      <p>The honest next measurement is whether people who save five characters begin dictation, and whether the generated notebook is used or skipped.</p>
+    </div>
+  </div>
+</section></main><footer class="case-footer"><p>Two Sticks<br><em>Write the character, without leaving the chat.</em></p><nav aria-label="Two Sticks project links"><a href="https://github.com/KidPudel/chinesebee_bot">Bot source ↗</a><a href="https://github.com/KidPudel/chinesebee_api">API source ↗</a><a href="https://github.com/KidPudel/chinese-bee-dictation">Dictation source ↗</a><a href={sitePath('/work/')}>Back to work ↑</a><a href={sitePath('/case-studies/supergood/')}>SuperGood case study →</a></nav></footer>
+</BaseDocument>
+
+<script>
+  document.documentElement.classList.add('has-scroll-stories');
+
+  const activateFrame = (story: HTMLElement, index: number) => {
+    story.querySelectorAll<HTMLElement>('[data-story-frame]').forEach((frame) => {
+      frame.classList.toggle('is-active', Number(frame.dataset.storyFrame) === index);
+    });
+    story.querySelectorAll<HTMLElement>('[data-story-step]').forEach((step) => {
+      step.classList.toggle('is-active', Number(step.dataset.storyStep) === index);
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-scroll-story]').forEach((story) => {
+    if (story.dataset.storyReady) return;
+    story.dataset.storyReady = 'true';
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const step = entry.target as HTMLElement;
+        activateFrame(story, Number(step.dataset.storyStep));
+      });
+    }, { rootMargin: '-40% 0px -44%', threshold: 0 });
+
+    story.querySelectorAll<HTMLElement>('[data-story-step]').forEach((step) => observer.observe(step));
+  });
+
+  const indexLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-index-link]'));
+  const setCurrentSection = (id: string) => {
+    indexLinks.forEach((link) => {
+      if (link.dataset.indexLink === id) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) setCurrentSection(entry.target.id);
+    });
+  }, { rootMargin: '-44% 0px -48%', threshold: 0 });
+
+  document.querySelectorAll<HTMLElement>('[data-index-section]').forEach((section) => sectionObserver.observe(section));
+</script>
+
+<style is:global>
+@font-face {
+    font-family: 'Capriola';
+    src: url('../../../assets/fonts/Capriola-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Italic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-SemiBold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Averia Serif Libre';
+    src: url('../../../assets/fonts/AveriaSerifLibre-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  html.chinesebee-case-study {
+    --paper: #f7f1e4;
+    --soft-paper: #efe4cf;
+    --ink: #1a1610;
+    --muted: #6d6456;
+    --line: #dccfba;
+    --accent: #c47a12;
+    --serif: 'Crimson Text', Georgia, serif;
+    --display-serif: 'Averia Serif Libre', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Capriola', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --reading-size: clamp(18px, 1.45vw, 20px);
+    --reading-line: 1.6;
+    color-scheme: light;
+    scroll-behavior: smooth;
+    background: var(--paper);
+  }
+
+  html.chinesebee-case-study body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.58;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.chinesebee-case-study * { box-sizing: border-box; }
+  html.chinesebee-case-study img { display: block; width: 100%; height: auto; }
+  html.chinesebee-case-study ::selection { background: var(--accent); color: var(--paper); }
+  html.chinesebee-case-study a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+  html.chinesebee-case-study a:hover { color: var(--accent); }
+  html.chinesebee-case-study :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  html.chinesebee-case-study .skip-link { background: var(--ink); color: var(--paper); }
+
+  .topbar,
+  main,
+  .case-footer {
+    width: min(100% - 48px, 1440px);
+    margin-inline: auto;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    min-height: 78px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .topbar span { color: var(--muted); text-align: center; }
+  .topbar a:last-child { justify-self: end; }
+
+  .eyebrow,
+  figcaption,
+  .chapter__label,
+  .finding > p,
+  .principles > li > span,
+  .research-label,
+  .scope dt,
+  .qa dt,
+  .persona-profile__number,
+  .persona-profile h4,
+  .empathy h4,
+  .journey-map dt,
+  .journey-map > li > p {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+  }
+
+  .hero {
+    padding: clamp(76px, 9vw, 124px) 0 clamp(44px, 5vw, 68px);
+    text-align: center;
+  }
+
+  .eyebrow { margin: 0 0 28px; color: var(--muted); }
+  .hero h1 {
+    margin: 0;
+    font-family: var(--display-serif);
+    font-size: clamp(64px, 9vw, 112px);
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    font-synthesis: none;
+  }
+  .hero__line { margin: 34px 0 0; font-size: clamp(26px, 3vw, 42px); font-style: italic; line-height: 1.08; }
+  .hero__intro {
+    max-width: 620px;
+    margin: 46px auto 52px;
+    font-size: clamp(20px, 1.7vw, 23px);
+    line-height: 1.48;
+    text-align: left;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .facts dt {
+    margin-bottom: 7px;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .facts dd { margin: 0; font-size: 15px; line-height: 1.4; }
+
+  .hero-phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 220px));
+    gap: 28px;
+    justify-content: center;
+    align-items: end;
+    width: min(820px, 100%);
+    margin: 72px auto 0;
+    text-align: left;
+  }
+
+  .hero-phones img {
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(28, 25, 20, 0.12);
+    background: #111;
+  }
+
+  .hero-phones img:nth-child(1) { rotate: -3.2deg; translate: 0 18px; }
+  .hero-phones img:nth-child(2) { rotate: 1.4deg; z-index: 1; }
+  .hero-phones img:nth-child(3) { rotate: 3.6deg; translate: 0 10px; }
+
+  .hero-phones figcaption {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 16px;
+    margin-top: 28px;
+    color: var(--muted);
+  }
+
+  figure { margin: 0; }
+  figcaption { display: flex; gap: 16px; margin-top: 12px; color: var(--muted); }
+  figcaption span { min-width: max-content; color: var(--ink); }
+
+  .chapter {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding-block: clamp(56px, 6vw, 84px);
+  }
+
+  .chapter__label,
+  .chapter__body {
+    width: min(720px, calc(100% - 80px));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .chapter__label { display: flex; gap: 24px; align-items: baseline; margin-bottom: 30px; }
+  .chapter__label span { color: var(--accent); }
+  .chapter__label p { margin: 0; }
+
+  .chapter__body h2 {
+    max-width: 720px;
+    margin: 0 0 38px;
+    font-family: var(--display-serif);
+    font-size: clamp(39px, 4vw, 54px);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+    font-synthesis: none;
+  }
+
+  .prose,
+  .wide-copy { max-width: 610px; margin-left: auto; margin-right: auto; }
+  .prose p,
+  .wide-copy { margin: 0 auto 1.2em; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  blockquote {
+    max-width: 610px;
+    margin: 56px auto 0;
+    padding: 0;
+    font-size: clamp(27px, 2.5vw, 34px);
+    font-style: italic;
+    line-height: 1.24;
+    text-align: left;
+  }
+
+  .research-aims { max-width: 610px; margin: 64px auto 0; }
+  .research-aims > p { margin: 0 0 22px; color: var(--muted); }
+  .research-aims ul { margin: 0; padding-left: 1.15em; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .research-aims li + li { margin-top: 12px; }
+
+  .interview-structure { max-width: 610px; margin: 78px auto 0; }
+  .interview-structure > div > p:first-child { margin: 0; color: var(--muted); }
+  .interview-structure > div > p:last-child {
+    max-width: 610px;
+    margin: 20px 0 0;
+    font-size: var(--reading-size);
+    line-height: var(--reading-line);
+  }
+  .interview-structure ol { max-width: 610px; margin: 32px 0 0; padding: 0; list-style: none; }
+  .interview-structure li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 13px 0; }
+  .interview-structure li > span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; line-height: 1.5; }
+  .interview-structure li p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .interview-structure strong { font-weight: 600; }
+
+  .finding { max-width: 610px; margin: 64px auto 0; text-align: left; }
+  .finding p { margin: 0 0 22px; color: var(--accent); }
+  .finding strong {
+    display: block;
+    font-family: var(--display-serif);
+    font-size: clamp(25px, 2.5vw, 34px);
+    font-weight: 700;
+    line-height: 1.3;
+    font-synthesis: none;
+  }
+
+  .scope {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 40px;
+    max-width: 610px;
+    margin: 64px auto 0;
+  }
+  .scope dt { margin: 0 0 10px; color: var(--accent); }
+  .scope dd { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .qa { max-width: 610px; margin: 78px auto 0; }
+  .qa > .research-label { margin: 0 0 22px; color: var(--muted); }
+  .qa dl { margin: 0; }
+  .qa dl > div { padding: 18px 0; border-top: 1px solid var(--line); }
+  .qa dt { margin: 0 0 8px; font-weight: 600; }
+  .qa dd { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .persona-sequence {
+    width: min(980px, calc(100vw - 110px));
+    margin: 58px 50% 0;
+    translate: -50% 0;
+  }
+  .persona-sequence > .research-label { margin: 0 0 18px; color: var(--muted); }
+  .persona-profile {
+    display: grid;
+    grid-template-columns: minmax(230px, 0.78fr) minmax(340px, 1fr);
+    gap: clamp(48px, 7vw, 92px);
+    padding: 62px 0 96px;
+    border-top: 1px solid var(--line);
+  }
+  .persona-profile:last-child { padding-bottom: 24px; }
+  .persona-profile__identity { position: sticky; top: clamp(82px, 12vh, 126px); align-self: start; }
+  .persona-profile__number { margin: 0 0 18px; color: var(--accent); }
+  .persona-profile__mark {
+    display: grid;
+    width: 5.5rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid var(--line);
+    background: var(--soft-paper);
+    color: var(--accent);
+    font-family: var(--display-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .persona-profile h3 {
+    max-width: 340px;
+    margin: 24px 0 0;
+    font-family: var(--display-serif);
+    font-size: clamp(32px, 3.5vw, 47px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    font-synthesis: none;
+  }
+  .persona-profile__quote { margin-top: 34px; }
+  .persona-profile__quote > p { margin: 0 0 13px; color: var(--muted); }
+  .persona-profile blockquote {
+    max-width: 360px;
+    margin: 0;
+    font-size: clamp(20px, 2vw, 27px);
+    line-height: 1.24;
+    text-align: left;
+  }
+  .persona-profile__observations { padding-top: 38px; }
+  .persona-profile__observations section { padding: 0 0 46px; border-bottom: 1px solid var(--line); }
+  .persona-profile__observations section + section { padding-top: 42px; }
+  .persona-profile__observations section:last-child { border-bottom: 0; }
+  .persona-profile h4 { margin: 0 0 16px; color: var(--accent); }
+  .persona-profile__story,
+  .persona-profile__observations p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-profile__observations ul { margin: 0; padding: 0; list-style: none; }
+  .persona-profile__observations li { position: relative; padding-left: 22px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-profile__observations li::before { content: '·'; position: absolute; left: 0; color: var(--accent); }
+  .persona-profile__observations li + li { margin-top: 14px; }
+  .persona-profile__response p { color: var(--muted); font-size: clamp(21px, 2.1vw, 28px); line-height: 1.38; }
+
+  .empathy-board {
+    width: min(1000px, calc(100% - 60px));
+    margin: 72px auto 0;
+  }
+  .empathy-board__intro { max-width: 610px; margin-bottom: 42px; }
+  .empathy-board__intro > .research-label { margin: 0 0 12px; color: var(--muted); }
+  .empathy-board__intro p:last-child { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .empathy + .empathy { margin-top: 48px; }
+  .empathy h3 {
+    margin: 0 0 18px;
+    font-family: var(--display-serif);
+    font-size: 26px;
+    font-weight: 700;
+    font-synthesis: none;
+  }
+  .empathy__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid var(--line);
+  }
+  .empathy__grid section { padding: 22px 24px 26px; }
+  .empathy__grid section:nth-child(1),
+  .empathy__grid section:nth-child(2) { border-bottom: 1px solid var(--line); }
+  .empathy__grid section:nth-child(odd) { border-right: 1px solid var(--line); }
+  .empathy h4 { margin: 0 0 12px; color: var(--accent); }
+  .empathy ul { margin: 0; padding: 0; list-style: none; }
+  .empathy li { font-size: var(--reading-size); line-height: var(--reading-line); }
+  .empathy li + li { margin-top: 8px; }
+
+  .journey-map {
+    display: grid;
+    gap: 8px;
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+  .journey-map > li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 168px;
+    gap: 28px 40px;
+    align-items: start;
+    padding: 36px 0;
+    border-top: 1px solid var(--line);
+  }
+  .journey-map > li > p { margin: 0; color: var(--accent); }
+  .journey-map h3 {
+    grid-column: 1;
+    margin: 8px 0 0;
+    font-family: var(--display-serif);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-synthesis: none;
+  }
+  .journey-map dl { grid-column: 1; display: grid; gap: 16px; margin: 22px 0 0; }
+  .journey-map dt { margin: 0 0 6px; color: var(--accent); }
+  .journey-map dd { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .journey-map figure { grid-column: 2; grid-row: 1 / 4; margin: 0; }
+  .journey-map img,
+  .placeholder__frame {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(28, 25, 20, 0.1);
+  }
+
+  .placeholder { margin: 0; }
+  .placeholder__frame {
+    display: grid;
+    aspect-ratio: 9 / 19.5;
+    place-items: center;
+    padding: 18px;
+    border: 1px dashed color-mix(in srgb, var(--ink) 28%, var(--line));
+    background:
+      repeating-linear-gradient(
+        -12deg,
+        transparent,
+        transparent 10px,
+        color-mix(in srgb, var(--ink) 4%, transparent) 10px,
+        color-mix(in srgb, var(--ink) 4%, transparent) 11px
+      ),
+      var(--soft-paper);
+    box-shadow: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .placeholder__frame small { display: block; margin-top: 8px; font-weight: 400; letter-spacing: 0; }
+
+  .validation-board {
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+  }
+  .validation-case { margin-bottom: clamp(72px, 9vw, 110px); }
+  .validation-case > p { max-width: 720px; margin: 0 0 36px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .validation-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+  }
+  .validation-pair > span { font-size: 42px; font-weight: 300; text-align: center; }
+  .validation-pair img,
+  .validation-pair .placeholder__frame { max-width: 240px; margin-inline: auto; }
+  .validation-pair figcaption { justify-content: center; }
+
+  .missing-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 180px));
+    gap: 48px;
+    justify-content: center;
+    width: min(1000px, calc(100% - 60px));
+    margin: 0 auto 40px;
+  }
+
+  .jobs { max-width: 610px; margin: 82px auto 0; }
+  .jobs > .research-label { margin: 0 0 12px; color: var(--muted); }
+  .jobs__note { margin: 0 0 36px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .jobs__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 38px; }
+  .jobs h3 {
+    margin: 0 0 14px;
+    font-family: var(--display-serif);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.08;
+    font-synthesis: none;
+  }
+  .jobs p { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .compare {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 38px;
+    max-width: 610px;
+    margin: 82px auto 0;
+  }
+  .compare > .research-label { grid-column: 1 / -1; margin: 0; color: var(--muted); }
+  .compare h3 {
+    margin: 0 0 14px;
+    font-family: var(--display-serif);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-synthesis: none;
+  }
+  .compare p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .research-synthesis {
+    max-width: 610px;
+    margin: 96px auto 0;
+    font-family: var(--display-serif);
+    font-size: clamp(25px, 2.6vw, 34px);
+    font-weight: 700;
+    line-height: 1.3;
+    font-synthesis: none;
+  }
+
+  .chapter--dark { margin-bottom: 0; padding-bottom: clamp(44px, 6vw, 72px); }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    width: min(940px, calc(100vw - 110px));
+    margin: 54px 50% 0;
+    padding: 0;
+    list-style: none;
+    translate: -50% 0;
+  }
+
+  .principles > li > span { display: block; margin-bottom: 20px; color: var(--accent); }
+  .principles h3 {
+    margin: 0 0 8px;
+    font-family: var(--display-serif);
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.12;
+    font-synthesis: none;
+  }
+  .principles p { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .chapter--wide { max-width: 1180px; }
+  .chapter--wide > .chapter__label,
+  .chapter--wide > .chapter__body {
+    width: min(720px, calc(100% - 80px));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .scroll-story {
+    display: grid;
+    grid-template-columns: minmax(220px, 380px) minmax(240px, 1fr);
+    gap: clamp(34px, 6vw, 80px);
+    align-items: start;
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+  }
+
+  .scroll-story__steps { margin: 0; padding: 0; list-style: none; }
+  .scroll-story__steps li { margin: 0; color: var(--muted); }
+  .scroll-story__steps span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; }
+  .scroll-story__steps h3 {
+    margin: 18px 0 10px;
+    color: var(--ink);
+    font-family: var(--display-serif);
+    font-size: clamp(24px, 2.4vw, 34px);
+    font-weight: 700;
+    line-height: 1.05;
+    font-synthesis: none;
+  }
+  .scroll-story__steps p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .has-scroll-stories .scroll-story__stage {
+    position: sticky;
+    top: 10vh;
+    display: grid;
+    place-items: center;
+    height: min(80vh, 760px);
+    overflow: hidden;
+    border-radius: 28px;
+    background: var(--soft-paper);
+  }
+
+  .has-scroll-stories .scroll-story__stage figure {
+    position: absolute;
+    inset: 18px;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform: scale(0.985);
+    transition: opacity 520ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .has-scroll-stories .scroll-story__stage figure.is-active { opacity: 1; transform: scale(1); }
+  .has-scroll-stories .scroll-story__stage img {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(28, 25, 20, 0.16);
+  }
+
+  .has-scroll-stories .scroll-story__steps li {
+    display: flex;
+    min-height: 52vh;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0.3;
+    transition: opacity 260ms ease;
+  }
+  .has-scroll-stories .scroll-story__steps li.is-active { opacity: 1; }
+
+  .choices {
+    max-width: 610px;
+    margin: 64px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .choices li { padding: 32px 0; border-top: 1px solid var(--line); }
+  .choices h3 {
+    margin: 0 0 14px;
+    font-family: var(--display-serif);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.15;
+    font-synthesis: none;
+  }
+  .choices p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .chapter--outcome { padding-bottom: 70px; }
+
+  .outcome-board {
+    display: grid;
+    gap: 72px;
+    width: min(1000px, calc(100% - 60px));
+    margin: 76px auto 0;
+  }
+
+  .outcome-board img {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--soft-paper);
+    box-shadow: 0 16px 44px rgba(28, 25, 20, 0.06);
+  }
+
+  .reflection { margin-top: clamp(54px, 7vw, 90px); }
+
+  .case-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 110px 0 90px;
+  }
+
+  .case-footer p { margin: 0; font-size: 24px; line-height: 1.25; }
+  .case-footer nav {
+    display: grid;
+    gap: 15px;
+    align-content: start;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .chapter-index {
+    position: fixed;
+    z-index: 20;
+    top: 50%;
+    left: max(16px, calc((100vw - 1440px) / 2 + 16px));
+    width: 126px;
+    color: #9a9084;
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    translate: 0 -50%;
+  }
+
+  .chapter-index > p { margin: 0 0 20px 23px; }
+  .chapter-index ol { position: relative; display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+  .chapter-index ol::before {
+    content: '';
+    position: absolute;
+    top: 13px;
+    bottom: 13px;
+    left: 3px;
+    width: 1px;
+    background: #e4d9cb;
+  }
+  .chapter-index a {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 8px;
+    align-items: center;
+    min-height: 30px;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+  .chapter-index a::before {
+    content: '';
+    z-index: 1;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--paper);
+    border-radius: 50%;
+    background: #d2c6b6;
+    transition: background 180ms ease, scale 180ms ease;
+  }
+  .chapter-index a > span:first-child {
+    grid-column: 1;
+    position: absolute;
+    left: 18px;
+    opacity: 0;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 180ms ease;
+  }
+  .chapter-index__name { grid-column: 2; }
+  .chapter-index a[aria-current='location'] { color: var(--ink); }
+  .chapter-index a[aria-current='location']::before { background: var(--accent); scale: 1.2; }
+  .chapter-index a[aria-current='location'] > span:first-child { opacity: 1; }
+
+  .hero + .chapter { padding-top: clamp(42px, 5vw, 68px); }
+
+  @media (max-width: 1180px) {
+    .chapter-index { width: 38px; }
+    .chapter-index > p,
+    .chapter-index__name { display: none; }
+    .chapter-index a { grid-template-columns: 30px; }
+    .chapter-index a > span:first-child { left: 15px; }
+  }
+
+  @media (max-width: 900px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 22px; max-width: 620px; }
+    .principles { grid-template-columns: 1fr; gap: 48px; }
+    .jobs__grid,
+    .compare,
+    .scope,
+    .empathy__grid,
+    .missing-row { grid-template-columns: 1fr; }
+    .validation-pair { grid-template-columns: 1fr 52px 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    html.chinesebee-case-study { scroll-behavior: auto; }
+    .chapter-index { display: none; }
+    .topbar,
+    main,
+    .case-footer { width: min(100% - 28px, 1440px); }
+    .topbar { grid-template-columns: 1fr 1fr; min-height: 58px; }
+    .topbar span { display: none; }
+    .hero { padding-top: 86px; }
+    .hero h1 { font-size: clamp(52px, 14vw, 64px); }
+    .hero-phones { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .hero-phones img:nth-child(1),
+    .hero-phones img:nth-child(2),
+    .hero-phones img:nth-child(3) { rotate: 0deg; translate: 0; }
+    .facts { display: grid; gap: 28px 18px; }
+    .chapter { padding-block: 58px; }
+    .chapter__label,
+    .chapter__body,
+    .chapter--wide > .chapter__label,
+    .chapter--wide > .chapter__body { width: 100%; margin-left: 0; margin-right: 0; }
+    .chapter__body h2 { font-size: clamp(36px, 11vw, 48px); }
+    .principles { width: 100%; margin: 54px 0 0; translate: none; }
+    .persona-sequence,
+    .empathy-board,
+    .journey-map,
+    .validation-board,
+    .missing-row { width: 100%; margin-left: 0; margin-right: 0; translate: none; }
+    .persona-sequence { margin-top: 48px; }
+    .persona-profile { display: block; padding: 40px 0 72px; }
+    .persona-profile__identity { position: static; }
+    .persona-profile h3 { font-size: 38px; }
+    .persona-profile blockquote { max-width: none; font-size: 25px; }
+    .journey-map > li { grid-template-columns: 1fr; }
+    .journey-map figure { grid-column: auto; grid-row: auto; width: min(180px, 46%); }
+    .empathy__grid section:nth-child(odd) { border-right: 0; }
+    .validation-pair { grid-template-columns: 1fr; gap: 22px; }
+    .validation-pair > span { font-size: 36px; rotate: 90deg; }
+    .scroll-story { display: block; width: 100%; margin: 50px 0 0; }
+    .has-scroll-stories .scroll-story__stage { top: 8vh; z-index: 1; height: min(58vh, 520px); }
+    .has-scroll-stories .scroll-story__steps { position: relative; z-index: 2; margin-top: -48vh; padding: 28vh 0 8vh; }
+    .has-scroll-stories .scroll-story__steps li {
+      min-height: 48vh;
+      width: min(88%, 350px);
+      margin: 0 auto;
+      padding: 18px;
+      justify-content: flex-end;
+      opacity: 0;
+    }
+    .has-scroll-stories .scroll-story__steps li.is-active { opacity: 1; }
+    .has-scroll-stories .scroll-story__steps li > * {
+      width: fit-content;
+      max-width: 100%;
+      padding: 2px 7px;
+      background: rgba(247, 241, 228, 0.94);
+      box-decoration-break: clone;
+    }
+    .has-scroll-stories .scroll-story__steps h3 { margin-block: 5px 0; }
+    .outcome-board { width: 100%; gap: 48px; }
+    .case-footer { grid-template-columns: 1fr; }
+    .case-footer nav { margin-top: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-index a,
+    .chapter-index a::before,
+    .has-scroll-stories .scroll-story__stage figure,
+    .has-scroll-stories .scroll-story__steps li { transition: none; }
+    .has-scroll-stories .scroll-story { display: block; }
+    .has-scroll-stories .scroll-story__stage {
+      position: static;
+      display: grid;
+      height: auto;
+      gap: 32px;
+      overflow: visible;
+      background: transparent;
+    }
+    .has-scroll-stories .scroll-story__stage figure { position: static; opacity: 1; transform: none; }
+    .has-scroll-stories .scroll-story__stage img { height: auto; }
+    .has-scroll-stories .scroll-story__steps { display: none; }
+    .hero-phones img:nth-child(1),
+    .hero-phones img:nth-child(2),
+    .hero-phones img:nth-child(3) { rotate: 0deg; translate: 0; }
+  }
+
+  .hero-stage {
+    position: relative;
+    width: min(820px, 100%);
+    margin: 72px auto 0;
+    text-align: left;
+  }
+  .hero-stage > img:first-child {
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(26, 22, 16, 0.12);
+    background: #111;
+  }
+  .hero-stage__icon {
+    position: absolute;
+    right: 2%;
+    bottom: 12%;
+    width: clamp(4.5rem, 12vw, 7.5rem) !important;
+    height: auto;
+    filter: drop-shadow(0.2rem 0.3rem 0.2rem rgba(0, 0, 0, 0.28));
+    rotate: 7deg;
+  }
+  .hero-stage figcaption {
+    margin-top: 28px;
+  }
+  .journey-map > li.is-sheet {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
+  }
+  .journey-map > li.is-sheet img {
+    border-radius: 8px;
+    box-shadow: none;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  .validation-pair--sheets img {
+    max-width: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: none;
+  }
+  .guide-figure {
+    width: min(1000px, calc(100% - 60px));
+    margin: 24px auto 40px;
+  }
+  .guide-figure img {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .outcome-board figure:nth-child(2) {
+    width: min(360px, 100%);
+  }
+
+  @media (max-width: 760px) {
+    .hero-stage__icon { bottom: 18%; right: 1%; }
+    .journey-map > li.is-sheet figure { width: min(100%, 100%); }
+    .guide-figure { width: 100%; }
+    .outcome-board figure:nth-child(2) { width: min(220px, 56%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-stage__icon { rotate: 0deg; }
+  }
+</style>

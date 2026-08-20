@@ -30,3 +30,13 @@ Use `CONCEPT_DESIGN.md` for stable intent, `ARCHITECTURE.md` for durable boundar
 - [x] Verify desktop, mobile, bypass/reduced-motion structure, keyboard focus, browser diagnostics, type checking, and both production base paths.
 
 Do not start another visual milestone until the final verification item is complete. A new prompt or sketch from Igor may replace this visual hypothesis without preserving its implementation.
+
+## Completed milestone: evidence-led case-study content
+
+- [x] Preserve the approved case-study visual designs.
+- [x] Keep Observatory unchanged as the strongest current editorial baseline.
+- [x] Rebuild SuperGood around Igor's actual ownership, product reasoning, shipped screens, and known evidence limits.
+- [x] Rebuild Two Sticks around the boundary between the diploma team's research and Igor's product and engineering work.
+- [x] Remove reconstructed personas, empathy maps, pseudo-quotes, and repeated case-study templates that could not be defended in an interview.
+- [x] Replace weak presentation imagery with surviving product evidence and explicit historical evidence boundaries.
+- [x] Verify desktop, mobile, type checking, browser diagnostics, and both production base paths without changing Observatory.

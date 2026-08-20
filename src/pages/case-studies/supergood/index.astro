@@ -1,0 +1,1193 @@
+---
+import { Image } from 'astro:assets';
+
+import checkout from '../../../assets/case_study_images/supergood/checkout.png';
+import dishSheetDark from '../../../assets/case_study_images/supergood/dish-sheet-dark.png';
+import dishSheetLight from '../../../assets/case_study_images/supergood/dish-sheet-light.png';
+import ordersHistory from '../../../assets/case_study_images/supergood/orders-history.png';
+import { sitePath } from '../../../config/site';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+
+const heroTitle = 'SuperGood';
+---
+
+<BaseDocument
+  title="SuperGood case study | Igor Kupchinenko"
+  description="How I redesigned SuperGood, a homemade-food delivery product, so the order itself could carry the promise of speed, price, and trust."
+  pageClass="supergood-case-study"
+  themeColor="#FBF6EE"
+  ogImage={dishSheetLight.src}
+>
+  <nav class="topbar" aria-label="Case study navigation">
+    <a href={sitePath('/work/')}>← Work</a>
+    <span>SuperGood / Case study</span>
+    <span></span>
+  </nav>
+
+  <nav class="chapter-index" aria-label="Case study sections">
+    <p>Case study</p>
+    <ol>
+      <li><a href="#context" data-index-link="context"><span>01</span><span class="chapter-index__name">Context</span></a></li>
+      <li><a href="#research" data-index-link="research"><span>02</span><span class="chapter-index__name">Evidence</span></a></li>
+      <li><a href="#direction" data-index-link="direction"><span>03</span><span class="chapter-index__name">Direction</span></a></li>
+      <li><a href="#solution" data-index-link="solution"><span>04</span><span class="chapter-index__name">Product</span></a></li>
+      <li><a href="#outcome" data-index-link="outcome"><span>05</span><span class="chapter-index__name">Outcome</span></a></li>
+      <li><a href="#reflection" data-index-link="reflection"><span>06</span><span class="chapter-index__name">Reflection</span></a></li>
+    </ol>
+  </nav>
+
+  <main id="main-content">
+    <header class="hero">
+      <p class="eyebrow">Product design · Production food-ordering app</p>
+      <h1 class="hero-title">{heroTitle}</h1>
+      <p class="hero__line">Homemade food, without making the order feel like a gamble.</p>
+      <p class="hero__intro">
+        SuperGood was PizzaSushiWok’s delivery product for homemade-style food. When I joined, public reviews criticised the app and questioned whether the food justified its price. I was hired as a mobile engineer. I ended up owning the order experience and rebuilt it as one Flutter product.
+      </p>
+
+      <dl class="facts">
+        <div><dt>Role</dt><dd>Product direction, research, UX/UI, Flutter</dd></div>
+        <div><dt>When</dt><dd>PizzaSushiWok, 2022 to 2023</dd></div>
+        <div><dt>Research</dt><dd>Conversations, contextual inquiry, competitive study, task tests, polls</dd></div>
+        <div><dt>Outcome</dt><dd>Shipped on Android and iOS. Later closed for financial reasons.</dd></div>
+      </dl>
+
+      <figure class="hero-phones">
+        <Image
+          src={dishSheetLight}
+          alt="Working SuperGood dish sheet with photo, price, nutrition, ingredients, and add-to-cart."
+          widths={[320, 480, 640]}
+          sizes="(max-width: 760px) 42vw, 220px"
+          format="webp"
+        />
+        <Image
+          src={checkout}
+          alt="Working SuperGood checkout with address, delivery time, payment, bonuses, and order button."
+          widths={[320, 480, 640]}
+          sizes="(max-width: 760px) 42vw, 220px"
+          format="webp"
+        />
+        <Image
+          src={ordersHistory}
+          alt="Working SuperGood order history with expandable cards and repeat-order actions."
+          widths={[320, 480, 640]}
+          sizes="(max-width: 760px) 42vw, 220px"
+          format="webp"
+        />
+        <figcaption>Working product. The phones below are from the application I designed and built, not a later restyle.</figcaption>
+      </figure>
+    </header>
+
+    <section class="chapter" id="context" data-index-section>
+      <header class="chapter__label">
+        <span>01</span>
+        <p>Context</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The app could not improve the food. It could stop making it harder to trust.</h2>
+        <div class="prose">
+          <p>
+            SuperGood competed with Кухня на районе for an everyday job: lunch at work or dinner when cooking was too much. The promise was homemade-style food, delivered quickly, at a price that made sense.
+          </p>
+          <p>
+            The product was already struggling in public. Reviews treated an outdated order and disappointing value as one experience. Kitchens, recipes, pricing, and courier operations were outside my control. Everything between opening the app and receiving the bag was not.
+          </p>
+        </div>
+
+        <dl class="scope">
+          <div>
+            <dt>Goal</dt>
+            <dd>Make value, time, and total clear before payment, then make a repeat order cheap to start.</dd>
+          </div>
+          <div>
+            <dt>Owned</dt>
+            <dd>First run, menu, dish details, quantity, basket, payment, tracking, favourites, history, UX/UI, and Flutter implementation.</dd>
+          </div>
+          <div>
+            <dt>Not owned</dt>
+            <dd>Kitchens, recipes, food pricing, and courier operations.</dd>
+          </div>
+          <div>
+            <dt>Constraint</dt>
+            <dd>Separate Android and iOS apps, public quality problems, and a mobile-engineering role that expanded into product ownership.</dd>
+          </div>
+        </dl>
+
+        <blockquote>
+          What must a person know before this meal feels worth ordering?
+        </blockquote>
+      </div>
+    </section>
+
+    <section class="chapter" id="research" data-index-section>
+      <header class="chapter__label">
+        <span>02</span>
+        <p>Evidence</p>
+      </header>
+      <div class="chapter__body">
+        <h2>Three failures kept appearing in real orders.</h2>
+        <div class="prose">
+          <p>
+            I used customer conversations, contextual inquiry, competitive study, prototype tasks, comparison tests, and polls. I do not have defensible sample sizes or win rates to publish. What matters here is how repeated observations changed the product.
+          </p>
+        </div>
+
+        <div class="qa">
+          <p class="research-label">Observation → product response</p>
+          <dl>
+            <div>
+              <dt>Value was impossible to inspect</dt>
+              <dd>A photograph carried too much of the claim. Dish details gained weight, ingredients, nutrition, extra cooking time, and a clear price beside the add action.</dd>
+            </div>
+            <div>
+              <dt>Time and total disappeared</dt>
+              <dd>People checked both before paying. The order bar kept delivery time, count, and total visible while they browsed.</dd>
+            </div>
+            <div>
+              <dt>Known meals still began at the catalogue</dt>
+              <dd>Weekday orders often repeated. Favourites and order history became ways back into the basket, not storage screens.</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="compare">
+          <p class="research-label">Competitive frame</p>
+          <article>
+            <h3>Кухня на районе</h3>
+            <p>Defined the category promise: food from a nearby kitchen, a short wait, and a changing everyday menu.</p>
+          </article>
+          <article>
+            <h3>Самокат</h3>
+            <p>Set the interaction expectation: address before browsing, quantity on the item, and a useful cart as soon as the first item is added.</p>
+          </article>
+        </div>
+
+        <div class="finding">
+          <p>The reframing</p>
+          <strong>This was not a menu redesign. It was a redesign of the order, including the next one.</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapter chapter--dark" id="direction" data-index-section>
+      <header class="chapter__label">
+        <span>03</span>
+        <p>Direction</p>
+      </header>
+      <div class="chapter__body">
+        <h2>I moved the product’s centre from the catalogue to the order.</h2>
+        <ol class="principles">
+          <li>
+            <span>1</span>
+            <div>
+              <h3>One product, one behaviour</h3>
+              <p>Replace separate Android and iOS applications with one Flutter product so interaction, copy, and quality could be designed once.</p>
+            </div>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <h3>Evidence at the decision</h3>
+              <p>Put composition, weight, time, price, and quantity where a person decides whether to add the dish.</p>
+            </div>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <h3>Yesterday is an entrance</h3>
+              <p>Use favourites and history to start an order. Do not make a repeat customer rebuild a known meal.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="chapter chapter--wide" id="solution" data-index-section>
+      <header class="chapter__label">
+        <span>04</span>
+        <p>Product</p>
+      </header>
+      <div class="chapter__body">
+        <h2>Four shipped screens carry the argument.</h2>
+        <p class="wide-copy">
+          These are working screens from the product I designed and built. The full scope also included greeting, first run, address, menu navigation, tracking, favourites, promotions, loyalty, themes, and adaptive layouts. I am showing the moments that make the product decision visible.
+        </p>
+      </div>
+
+      <div class="path-group">
+        <ol class="journey-map">
+          <li id="dish">
+            <p>01 Dish</p>
+            <h3>Put proof beside the photograph</h3>
+            <p class="journey-map__decision">Weight, ingredients, nutrition, extra cooking time, and price sit with the add action. A photo no longer carries the entire value claim.</p>
+            <figure>
+              <Image src={dishSheetLight} alt="Working dish sheet with photo, weight, price, nutrition, ingredients, and add to cart." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <figcaption>Working product</figcaption>
+            </figure>
+          </li>
+          <li id="basket">
+            <p>02 Order bar</p>
+            <h3>Keep time, count, and total in view</h3>
+            <p class="journey-map__decision">Quantity moved onto the item. The persistent bar updates the order without sending the person away from the menu.</p>
+            <figure>
+              <Image src={dishSheetDark} alt="Working dark dish sheet with a persistent order bar showing delivery time, count, and total." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <figcaption>Working product</figcaption>
+            </figure>
+          </li>
+          <li id="pay">
+            <p>03 Checkout</p>
+            <h3>Confirm instead of rediscovering</h3>
+            <p class="journey-map__decision">Address, delivery time, payment, bonuses, and total appear together. Each part can be changed locally without losing the order.</p>
+            <figure>
+              <Image src={checkout} alt="Working checkout with address, delivery time, payment, bonuses, and order button." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <figcaption>Working product</figcaption>
+            </figure>
+          </li>
+          <li id="history">
+            <p>04 History</p>
+            <h3>Turn a receipt into the next order</h3>
+            <p class="journey-map__decision">Expandable cards expose individual dishes and the whole basket. Repeat actions make a finished or cancelled order useful again.</p>
+            <figure>
+              <Image src={ordersHistory} alt="Working order history with expandable cards, repeat buttons, and add whole order." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <figcaption>Working product</figcaption>
+            </figure>
+          </li>
+        </ol>
+      </div>
+
+      <div class="validation-board">
+        <article class="validation-case">
+          <p><strong>Evidence boundary.</strong> The previous application and early prototypes were not preserved. This case study uses surviving production screens and contemporaneous public feedback. I have not reconstructed a before state from memory.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
+      <header class="chapter__label">
+        <span>05</span>
+        <p>Outcome</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The redesign shipped. The business still closed the product.</h2>
+        <div class="prose">
+          <p>
+            One Flutter codebase replaced the separate Android and iOS applications. The production scope covered the complete order: menu behaviour, basket, payment and 3DS, maps, courier state, promotions, loyalty, themes, adaptive layouts, and continued usability and reliability fixes.
+          </p>
+          <p>
+            SuperGood later closed because of the company’s financial situation, not because the redesign remained unfinished.
+          </p>
+        </div>
+
+        <dl class="scope">
+          <div>
+            <dt>What I can prove</dt>
+            <dd>A production Android and iOS product, the working screens above, and the implementation scope I owned.</dd>
+          </div>
+          <div>
+            <dt>What I cannot claim</dt>
+            <dd>I do not have permissioned conversion, retention, or repeat-order metrics. I will not substitute “more intuitive” for missing measurement.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <section class="chapter reflection" id="reflection" data-index-section>
+      <header class="chapter__label">
+        <span>06</span>
+        <p>Reflection</p>
+      </header>
+      <div class="chapter__body">
+        <h2>The useful move was not making the menu prettier.</h2>
+        <div class="prose">
+          <p>
+            I changed the unit of the product from a catalogue of dishes to an order a person could judge: what is in it, what it costs, when it arrives, and how to get the same meal again.
+          </p>
+          <p>
+            I owned product direction, research, information architecture, interaction, interface, and the Flutter implementation. Kitchens, recipes, pricing, and delivery operations were not mine.
+          </p>
+          <p>
+            The measurement I would want now is repeat-order completion, followed by whether visible composition and delivery time reduced the “not worth it” complaint.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="case-footer">
+    <p>SuperGood<br /><em>Homemade food, without making the order feel like a gamble.</em></p>
+    <nav aria-label="SuperGood project links">
+      <a href={sitePath('/work/')}>Back to work ↑</a>
+      <a href={sitePath('/case-studies/two-sticks/')}>Two Sticks case study →</a>
+      <a href={sitePath('/case-studies/observatory/')}>Observatory case study →</a>
+    </nav>
+  </footer>
+</BaseDocument>
+
+<script>
+  document.documentElement.classList.add('has-scroll-stories');
+
+  const activateFrame = (story: HTMLElement, index: number) => {
+    story.querySelectorAll<HTMLElement>('[data-story-frame]').forEach((frame) => {
+      frame.classList.toggle('is-active', Number(frame.dataset.storyFrame) === index);
+    });
+    story.querySelectorAll<HTMLElement>('[data-story-step]').forEach((step) => {
+      step.classList.toggle('is-active', Number(step.dataset.storyStep) === index);
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-scroll-story]').forEach((story) => {
+    if (story.dataset.storyReady) return;
+    story.dataset.storyReady = 'true';
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const step = entry.target as HTMLElement;
+        activateFrame(story, Number(step.dataset.storyStep));
+      });
+    }, { rootMargin: '-40% 0px -44%', threshold: 0 });
+
+    story.querySelectorAll<HTMLElement>('[data-story-step]').forEach((step) => observer.observe(step));
+  });
+
+  const indexLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-index-link]'));
+  const setCurrentSection = (id: string) => {
+    indexLinks.forEach((link) => {
+      if (link.dataset.indexLink === id) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) setCurrentSection(entry.target.id);
+    });
+  }, { rootMargin: '-44% 0px -48%', threshold: 0 });
+
+  document.querySelectorAll<HTMLElement>('[data-index-section]').forEach((section) => sectionObserver.observe(section));
+</script>
+
+<style is:global>
+  @font-face {
+    font-family: 'Capriola';
+    src: url('../../../assets/fonts/Capriola-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Italic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: 400;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-SemiBold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Crimson Text';
+    src: url('../../../assets/fonts/CrimsonText-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: 'Averia Serif Libre';
+    src: url('../../../assets/fonts/AveriaSerifLibre-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+
+  html.supergood-case-study {
+    --paper: #fbf6ee;
+    --soft-paper: #f3ebe0;
+    --ink: #1c1914;
+    --muted: #6f675c;
+    --line: #d9cfc0;
+    --accent: #b4530a;
+    --serif: 'Crimson Text', Georgia, serif;
+    --display-serif: 'Averia Serif Libre', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Capriola', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    --reading-size: clamp(18px, 1.45vw, 20px);
+    --reading-line: 1.6;
+    color-scheme: light;
+    scroll-behavior: smooth;
+    background: var(--paper);
+  }
+
+  html.supergood-case-study body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 18px;
+    line-height: 1.58;
+    text-rendering: optimizeLegibility;
+  }
+
+  html.supergood-case-study * { box-sizing: border-box; }
+  html.supergood-case-study img { display: block; width: 100%; height: auto; }
+  html.supergood-case-study ::selection { background: var(--accent); color: var(--paper); }
+  html.supergood-case-study a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.22em; }
+  html.supergood-case-study a:hover { color: var(--accent); }
+  html.supergood-case-study :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  html.supergood-case-study .skip-link { background: var(--ink); color: var(--paper); }
+
+  .topbar,
+  main,
+  .case-footer {
+    width: min(100% - 48px, 1440px);
+    margin-inline: auto;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    min-height: 78px;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .topbar span { color: var(--muted); text-align: center; }
+  .topbar a:last-child { justify-self: end; }
+
+  .eyebrow,
+  figcaption,
+  .chapter__label,
+  .finding > p,
+  .principles > li > span,
+  .research-label,
+  .scope dt,
+  .qa dt,
+  .persona-profile__number,
+  .persona-profile h4,
+  .empathy h4,
+  .journey-map dt,
+  .journey-map > li > p {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+  }
+
+  .hero {
+    padding: clamp(76px, 9vw, 124px) 0 clamp(44px, 5vw, 68px);
+    text-align: center;
+  }
+
+  .eyebrow { margin: 0 0 28px; color: var(--muted); }
+  .hero h1 {
+    margin: 0;
+    font-family: var(--display-serif);
+    font-size: clamp(64px, 9vw, 112px);
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    font-synthesis: none;
+  }
+  .hero__line { margin: 34px 0 0; font-size: clamp(26px, 3vw, 42px); font-style: italic; line-height: 1.08; }
+  .hero__intro {
+    max-width: 620px;
+    margin: 46px auto 52px;
+    font-size: clamp(20px, 1.7vw, 23px);
+    line-height: 1.48;
+    text-align: left;
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .facts dt {
+    margin-bottom: 7px;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+  .facts dd { margin: 0; font-size: 15px; line-height: 1.4; }
+
+  .hero-phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 220px));
+    gap: 28px;
+    justify-content: center;
+    align-items: end;
+    width: min(820px, 100%);
+    margin: 72px auto 0;
+    text-align: left;
+  }
+
+  .hero-phones img {
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(28, 25, 20, 0.12);
+    background: #111;
+  }
+
+  .hero-phones img:nth-child(1) { rotate: -3.2deg; translate: 0 18px; }
+  .hero-phones img:nth-child(2) { rotate: 1.4deg; z-index: 1; }
+  .hero-phones img:nth-child(3) { rotate: 3.6deg; translate: 0 10px; }
+
+  .hero-phones figcaption {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 16px;
+    margin-top: 28px;
+    color: var(--muted);
+  }
+
+  figure { margin: 0; }
+  figcaption { display: flex; gap: 16px; margin-top: 12px; color: var(--muted); }
+  figcaption span { min-width: max-content; color: var(--ink); }
+
+  .chapter {
+    max-width: 1000px;
+    margin-inline: auto;
+    padding-block: clamp(56px, 6vw, 84px);
+  }
+
+  .chapter__label,
+  .chapter__body {
+    width: min(720px, calc(100% - 80px));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .chapter__label { display: flex; gap: 24px; align-items: baseline; margin-bottom: 30px; }
+  .chapter__label span { color: var(--accent); }
+  .chapter__label p { margin: 0; }
+
+  .chapter__body h2 {
+    max-width: 720px;
+    margin: 0 0 38px;
+    font-family: var(--display-serif);
+    font-size: clamp(39px, 4vw, 54px);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+    font-synthesis: none;
+  }
+
+  .prose,
+  .wide-copy { max-width: 610px; margin-left: auto; margin-right: auto; }
+  .prose p,
+  .wide-copy { margin: 0 auto 1.2em; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  blockquote {
+    max-width: 610px;
+    margin: 56px auto 0;
+    padding: 0;
+    font-size: clamp(27px, 2.5vw, 34px);
+    font-style: italic;
+    line-height: 1.24;
+    text-align: left;
+  }
+
+  .research-aims { max-width: 610px; margin: 64px auto 0; }
+  .research-aims > p { margin: 0 0 22px; color: var(--muted); }
+  .research-aims ul { margin: 0; padding-left: 1.15em; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .research-aims li + li { margin-top: 12px; }
+
+  .interview-structure { max-width: 610px; margin: 78px auto 0; }
+  .interview-structure > div > p:first-child { margin: 0; color: var(--muted); }
+  .interview-structure > div > p:last-child {
+    max-width: 610px;
+    margin: 20px 0 0;
+    font-size: var(--reading-size);
+    line-height: var(--reading-line);
+  }
+  .interview-structure ol { max-width: 610px; margin: 32px 0 0; padding: 0; list-style: none; }
+  .interview-structure li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding: 13px 0; }
+  .interview-structure li > span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; line-height: 1.5; }
+  .interview-structure li p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .interview-structure strong { font-weight: 600; }
+
+  .finding { max-width: 610px; margin: 64px auto 0; text-align: left; }
+  .finding p { margin: 0 0 22px; color: var(--accent); }
+  .finding strong {
+    display: block;
+    font-family: var(--display-serif);
+    font-size: clamp(25px, 2.5vw, 34px);
+    font-weight: 700;
+    line-height: 1.3;
+    font-synthesis: none;
+  }
+
+  .scope {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 40px;
+    max-width: 610px;
+    margin: 64px auto 0;
+  }
+  .scope dt { margin: 0 0 10px; color: var(--accent); }
+  .scope dd { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .qa { max-width: 610px; margin: 78px auto 0; }
+  .qa > .research-label { margin: 0 0 22px; color: var(--muted); }
+  .qa dl { margin: 0; }
+  .qa dl > div { padding: 18px 0; border-top: 1px solid var(--line); }
+  .qa dt { margin: 0 0 8px; font-weight: 600; }
+  .qa dd { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .persona-sequence {
+    width: min(980px, calc(100vw - 110px));
+    margin: 58px 50% 0;
+    translate: -50% 0;
+  }
+  .persona-sequence > .research-label { margin: 0 0 18px; color: var(--muted); }
+  .persona-profile {
+    display: grid;
+    grid-template-columns: minmax(230px, 0.78fr) minmax(340px, 1fr);
+    gap: clamp(48px, 7vw, 92px);
+    padding: 62px 0 96px;
+    border-top: 1px solid var(--line);
+  }
+  .persona-profile:last-child { padding-bottom: 24px; }
+  .persona-profile__identity { position: sticky; top: clamp(82px, 12vh, 126px); align-self: start; }
+  .persona-profile__number { margin: 0 0 18px; color: var(--accent); }
+  .persona-profile__mark {
+    display: grid;
+    width: 5.5rem;
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid var(--line);
+    background: var(--soft-paper);
+    color: var(--accent);
+    font-family: var(--display-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+  }
+  .persona-profile h3 {
+    max-width: 340px;
+    margin: 24px 0 0;
+    font-family: var(--display-serif);
+    font-size: clamp(32px, 3.5vw, 47px);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    line-height: 0.98;
+    font-synthesis: none;
+  }
+  .persona-profile__quote { margin-top: 34px; }
+  .persona-profile__quote > p { margin: 0 0 13px; color: var(--muted); }
+  .persona-profile blockquote {
+    max-width: 360px;
+    margin: 0;
+    font-size: clamp(20px, 2vw, 27px);
+    line-height: 1.24;
+    text-align: left;
+  }
+  .persona-profile__observations { padding-top: 38px; }
+  .persona-profile__observations section { padding: 0 0 46px; border-bottom: 1px solid var(--line); }
+  .persona-profile__observations section + section { padding-top: 42px; }
+  .persona-profile__observations section:last-child { border-bottom: 0; }
+  .persona-profile h4 { margin: 0 0 16px; color: var(--accent); }
+  .persona-profile__story,
+  .persona-profile__observations p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-profile__observations ul { margin: 0; padding: 0; list-style: none; }
+  .persona-profile__observations li { position: relative; padding-left: 22px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .persona-profile__observations li::before { content: '·'; position: absolute; left: 0; color: var(--accent); }
+  .persona-profile__observations li + li { margin-top: 14px; }
+  .persona-profile__response p { color: var(--muted); font-size: clamp(21px, 2.1vw, 28px); line-height: 1.38; }
+
+  .empathy-board {
+    width: min(1000px, calc(100% - 60px));
+    margin: 72px auto 0;
+  }
+  .empathy-board__intro { max-width: 610px; margin-bottom: 42px; }
+  .empathy-board__intro > .research-label { margin: 0 0 12px; color: var(--muted); }
+  .empathy-board__intro p:last-child { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .empathy + .empathy { margin-top: 48px; }
+  .empathy h3 {
+    margin: 0 0 18px;
+    font-family: var(--display-serif);
+    font-size: 26px;
+    font-weight: 700;
+    font-synthesis: none;
+  }
+  .empathy__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border: 1px solid var(--line);
+  }
+  .empathy__grid section { padding: 22px 24px 26px; }
+  .empathy__grid section:nth-child(1),
+  .empathy__grid section:nth-child(2) { border-bottom: 1px solid var(--line); }
+  .empathy__grid section:nth-child(odd) { border-right: 1px solid var(--line); }
+  .empathy h4 { margin: 0 0 12px; color: var(--accent); }
+  .empathy ul { margin: 0; padding: 0; list-style: none; }
+  .empathy li { font-size: var(--reading-size); line-height: var(--reading-line); }
+  .empathy li + li { margin-top: 8px; }
+
+  .journey-map {
+    display: grid;
+    gap: 8px;
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+  .journey-map > li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 168px;
+    gap: 28px 40px;
+    align-items: start;
+    padding: 36px 0;
+    border-top: 1px solid var(--line);
+  }
+  .journey-map > li > p { margin: 0; color: var(--accent); }
+  .journey-map h3 {
+    grid-column: 1;
+    margin: 8px 0 0;
+    font-family: var(--display-serif);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-synthesis: none;
+  }
+  .journey-map dl { grid-column: 1; display: grid; gap: 16px; margin: 22px 0 0; }
+  .journey-map dt { margin: 0 0 6px; color: var(--accent); }
+  .journey-map dd { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .journey-map > li > figure,
+  .journey-map__frames {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    margin: 0;
+  }
+  .journey-map__frames {
+    display: grid;
+    gap: 14px;
+  }
+  .journey-map figcaption { justify-content: flex-start; margin-top: 8px; }
+  .journey-map img,
+  .placeholder__frame {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(28, 25, 20, 0.1);
+  }
+
+  .placeholder { margin: 0; }
+  .placeholder__frame {
+    display: grid;
+    aspect-ratio: 9 / 19.5;
+    place-items: center;
+    padding: 18px;
+    border: 1px dashed color-mix(in srgb, var(--ink) 28%, var(--line));
+    background:
+      repeating-linear-gradient(
+        -12deg,
+        transparent,
+        transparent 10px,
+        color-mix(in srgb, var(--ink) 4%, transparent) 10px,
+        color-mix(in srgb, var(--ink) 4%, transparent) 11px
+      ),
+      var(--soft-paper);
+    box-shadow: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: center;
+  }
+  .placeholder__frame small { display: block; margin-top: 8px; font-weight: 400; letter-spacing: 0; }
+
+  .validation-board {
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+  }
+  .validation-case { margin-bottom: clamp(72px, 9vw, 110px); }
+  .validation-case > p { max-width: 720px; margin: 0 0 36px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .validation-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+  }
+  .validation-pair > span { font-size: 42px; font-weight: 300; text-align: center; }
+  .validation-pair img,
+  .validation-pair .placeholder__frame { max-width: 240px; margin-inline: auto; }
+  .validation-pair figcaption { justify-content: center; }
+
+  .jobs { max-width: 610px; margin: 82px auto 0; }
+  .jobs > .research-label { margin: 0 0 12px; color: var(--muted); }
+  .jobs__note { margin: 0 0 36px; font-size: var(--reading-size); line-height: var(--reading-line); }
+  .jobs__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 38px; }
+  .jobs h3 {
+    margin: 0 0 14px;
+    font-family: var(--display-serif);
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.08;
+    font-synthesis: none;
+  }
+  .jobs p { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .compare {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 38px;
+    max-width: 610px;
+    margin: 82px auto 0;
+  }
+  .compare > .research-label { grid-column: 1 / -1; margin: 0; color: var(--muted); }
+  .compare h3 {
+    margin: 0 0 14px;
+    font-family: var(--display-serif);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-synthesis: none;
+  }
+  .compare p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .research-synthesis {
+    max-width: 610px;
+    margin: 96px auto 0;
+    font-family: var(--display-serif);
+    font-size: clamp(25px, 2.6vw, 34px);
+    font-weight: 700;
+    line-height: 1.3;
+    font-synthesis: none;
+  }
+
+  .chapter--dark { margin-bottom: 0; padding-bottom: clamp(44px, 6vw, 72px); }
+
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    width: min(940px, calc(100vw - 110px));
+    margin: 54px 50% 0;
+    padding: 0;
+    list-style: none;
+    translate: -50% 0;
+  }
+
+  .principles > li > span { display: block; margin-bottom: 20px; color: var(--accent); }
+  .principles h3 {
+    margin: 0 0 8px;
+    font-family: var(--display-serif);
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.12;
+    font-synthesis: none;
+  }
+  .principles p { margin: 0; color: var(--muted); font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .chapter--wide { max-width: 1180px; }
+  .chapter--wide > .chapter__label,
+  .chapter--wide > .chapter__body {
+    width: min(720px, calc(100% - 80px));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .scroll-story {
+    display: grid;
+    grid-template-columns: minmax(220px, 380px) minmax(240px, 1fr);
+    gap: clamp(34px, 6vw, 80px);
+    align-items: start;
+    width: min(1000px, calc(100% - 60px));
+    margin: 70px auto 0;
+  }
+
+  .scroll-story__steps { margin: 0; padding: 0; list-style: none; }
+  .scroll-story__steps li { margin: 0; color: var(--muted); }
+  .scroll-story__steps span { color: var(--accent); font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.05em; }
+  .scroll-story__steps h3 {
+    margin: 18px 0 10px;
+    color: var(--ink);
+    font-family: var(--display-serif);
+    font-size: clamp(24px, 2.4vw, 34px);
+    font-weight: 700;
+    line-height: 1.05;
+    font-synthesis: none;
+  }
+  .scroll-story__steps p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .has-scroll-stories .scroll-story__stage {
+    position: sticky;
+    top: 10vh;
+    display: grid;
+    place-items: center;
+    height: min(80vh, 760px);
+    overflow: hidden;
+    border-radius: 28px;
+    background: var(--soft-paper);
+  }
+
+  .has-scroll-stories .scroll-story__stage figure {
+    position: absolute;
+    inset: 18px;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform: scale(0.985);
+    transition: opacity 520ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .has-scroll-stories .scroll-story__stage figure.is-active { opacity: 1; transform: scale(1); }
+  .has-scroll-stories .scroll-story__stage img {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(28, 25, 20, 0.16);
+  }
+
+  .has-scroll-stories .scroll-story__steps li {
+    display: flex;
+    min-height: 52vh;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0.3;
+    transition: opacity 260ms ease;
+  }
+  .has-scroll-stories .scroll-story__steps li.is-active { opacity: 1; }
+
+  .choices {
+    max-width: 610px;
+    margin: 64px auto 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .choices li { padding: 32px 0; border-top: 1px solid var(--line); }
+  .choices h3 {
+    margin: 0 0 14px;
+    font-family: var(--display-serif);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.15;
+    font-synthesis: none;
+  }
+  .choices p { margin: 0; font-size: var(--reading-size); line-height: var(--reading-line); }
+
+  .chapter--outcome { padding-bottom: 70px; }
+
+  .outcome-board {
+    display: grid;
+    gap: 72px;
+    width: min(1000px, calc(100% - 60px));
+    margin: 76px auto 0;
+  }
+
+  .outcome-board img {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--soft-paper);
+    box-shadow: 0 16px 44px rgba(28, 25, 20, 0.06);
+  }
+
+  .reflection { margin-top: clamp(54px, 7vw, 90px); }
+
+  .case-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 110px 0 90px;
+  }
+
+  .case-footer p { margin: 0; font-size: 24px; line-height: 1.25; }
+  .case-footer nav {
+    display: grid;
+    gap: 15px;
+    align-content: start;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+
+  .chapter-index {
+    position: fixed;
+    z-index: 20;
+    top: 50%;
+    left: max(16px, calc((100vw - 1440px) / 2 + 16px));
+    width: 126px;
+    color: #9a9084;
+    font-family: var(--sans);
+    font-size: 9px;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    translate: 0 -50%;
+  }
+
+  .chapter-index > p { margin: 0 0 20px 23px; }
+  .chapter-index ol { position: relative; display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+  .chapter-index ol::before {
+    content: '';
+    position: absolute;
+    top: 13px;
+    bottom: 13px;
+    left: 3px;
+    width: 1px;
+    background: #e4d9cb;
+  }
+  .chapter-index a {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 8px;
+    align-items: center;
+    min-height: 30px;
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+  .chapter-index a::before {
+    content: '';
+    z-index: 1;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--paper);
+    border-radius: 50%;
+    background: #d2c6b6;
+    transition: background 180ms ease, scale 180ms ease;
+  }
+  .chapter-index a > span:first-child {
+    grid-column: 1;
+    position: absolute;
+    left: 18px;
+    opacity: 0;
+    font-variant-numeric: tabular-nums;
+    transition: opacity 180ms ease;
+  }
+  .chapter-index__name { grid-column: 2; }
+  .chapter-index a[aria-current='location'] { color: var(--ink); }
+  .chapter-index a[aria-current='location']::before { background: var(--accent); scale: 1.2; }
+  .chapter-index a[aria-current='location'] > span:first-child { opacity: 1; }
+
+  .hero + .chapter { padding-top: clamp(42px, 5vw, 68px); }
+
+  @media (max-width: 1180px) {
+    .chapter-index { width: 38px; }
+    .chapter-index > p,
+    .chapter-index__name { display: none; }
+    .chapter-index a { grid-template-columns: 30px; }
+    .chapter-index a > span:first-child { left: 15px; }
+  }
+
+  @media (max-width: 900px) {
+    .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 22px; max-width: 620px; }
+    .principles { grid-template-columns: 1fr; gap: 48px; }
+    .jobs__grid,
+    .compare,
+    .scope,
+    .empathy__grid { grid-template-columns: 1fr; }
+    .validation-pair { grid-template-columns: 1fr 52px 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    html.supergood-case-study { scroll-behavior: auto; }
+    .chapter-index { display: none; }
+    .topbar,
+    main,
+    .case-footer { width: min(100% - 28px, 1440px); }
+    .topbar { grid-template-columns: 1fr 1fr; min-height: 58px; }
+    .topbar span { display: none; }
+    .hero { padding-top: 86px; }
+    .hero h1 { font-size: clamp(52px, 14vw, 64px); }
+    .hero-phones { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .hero-phones img:nth-child(1),
+    .hero-phones img:nth-child(2),
+    .hero-phones img:nth-child(3) { rotate: 0deg; translate: 0; }
+    .facts { display: grid; gap: 28px 18px; }
+    .chapter { padding-block: 58px; }
+    .chapter__label,
+    .chapter__body,
+    .chapter--wide > .chapter__label,
+    .chapter--wide > .chapter__body { width: 100%; margin-left: 0; margin-right: 0; }
+    .chapter__body h2 { font-size: clamp(36px, 11vw, 48px); }
+    .principles { width: 100%; margin: 54px 0 0; translate: none; }
+    .persona-sequence,
+    .empathy-board,
+    .journey-map,
+    .validation-board { width: 100%; margin-left: 0; margin-right: 0; translate: none; }
+    .persona-sequence { margin-top: 48px; }
+    .persona-profile { display: block; padding: 40px 0 72px; }
+    .persona-profile__identity { position: static; }
+    .persona-profile h3 { font-size: 38px; }
+    .persona-profile blockquote { max-width: none; font-size: 25px; }
+    .journey-map > li { grid-template-columns: 1fr; }
+    .journey-map > li > figure,
+    .journey-map__frames { grid-column: auto; grid-row: auto; width: min(180px, 46%); }
+    .journey-map__frames { width: min(100%, 380px); grid-template-columns: 1fr 1fr; }
+    .empathy__grid section:nth-child(odd) { border-right: 0; }
+    .validation-pair { grid-template-columns: 1fr; gap: 22px; }
+    .validation-pair > span { font-size: 36px; rotate: 90deg; }
+    .scroll-story { display: block; width: 100%; margin: 50px 0 0; }
+    .has-scroll-stories .scroll-story__stage { top: 8vh; z-index: 1; height: min(58vh, 520px); }
+    .has-scroll-stories .scroll-story__steps { position: relative; z-index: 2; margin-top: -48vh; padding: 28vh 0 8vh; }
+    .has-scroll-stories .scroll-story__steps li {
+      min-height: 48vh;
+      width: min(88%, 350px);
+      margin: 0 auto;
+      padding: 18px;
+      justify-content: flex-end;
+      opacity: 0;
+    }
+    .has-scroll-stories .scroll-story__steps li.is-active { opacity: 1; }
+    .has-scroll-stories .scroll-story__steps li > * {
+      width: fit-content;
+      max-width: 100%;
+      padding: 2px 7px;
+      background: rgba(251, 246, 238, 0.94);
+      box-decoration-break: clone;
+    }
+    .has-scroll-stories .scroll-story__steps h3 { margin-block: 5px 0; }
+    .outcome-board { width: 100%; gap: 48px; }
+    .case-footer { grid-template-columns: 1fr; }
+    .case-footer nav { margin-top: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-index a,
+    .chapter-index a::before,
+    .has-scroll-stories .scroll-story__stage figure,
+    .has-scroll-stories .scroll-story__steps li { transition: none; }
+    .has-scroll-stories .scroll-story { display: block; }
+    .has-scroll-stories .scroll-story__stage {
+      position: static;
+      display: grid;
+      height: auto;
+      gap: 32px;
+      overflow: visible;
+      background: transparent;
+    }
+    .has-scroll-stories .scroll-story__stage figure { position: static; opacity: 1; transform: none; }
+    .has-scroll-stories .scroll-story__stage img { height: auto; }
+    .has-scroll-stories .scroll-story__steps { display: none; }
+    .hero-phones img:nth-child(1),
+    .hero-phones img:nth-child(2),
+    .hero-phones img:nth-child(3) { rotate: 0deg; translate: 0; }
+  }
+</style>

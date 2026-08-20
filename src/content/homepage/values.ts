@@ -15,7 +15,7 @@ import santaFoundation1 from '../../assets/evidence/secret_santa_foundation1.png
 export type ValueProject =
   | 'Observatory'
   | 'PizzaSushiWok'
-  | 'Chinese Bee'
+  | 'Two Sticks'
   | 'Discourses by Campfire'
   | 'Santa Foundation';
 
@@ -89,12 +89,14 @@ export const values: readonly ValuePassage[] = [
         caption: 'Ordering to delivery',
         shot: 'Ordering journey screenshot',
         image: pizzaSushiWok1,
+        caseStudy: true,
       },
       {
-        project: 'Chinese Bee',
+        project: 'Two Sticks',
         caption: 'Search into practice',
         shot: 'Search-to-practice flow screenshot',
         image: chineseBee1,
+        caseStudy: true,
       },
       {
         project: 'Discourses by Campfire',
@@ -129,7 +131,7 @@ export const values: readonly ValuePassage[] = [
         image: pizzaSushiWok2,
       },
       {
-        project: 'Chinese Bee',
+        project: 'Two Sticks',
         caption: 'Handwriting accuracy feedback',
         shot: 'Handwriting feedback screenshot',
         image: chineseBee2,
@@ -155,7 +157,7 @@ export const values: readonly ValuePassage[] = [
         image: pizzaSushiWok3,
       },
       {
-        project: 'Chinese Bee',
+        project: 'Two Sticks',
         caption: 'One connected workflow',
         shot: 'Connected chat and practice screenshot',
         image: chineseBee3,

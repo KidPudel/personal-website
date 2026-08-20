@@ -1,6 +1,6 @@
 # Progress
 
-Last updated: 2026-08-18
+Last updated: 2026-08-20
 
 ## Current state
 
@@ -27,7 +27,12 @@ Last updated: 2026-08-18
 - The top and bottom elastic page edges now share one interruptible controller. Their pigment uses a continuous palette and transparent irregular tips, a narrow masked backdrop feather blends the moving page boundary into the field, and active frames update transforms rather than layout dimensions or inherited motion variables.
 - Elastic pulls use progressive boundary resistance and no longer reinterpret a large top pull as a hidden page reload.
 - Inactive value-voice layers are hidden from the current accessibility state.
-- The work, writing, Observatory case study, personal-note interactions, contact disclosure, and verified content remain intact.
+- The work, writing, personal-note interactions, contact disclosure, and verified homepage content remain intact.
+- The approved case-study visual designs are preserved. Observatory remains unchanged as the current editorial baseline.
+- SuperGood now uses six evidence-led chapters that expose Igor's progression from mobile engineer to product owner, connect observations to product responses, show four working-product screens, and separate shipped scope from unavailable outcome metrics. Reconstructed personas, empathy maps, and generic journey artifacts have been removed.
+- Two Sticks now uses six evidence-led chapters that distinguish the MPGU diploma team's pedagogical research from Igor's product and engineering work, follow one saved character through the working loop, and separate shipped scope from unbuilt teaching features. Chinese Bee remains only as the historical implementation name. Reconstructed personas and empathy maps have been removed.
+- Historical evidence boundaries are stated without asking for artifacts that no longer exist. SuperGood uses surviving production screens and public feedback; Two Sticks uses surviving screens and public source code and states that the paid backend is no longer hosted.
+- Two Sticks is the public project name and canonical case-study route. The former Chinese Bee route remains available for old links, while repository identifiers retain their historical names.
 - Project guidance now treats exact visual choreography as replaceable and keeps architecture limited to durable technical boundaries.
 
 ## Verification
@@ -41,6 +46,7 @@ Last updated: 2026-08-18
 - `astro check` reports zero diagnostics.
 - Production builds complete for `/` and `/personal-website/`.
 - Browser diagnostics contain no new relevant warnings or errors after the rebuild.
+- Rechecked all three case studies at 390 by 844. Each has one `main`, one `h1`, no horizontal overflow, and no browser warnings or errors.
 
 ## Known workflow issue
 

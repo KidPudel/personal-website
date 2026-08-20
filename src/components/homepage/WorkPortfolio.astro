@@ -76,26 +76,36 @@ const {
 
       <div class="product-pair">
         <article class="project project--visual" style="--media-tilt: 2.1deg">
-          <WorkMedia slug="flutter-product" />
+          <a class="project__media-link" href={sitePath('/case-studies/supergood/')}>
+            <WorkMedia slug="flutter-product" />
+          </a>
           <div class="project__copy">
-            <p class="project-label">End-to-end product delivery</p>
+            <p class="project-label">Production food product · case study</p>
             <h3>{foodProduct.data.title}</h3>
             <p>{foodProduct.data.summary}</p>
             <ul class="meta-line" aria-label="Capabilities">
               {foodProduct.data.capabilities.map((capability) => <li>{capability}</li>)}
             </ul>
+            <div class="project-links">
+              <a class="quiet-link" href={sitePath('/case-studies/supergood/')}>Read the case study</a>
+            </div>
           </div>
         </article>
 
         <article class="project project--visual" style="--media-tilt: -1.9deg">
-          <WorkMedia slug="chinese-bee" />
+          <a class="project__media-link" href={sitePath('/case-studies/two-sticks/')}>
+            <WorkMedia slug="chinese-bee" />
+          </a>
           <div class="project__copy">
-            <p class="project-label">One learning need across several surfaces</p>
+            <p class="project-label">Telegram learning prototype · case study</p>
             <h3>{chineseBee.data.title}</h3>
             <p>{chineseBee.data.summary}</p>
             <ul class="meta-line" aria-label="Capabilities">
               {chineseBee.data.capabilities.map((capability) => <li>{capability}</li>)}
             </ul>
+            <div class="project-links">
+              <a class="quiet-link" href={sitePath('/case-studies/two-sticks/')}>Read the case study</a>
+            </div>
           </div>
         </article>
       </div>
@@ -430,8 +440,15 @@ const {
     min-width: 0;
   }
 
-  .project > :global(.work-media) {
+  .project > :global(.work-media),
+  .project__media-link {
     rotate: var(--media-tilt, 1.8deg);
+  }
+
+  .project__media-link {
+    display: block;
+    min-width: 0;
+    text-decoration: none;
   }
 
   .project--system > :global(.work-media) {

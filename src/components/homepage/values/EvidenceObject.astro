@@ -31,6 +31,12 @@ function evidenceTilt(seed: string): string {
 }
 
 const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
+const caseStudyHrefByProject: Record<string, string> = {
+  Observatory: sitePath('/case-studies/observatory/'),
+  PizzaSushiWok: sitePath('/case-studies/supergood/'),
+  'Two Sticks': sitePath('/case-studies/two-sticks/'),
+};
+const caseStudyHref = aspect.caseStudy ? caseStudyHrefByProject[aspect.project] : undefined;
 ---
 
 <li
@@ -55,8 +61,8 @@ const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
   </div>
   <div class="aspect__copy">
     <p>{aspect.caption}</p>
-    {aspect.caseStudy && (
-      <a href={sitePath('/case-studies/observatory/')}>
+    {caseStudyHref && (
+      <a href={caseStudyHref}>
         See this in the case study <span aria-hidden="true">→</span>
       </a>
     )}
