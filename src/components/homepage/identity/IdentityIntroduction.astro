@@ -92,10 +92,10 @@ import PlayfulWord from './PlayfulWord.astro';
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.4rem;
+    gap: 0;
     margin: 0;
     color: var(--color-ink);
-    font-family: var(--font-reading);
+    font-family: var(--font-editorial);
     font-size: clamp(1rem, 0.5vw + 0.9rem, 1.25rem);
     letter-spacing: 0.025em;
   }
@@ -111,13 +111,13 @@ import PlayfulWord from './PlayfulWord.astro';
 
   .identity__summary {
     max-width: 35rem;
-    margin: 1.5rem 0 0;
-    color: var(--color-copy);
+    margin: clamp(2.375rem, 4.5vw, 3.25rem) 0 0;
+    color: var(--color-ink);
     font-family: var(--font-reading);
     font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
     font-weight: 400;
     letter-spacing: 0.025em;
-    line-height: 1.68;
+    line-height: 1.3;
   }
 
   .identity__passage {
@@ -153,7 +153,7 @@ import PlayfulWord from './PlayfulWord.astro';
     position: absolute;
     z-index: 0;
     top: 50%;
-    left: -42%;
+    left: -34%;
     display: block;
     width: 185%;
     height: auto;
@@ -220,9 +220,9 @@ import PlayfulWord from './PlayfulWord.astro';
 
     .identity__summary {
       max-width: 36em;
-      margin-top: 1.15rem;
+      margin-top: 1.875rem;
       font-size: 1.0625rem;
-      line-height: 1.55;
+      line-height: 1.3;
     }
   }
 
@@ -237,7 +237,7 @@ import PlayfulWord from './PlayfulWord.astro';
     }
 
     .identity__summary {
-      margin-top: 0.9rem;
+      margin-top: 1.25rem;
     }
   }
 
@@ -252,7 +252,7 @@ import PlayfulWord from './PlayfulWord.astro';
     }
 
     .identity__summary {
-      margin-top: 1.15rem;
+      margin-top: 1.875rem;
       font-size: 0.95rem;
     }
   }

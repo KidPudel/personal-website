@@ -3,7 +3,7 @@ import '../styles/foundations.css';
 import '../styles/composition.css';
 import '../styles/motion.css';
 
-import aleoURL from '../assets/fonts/Aleo-Regular.ttf?url';
+import instrumentSansURL from '../assets/fonts/InstrumentSans-Regular.ttf?url';
 import PortfolioHeader from '../components/homepage/PortfolioHeader.astro';
 
 interface Props {
@@ -46,7 +46,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}
     <meta name="theme-color" content={themeColor} />
-    <link rel="preload" href={aleoURL} as="font" type="font/ttf" crossorigin="anonymous" />
+    <link rel="preload" href={instrumentSansURL} as="font" type="font/ttf" crossorigin="anonymous" />
     <link rel="icon" type="image/svg+xml" href={faviconURL} />
     <link rel="canonical" href={canonicalURL} />
     <title>{title}</title>
