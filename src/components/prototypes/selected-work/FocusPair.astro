@@ -1,0 +1,193 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import openBox from '../../../assets/art/Doodles-box-opening/box_frame7.png';
+import { sitePath } from '../../../config/site';
+import WorkMedia from '../../homepage/WorkMedia.astro';
+
+interface Props {
+  observatory: CollectionEntry<'software'>;
+  foodProduct: CollectionEntry<'software'>;
+  chineseBee: CollectionEntry<'software'>;
+}
+
+const { observatory, foodProduct, chineseBee } = Astro.props;
+const supporting = [
+  { name: 'SuperGood', label: 'Food-delivery product · 2024', href: '/case-studies/supergood/', slug: 'flutter-product', entry: foodProduct },
+  { name: 'Two Sticks', label: 'Telegram learning prototype · 2024', href: '/case-studies/two-sticks/', slug: 'chinese-bee', entry: chineseBee },
+];
+---
+
+<section class="focus-pair" aria-labelledby="focus-pair-title">
+  <header>
+    <div>
+      <p>Product design</p>
+      <h1 id="focus-pair-title">Selected work</h1>
+      <span>Three case studies I can present most clearly.</span>
+    </div>
+    <img src={openBox.src} alt="" width="150" height="150" />
+  </header>
+
+  <article class="focus-pair__feature">
+    <a class="focus-pair__media" href={sitePath('/case-studies/observatory/')} aria-label="Read the Observatory case study">
+      <WorkMedia slug="observatory" />
+    </a>
+    <div class="focus-pair__copy">
+      <p>Independent macOS product · 2026</p>
+      <h2><a href={sitePath('/case-studies/observatory/')}>Observatory</a></h2>
+      <span>{observatory.data.summary}</span>
+      <a class="focus-pair__link" href={sitePath('/case-studies/observatory/')}>Read the case study</a>
+    </div>
+  </article>
+
+  <div class="focus-pair__supporting">
+    {supporting.map((project) => (
+      <article>
+        <a class="focus-pair__media" href={sitePath(project.href)} aria-label={`Read the ${project.name} case study`}>
+          <WorkMedia slug={project.slug} />
+        </a>
+        <div class="focus-pair__copy">
+          <p>{project.label}</p>
+          <h2><a href={sitePath(project.href)}>{project.name}</a></h2>
+          <span>{project.entry.data.summary}</span>
+          <a class="focus-pair__link" href={sitePath(project.href)}>Case study</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .focus-pair {
+    width: min(100%, 76rem);
+    margin-inline: auto;
+    padding: clamp(4rem, 9vw, 8rem) clamp(1.25rem, 4vw, 3rem) 8rem;
+  }
+
+  header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    max-width: 48rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  header p,
+  header span {
+    margin: 0;
+    color: var(--color-muted);
+  }
+
+  header p {
+    font-family: var(--font-special);
+    font-size: 0.92rem;
+  }
+
+  h1 {
+    margin: 0.1rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.7rem);
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+  }
+
+  header span {
+    display: block;
+    margin-top: 0.45rem;
+    font-size: 0.95rem;
+  }
+
+  header img {
+    width: 7.5rem;
+    height: 7.5rem;
+    flex: 0 0 auto;
+    object-fit: contain;
+  }
+
+  .focus-pair__feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(15rem, 0.8fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .focus-pair__supporting {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 4rem);
+    width: min(100%, 48rem);
+    margin: clamp(4rem, 8vw, 7rem) 0 0 auto;
+  }
+
+  .focus-pair__supporting article {
+    min-width: 0;
+  }
+
+  .focus-pair__media {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .focus-pair__copy {
+    padding-top: 0.9rem;
+  }
+
+  .focus-pair__copy p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.74rem;
+  }
+
+  h2 {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.7rem, 3.2vw, 2.7rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .focus-pair__copy > span {
+    display: block;
+    margin-top: 0.75rem;
+    color: var(--color-copy);
+    line-height: 1.55;
+  }
+
+  .focus-pair__link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-ink);
+    font-size: 0.8rem;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.25rem;
+  }
+
+  @media (max-width: 48rem) {
+    header {
+      align-items: center;
+    }
+
+    header img {
+      width: 5rem;
+      height: 5rem;
+    }
+
+    .focus-pair__feature,
+    .focus-pair__supporting {
+      grid-template-columns: 1fr;
+    }
+
+    .focus-pair__supporting {
+      width: 100%;
+      margin-top: 3.5rem;
+    }
+  }
+</style>

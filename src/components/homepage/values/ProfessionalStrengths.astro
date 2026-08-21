@@ -1,0 +1,133 @@
+---
+import { professionalStrengths } from '../../../content/homepage/values';
+---
+
+<box-passage>
+<section id="values" class="professional-strengths" aria-labelledby="strengths-title" data-box-passage-section>
+  <header class="professional-strengths__heading" data-box-item data-box-text>
+    <p>In practice</p>
+    <h2 id="strengths-title">What I bring</h2>
+  </header>
+
+  <ul class="professional-strengths__list">
+    {professionalStrengths.map((strength) => (
+      <li id={strength.id === 'experience' ? 'value-experience' : undefined} data-box-item data-box-text>
+        <h3>{strength.title}</h3>
+        <p>{strength.description}</p>
+      </li>
+    ))}
+  </ul>
+
+</section>
+</box-passage>
+
+<script>
+  import '../opening/box-passage';
+</script>
+
+<style>
+  box-passage {
+    display: block;
+  }
+
+  .professional-strengths {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 88rem);
+    margin-inline: auto;
+    padding: clamp(6rem, 12svh, 9rem) clamp(1.5rem, 5vw, 4.5rem) clamp(8rem, 16svh, 12rem);
+  }
+
+  .professional-strengths__heading {
+    display: grid;
+    width: 100%;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 0.35rem 1rem;
+    margin: 0 0 clamp(2rem, 4svh, 3rem);
+  }
+
+  .professional-strengths__heading p {
+    margin: 0;
+    color: var(--color-muted);
+    font-family: var(--font-special);
+    font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+    rotate: -1.5deg;
+  }
+
+  .professional-strengths__heading h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.15rem, 4.5vw, 4rem);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .professional-strengths__list {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 4.5rem) clamp(3rem, 8vw, 8rem);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .professional-strengths__list > li {
+    min-width: 0;
+    max-width: 34rem;
+    padding-top: 1.1rem;
+    border-top: 0.08rem dotted color-mix(in srgb, var(--color-muted) 42%, transparent);
+  }
+
+  .professional-strengths__list > li:nth-child(even) {
+    justify-self: end;
+  }
+
+  .professional-strengths h3 {
+    margin: 0;
+    font-family: var(--font-editorial);
+    font-size: clamp(1.25rem, 2vw, 1.7rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.08;
+  }
+
+  .professional-strengths__list p {
+    max-width: 35rem;
+    margin: 0.65rem 0 0;
+    color: var(--color-copy);
+    font-size: clamp(0.9rem, 0.16vw + 0.86rem, 0.98rem);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 68rem) and (min-width: 50.001rem) {
+    .professional-strengths__list {
+      column-gap: 3rem;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .professional-strengths {
+      padding: 4.5rem 1.25rem 6rem;
+    }
+
+    .professional-strengths__heading {
+      width: 100%;
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+
+    .professional-strengths__heading h2 {
+      font-size: clamp(2.1rem, 11vw, 3.25rem);
+    }
+
+    .professional-strengths__list {
+      width: 100%;
+      grid-template-columns: 1fr;
+    }
+
+  }
+</style>

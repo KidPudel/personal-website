@@ -1,0 +1,315 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+import discoursesPreview from '../../../assets/games/discourses/discourses-teaser.webp';
+import santaPreview from '../../../assets/games/santa/city.png';
+import { publicLinks } from '../../../config/site';
+import { selectedXPosts } from '../../../content/homepage/side-work';
+
+interface Props {
+  discourses: CollectionEntry<'games'>;
+  santa: CollectionEntry<'games'>;
+}
+
+const { discourses, santa } = Astro.props;
+const xPost = selectedXPosts[0];
+---
+
+<box-passage>
+<section id="side-work" class="side-work" aria-labelledby="side-work-title" data-box-passage-section>
+  <header class="side-work__heading" data-box-item data-box-text>
+    <p>On the side</p>
+    <h2 id="side-work-title">Things I make because I’m curious.</h2>
+  </header>
+
+  <div class="side-work__collection">
+    <article
+      class="side-piece side-piece--discourses"
+      data-box-item
+      data-box-source-scale="0.42"
+      data-box-stack-scale="0.5"
+    >
+      <a class="side-piece__visual" href={discourses.data.externalUrl}>
+        <Image
+          src={discoursesPreview}
+          alt="Discourses by Campfire in a snowy mountain forest"
+          widths={[560, 840, 1120]}
+          sizes="(max-width: 800px) 92vw, 46vw"
+          format="webp"
+          loading="lazy"
+        />
+      </a>
+      <div class="side-piece__copy" data-box-copy>
+        <p>Complete game · Godot</p>
+        <h3>{discourses.data.title}</h3>
+      </div>
+    </article>
+
+    <article class="side-piece side-piece--x" data-box-item data-box-text>
+      <div class="side-piece__copy" data-box-copy>
+        <p>{xPost.label} · X</p>
+        <blockquote>{xPost.text}</blockquote>
+        <div class="side-piece__links">
+          <a href={xPost.href}>See the motion</a>
+        </div>
+      </div>
+    </article>
+
+    <article
+      class="side-piece side-piece--santa"
+      data-box-item
+      data-box-source-scale="0.56"
+      data-box-stack-scale="0.64"
+    >
+      <a class="side-piece__visual" href={santa.data.externalUrl}>
+        <Image
+          src={santaPreview}
+          alt="Pixel-art city from Santa Foundation"
+          widths={[480, 720, 960]}
+          sizes="(max-width: 800px) 92vw, 32vw"
+          format="webp"
+          loading="lazy"
+        />
+      </a>
+      <div class="side-piece__copy" data-box-copy>
+        <p>{santa.data.jam} · Godot</p>
+        <h3>{santa.data.title}</h3>
+      </div>
+    </article>
+  </div>
+</section>
+</box-passage>
+
+<script>
+  import '../opening/box-passage';
+</script>
+
+<style>
+  box-passage {
+    display: block;
+  }
+
+  .side-work {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 88rem);
+    margin-inline: auto;
+    padding: clamp(6rem, 12svh, 9rem) clamp(1.5rem, 5vw, 4.5rem) clamp(7rem, 14svh, 10rem);
+  }
+
+  .side-work__heading {
+    display: grid;
+    width: min(100%, 46rem);
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 0.4rem 1rem;
+    margin: 0 0 clamp(3rem, 7svh, 5rem);
+  }
+
+  .side-work__heading p {
+    margin: 0;
+    color: var(--color-muted);
+    font-family: var(--font-special);
+    font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+    rotate: 1.8deg;
+  }
+
+  .side-work__heading h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.6rem);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  .side-work__collection {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0, 1.55fr) minmax(13rem, 0.75fr) minmax(0, 0.8fr);
+    gap: clamp(1.25rem, 2.6vw, 2.25rem);
+    align-items: start;
+  }
+
+  .side-piece {
+    position: relative;
+    min-width: 0;
+  }
+
+  .side-piece--discourses {
+    grid-column: 1;
+  }
+
+  .side-piece--x {
+    grid-column: 2;
+    padding: clamp(0.5rem, 1.5vw, 1rem) 0 0;
+  }
+
+  .side-piece--santa {
+    grid-column: 3;
+    margin-top: clamp(1.25rem, 4vw, 3.5rem);
+    rotate: -0.7deg;
+  }
+
+  .side-piece__visual {
+    display: block;
+    padding: 0.48rem;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: 0 0.35rem 1.25rem rgb(17 17 15 / 0.08);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 160ms var(--ease-out);
+  }
+
+  .side-piece__visual:active {
+    transform: scale(0.98);
+  }
+
+  .side-piece__visual :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.62rem;
+  }
+
+  .side-piece__copy {
+    padding: 0.95rem 0.35rem 0;
+  }
+
+  .side-piece--x .side-piece__copy {
+    padding: 0;
+  }
+
+  .side-piece__copy > p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+  }
+
+  .side-piece h3 {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .side-piece blockquote {
+    display: block;
+    margin: 0.7rem 0 0;
+    color: var(--color-copy);
+    font-size: clamp(0.88rem, 0.15vw + 0.84rem, 0.96rem);
+    line-height: 1.55;
+  }
+
+  .side-piece blockquote {
+    font-family: var(--font-editorial);
+    font-size: clamp(1rem, 0.4vw + 0.9rem, 1.2rem);
+  }
+
+  .side-piece__copy > a,
+  .side-piece__links a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-ink);
+    font-size: 0.82rem;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.25rem;
+  }
+
+  .side-piece__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1rem;
+    margin-top: 0.4rem;
+  }
+
+  .side-piece :is(a):focus-visible {
+    border-radius: 0.2rem;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .side-piece__visual:hover {
+      transform: translateY(-0.16rem);
+    }
+
+    .side-piece a:hover {
+      color: var(--color-accent);
+    }
+  }
+
+  @media (max-width: 68rem) and (min-width: 50.001rem) {
+    .side-work__collection {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .side-piece--discourses,
+    .side-piece--x,
+    .side-piece--santa {
+      width: 100%;
+    }
+
+    .side-piece--discourses {
+      grid-column: 1 / -1;
+    }
+
+    .side-piece--x {
+      grid-column: 1;
+    }
+
+    .side-piece--santa {
+      grid-column: 2;
+    }
+
+    .side-piece--santa {
+      margin-top: 0;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .side-work {
+      padding: 4.5rem 1rem 3.5rem;
+    }
+
+    .side-work__heading {
+      width: 100%;
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+      padding-inline: 0.35rem;
+      margin-bottom: 2rem;
+    }
+
+    .side-work__heading h2 {
+      font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .side-work__collection {
+      width: 100%;
+      grid-template-columns: 1fr;
+      gap: 1.7rem;
+    }
+
+    .side-piece--discourses,
+    .side-piece--x,
+    .side-piece--santa {
+      grid-column: 1;
+      width: min(100%, 30rem);
+      margin: 0 auto;
+    }
+
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .side-piece__visual {
+      transition: none;
+    }
+  }
+</style>

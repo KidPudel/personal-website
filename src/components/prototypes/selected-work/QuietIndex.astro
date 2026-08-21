@@ -1,0 +1,164 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import openBox from '../../../assets/art/Doodles-box-opening/box_frame7.png';
+import { sitePath } from '../../../config/site';
+import WorkMedia from '../../homepage/WorkMedia.astro';
+
+interface Props {
+  observatory: CollectionEntry<'software'>;
+  foodProduct: CollectionEntry<'software'>;
+  chineseBee: CollectionEntry<'software'>;
+}
+
+const { observatory, foodProduct, chineseBee } = Astro.props;
+const projects = [
+  { name: 'Observatory', label: 'Independent macOS product · 2026', href: '/case-studies/observatory/', slug: 'observatory', entry: observatory },
+  { name: 'SuperGood', label: 'Food-delivery product · 2024', href: '/case-studies/supergood/', slug: 'flutter-product', entry: foodProduct },
+  { name: 'Two Sticks', label: 'Telegram learning prototype · 2024', href: '/case-studies/two-sticks/', slug: 'chinese-bee', entry: chineseBee },
+];
+---
+
+<section class="quiet-index" aria-labelledby="quiet-index-title">
+  <header>
+    <p>Product design</p>
+    <h1 id="quiet-index-title">Selected work</h1>
+    <span>Three case studies I can present most clearly.</span>
+  </header>
+
+  <img class="quiet-index__box" src={openBox.src} alt="" width="150" height="150" />
+
+  <div class="quiet-index__list">
+    {projects.map((project) => (
+      <article>
+        <a class="quiet-index__media" href={sitePath(project.href)} aria-label={`Read the ${project.name} case study`}>
+          <WorkMedia slug={project.slug} />
+        </a>
+        <div class="quiet-index__copy">
+          <p>{project.label}</p>
+          <h2><a href={sitePath(project.href)}>{project.name}</a></h2>
+          <span>{project.entry.data.summary}</span>
+          <a class="quiet-index__link" href={sitePath(project.href)}>Read the case study</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .quiet-index {
+    width: min(100%, 70rem);
+    margin-inline: auto;
+    padding: clamp(4rem, 9vw, 8rem) clamp(1.25rem, 4vw, 3rem) 8rem;
+  }
+
+  header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: 0.2rem 0.9rem;
+    width: min(100%, 40rem);
+  }
+
+  header p,
+  header span {
+    margin: 0;
+    color: var(--color-muted);
+  }
+
+  header p {
+    font-family: var(--font-special);
+    font-size: 0.92rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 6vw, 4.7rem);
+    letter-spacing: -0.055em;
+    line-height: 0.95;
+  }
+
+  header span {
+    grid-column: 2;
+    font-size: 0.95rem;
+  }
+
+  .quiet-index__box {
+    display: block;
+    width: 8rem;
+    height: 8rem;
+    margin: 2rem auto 1rem;
+    object-fit: contain;
+  }
+
+  .quiet-index__list {
+    border-top: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: minmax(15rem, 0.85fr) minmax(16rem, 1fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+    padding-block: clamp(2.5rem, 6vw, 5rem);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  }
+
+  .quiet-index__media {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .quiet-index__copy > p {
+    margin: 0;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+  }
+
+  h2 {
+    margin: 0.25rem 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .quiet-index__copy > span {
+    display: block;
+    max-width: 38rem;
+    margin-top: 0.8rem;
+    color: var(--color-copy);
+    line-height: 1.55;
+  }
+
+  .quiet-index__link {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: var(--color-ink);
+    font-size: 0.82rem;
+    text-decoration-style: dotted;
+    text-underline-offset: 0.25rem;
+  }
+
+  @media (max-width: 42rem) {
+    header {
+      grid-template-columns: 1fr;
+    }
+
+    header span {
+      grid-column: 1;
+    }
+
+    article {
+      grid-template-columns: 1fr;
+      gap: 1.4rem;
+    }
+  }
+</style>
