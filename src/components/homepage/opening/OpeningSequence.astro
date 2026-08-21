@@ -10,8 +10,6 @@ import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
 import skyPoster from '../../../assets/art/dithered-sky-poster.webp';
 import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
-import { connectLinks } from '../../../config/site';
-import { openingMotion } from './opening-motion';
 
 const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
 const optimizedFrames = await Promise.all(
@@ -35,13 +33,8 @@ const optimizedFrames = await Promise.all(
   media="(max-width: 44.999rem) and (prefers-reduced-motion: no-preference)"
 />
 
-<opening-sequence
-  class="opening-sequence"
-  data-frame-count={optimizedFrames.length}
-  style={`--opening-scroll-height: ${openingMotion.scrollHeightVh}svh; --box-fall-distance: ${openingMotion.boxFallDistanceVh}vh; --box-support-distance: ${openingMotion.boxSupportDistanceVh}vh; --box-support-scale-loss: ${openingMotion.boxSupportScaleLoss}`}
->
-  <value-story class="opening-sequence__stage">
-    <div class="opening-sequence__scene">
+<opening-sequence class="opening-sequence">
+  <div class="opening-sequence__scene">
       <div class="opening-sequence__sky" aria-hidden="true">
         <img
           class="opening-sequence__sky-poster"
@@ -67,192 +60,81 @@ const optimizedFrames = await Promise.all(
           disableRemotePlayback
           tabindex="-1"
         ></video>
-        <script is:inline>
-          (() => {
-            const script = document.currentScript;
-            const video = script?.previousElementSibling;
-            if (
-              !(video instanceof HTMLVideoElement) ||
-              window.matchMedia('(prefers-reduced-motion: reduce)').matches
-            ) {
-              return;
-            }
-
-            const source = window.matchMedia('(max-width: 44.999rem)').matches
-              ? video.dataset.mobileSrc
-              : video.dataset.src;
-            if (!source) return;
-
-            video.muted = true;
-            video.src = source;
-            video.load();
-            void video.play().then(
-              () => video.removeAttribute('data-autoplay-blocked'),
-              () => video.setAttribute('data-autoplay-blocked', ''),
-            );
-          })();
-        </script>
       </div>
 
-      <div class="opening-sequence__box" aria-hidden="true" data-opening-art>
-        <div class="opening-sequence__motion">
-          {optimizedFrames.map((frame, index) => (
-            <img
-              class="opening-sequence__frame"
-              src={index === 0 ? frame.src : undefined}
-              data-src={frame.src}
-              alt=""
-              width="1024"
-              height="1024"
-              loading={index === 0 ? 'eager' : 'lazy'}
-              fetchpriority={index === 0 ? 'high' : 'low'}
-              decoding="async"
-              hidden={index !== 0}
-              data-opening-frame
-              data-active={index === 0 ? '' : undefined}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div class="opening-sequence__scroll-hint" data-opening-scroll-hint aria-hidden="true">
-        <div class="opening-sequence__scroll-hint-card" data-opening-scroll-hint-card>
-          <span class="opening-sequence__scroll-hint-phrase" data-opening-scroll-hint-phrase>
-            {openingMotion.scrollHintPhrases[0]}
-          </span>
-          <nav
-            class="opening-sequence__scroll-hint-contact"
-            data-opening-scroll-hint-contact
-            hidden
-            aria-label="Let’s talk"
-          >
-            {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
-          </nav>
-        </div>
-      </div>
-
-      <a class="opening-sequence__skip" href="#values">Skip opening</a>
-
-      <div class="opening-sequence__copy" data-opening-reveal>
-        <slot />
-      </div>
+    <div class="opening-sequence__box" aria-hidden="true" data-opening-art>
+      {optimizedFrames.map((frame, index) => (
+        <img
+          class="opening-sequence__frame"
+          src={index === 0 ? frame.src : undefined}
+          data-src={frame.src}
+          alt=""
+          width="1024"
+          height="1024"
+          loading={index === 0 ? 'eager' : 'lazy'}
+          fetchpriority={index === 0 ? 'high' : 'low'}
+          decoding="async"
+          hidden={index !== 0}
+          data-opening-frame
+          data-active={index === 0 ? '' : undefined}
+        />
+      ))}
     </div>
-    <div class="opening-sequence__runway" data-opening-runway></div>
-    <div class="opening-sequence__journey">
-      <slot name="journey" />
-    </div>
-  </value-story>
+  </div>
 </opening-sequence>
 
 <script>
   import './opening-controller';
-  import '../values/value-voice';
 </script>
 
 <style>
   .opening-sequence {
-    --hello-opacity: 1;
-    --title-opacity: 1;
-    --summary-opacity: 1;
-    --premise-opacity: 1;
-    --identity-hold: 1;
-    --identity-reveal: 1;
-    --identity-opacity: 1;
-    --art-opacity: 0;
-    --box-fall: 0;
-    --box-support: 0;
-    --box-fall-distance: 32vh;
-    --box-support-distance: 0vh;
-    --box-support-scale-loss: 0.22;
-    --sky-opacity: 0;
     position: relative;
     display: block;
     background: var(--color-field);
   }
 
   .opening-sequence__box,
-  .opening-sequence__sky,
-  .opening-sequence__scroll-hint,
-  .opening-sequence__skip {
+  .opening-sequence__sky {
     display: none;
   }
 
-  .opening-sequence__stage {
+  .opening-sequence__scene {
     position: relative;
-    z-index: 3;
     display: block;
   }
 
-  .opening-sequence__runway {
-    height: 0;
-    pointer-events: none;
-  }
-
-  .opening-sequence__journey {
-    position: relative;
-    z-index: 2;
-  }
-
-  /* The journey is a long scroll runway above the sticky value voice. Its
-     interactive descendants opt in individually; the runway itself must not
-     swallow input intended for the word control below it. */
-  :global(.js) :global(value-story[data-enhanced]) .opening-sequence__journey {
-    pointer-events: none;
-  }
-
-  :global(.js) .opening-sequence {
-    --hello-opacity: 0;
-    --title-opacity: 0;
-    --summary-opacity: 0;
-    --premise-opacity: 0;
-    --identity-hold: 0;
-    --identity-reveal: 0;
-    --identity-opacity: 0;
-    --art-opacity: 1;
-    --box-fall: 0;
-    --box-support: 0;
-  }
-
-  :global(.js) .opening-sequence__stage {
+  :global(.js:not(.opening-bypassed)) .opening-sequence__sky,
+  :global(.js:not(.opening-bypassed)) .opening-sequence__box {
+    position: fixed;
+    inset: 0;
     display: block;
-  }
-
-  :global(.js) .opening-sequence__runway {
-    height: var(--opening-scroll-height, 300svh);
-  }
-
-  :global(.js) .opening-sequence__scene {
-    position: sticky;
-    top: 0;
-    display: grid;
-    height: 100svh;
-    margin-bottom: -100svh;
-    overflow: visible;
-    pointer-events: none;
-  }
-
-  :global(.js) .opening-sequence__copy {
-    grid-area: 1 / 1;
-    z-index: 4;
-    align-self: start;
-    width: 100%;
-    min-width: 0;
-    opacity: var(--identity-hold, 1);
+    overflow: hidden;
+    overflow: clip;
     pointer-events: none;
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
-    position: relative;
-    z-index: 0;
-    grid-area: 1 / 1;
-    display: block;
-    overflow: hidden;
-    opacity: var(--sky-opacity, 0);
-    pointer-events: none;
+    z-index: 100;
+    opacity: 0.5;
   }
 
-  :global(.js:not(.opening-bypassed)) .opening-sequence[data-sky-fading] .opening-sequence__sky {
-    will-change: opacity;
+  :global(.js:not(.opening-bypassed)) .opening-sequence__box {
+    z-index: 101;
+    container-type: size;
+    opacity: 1;
+  }
+
+  :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__sky,
+  :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__box {
+    will-change: transform, opacity;
+  }
+
+  :global(.js.opening-bypassed) .opening-sequence__sky,
+  :global(.js.opening-bypassed) .opening-sequence__box,
+  .opening-sequence[data-complete] .opening-sequence__sky,
+  .opening-sequence[data-complete] .opening-sequence__box {
+    display: none;
   }
 
   .opening-sequence__sky-poster,
@@ -278,113 +160,6 @@ const optimizedFrames = await Promise.all(
     -webkit-appearance: none;
   }
 
-  :global(.js) .opening-sequence__box {
-    display: block;
-    position: relative;
-    grid-area: 1 / 1;
-    z-index: 1;
-    overflow: hidden;
-    overflow: clip;
-    container-type: size;
-    opacity: var(--art-opacity);
-    pointer-events: auto;
-    touch-action: pan-y;
-  }
-
-  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__box {
-    will-change: opacity;
-  }
-
-  :global(.js) .opening-sequence[data-box-settling] .opening-sequence__motion {
-    will-change: transform;
-  }
-
-  :global(.js) .opening-sequence[data-complete] .opening-sequence__box {
-    pointer-events: none;
-  }
-
-  :global(.js) .opening-sequence[data-identity-held] .opening-sequence__copy :global(identity-introduction) {
-    pointer-events: auto;
-  }
-
-  :global(.js) .opening-sequence[data-intro-left] .opening-sequence__copy :global(.identity__intro) {
-    pointer-events: none;
-  }
-
-  :global(.js) .opening-sequence[data-intro-exiting] .opening-sequence__copy :global(.identity__intro) {
-    will-change: transform, opacity;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence {
-    --hello-opacity: 1;
-    --title-opacity: 1;
-    --summary-opacity: 1;
-    --premise-opacity: 1;
-    --identity-hold: 1;
-    --identity-opacity: 1;
-    --art-opacity: 0;
-    --box-fall: 0;
-    --box-support: 0;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__scene {
-    display: block;
-    position: static;
-    height: auto;
-    margin: 0;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__stage {
-    display: block;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__copy {
-    position: static;
-    z-index: 4;
-    grid-area: auto;
-    align-self: auto;
-    width: 100%;
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__runway {
-    height: 0;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__scroll-hint,
-  :global(.js.opening-bypassed) .opening-sequence__box,
-  :global(.js.opening-bypassed) .opening-sequence__skip {
-    display: none;
-  }
-
-  :global(.js:not(.opening-bypassed)) .opening-sequence__copy:not([data-visible]) {
-    content-visibility: hidden;
-    pointer-events: none;
-  }
-
-  .opening-sequence__motion {
-    position: absolute;
-    inset: 0;
-    transform: translate3d(
-        0,
-        calc(
-          var(--box-fall, 0) * var(--box-fall-distance, 32vh) +
-          var(--box-support, 0) * var(--box-support-distance, 0vh) +
-          var(--box-after-values-y, 0px) +
-          var(--box-closing-y, 0px)
-        ),
-        0
-      )
-      scale(
-        calc(
-          1 - var(--box-fall, 0) * 0.28 -
-          var(--box-support, 0) * var(--box-support-scale-loss, 0.22)
-        )
-      );
-    transform-origin: 50% 58%;
-  }
-
   .opening-sequence__frame {
     /* 1024 crops of the original 2048 canvases, placed back on that layout. */
     --cover: max(100cqw, 100cqh);
@@ -400,267 +175,15 @@ const optimizedFrames = await Promise.all(
 
   .opening-sequence__frame[data-active] {
     display: block;
-    transition: transform 160ms var(--ease-out);
-  }
-
-  .opening-sequence[data-portrait-over-box] .opening-sequence__frame[data-active] {
-    transform: scale(0.97);
-    transform-origin: center;
   }
 
   .opening-sequence__frame[hidden] {
     display: none;
   }
 
-  :global(.js) .opening-sequence[data-opening-live] .opening-sequence__motion {
-    will-change: transform;
-  }
-
-  :global(.js) .opening-sequence__scroll-hint {
-    position: relative;
-    z-index: 5;
-    grid-area: 1 / 1;
-    display: block;
-    pointer-events: none;
-  }
-
-  .opening-sequence__scroll-hint-card {
-    position: absolute;
-    top: var(--hint-y, 50%);
-    left: var(--hint-x, 50%);
-    display: grid;
-    justify-items: center;
-    gap: 0.9rem;
-    margin: 0;
-    color: var(--color-ink);
-    opacity: 0;
-    text-align: center;
-    transform: translate(-50%, -50%) rotate(-8deg);
-    user-select: none;
-  }
-
-  .opening-sequence__scroll-hint-phrase {
-    margin: 0;
-    font-family: var(--font-special);
-    font-size: clamp(1.02rem, 1.6vw, 1.28rem);
-    font-weight: 400;
-    letter-spacing: 0.02em;
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  .opening-sequence__scroll-hint-contact {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: min(34rem, calc(100vw - 2rem));
-    gap: 0.15rem clamp(0.85rem, 2vw, 1.45rem);
-    padding: 0;
-    font-family: var(--font-reading);
-    font-size: clamp(0.88rem, 0.18vw + 0.84rem, 0.98rem);
-    letter-spacing: 0.01em;
-  }
-
-  .opening-sequence__scroll-hint-contact[hidden] {
-    display: none !important;
-  }
-
-  .opening-sequence__scroll-hint-contact a {
-    --contact-link-y: 0rem;
-    --contact-link-rotation: 0deg;
-    display: inline-flex;
-    min-height: 2.75rem;
-    align-items: center;
-    padding: 0.35rem 0.08rem 0.2rem;
-    color: inherit;
-    line-height: 1.2;
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: color-mix(in srgb, var(--color-muted) 58%, transparent);
-    text-decoration-thickness: 0.08rem;
-    text-underline-offset: 0.28rem;
-    transform: translateY(var(--contact-link-y)) rotate(var(--contact-link-rotation));
-    transition:
-      color 150ms ease,
-      text-decoration-color 150ms ease,
-      transform 160ms var(--ease-out);
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .opening-sequence__scroll-hint-contact a:nth-child(1) {
-    --contact-link-y: 0.16rem;
-    --contact-link-rotation: -1.2deg;
-  }
-
-  .opening-sequence__scroll-hint-contact a:nth-child(2) {
-    --contact-link-y: -0.16rem;
-    --contact-link-rotation: 0.8deg;
-  }
-
-  .opening-sequence__scroll-hint-contact a:nth-child(3) {
-    --contact-link-y: 0.22rem;
-    --contact-link-rotation: -0.7deg;
-  }
-
-  .opening-sequence__scroll-hint-contact a:nth-child(4) {
-    --contact-link-y: -0.08rem;
-    --contact-link-rotation: 1.1deg;
-  }
-
-  .opening-sequence__scroll-hint-contact a:nth-child(5) {
-    --contact-link-y: 0.14rem;
-    --contact-link-rotation: -0.8deg;
-  }
-
-  .opening-sequence__scroll-hint-contact a:nth-child(6) {
-    --contact-link-y: -0.12rem;
-    --contact-link-rotation: 0.7deg;
-  }
-
-  .opening-sequence__scroll-hint-contact a:hover,
-  .opening-sequence__scroll-hint-contact a:focus-visible {
-    color: var(--color-ink);
-    text-decoration-color: color-mix(in srgb, var(--color-ink) 78%, transparent);
-    transform: translateY(calc(var(--contact-link-y) - 0.12rem)) rotate(var(--contact-link-rotation));
-  }
-
-  .opening-sequence[data-scroll-hint='note'] .opening-sequence__scroll-hint-card {
-    animation: opening-scroll-hint 2.4s ease both;
-  }
-
-  .opening-sequence[data-scroll-hint='hire'] .opening-sequence__scroll-hint-card {
-    top: clamp(2.25rem, 10vh, 5.5rem);
-    left: 50%;
-    pointer-events: auto;
-    animation: opening-scroll-hint-in 0.45s ease both;
-  }
-
-  .opening-sequence[data-scroll-hint='hire'] .opening-sequence__scroll-hint-phrase {
-    font-size: clamp(1.28rem, 2.8vw, 1.8rem);
-  }
-
-  @keyframes opening-scroll-hint {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, calc(-50% + 0.4rem)) rotate(-12deg);
-    }
-
-    12% {
-      opacity: 1;
-      transform: translate(-50%, -50%) rotate(-8deg);
-    }
-
-    46% {
-      opacity: 1;
-      transform: translate(-50%, -50%) rotate(-8deg);
-    }
-
-    100% {
-      opacity: 0;
-      transform: translate(-50%, calc(-50% - 0.12rem)) rotate(-6deg);
-    }
-  }
-
-  @keyframes opening-scroll-hint-in {
-    from {
-      opacity: 0;
-      transform: translate(-50%, 0.5rem) rotate(-12deg);
-    }
-
-    to {
-      opacity: 1;
-      transform: translate(-50%, 0) rotate(-6deg);
-    }
-  }
-
-  @media (max-width: 44rem) {
-    .opening-sequence__scroll-hint-contact {
-      display: grid;
-      width: min(19rem, calc(100vw - 2rem));
-      max-width: none;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.1rem 1.25rem;
-    }
-
-    .opening-sequence__scroll-hint-contact a:nth-child(odd) {
-      justify-self: end;
-      text-align: right;
-    }
-
-    .opening-sequence__scroll-hint-contact a:nth-child(even) {
-      justify-self: start;
-      text-align: left;
-    }
-  }
-
-  :global(.js) .opening-sequence__skip {
-    position: absolute;
-    z-index: 6;
-    right: 1rem;
-    top: 1rem;
-    display: block;
-    padding: 0.65rem 0.8rem;
-    background: var(--color-ink);
-    color: var(--color-field);
-    font-family: var(--font-reading);
-    font-size: 0.68rem;
-    opacity: 0;
-    pointer-events: none;
-    text-underline-offset: 0.2rem;
-  }
-
-  :global(.js) .opening-sequence__skip:focus-visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    .opening-sequence[data-portrait-over-box] .opening-sequence__frame[data-active] {
-      transform: none;
-      transition: none;
-    }
-
-    :global(.js) .opening-sequence {
-      --hello-opacity: 1;
-      --title-opacity: 1;
-      --summary-opacity: 1;
-      --premise-opacity: 1;
-      --identity-hold: 1;
-      --identity-reveal: 1;
-      --identity-opacity: 1;
-      --art-opacity: 0;
-      --box-fall: 0;
-      --box-support: 0;
-    }
-
-    :global(.js) .opening-sequence__stage {
-      display: block;
-    }
-
-    :global(.js) .opening-sequence__runway {
-      height: 0;
-    }
-
-    :global(.js) .opening-sequence__scene {
-      display: block;
-      position: static;
-      height: auto;
-      margin: 0;
-    }
-
-    :global(.js) .opening-sequence__copy {
-      position: static;
-      grid-area: auto;
-      align-self: auto;
-      width: 100%;
-      pointer-events: auto;
-    }
-
     :global(.js) .opening-sequence__box,
-    :global(.js) .opening-sequence__sky,
-    :global(.js) .opening-sequence__scroll-hint {
+    :global(.js) .opening-sequence__sky {
       display: none;
     }
   }

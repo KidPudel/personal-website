@@ -1,12 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 
-import realPortrait from '../../../assets/art/avatar_irl.png';
 import joyfulCircle from '../../../assets/art/elements/circled.png';
 import { sitePath } from '../../../config/site';
 import { identity } from '../../../content/homepage/identity';
-import PortfolioHeader from '../PortfolioHeader.astro';
-import ValueVoice from '../values/ValueVoice.astro';
 import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
 ---
@@ -53,302 +50,11 @@ import PlayfulWord from './PlayfulWord.astro';
             />{identity.engineering.conclusion}
           </span>
         </h1>
-        <PortfolioHeader current="home" placement="intro" contactId="intro-contact" />
       </div>
-      <ValueVoice />
     </div>
-    <figure id="identity-portrait" class="identity__portrait" aria-hidden="true">
-      <Image
-        src={realPortrait}
-        alt="Igor smiling in a cap and orange life jacket while sitting in a boat"
-        width={480}
-        loading="lazy"
-        format="webp"
-        draggable="false"
-      />
-    </figure>
   </section>
 </identity-introduction>
 
-<script>
-  const portraitDragMotion = {
-    startThresholdPx: 4,
-    dragScale: 1.03,
-    boxReadyScale: 0.94,
-    eatenScale: 0.18,
-    settleDurationMs: 280,
-    reducedExitDurationMs: 120,
-  } as const;
-
-  class IdentityIntroduction extends HTMLElement {
-    private abort?: AbortController;
-    private trigger?: HTMLButtonElement;
-    private portrait?: HTMLElement;
-    private settleTimer = 0;
-    private drag?: {
-      pointerId: number;
-      startX: number;
-      startY: number;
-      originCenterX: number;
-      originCenterY: number;
-      moved: boolean;
-    };
-
-    connectedCallback() {
-      if (this.dataset.enhanced) return;
-
-      this.abort = new AbortController();
-      this.trigger =
-        this.querySelector<HTMLButtonElement>('[data-identity-portrait-trigger]') ?? undefined;
-      this.portrait = this.querySelector<HTMLElement>('#identity-portrait') ?? undefined;
-      if (!this.trigger || !this.portrait) return;
-
-      this.dataset.enhanced = 'true';
-      this.trigger.hidden = false;
-      const { signal } = this.abort;
-      this.trigger.addEventListener('click', this.togglePortrait, { signal });
-      this.portrait.addEventListener('pointerdown', this.handlePointerDown, { signal });
-      this.portrait.addEventListener('lostpointercapture', this.handlePointerCancel, { signal });
-      window.addEventListener('pointermove', this.handlePointerMove, { signal });
-      window.addEventListener('pointerup', this.handlePointerUp, { signal });
-      window.addEventListener('pointercancel', this.handlePointerCancel, { signal });
-    }
-
-    disconnectedCallback() {
-      this.resetPortraitMotion();
-      this.abort?.abort();
-      delete this.dataset.enhanced;
-    }
-
-    private togglePortrait = () => {
-      if (!this.trigger || !this.portrait) return;
-
-      const willShow = !this.hasAttribute('data-portrait-visible');
-      this.resetPortraitMotion();
-      this.setPortraitVisible(willShow);
-    };
-
-    private setPortraitVisible(visible: boolean) {
-      if (!this.trigger || !this.portrait) return;
-
-      this.toggleAttribute('data-portrait-visible', visible);
-      this.portrait.setAttribute('aria-hidden', String(!visible));
-      this.trigger.setAttribute('aria-expanded', String(visible));
-      this.trigger.setAttribute(
-        'aria-label',
-        visible ? 'Hide the photo of Igor' : 'Show a photo of Igor',
-      );
-    }
-
-    private reducedMotion() {
-      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    }
-
-    private openingSequence() {
-      return this.closest<HTMLElement>('opening-sequence');
-    }
-
-    private activeBoxFrame() {
-      return this.openingSequence()?.querySelector<HTMLElement>(
-        '[data-opening-frame][data-active]',
-      );
-    }
-
-    private pointerIsOverBox(x: number, y: number) {
-      const frame = this.activeBoxFrame();
-      if (!frame) return false;
-
-      const bounds = frame.getBoundingClientRect();
-      const visible =
-        bounds.width > 0 &&
-        bounds.height > 0 &&
-        bounds.right > 0 &&
-        bounds.left < window.innerWidth &&
-        bounds.bottom > 0 &&
-        bounds.top < window.innerHeight;
-
-      return (
-        visible &&
-        x >= bounds.left &&
-        x <= bounds.right &&
-        y >= bounds.top &&
-        y <= bounds.bottom
-      );
-    }
-
-    private setBoxReady(ready: boolean) {
-      this.openingSequence()?.toggleAttribute(
-        'data-portrait-over-box',
-        ready && !this.reducedMotion(),
-      );
-    }
-
-    private dragTransform(x: number, y: number, scale: number) {
-      return `translate3d(${x.toFixed(2)}px, calc(var(--intro-exit-y, 0%) + ${y.toFixed(2)}px), 0) scale(${scale}) rotate(-2deg)`;
-    }
-
-    private restingTransform() {
-      return 'translate3d(0, var(--intro-exit-y, 0%), 0) scale(1) rotate(-2deg)';
-    }
-
-    private handlePointerDown = (event: PointerEvent) => {
-      if (
-        !event.isPrimary ||
-        event.button !== 0 ||
-        !this.portrait ||
-        this.drag ||
-        !this.hasAttribute('data-portrait-visible') ||
-        this.portrait.hasAttribute('data-eating')
-      ) {
-        return;
-      }
-
-      event.preventDefault();
-      window.clearTimeout(this.settleTimer);
-      this.settleTimer = 0;
-      this.portrait.removeAttribute('data-returning');
-      this.portrait.style.removeProperty('transform');
-      const bounds = this.portrait.getBoundingClientRect();
-      this.drag = {
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startY: event.clientY,
-        originCenterX: bounds.left + bounds.width / 2,
-        originCenterY: bounds.top + bounds.height / 2,
-        moved: false,
-      };
-      this.portrait.setPointerCapture(event.pointerId);
-      this.portrait.setAttribute('data-dragging', '');
-    };
-
-    private handlePointerMove = (event: PointerEvent) => {
-      if (!this.drag || event.pointerId !== this.drag.pointerId || !this.portrait) return;
-
-      const x = event.clientX - this.drag.startX;
-      const y = event.clientY - this.drag.startY;
-      if (!this.drag.moved && Math.hypot(x, y) < portraitDragMotion.startThresholdPx) return;
-
-      this.drag.moved = true;
-      const overBox = this.pointerIsOverBox(event.clientX, event.clientY);
-      const scale = overBox
-        ? portraitDragMotion.boxReadyScale
-        : portraitDragMotion.dragScale;
-      this.portrait.style.transform = this.dragTransform(x, y, scale);
-      this.setBoxReady(overBox);
-    };
-
-    private handlePointerUp = (event: PointerEvent) => {
-      if (!this.drag || event.pointerId !== this.drag.pointerId || !this.portrait) return;
-
-      const drag = this.drag;
-      const overBox = drag.moved && this.pointerIsOverBox(event.clientX, event.clientY);
-      this.finishPointerCapture(drag.pointerId);
-      if (overBox) {
-        this.eatPortrait(drag);
-      } else {
-        this.returnPortrait();
-      }
-    };
-
-    private handlePointerCancel = (event: PointerEvent) => {
-      if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-      const pointerId = this.drag.pointerId;
-      this.finishPointerCapture(pointerId);
-      this.returnPortrait();
-    };
-
-    private finishPointerCapture(pointerId: number) {
-      const portrait = this.portrait;
-      this.drag = undefined;
-      if (portrait?.hasPointerCapture(pointerId)) {
-        portrait.releasePointerCapture(pointerId);
-      }
-      portrait?.removeAttribute('data-dragging');
-      this.setBoxReady(false);
-    }
-
-    private returnPortrait() {
-      if (!this.portrait) return;
-
-      if (this.reducedMotion()) {
-        this.portrait.style.removeProperty('transform');
-        return;
-      }
-
-      this.portrait.setAttribute('data-returning', '');
-      void this.portrait.offsetWidth;
-      this.portrait.style.transform = this.restingTransform();
-      this.settleTimer = window.setTimeout(() => {
-        this.portrait?.removeAttribute('data-returning');
-        this.portrait?.style.removeProperty('transform');
-        this.settleTimer = 0;
-      }, portraitDragMotion.settleDurationMs);
-    }
-
-    private eatPortrait(drag: NonNullable<IdentityIntroduction['drag']>) {
-      if (!this.portrait) return;
-      const frame = this.activeBoxFrame();
-      if (!frame) {
-        this.returnPortrait();
-        return;
-      }
-
-      const frameBounds = frame.getBoundingClientRect();
-      const targetX = frameBounds.left + frameBounds.width / 2 - drag.originCenterX;
-      const targetY = frameBounds.top + frameBounds.height / 2 - drag.originCenterY;
-      const reduced = this.reducedMotion();
-      const duration = reduced
-        ? portraitDragMotion.reducedExitDurationMs
-        : portraitDragMotion.settleDurationMs;
-      this.portrait.setAttribute('data-eating', '');
-      void this.portrait.offsetWidth;
-
-      if (!reduced) {
-        this.portrait.style.transform = this.dragTransform(
-          targetX,
-          targetY,
-          portraitDragMotion.eatenScale,
-        );
-        frame.animate(
-          [
-            { transform: 'scale(1)' },
-            { transform: 'scale(0.96)' },
-            { transform: 'scale(1)' },
-          ],
-          {
-            duration: portraitDragMotion.settleDurationMs,
-            easing: 'cubic-bezier(0.77, 0, 0.175, 1)',
-          },
-        );
-      }
-      this.portrait.style.opacity = '0';
-
-      this.settleTimer = window.setTimeout(() => {
-        this.setPortraitVisible(false);
-        this.portrait?.removeAttribute('data-eating');
-        this.portrait?.style.removeProperty('opacity');
-        this.portrait?.style.removeProperty('transform');
-        this.settleTimer = 0;
-      }, duration);
-    }
-
-    private resetPortraitMotion() {
-      window.clearTimeout(this.settleTimer);
-      this.settleTimer = 0;
-      if (this.drag) this.finishPointerCapture(this.drag.pointerId);
-      this.portrait?.removeAttribute('data-dragging');
-      this.portrait?.removeAttribute('data-returning');
-      this.portrait?.removeAttribute('data-eating');
-      this.portrait?.style.removeProperty('opacity');
-      this.portrait?.style.removeProperty('transform');
-      this.openingSequence()?.removeAttribute('data-portrait-over-box');
-    }
-  }
-
-  if (!customElements.get('identity-introduction')) {
-    customElements.define('identity-introduction', IdentityIntroduction);
-  }
-</script>
 
 <style>
   .identity-shell {
@@ -362,10 +68,10 @@ import PlayfulWord from './PlayfulWord.astro';
     display: grid;
     min-height: 0;
     grid-template-columns: min(36rem, 100%);
-    justify-content: center;
+    justify-content: start;
     align-content: start;
     align-items: start;
-    padding: clamp(2.75rem, 4.6vh, 3.6rem) clamp(1.25rem, 6vw, 6rem) 0.75rem;
+    padding: clamp(7rem, 18vh, 11rem) var(--page-gutter) 0.75rem;
     overflow: visible;
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
@@ -379,77 +85,8 @@ import PlayfulWord from './PlayfulWord.astro';
 
   .identity__intro {
     overflow: visible;
-    transform: translate3d(0, var(--intro-exit-y, 0%), 0);
-    transform-origin: center top;
   }
 
-  :global(.js:not(.opening-bypassed) opening-sequence[data-intro-left] .identity__intro) {
-    visibility: hidden;
-  }
-
-  :global(.js:not(.opening-bypassed) opening-sequence[data-intro-left] .identity__portrait) {
-    display: none;
-  }
-
-  .identity__portrait {
-    position: absolute;
-    z-index: 1;
-    top: clamp(1.25rem, 2.8svh, 1.75rem);
-    bottom: auto;
-    left: calc(50% + clamp(1.25rem, 5vw, 5.25rem));
-    width: clamp(6.5rem, 8.75vw, 7rem);
-    margin: 0;
-    opacity: 0;
-    visibility: hidden;
-    overflow: hidden;
-    border-radius: 0.45rem;
-    transform: scale(0.88) rotate(-2deg);
-    transform-origin: center;
-    transition: opacity 220ms ease 80ms, transform 280ms ease 40ms, visibility 0s 320ms;
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-
-  .identity__portrait[data-dragging] {
-    z-index: 6;
-    cursor: grabbing;
-    transition: none;
-  }
-
-  .identity__portrait[data-returning] {
-    transition: transform 280ms var(--ease-out);
-  }
-
-  .identity__portrait[data-eating] {
-    z-index: 6;
-    pointer-events: none;
-    transition:
-      transform 280ms var(--ease-in-out),
-      opacity 180ms var(--ease-out);
-  }
-
-  .identity__portrait :global(img) {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    object-fit: cover;
-    object-position: 50% 44%;
-    border-radius: 0.45rem;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-  }
-
-  .identity-shell[data-portrait-visible] .identity__portrait {
-    opacity: calc(var(--identity-opacity, 1) * var(--intro-exit-opacity, 1));
-    visibility: visible;
-    transform: translate3d(0, var(--intro-exit-y, 0%), 0) scale(1) rotate(-2deg);
-    transition-delay: 80ms, 40ms, 0s;
-  }
 
   .identity__hello {
     display: flex;
@@ -461,8 +98,6 @@ import PlayfulWord from './PlayfulWord.astro';
     font-family: var(--font-reading);
     font-size: clamp(1rem, 0.5vw + 0.9rem, 1.25rem);
     letter-spacing: 0.025em;
-    opacity: var(--hello-opacity, 1);
-    transform: translate3d(0, calc((1 - var(--hello-opacity, 1)) * 0.85rem), 0);
   }
 
   .identity__role {
@@ -483,8 +118,6 @@ import PlayfulWord from './PlayfulWord.astro';
     font-weight: 400;
     letter-spacing: 0.025em;
     line-height: 1.68;
-    opacity: var(--summary-opacity, 1);
-    transform: translate3d(0, calc((1 - var(--summary-opacity, 1)) * 0.95rem), 0);
   }
 
   .identity__passage {
@@ -572,14 +205,6 @@ import PlayfulWord from './PlayfulWord.astro';
         0.75rem;
     }
 
-    .identity__portrait {
-      top: clamp(2.75rem, 6.5svh, 3.4rem);
-      bottom: auto;
-      right: clamp(1.15rem, 5.2vw, 1.4rem);
-      left: auto;
-      width: clamp(5.5rem, 24vw, 6.6rem);
-    }
-
     .identity__copy {
       width: 100%;
     }
@@ -607,10 +232,6 @@ import PlayfulWord from './PlayfulWord.astro';
       padding-bottom: 0.6rem;
     }
 
-    .identity__portrait {
-      width: clamp(5.1rem, 22vw, 6rem);
-    }
-
     .identity__role {
       font-size: clamp(1.58rem, 7vw, 1.85rem);
     }
@@ -623,7 +244,7 @@ import PlayfulWord from './PlayfulWord.astro';
   @media (max-height: 48rem) and (min-width: 52.01rem) {
     .identity {
       gap: 2.5rem;
-      padding-top: 3.25rem;
+      padding-top: clamp(7rem, 18vh, 11rem);
     }
 
     .identity__role {
@@ -636,20 +257,4 @@ import PlayfulWord from './PlayfulWord.astro';
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .identity,
-    .identity__hello,
-    .identity__summary {
-      transform: none;
-      transition: none;
-    }
-
-    .identity__portrait {
-      transition: none;
-    }
-
-    .identity__portrait[data-eating] {
-      transition: opacity 120ms var(--ease-out);
-    }
-  }
 </style>

@@ -94,6 +94,7 @@
     --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
 
     --reading-width: 58ch;
+    --page-gutter: clamp(1.25rem, 14.4vw, 15rem);
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
     --drawn-icon-wobble-duration: 1600ms;

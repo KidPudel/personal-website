@@ -50,10 +50,9 @@ const optimizedFrames = await Promise.all(
 
       const trigger = this.querySelector<HTMLAnchorElement>('.balloon-return__trigger');
       const opening = document.querySelector<HTMLElement>('opening-sequence');
-      const runway = opening?.querySelector<HTMLElement>('[data-opening-runway]');
       const intro = document.getElementById('intro');
       const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-balloon-frame]'));
-      if (!trigger || !opening || !runway || !intro || frames.length !== 7) return;
+      if (!trigger || !opening || !intro || frames.length !== 7) return;
 
       this.dataset.enhanced = '';
       this.abort = new AbortController();
@@ -95,8 +94,7 @@ const optimizedFrames = await Promise.all(
       };
 
       const introScrollY = () => {
-        const openingTop = window.scrollY + opening.getBoundingClientRect().top;
-        return Math.max(0, openingTop + runway.offsetHeight - window.innerHeight);
+        return Math.max(0, window.scrollY + intro.getBoundingClientRect().top);
       };
 
       const syncVisibility = (force = false) => {

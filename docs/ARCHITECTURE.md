@@ -20,6 +20,7 @@ Do not introduce a client application framework, global application state, a cli
 | --- | --- |
 | `/` | Personal homepage and current authored opening experience |
 | `/work/` | Complete work presentation |
+| `/about/` | Personal story, portraits, and the personal-note constellation |
 | `/case-studies/observatory/` | Observatory editorial case study |
 | `/case-studies/supergood/` | SuperGood editorial case study |
 | `/case-studies/two-sticks/` | Two Sticks editorial case study |

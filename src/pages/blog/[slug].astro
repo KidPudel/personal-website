@@ -1,7 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 
-import PortfolioHeader from '../../components/homepage/PortfolioHeader.astro';
 import { sitePath } from '../../config/site';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 
@@ -33,7 +32,6 @@ const publishedAt = entry.data.publishedAt?.toLocaleDateString('en', {
   pageClass="composition-document"
 >
   <div class="article-page">
-    <PortfolioHeader current="home" />
     <main id="main-content" class="article-main">
       <article class="writing-article" aria-labelledby="article-title">
         <a class="writing-article__back" href={sitePath('/blog/')}>Writing</a>

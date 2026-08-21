@@ -1,9 +1,7 @@
-import { clamp, smooth } from '../../../lib/motion';
 import { personalNoteMotion } from './personal-note-motion';
 
 class PersonalNote extends HTMLElement {
   private abort?: AbortController;
-  private constellationFrame = 0;
   private portraitLayoutAnimations = new Map<HTMLElement, Animation>();
   private doodleAnimations = new Map<HTMLElement, Animation>();
   private drag: {
@@ -26,7 +24,7 @@ class PersonalNote extends HTMLElement {
     const doodles = this.querySelectorAll<HTMLElement>('[data-personal-doodle]');
     const portrait = this.querySelector<HTMLElement>('[data-personal-portrait]');
     const field = this.querySelector<HTMLElement>('[data-doodle-field]');
-    this.setupConstellation(signal);
+    this.dataset.constellation = 'revealed';
 
     if (doodleTrigger && field && doodles.length) {
       doodleTrigger.disabled = false;
@@ -62,7 +60,6 @@ class PersonalNote extends HTMLElement {
   }
 
   disconnectedCallback() {
-    if (this.constellationFrame) window.cancelAnimationFrame(this.constellationFrame);
     this.portraitLayoutAnimations.forEach((animation) => animation.cancel());
     this.portraitLayoutAnimations.clear();
     this.doodleAnimations.forEach((animation) => animation.cancel());
@@ -70,219 +67,6 @@ class PersonalNote extends HTMLElement {
     this.abort?.abort();
     this.drag = null;
     delete this.dataset.enhanced;
-  }
-
-  private setupConstellation(signal: AbortSignal) {
-    const section = this.querySelector<HTMLElement>('.personal-note');
-    const heading = this.querySelector<HTMLElement>('#personal-title');
-    const slots = Array.from(this.querySelectorAll<HTMLElement>('.personal-note__slot'));
-    const boxFrame = () =>
-      this.closest('value-story')?.querySelector<HTMLElement>(
-        '[data-opening-frame][data-active]',
-      );
-    if (!section || !heading || slots.length === 0 || !boxFrame()) {
-      this.dataset.constellation = 'revealed';
-      return;
-    }
-
-    if (this.reducedMotion() || location.hash === '#personal') {
-      this.dataset.constellation = 'revealed';
-      return;
-    }
-
-    type Target = { documentX: number; documentY: number };
-    let headingTarget: Target = { documentX: 0, documentY: 0 };
-    let headingWidth = 0;
-    let headingHeight = 0;
-    let headingLayoutHeight = 0;
-    let slotTargets: Target[] = [];
-    let forceVisible = false;
-
-    const clearMotion = () => {
-      heading.style.removeProperty('opacity');
-      heading.style.removeProperty('transform');
-      heading.style.removeProperty('position');
-      heading.style.removeProperty('top');
-      heading.style.removeProperty('left');
-      heading.style.removeProperty('width');
-      slots.forEach((slot) => {
-        slot.style.removeProperty('transform');
-        slot.style.removeProperty('pointer-events');
-        const item = slot.querySelector<HTMLElement>('.personal-note__item');
-        item?.style.removeProperty('opacity');
-      });
-    };
-
-    const measure = () => {
-      clearMotion();
-      void heading.offsetWidth;
-      const headingRect = heading.getBoundingClientRect();
-      headingTarget = {
-        documentX: headingRect.left + headingRect.width / 2 + window.scrollX,
-        documentY: headingRect.top + headingRect.height / 2 + window.scrollY,
-      };
-      headingWidth = headingRect.width;
-      headingHeight = headingRect.height;
-      headingLayoutHeight = heading.offsetHeight;
-      slotTargets = slots.map((slot) => {
-        const rect = slot.getBoundingClientRect();
-        return {
-          documentX: rect.left + rect.width / 2 + window.scrollX,
-          documentY: rect.top + rect.height / 2 + window.scrollY,
-        };
-      });
-    };
-
-    const render = () => {
-      this.constellationFrame = 0;
-      if (forceVisible || this.reducedMotion()) {
-        clearMotion();
-        return;
-      }
-
-      const frame = boxFrame();
-      if (!frame) return;
-      const bounds = frame.getBoundingClientRect();
-      const sourceX = bounds.left + bounds.width / 2;
-      const sourceY = bounds.top + bounds.height / 2;
-      const sectionTop = section.getBoundingClientRect().top;
-      const start = window.innerHeight * personalNoteMotion.viewportStart;
-      const end = window.innerHeight * personalNoteMotion.viewportEnd;
-      const progress = clamp((start - sectionTop) / Math.max(1, start - end));
-
-      const headingRise = smooth(
-        clamp(
-          (progress - personalNoteMotion.headingStart) /
-            personalNoteMotion.headingDistance,
-        ),
-      );
-      const timedHeadingOpacity = smooth(
-        clamp(
-          (headingRise - personalNoteMotion.headingVisibilityStart) /
-            personalNoteMotion.headingVisibilityDistance,
-        ),
-      );
-      const headingX = headingTarget.documentX - window.scrollX;
-      const layoutHeadingY = headingTarget.documentY - window.scrollY;
-      const visualBoxTop =
-        bounds.top + bounds.height * personalNoteMotion.boxVisualTop;
-      const safeHeadingY =
-        visualBoxTop - headingLayoutHeight / 2 - personalNoteMotion.headingRestGapPx;
-      const headingY = Math.min(layoutHeadingY, safeHeadingY);
-      const headingScale =
-        personalNoteMotion.sourceScale +
-        (1 - personalNoteMotion.sourceScale) * headingRise;
-      const currentHeadingX = sourceX + (headingX - sourceX) * headingRise;
-      const currentHeadingY = sourceY + (headingY - sourceY) * headingRise;
-      const headingClearance = visualBoxTop - (currentHeadingY + headingLayoutHeight / 2);
-      const clearanceOpacity = smooth(
-        clamp(headingClearance / personalNoteMotion.headingClearanceFadePx),
-      );
-      heading.style.opacity = (timedHeadingOpacity * clearanceOpacity).toFixed(4);
-      // A viewport layer keeps asynchronous page scrolling from fighting the
-      // heading's counter-translation during the wide-screen flight.
-      const useViewportLayer =
-        window.innerWidth > 800 && (headingRise < 1 || layoutHeadingY > safeHeadingY);
-      if (useViewportLayer) {
-        heading.style.position = 'fixed';
-        heading.style.top = '0';
-        heading.style.left = '0';
-        heading.style.width = `${headingWidth.toFixed(2)}px`;
-        heading.style.transform = `translate3d(${(currentHeadingX - headingWidth / 2).toFixed(2)}px, ${(currentHeadingY - headingHeight / 2).toFixed(2)}px, 0) scale(${headingScale.toFixed(4)})`;
-      } else {
-        heading.style.removeProperty('position');
-        heading.style.removeProperty('top');
-        heading.style.removeProperty('left');
-        heading.style.removeProperty('width');
-        heading.style.transform = `translate3d(${(currentHeadingX - headingX).toFixed(2)}px, ${(currentHeadingY - layoutHeadingY).toFixed(2)}px, 0) scale(${headingScale.toFixed(4)})`;
-      }
-
-      const notesRise = smooth(
-        clamp(
-          (progress - personalNoteMotion.notesRiseStart) /
-            personalNoteMotion.notesRiseDistance,
-        ),
-      );
-      const spread = smooth(
-        clamp(
-          (progress - personalNoteMotion.notesSpreadStart) /
-            personalNoteMotion.notesSpreadDistance,
-        ),
-      );
-      const clusterX = headingX;
-      const clusterY = headingY + headingLayoutHeight * 1.8;
-
-      slots.forEach((slot, index) => {
-        const target = slotTargets[index];
-        if (!target) return;
-        const item = slot.querySelector<HTMLElement>('.personal-note__item');
-        const targetX = target.documentX - window.scrollX;
-        const targetY = target.documentY - window.scrollY;
-        const clusterOffset = (index - (slots.length - 1) / 2) * personalNoteMotion.clusterGapPx;
-        const risenX = sourceX + (clusterX + clusterOffset - sourceX) * notesRise;
-        const risenY = sourceY + (clusterY + index * 2 - sourceY) * notesRise;
-        const currentX = risenX + (targetX - risenX) * spread;
-        const currentY = risenY + (targetY - risenY) * spread;
-        const scale =
-          personalNoteMotion.sourceScale +
-          (personalNoteMotion.clusterScale - personalNoteMotion.sourceScale) * notesRise +
-          (1 - personalNoteMotion.clusterScale) * spread;
-        const opacity = smooth(
-          clamp(
-            (spread -
-              personalNoteMotion.noteOpacityStart -
-              index * personalNoteMotion.noteOpacityStagger) /
-              personalNoteMotion.noteOpacityDistance,
-          ),
-        );
-        slot.style.transform = `translate3d(${(currentX - targetX).toFixed(2)}px, ${(currentY - targetY).toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
-        slot.style.pointerEvents = spread > 0.94 ? 'auto' : 'none';
-        if (item) item.style.opacity = opacity.toFixed(4);
-      });
-    };
-
-    const requestRender = () => {
-      if (this.constellationFrame) return;
-      this.constellationFrame = window.requestAnimationFrame(render);
-    };
-
-    const showImmediately = () => {
-      forceVisible = true;
-      clearMotion();
-      this.dataset.constellation = 'revealed';
-    };
-
-    this.dataset.constellation = 'revealed';
-    measure();
-    render();
-
-    window.addEventListener('scroll', requestRender, { passive: true, signal });
-    window.addEventListener(
-      'resize',
-      () => {
-        measure();
-        requestRender();
-      },
-      { passive: true, signal },
-    );
-    this.addEventListener('focusin', showImmediately, { signal, once: true });
-    window.addEventListener(
-      'hashchange',
-      () => {
-        if (location.hash === '#personal') showImmediately();
-      },
-      { signal },
-    );
-    window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener(
-      'change',
-      requestRender,
-      { signal },
-    );
-    void document.fonts?.ready.then(() => {
-      if (signal.aborted) return;
-      measure();
-      requestRender();
-    });
   }
 
   private reducedMotion() {

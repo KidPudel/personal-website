@@ -1,0 +1,259 @@
+---
+import { Image } from 'astro:assets';
+
+import realPortrait from '../../assets/art/avatar_irl.png';
+import couplePortrait from '../../assets/life/me_and_bebe.png';
+import PersonalNote from '../../components/homepage/personal/PersonalNote.astro';
+import BaseDocument from '../../layouts/BaseDocument.astro';
+---
+
+<BaseDocument
+  title="About me · Igor Kupchinenko"
+  description="A little more about Igor Kupchinenko, his story, and the things he cares about."
+  pageClass="composition-document"
+  themeColor="#F8F8F8"
+  ogImage={realPortrait.src}
+>
+  <div class="about-page">
+    <main id="main-content">
+      <section class="about-introduction" aria-labelledby="about-title">
+        <div class="about-introduction__copy">
+          <p class="about-introduction__eyebrow">About me</p>
+          <h1 id="about-title">Igor, beyond the work.</h1>
+          <p class="about-introduction__lead">
+            I was born in 2002. I’m a product designer and software engineer who likes to
+            understand how an experience should feel, then make it real.
+          </p>
+          <p>
+            This is the home for the longer story: where I came from, what shaped me, and the
+            people and curiosities I care about. I’ll add that story here when it is ready.
+          </p>
+        </div>
+
+        <div class="about-introduction__photos" aria-label="Photos of Igor">
+          <figure class="about-photo about-photo--portrait">
+            <Image
+              src={realPortrait}
+              alt="Igor smiling in a cap and orange life jacket while sitting in a boat"
+              width={640}
+              loading="eager"
+              format="webp"
+            />
+          </figure>
+          <figure class="about-photo about-photo--together">
+            <Image
+              src={couplePortrait}
+              alt="Igor and his girlfriend outdoors"
+              width={760}
+              loading="eager"
+              format="webp"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="about-story" aria-labelledby="story-title">
+        <p class="about-story__year" aria-hidden="true">2002</p>
+        <div>
+          <p class="about-story__eyebrow">The longer story</p>
+          <h2 id="story-title">More soon.</h2>
+          <p>
+            I’m leaving room here for the story in my own words, with the moments and pictures
+            that belong with it.
+          </p>
+        </div>
+      </section>
+
+      <PersonalNote />
+    </main>
+  </div>
+</BaseDocument>
+
+<style>
+  .about-page {
+    min-width: 20rem;
+    overflow-x: clip;
+    background: var(--color-field);
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    font-size: clamp(0.98rem, 0.18vw + 0.94rem, 1.06rem);
+    line-height: 1.65;
+  }
+
+  .about-introduction,
+  .about-story {
+    width: min(calc(100% - clamp(2.5rem, 8vw, 8rem)), 72rem);
+    margin-inline: auto;
+  }
+
+  .about-introduction {
+    display: grid;
+    min-height: min(54rem, 100svh);
+    grid-template-columns: minmax(17rem, 0.85fr) minmax(24rem, 1.15fr);
+    align-items: center;
+    gap: clamp(2.5rem, 7vw, 7rem);
+    padding: clamp(7rem, 12vw, 9.5rem) 0 clamp(4.5rem, 8vw, 7rem);
+  }
+
+  .about-introduction__copy {
+    position: relative;
+    z-index: 2;
+    max-width: 34rem;
+  }
+
+  .about-introduction__eyebrow,
+  .about-story__eyebrow {
+    margin: 0 0 0.55rem;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+    letter-spacing: 0.035em;
+  }
+
+  .about-introduction h1,
+  .about-story h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+
+  .about-introduction h1 {
+    max-width: 8em;
+    font-size: clamp(2.7rem, 6vw, 5.7rem);
+  }
+
+  .about-introduction__lead {
+    margin: clamp(1.5rem, 3vw, 2.2rem) 0 0;
+    color: var(--color-ink);
+    font-size: clamp(1.2rem, 1.35vw, 1.48rem);
+    line-height: 1.48;
+  }
+
+  .about-introduction__copy > p:last-child {
+    max-width: 31rem;
+    margin: 1.15rem 0 0;
+    color: var(--color-copy);
+  }
+
+  .about-introduction__photos {
+    position: relative;
+    min-height: clamp(29rem, 56vw, 42rem);
+  }
+
+  .about-photo {
+    position: absolute;
+    margin: 0;
+    filter: drop-shadow(0 0.4rem 1rem rgb(17 17 15 / 0.12));
+  }
+
+  .about-photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.5rem;
+    object-fit: cover;
+  }
+
+  .about-photo--portrait {
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: min(63%, 19rem);
+    height: clamp(22rem, 38vw, 31rem);
+    rotate: -2.4deg;
+  }
+
+  .about-photo--portrait :global(img) {
+    object-position: center;
+  }
+
+  .about-photo--together {
+    right: 0;
+    bottom: 0;
+    width: min(75%, 28rem);
+    aspect-ratio: 4 / 3;
+    rotate: 2deg;
+  }
+
+  .about-photo--together :global(img) {
+    object-position: 46% 42%;
+  }
+
+  .about-story {
+    position: relative;
+    display: grid;
+    min-height: clamp(24rem, 58svh, 38rem);
+    grid-template-columns: minmax(12rem, 0.8fr) minmax(18rem, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 8vw, 8rem);
+    padding-block: clamp(4rem, 8vw, 7rem);
+  }
+
+  .about-story__year {
+    margin: 0;
+    color: color-mix(in srgb, var(--color-ink) 10%, transparent);
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 18vw, 15rem);
+    letter-spacing: -0.08em;
+    line-height: 0.75;
+    rotate: -3deg;
+  }
+
+  .about-story h2 {
+    font-size: clamp(2.2rem, 4.5vw, 4.25rem);
+  }
+
+  .about-story div > p:last-child {
+    max-width: 29rem;
+    margin: 1rem 0 0;
+    color: var(--color-copy);
+  }
+
+  .about-page :global(.personal-note) {
+    margin-bottom: clamp(4rem, 10vw, 8rem);
+  }
+
+  @media (max-width: 50rem) {
+    .about-introduction,
+    .about-story {
+      width: min(calc(100% - 2.5rem), 34rem);
+    }
+
+    .about-introduction {
+      min-height: 0;
+      grid-template-columns: 1fr;
+      gap: 2.75rem;
+      padding: 7rem 0 4.5rem;
+    }
+
+    .about-introduction h1 {
+      max-width: 7em;
+    }
+
+    .about-introduction__photos {
+      min-height: clamp(25rem, 112vw, 38rem);
+    }
+
+    .about-photo--portrait {
+      width: 59%;
+      height: min(79vw, 27rem);
+    }
+
+    .about-photo--together {
+      width: 76%;
+    }
+
+    .about-story {
+      min-height: 0;
+      grid-template-columns: 1fr;
+      gap: 2.25rem;
+      padding-block: 4rem;
+    }
+
+    .about-story__year {
+      font-size: clamp(7rem, 38vw, 12rem);
+    }
+  }
+</style>

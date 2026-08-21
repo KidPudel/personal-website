@@ -4,6 +4,7 @@ import '../styles/composition.css';
 import '../styles/motion.css';
 
 import aleoURL from '../assets/fonts/Aleo-Regular.ttf?url';
+import PortfolioHeader from '../components/homepage/PortfolioHeader.astro';
 
 interface Props {
   title: string;
@@ -61,6 +62,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
+    <PortfolioHeader />
     <slot />
     <script is:inline>
       const skipLink = document.querySelector('.skip-link');

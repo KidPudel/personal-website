@@ -1,7 +1,6 @@
 ---
 import { getEntry } from 'astro:content';
 
-import PortfolioHeader from '../../components/homepage/PortfolioHeader.astro';
 import WritingPreview from '../../components/homepage/WritingPreview.astro';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 
@@ -19,7 +18,6 @@ if (!identityCage) {
   themeColor="#F8F8F8"
 >
   <div class="writing-page">
-    <PortfolioHeader current="work" />
     <main id="main-content">
       <WritingPreview {identityCage} />
     </main>

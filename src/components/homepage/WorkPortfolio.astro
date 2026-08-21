@@ -2,7 +2,6 @@
 import type { CollectionEntry } from 'astro:content';
 
 import { publicLinks, sitePath } from '../../config/site';
-import PortfolioHeader from './PortfolioHeader.astro';
 import SectionMarker from './SectionMarker.astro';
 import WorkMedia from './WorkMedia.astro';
 
@@ -34,8 +33,6 @@ const {
 ---
 
 <div class="work-page" data-work-page>
-  <PortfolioHeader current="work" />
-
   <main id="main-content">
     <header class="work-intro">
       <div class="doodles doodles--intro" aria-hidden="true"></div>

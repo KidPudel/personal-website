@@ -6,31 +6,11 @@ import { sitePath } from '../../../config/site';
 interface Props {
   aspect: ValueAspect;
   projectTitle: string;
-  position: number;
 }
 
-const { aspect, projectTitle, position } = Astro.props;
+const { aspect, projectTitle } = Astro.props;
 const portrait = aspect.image.height > aspect.image.width;
 const compact = !portrait && aspect.image.width / aspect.image.height < 1.35;
-const imageSizes = position === 0
-  ? '(max-width: 50rem) 64vw, 27vw'
-  : position < 3
-    ? '(max-width: 50rem) 44vw, 21vw'
-    : '(max-width: 50rem) 35vw, 17vw';
-
-function evidenceTilt(seed: string): string {
-  let hash = 2166136261;
-  for (let i = 0; i < seed.length; i += 1) {
-    hash ^= seed.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  const unsigned = hash >>> 0;
-  const magnitude = 1.5 + (unsigned % 24) / 10;
-  const sign = unsigned % 2 === 0 ? -1 : 1;
-  return `${sign * magnitude}deg`;
-}
-
-const tilt = evidenceTilt(`${aspect.project}:${aspect.shot}`);
 const caseStudyHrefByProject: Record<string, string> = {
   Observatory: sitePath('/case-studies/observatory/'),
   PizzaSushiWok: sitePath('/case-studies/supergood/'),
@@ -45,15 +25,13 @@ const caseStudyHref = aspect.caseStudy ? caseStudyHrefByProject[aspect.project] 
     portrait && 'aspect--portrait',
     compact && 'aspect--compact',
   ]}
-  data-aspect
-  data-target-tilt={tilt}
 >
   <div class="aspect__visual">
     <Image
       src={aspect.image}
       alt={`${aspect.shot} from ${projectTitle}`}
       widths={[240, 360, 480, 640, 768]}
-      sizes={imageSizes}
+      sizes="(max-width: 50rem) calc(100vw - 2rem), (max-width: 68rem) 48vw, 31vw"
       format="webp"
       loading="lazy"
       decoding="async"

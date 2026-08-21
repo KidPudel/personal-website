@@ -5,8 +5,6 @@ import BalloonReturn from './BalloonReturn.astro';
 import ElasticOverscrollBackdrop from './ElasticOverscrollBackdrop.astro';
 import IdentityIntroduction from './identity/IdentityIntroduction.astro';
 import OpeningSequence from './opening/OpeningSequence.astro';
-import PersonalNote from './personal/PersonalNote.astro';
-import PortfolioHeader from './PortfolioHeader.astro';
 import ValuesEvidence from './values/ValuesEvidence.astro';
 
 interface Props {
@@ -21,19 +19,16 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
 <ElasticOverscrollBackdrop />
 
 <div class="homepage" data-homepage>
-  <main id="main-content">
-    <OpeningSequence>
+  <OpeningSequence />
+
+  <div class="homepage__document" data-homepage-document>
+    <main id="main-content">
       <IdentityIntroduction />
-      <Fragment slot="journey">
-        <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
-        <PersonalNote />
-        <PortfolioHeader current="home" placement="footer" contactId="contact" />
-      </Fragment>
-    </OpeningSequence>
-  </main>
+      <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
+    </main>
 
-  <BalloonReturn />
-
+    <BalloonReturn />
+  </div>
 </div>
 
 <style>
@@ -53,8 +48,13 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
     will-change: transform;
   }
 
-  :global(.js:not(.opening-bypassed)) .homepage {
-    --header-visibility: 0;
+  .homepage__document {
+    position: relative;
+  }
+
+  :global(.js:not(.opening-bypassed)) .homepage__document {
+    opacity: 0;
+    pointer-events: none;
   }
 
 </style>

@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 
 import {
   values,
+  valuesPremise,
   type ValueProject,
 } from '../../../content/homepage/values';
 import EvidenceObject from './EvidenceObject.astro';
@@ -23,245 +24,192 @@ const projectTitles: Record<ValueProject, string> = {
 };
 ---
 
-<section id="values" class="values-story" aria-labelledby="values-title">
-  <div class="value-composition">
-    <div class="value-chapters">
-      {values.map((value) => (
-        <section
-          class="value-chapter"
-          aria-labelledby={`value-${value.id}`}
-          data-value-passage
-        >
-          <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`} data-evidence-deck>
-            {value.aspects.map((aspect, index) => (
-              <EvidenceObject
-                aspect={aspect}
-                projectTitle={projectTitles[aspect.project]}
-                position={index}
-              />
-            ))}
-          </ol>
-        </section>
-      ))}
-    </div>
-  </div>
+<section id="values" class="values-story" aria-labelledby="values-story-title">
+  <h2 id="values-story-title" class="visually-hidden">{valuesPremise}</h2>
 
+  <div class="value-chapters">
+    {values.map((value) => (
+      <section class="value-chapter" aria-labelledby={`value-${value.id}`}>
+        <header class="value-chapter__heading">
+          <h3 id={`value-${value.id}`}>
+            {value.before}<value-word-cycle><button
+                type="button"
+                class="word-cycle"
+                data-word-cycle
+                aria-label={`${value.words[0]}. Change this word.`}
+                disabled
+              ><span class="word-cycle__options">
+                  {value.words.map((word, index) => (
+                    <span data-word-option hidden={index !== 0}>{word}</span>
+                  ))}
+                </span></button></value-word-cycle>{value.after}
+          </h3>
+        </header>
+
+        <ol class="aspects" aria-label={`Evidence for ${value.words[0]}`}>
+          {value.aspects.map((aspect) => (
+            <EvidenceObject aspect={aspect} projectTitle={projectTitles[aspect.project]} />
+          ))}
+        </ol>
+      </section>
+    ))}
+  </div>
 </section>
+
+<script>
+  import './value-word-cycle';
+</script>
 
 <style>
   .values-story {
     position: relative;
     isolation: isolate;
     width: 100%;
-    margin-inline: auto;
-    padding: 0 0 clamp(3.5rem, 7vw, 6rem);
+    padding: clamp(2.5rem, 6svh, 5rem) 0 clamp(6rem, 14svh, 11rem);
   }
 
-  .value-composition {
-    position: relative;
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    margin: -1px;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   .value-chapters {
-    position: relative;
-    z-index: 2;
+    display: grid;
+    gap: clamp(5rem, 13svh, 10rem);
   }
 
   .value-chapter {
-    position: relative;
-    min-height: 50svh;
+    width: min(calc(100% - 2 * var(--page-gutter)), 76rem);
+    margin-inline: auto;
   }
 
-  .value-chapter:first-child {
-    min-height: 75svh;
+  .value-chapter__heading {
+    width: min(100%, 52rem);
+    margin: 0 auto clamp(2rem, 5svh, 3.75rem);
+    text-align: center;
   }
 
-  .value-chapter:last-child {
-    min-height: 90svh;
+  .value-chapter__heading h3 {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-editorial);
+    font-size: clamp(1.75rem, 3.8vw, 3.25rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+
+  value-word-cycle {
+    display: inline-grid;
+    vertical-align: baseline;
+  }
+
+  .word-cycle {
+    display: inline-grid;
+    padding: 0 0 0.04em;
+    border: 0;
+    border-bottom: 0.1rem dotted var(--color-muted);
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    line-height: inherit;
+    cursor: pointer;
+  }
+
+  .word-cycle:disabled {
+    color: inherit;
+    cursor: default;
+  }
+
+  .word-cycle:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  .word-cycle__options {
+    display: grid;
+  }
+
+  .word-cycle [data-word-option] {
+    grid-area: 1 / 1;
+  }
+
+  :global(.js) value-word-cycle[data-ready] [data-word-option] {
+    display: inline-block;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 220ms var(--ease-out);
+  }
+
+  :global(.js) value-word-cycle[data-ready] [data-word-option][data-word-visible] {
+    visibility: visible;
+  }
+
+  :global(.js) value-word-cycle[data-ready] [data-word-option][data-word-active] {
+    opacity: 1;
   }
 
   .aspects {
     display: grid;
-    width: min(calc(100% - 2rem), 68rem);
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2vw, 2rem);
+    align-items: start;
+    gap: clamp(1rem, 2.25vw, 2.25rem);
     padding: 0;
-    margin: 0 auto;
+    margin: 0;
     list-style: none;
   }
 
-  :global(.js) :global(value-story[data-enhanced]) .aspects {
-    position: fixed;
-    z-index: 2;
-    inset: 0;
-    display: block;
-    width: 100%;
-    height: 100svh;
-    pointer-events: none;
-  }
+  @media (max-width: 68rem) {
+    .value-chapter {
+      width: min(calc(100% - 2 * var(--page-gutter)), 58rem);
+    }
 
-  /* Chapters fill the viewport as scroll-timing surfaces. They should not
-     block the value-word control beneath them; active cards opt back in. */
-  :global(.js) :global(value-story[data-enhanced]) .values-story,
-  :global(.js) :global(value-story[data-enhanced]) .value-composition,
-  :global(.js) :global(value-story[data-enhanced]) .value-chapters,
-  :global(.js) :global(value-story[data-enhanced]) .value-chapter {
-    pointer-events: none;
-  }
-
-  :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect) {
-    position: absolute;
-    opacity: 0;
-    translate: -50% 0;
-    pointer-events: none;
-    transform-origin: 50% 24%;
-    will-change: transform, opacity, clip-path;
-  }
-
-  :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(1)) {
-    z-index: 5;
-    top: 38svh;
-    left: 50%;
-    width: min(27vw, 24rem);
-  }
-
-  :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(2)) {
-    z-index: 4;
-    top: 44svh;
-    left: 24%;
-    width: min(21vw, 18rem);
-  }
-
-  :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(3)) {
-    z-index: 4;
-    top: 44svh;
-    left: 76%;
-    width: min(21vw, 18rem);
-  }
-
-  :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(4)) {
-    z-index: 3;
-    top: 50svh;
-    left: 9%;
-    width: min(17vw, 14.5rem);
-  }
-
-  :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(5)) {
-    z-index: 3;
-    top: 50svh;
-    left: 91%;
-    width: min(17vw, 14.5rem);
+    .aspects {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 50rem) {
     .values-story {
-      width: 100%;
+      padding-top: 3.5rem;
+    }
+
+    .value-chapters {
+      gap: 5.5rem;
     }
 
     .value-chapter {
-      min-height: 48svh;
+      width: min(calc(100% - 2rem), 30rem);
     }
 
-    .value-chapter:first-child {
-      min-height: 85svh;
+    .value-chapter__heading {
+      width: min(100%, 24rem);
+      margin-bottom: 2rem;
     }
 
-    .value-chapter:last-child {
-      min-height: 80svh;
+    .value-chapter__heading h3 {
+      font-size: clamp(1.55rem, 8vw, 2.3rem);
     }
 
     .aspects {
       grid-template-columns: 1fr;
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(1)) {
-      top: 28svh;
-      left: 50%;
-      width: min(64vw, 18rem);
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(2)) {
-      top: 48svh;
-      left: 24%;
-      width: min(44vw, 12.5rem);
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(3)) {
-      top: 48svh;
-      left: 76%;
-      width: min(44vw, 12.5rem);
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(4)) {
-      top: 64svh;
-      left: 20%;
-      width: min(35vw, 10.5rem);
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(5)) {
-      top: 64svh;
-      left: 80%;
-      width: min(35vw, 10.5rem);
-    }
-
-    .values-story :global(.aspect__visual img) {
-      height: min(15svh, 7.5rem);
-    }
-
-    .values-story :global(.aspect:nth-child(1) .aspect__visual img) {
-      height: min(17svh, 8.5rem);
-    }
-
-    .values-story :global(.aspect__copy) {
-      padding-top: 0.48rem;
-    }
-
-    .values-story :global(.aspect__copy p) {
-      font-size: clamp(0.78rem, 3.4vw, 0.9rem);
-      line-height: 1.45;
-    }
-
-    .values-story :global(.aspect__copy a) {
-      margin-top: 0.4rem;
-      font-size: clamp(0.72rem, 3vw, 0.82rem);
+      gap: 1.5rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .value-chapter {
-      min-height: auto;
-      padding: 3rem 0;
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects {
-      position: static;
-      display: grid;
-      width: min(calc(100% - 2rem), 68rem);
-      height: auto;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-      margin-inline: auto;
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(n)) {
-      position: relative;
-      inset: auto;
-      width: auto;
-      opacity: 1;
-      translate: none;
-      transform: none;
-      clip-path: none;
-      will-change: auto;
-    }
-  }
-
-  @media (max-width: 50rem) and (prefers-reduced-motion: reduce) {
-    :global(.js) :global(value-story[data-enhanced]) .aspects {
-      grid-template-columns: 1fr;
-      width: min(calc(100% - 2rem), 22rem);
-    }
-
-    :global(.js) :global(value-story[data-enhanced]) .aspects :global(.aspect:nth-child(n)) {
-      width: 100%;
+    :global(.js) value-word-cycle[data-ready] [data-word-option] {
+      transition-duration: 120ms;
     }
   }
 </style>

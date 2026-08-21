@@ -1,47 +1,41 @@
 ---
-import { Image } from 'astro:assets';
-
-import connectIcon from '../../assets/art/icons/Doodles_connect.png';
-import homeIcon from '../../assets/art/icons/Doodles_home.png';
-import workIcon from '../../assets/art/icons/Doodles_work.png';
 import { connectLinks, sitePath } from '../../config/site';
+import DrawnIcon from './DrawnIcon.astro';
 
-interface Props {
-  current?: 'home' | 'work';
-  placement?: 'fixed' | 'intro' | 'footer';
-  contactId?: string;
-}
-
-const {
-  current = 'home',
-  placement = 'fixed',
-  contactId = 'contact',
-} = Astro.props;
-const primaryHref = current === 'home' ? sitePath('/work/') : sitePath('/');
-const primaryLabel = current === 'home' ? 'Work' : 'Back to Igor';
-const primaryIcon = current === 'home' ? workIcon : homeIcon;
-const primaryIconName = current === 'home' ? 'work' : 'home';
-const openingControlled = placement === 'intro' || placement === 'fixed';
+const pathname = Astro.url.pathname;
+const workIsCurrent = pathname.includes('/work/') || pathname.includes('/case-studies/');
+const aboutIsCurrent = pathname.includes('/about/');
 ---
 
-<portfolio-navigation class={`portfolio-navigation portfolio-navigation--${placement}`}>
-  <nav
-    class="site-navigation"
-    aria-label={placement === 'footer' ? 'Closing navigation' : 'Primary navigation'}
-    data-site-header={openingControlled ? '' : undefined}
-  >
-    <a class="site-navigation__work" href={primaryHref}>
-      <span class="navigation-action__label">{primaryLabel}</span>
-      <span class={`navigation-action__art navigation-action__art--${primaryIconName}`} aria-hidden="true">
-        <Image src={primaryIcon} alt="" width={512} loading="eager" />
+<portfolio-navigation class="portfolio-navigation" data-site-header>
+  <nav class="site-navigation" aria-label="Primary navigation">
+    <a
+      class="site-navigation__link drawn-icon-trigger"
+      href={sitePath('/work/')}
+      aria-current={workIsCurrent ? 'page' : undefined}
+    >
+      <span class="navigation-action__label">Work</span>
+      <span class="navigation-action__art" aria-hidden="true">
+        <DrawnIcon icon="work" loading="eager" />
       </span>
     </a>
 
-    <details id={contactId} class="contact-disclosure">
-      <summary>
-        <span class="navigation-action__label">Let’s talk</span>
-        <span class="navigation-action__art navigation-action__art--contact" aria-hidden="true">
-          <Image src={connectIcon} alt="" width={512} loading="eager" />
+    <a
+      class="site-navigation__link drawn-icon-trigger"
+      href={sitePath('/about/')}
+      aria-current={aboutIsCurrent ? 'page' : undefined}
+    >
+      <span class="navigation-action__label">About me</span>
+      <span class="navigation-action__art" aria-hidden="true">
+        <DrawnIcon icon="who" loading="eager" />
+      </span>
+    </a>
+
+    <details id="site-contact" class="contact-disclosure">
+      <summary class="drawn-icon-trigger">
+        <span class="navigation-action__label">Get in touch</span>
+        <span class="navigation-action__art" aria-hidden="true">
+          <DrawnIcon icon="connect" loading="eager" />
         </span>
       </summary>
       <div class="contact-disclosure__panel">
@@ -52,244 +46,46 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 </portfolio-navigation>
 
 <script>
-  import { clamp, smooth } from '../../lib/motion';
-  import { closingNavigationMotion } from './portfolio-navigation-motion';
-
   class PortfolioNavigation extends HTMLElement {
     private abort?: AbortController;
-    private closingFrame = 0;
-    private contactAnimation?: Animation;
-    private contactOpen = false;
 
     connectedCallback() {
       this.abort?.abort();
-      this.contactAnimation?.cancel();
-      this.contactAnimation = undefined;
       this.abort = new AbortController();
+      const { signal } = this.abort;
       const details = this.querySelector<HTMLDetailsElement>('details');
-      if (!details) return;
-      const summary = details.querySelector<HTMLElement>('summary');
-      if (!summary) return;
-      this.contactOpen = details.open;
+      const summary = details?.querySelector<HTMLElement>('summary');
+      if (!details || !summary) return;
 
-      const revealContact = () => {
-        if (window.location.hash === `#${details.id}`) void this.setContactOpen(details, true);
+      const syncExpandedState = () => {
+        summary.setAttribute('aria-expanded', String(details.open));
       };
 
-      summary.addEventListener('click', (event) => {
-        event.preventDefault();
-        void this.setContactOpen(details, !this.contactOpen);
-      }, { signal: this.abort.signal });
+      const revealContact = () => {
+        if (window.location.hash !== `#${details.id}`) return;
+        details.open = true;
+        syncExpandedState();
+      };
 
+      details.addEventListener('toggle', syncExpandedState, { signal });
       document.addEventListener('pointerdown', (event) => {
-        if (this.contactOpen && event.target instanceof Node && !this.contains(event.target)) {
-          void this.setContactOpen(details, false);
+        if (details.open && event.target instanceof Node && !this.contains(event.target)) {
+          details.open = false;
         }
-      }, { signal: this.abort.signal });
-
+      }, { signal });
       this.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && this.contactOpen) {
-          void this.setContactOpen(details, false);
-          summary.focus();
-        }
-      }, { signal: this.abort.signal });
+        if (event.key !== 'Escape' || !details.open) return;
+        details.open = false;
+        summary.focus();
+      }, { signal });
+      window.addEventListener('hashchange', revealContact, { signal });
 
-      window.addEventListener('hashchange', revealContact, { signal: this.abort.signal });
+      syncExpandedState();
       revealContact();
-
-      if (this.classList.contains('portfolio-navigation--footer')) {
-        this.setupClosingReveal(this.abort.signal);
-      }
     }
 
     disconnectedCallback() {
       this.abort?.abort();
-      this.contactAnimation?.cancel();
-      this.contactAnimation = undefined;
-      if (this.closingFrame) window.cancelAnimationFrame(this.closingFrame);
-      this.closest('value-story')
-        ?.querySelector<HTMLElement>('.opening-sequence__motion')
-        ?.style.removeProperty('--box-closing-y');
-      delete this.dataset.closingLive;
-    }
-
-    private async setContactOpen(details: HTMLDetailsElement, open: boolean) {
-      const panel = details.querySelector<HTMLElement>('.contact-disclosure__panel');
-      if (!panel || (this.contactOpen === open && !this.contactAnimation)) return;
-
-      const interrupted = Boolean(this.contactAnimation);
-      const interruptedStyle = interrupted ? getComputedStyle(panel) : undefined;
-      const currentFrame = interruptedStyle
-        ? {
-            opacity: interruptedStyle.opacity,
-            translate: interruptedStyle.translate === 'none' ? '0 0' : interruptedStyle.translate,
-            scale: interruptedStyle.scale === 'none' ? '1' : interruptedStyle.scale,
-          }
-        : undefined;
-      this.contactAnimation?.cancel();
-      this.contactAnimation = undefined;
-
-      if (open) details.open = true;
-      else if (!details.open) {
-        this.contactOpen = false;
-        return;
-      }
-      this.contactOpen = open;
-
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const edgeOffset = this.classList.contains('portfolio-navigation--footer')
-        ? '0.35rem'
-        : '-0.35rem';
-      const closedFrame = reducedMotion
-        ? { opacity: 0, translate: '0 0', scale: 1 }
-        : { opacity: 0, translate: `0 ${edgeOffset}`, scale: 0.98 };
-      const settledFrame = { opacity: 1, translate: '0 0', scale: 1 };
-      const animation = panel.animate(
-        [
-          currentFrame ?? (open ? closedFrame : settledFrame),
-          open ? settledFrame : closedFrame,
-        ],
-        {
-          duration: reducedMotion ? 120 : 180,
-          easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
-          fill: 'forwards',
-        },
-      );
-      this.contactAnimation = animation;
-
-      try {
-        await animation.finished;
-      } catch {
-        return;
-      }
-      if (this.contactAnimation !== animation || this.contactOpen !== open) return;
-
-      if (!open) details.open = false;
-      animation.cancel();
-      this.contactAnimation = undefined;
-    }
-
-    private setupClosingReveal(signal: AbortSignal) {
-      const navigation = this.querySelector<HTMLElement>('.site-navigation');
-      const work = this.querySelector<HTMLElement>('.site-navigation__work');
-      const contact = this.querySelector<HTMLElement>('.contact-disclosure');
-      const boxMotion = this.closest('value-story')?.querySelector<HTMLElement>(
-        '.opening-sequence__motion',
-      );
-      const activeFrame = () =>
-        this.closest('value-story')?.querySelector<HTMLElement>(
-          '[data-opening-frame][data-active]',
-        );
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const actions = [work, contact].filter((action): action is HTMLElement => Boolean(action));
-
-      if (!navigation || !boxMotion || actions.length !== 2 || !activeFrame()) return;
-      this.dataset.closingLive = '';
-      let currentBoxLift =
-        Number.parseFloat(boxMotion.style.getPropertyValue('--box-closing-y')) || 0;
-
-      const clear = () => {
-        actions.forEach((action) => {
-          action.style.removeProperty('opacity');
-          action.style.removeProperty('transform');
-          action.style.removeProperty('pointer-events');
-        });
-        navigation.removeAttribute('aria-hidden');
-        this.inert = false;
-        boxMotion.style.removeProperty('--box-closing-y');
-        currentBoxLift = 0;
-      };
-
-      const render = () => {
-        this.closingFrame = 0;
-        if (reducedMotion.matches) {
-          clear();
-          return;
-        }
-
-        const frame = activeFrame();
-        if (!frame) return;
-        const frameBounds = frame.getBoundingClientRect();
-        const navigationBounds = navigation.getBoundingClientRect();
-        const start = window.innerHeight * closingNavigationMotion.targetViewportStart;
-        const end = window.innerHeight * closingNavigationMotion.targetViewportEnd;
-        const progress = smooth(
-          clamp((start - navigationBounds.top) / Math.max(1, start - end)),
-        );
-        currentBoxLift =
-          Number.parseFloat(boxMotion.style.getPropertyValue('--box-closing-y')) || 0;
-        const nextBoxLift =
-          -window.innerHeight * closingNavigationMotion.boxLiftVh * progress;
-        const frameShift = nextBoxLift - currentBoxLift;
-        const settledFrameTop = frameBounds.top + frameShift;
-        const sourceY =
-          settledFrameTop + frameBounds.height * closingNavigationMotion.sourceY;
-        const timedOpacity = smooth(
-          clamp(
-            (progress - closingNavigationMotion.opacityStart) /
-              closingNavigationMotion.opacityDistance,
-          ),
-        );
-        const scale =
-          closingNavigationMotion.sourceScale +
-          (1 - closingNavigationMotion.sourceScale) * progress;
-
-        actions.forEach((action, index) => {
-          const direction = index === 0 ? -1 : 1;
-          const sourceX =
-            frameBounds.left +
-            frameBounds.width * (0.5 + direction * closingNavigationMotion.sourceXOffset);
-          const layoutX =
-            navigationBounds.left + action.offsetLeft + action.offsetWidth / 2;
-          const layoutY =
-            navigationBounds.top + action.offsetTop + action.offsetHeight / 2;
-          const targetX = layoutX;
-          const targetY =
-            settledFrameTop +
-            frameBounds.height * closingNavigationMotion.boxVisualTop -
-            closingNavigationMotion.settledGapPx -
-            action.offsetHeight / 2;
-          const currentX = sourceX + (targetX - sourceX) * progress;
-          const currentY = sourceY + (targetY - sourceY) * progress;
-          const visualBoxTop =
-            settledFrameTop +
-            frameBounds.height * closingNavigationMotion.boxVisualTop;
-          const clearance = visualBoxTop - (currentY + action.offsetHeight / 2);
-          const clearanceOpacity = smooth(
-            clamp(clearance / closingNavigationMotion.clearanceFadePx),
-          );
-          const opacity = timedOpacity * clearanceOpacity;
-
-          action.style.opacity = opacity.toFixed(4);
-          action.style.transform = `translate3d(${(currentX - layoutX).toFixed(2)}px, ${(currentY - layoutY).toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
-          action.style.pointerEvents =
-            progress >= closingNavigationMotion.interactiveAt ? 'auto' : 'none';
-        });
-
-        const interactive = progress >= closingNavigationMotion.interactiveAt;
-        this.inert = !interactive;
-        navigation.toggleAttribute(
-          'aria-hidden',
-          actions.every((action) => Number(action.style.opacity) <= 0.02),
-        );
-        boxMotion.style.setProperty(
-          '--box-closing-y',
-          `${nextBoxLift.toFixed(2)}px`,
-        );
-        currentBoxLift = nextBoxLift;
-      };
-
-      const requestRender = () => {
-        if (signal.aborted) return;
-        if (this.closingFrame) return;
-        this.closingFrame = window.requestAnimationFrame(render);
-      };
-
-      window.addEventListener('scroll', requestRender, { passive: true, signal });
-      window.addEventListener('resize', requestRender, { passive: true, signal });
-      reducedMotion.addEventListener('change', requestRender, { signal });
-      document.fonts.ready.then(requestRender);
-      render();
     }
   }
 
@@ -300,114 +96,148 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
 
 <style>
   .portfolio-navigation {
-    position: relative;
-    z-index: 50;
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    right: 0;
     display: block;
+    padding: clamp(1.25rem, 6vw, 5rem) var(--page-gutter) 1.3rem 1.8rem;
     color: var(--color-ink);
     font-family: var(--font-reading);
+    isolation: isolate;
   }
 
-  .portfolio-navigation--intro {
-    position: relative;
-    width: 100%;
-    margin-top: 1.35rem;
-    opacity: var(--header-visibility, 1);
-    transform: translateY(calc((1 - var(--header-visibility, 1)) * 1.25rem));
-  }
-
-  .portfolio-navigation--fixed {
-    position: fixed;
-    top: clamp(0.85rem, 2vw, 1.5rem);
-    right: clamp(0.85rem, 2vw, 1.5rem);
-    opacity: var(--header-visibility, 1);
-    transform: translateY(calc((1 - var(--header-visibility, 1)) * -1.5rem));
-    transition:
-      opacity 180ms linear,
-      transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  }
-
-  .portfolio-navigation--fixed .site-navigation {
-    padding: 0.15rem 0.55rem;
-    background: color-mix(in srgb, var(--color-field) 92%, transparent);
-    box-shadow: 0 0 1rem 0.7rem color-mix(in srgb, var(--color-field) 88%, transparent);
-  }
-
-  .portfolio-navigation--footer {
-    display: grid;
-    min-height: clamp(30rem, 72svh, 44rem);
-    align-items: end;
-    padding: clamp(12rem, 28svh, 18rem) clamp(1.5rem, 8vw, 7rem) max(4.5rem, 8svh);
-  }
-
-  .portfolio-navigation--footer .site-navigation {
-    width: max-content;
-    max-width: 100%;
-    justify-self: center;
-    justify-content: center;
-  }
-
-  .portfolio-navigation--footer[data-closing-live] .site-navigation__work,
-  .portfolio-navigation--footer[data-closing-live] .contact-disclosure {
-    will-change: transform, opacity;
+  .portfolio-navigation::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: color-mix(in srgb, var(--color-field) 18%, transparent);
+    backdrop-filter: blur(14px) saturate(1.08);
+    -webkit-backdrop-filter: blur(14px) saturate(1.08);
+    content: '';
+    mask-image:
+      linear-gradient(to left, black 0, black 84%, transparent 100%),
+      linear-gradient(to top, transparent 0, black 42%, black 100%);
+    mask-composite: intersect;
+    -webkit-mask-image:
+      linear-gradient(to left, black 0, black 84%, transparent 100%),
+      linear-gradient(to top, transparent 0, black 42%, black 100%);
+    -webkit-mask-composite: source-in;
+    pointer-events: none;
   }
 
   .site-navigation {
-    position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: clamp(1.5rem, 3vw, 2.25rem);
-    font-size: clamp(0.88rem, 0.18vw + 0.84rem, 0.98rem);
-    letter-spacing: 0.01em;
+    justify-content: flex-end;
+    gap: clamp(0.9rem, 2.4vw, 1.8rem);
+    font-size: clamp(0.88rem, 0.25vw + 0.83rem, 1rem);
+    letter-spacing: 0.005em;
+    white-space: nowrap;
   }
 
-  .site-navigation__work,
+  .site-navigation__link,
   .contact-disclosure summary {
     position: relative;
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
     justify-content: center;
-    padding: 0.25rem 0.35rem;
+    padding: 0.2rem 0.05rem;
+    border: 0;
     color: inherit;
+    line-height: 1.15;
     text-decoration: none;
+    transition: color 150ms ease;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .site-navigation__work {
-    min-width: 4.5rem;
+  .navigation-action__label {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 72%, transparent);
+    text-decoration-thickness: 0.09rem;
+    text-underline-offset: 0.34rem;
+    opacity: 1;
+    transform: scale(1);
+    transition:
+      opacity 150ms linear,
+      transform 180ms var(--ease-out),
+      text-decoration-color 150ms ease;
   }
 
-  .contact-disclosure summary {
-    min-width: 5.25rem;
+  .site-navigation__link[aria-current='page'] .navigation-action__label {
+    text-decoration-style: solid;
+    text-decoration-color: var(--color-ink);
+  }
+
+  .navigation-action__art {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: block;
+    width: var(--drawn-icon-size);
+    aspect-ratio: 1;
+    --drawn-icon-opacity: 1;
+    --drawn-icon-size: 3.7rem;
+    overflow: visible;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.94) rotate(-4deg);
+    transition:
+      opacity 150ms linear,
+      transform 180ms var(--ease-out);
+  }
+
+  .site-navigation__link:focus-visible,
+  .contact-disclosure summary:focus-visible,
+  .contact-disclosure[open] summary {
+    color: var(--color-copy);
+  }
+
+  .site-navigation__link:focus-visible .navigation-action__label,
+  .contact-disclosure summary:focus-visible .navigation-action__label,
+  .contact-disclosure[open] summary .navigation-action__label {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  .site-navigation__link:focus-visible .navigation-action__art,
+  .contact-disclosure summary:focus-visible .navigation-action__art,
+  .contact-disclosure[open] summary .navigation-action__art {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  .site-navigation__link:focus-visible,
+  .contact-disclosure summary:focus-visible,
+  .contact-disclosure__panel a:focus-visible {
+    border-radius: 0.1rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .site-navigation__link:hover,
+    .contact-disclosure summary:hover {
+      color: var(--color-copy);
+    }
+
+    .site-navigation__link:hover .navigation-action__label,
+    .contact-disclosure summary:hover .navigation-action__label {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+
+    .site-navigation__link:hover .navigation-action__art,
+    .contact-disclosure summary:hover .navigation-action__art {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
   }
 
   .contact-disclosure {
     position: relative;
     scroll-margin-top: 5rem;
-  }
-
-  .portfolio-navigation--intro .site-navigation {
-    justify-content: center;
-  }
-
-  .portfolio-navigation--intro .contact-disclosure {
-    position: relative;
-  }
-
-  .portfolio-navigation--intro .contact-disclosure__panel {
-    position: relative;
-    top: auto;
-    right: auto;
-    left: 50%;
-    margin-top: 0.4rem;
-    transform: translateX(-50%);
-    transform-origin: 50% 0;
-  }
-
-  .portfolio-navigation--intro:has(.contact-disclosure[open]) {
-    margin-bottom: 1rem;
   }
 
   .contact-disclosure summary {
@@ -419,117 +249,24 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
     display: none;
   }
 
-  .contact-disclosure summary:focus-visible {
-    outline: none;
-  }
-
-  .navigation-action__label {
-    padding-bottom: 0.04em;
-    border-bottom: 0.1rem dotted var(--color-muted);
-    filter: blur(0);
-    transition: opacity 150ms linear, filter 220ms ease;
-  }
-
-  .navigation-action__art {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: block;
-    width: 3.8rem;
-    aspect-ratio: 1;
-    overflow: hidden;
-    opacity: 0;
-    pointer-events: none;
-    filter: blur(0.45rem);
-    transform: translate(-50%, -50%) scale(0.92);
-    transition:
-      opacity 150ms linear,
-      filter 220ms ease,
-      transform 220ms ease;
-  }
-
-  .navigation-action__art :global(img) {
-    display: block;
-    max-width: none;
-    height: auto;
-    filter: grayscale(1);
-    opacity: 0.74;
-  }
-
-  .navigation-action__art--work :global(img),
-  .navigation-action__art--home :global(img) {
-    width: 320%;
-    transform: translate(-31%, -33%);
-  }
-
-  .navigation-action__art--contact :global(img) {
-    width: 340%;
-    transform: translate(-31%, -31%);
-  }
-
-  .site-navigation__work:focus-visible .navigation-action__label,
-  .contact-disclosure summary:focus-visible .navigation-action__label {
-    opacity: 0;
-    filter: blur(0.4rem);
-  }
-
-  .site-navigation__work:focus-visible .navigation-action__art,
-  .contact-disclosure summary:focus-visible .navigation-action__art {
-    opacity: 1;
-    outline: 0.16rem dotted var(--color-focus);
-    outline-offset: 0.08rem;
-    border-radius: 50%;
-    filter: blur(0);
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .site-navigation__work:hover .navigation-action__label,
-    .contact-disclosure summary:hover .navigation-action__label,
-    .contact-disclosure:focus-within .navigation-action__label,
-    .contact-disclosure[open] .navigation-action__label {
-      opacity: 0;
-      filter: blur(0.4rem);
-    }
-
-    .site-navigation__work:hover .navigation-action__art,
-    .contact-disclosure summary:hover .navigation-action__art,
-    .contact-disclosure:focus-within .navigation-action__art,
-    .contact-disclosure[open] .navigation-action__art {
-      opacity: 1;
-      filter: blur(0);
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-
   .contact-disclosure__panel {
     position: absolute;
-    z-index: 2;
-    top: calc(100% + 0.85rem);
-    left: 50%;
+    top: calc(100% + 0.35rem);
+    right: -0.2rem;
     display: flex;
+    width: max-content;
+    max-width: calc(100vw - 1rem);
     flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: min(34rem, calc(100vw - 2rem));
-    gap: 0.15rem clamp(0.85rem, 2vw, 1.45rem);
-    padding: 0;
-    transform: translateX(-50%);
-    transform-origin: 50% 0;
-  }
-
-  .portfolio-navigation--fixed .contact-disclosure__panel {
-    right: 0;
-    left: auto;
     justify-content: flex-end;
-    transform: none;
+    gap: 0.2rem clamp(0.8rem, 2vw, 1.3rem);
+    padding: 0.55rem 0.4rem 0.8rem 1.4rem;
+    background: color-mix(in srgb, var(--color-field) 24%, transparent);
+    backdrop-filter: blur(15px) saturate(1.08);
+    -webkit-backdrop-filter: blur(15px) saturate(1.08);
+    mask-image: linear-gradient(to right, transparent 0, black 10%, black 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 10%, black 100%);
     transform-origin: 100% 0;
-  }
-
-  .portfolio-navigation--footer .contact-disclosure__panel {
-    top: auto;
-    bottom: calc(100% + 1.1rem);
-    transform-origin: 50% 100%;
+    animation: contact-reveal 180ms var(--ease-out) both;
   }
 
   .contact-disclosure:not([open]) .contact-disclosure__panel {
@@ -537,164 +274,94 @@ const openingControlled = placement === 'intro' || placement === 'fixed';
   }
 
   .contact-disclosure__panel a {
-    --contact-link-y: 0rem;
-    --contact-link-rotation: 0deg;
-    position: relative;
     display: inline-flex;
     min-height: 2.75rem;
     align-items: center;
-    padding: 0.35rem 0.08rem 0.2rem;
     color: inherit;
-    font-size: clamp(0.9rem, 0.18vw + 0.87rem, 0.98rem);
-    line-height: 1.2;
+    font-size: 0.9rem;
     text-decoration-line: underline;
     text-decoration-style: dotted;
-    text-decoration-color: color-mix(in srgb, var(--color-muted) 58%, transparent);
-    text-decoration-thickness: 0.08rem;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 64%, transparent);
     text-underline-offset: 0.28rem;
-    transform: translateY(var(--contact-link-y)) rotate(var(--contact-link-rotation));
-    transition:
-      color 150ms ease,
-      text-decoration-color 150ms ease,
-      transform 160ms var(--ease-out);
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .contact-disclosure__panel a:nth-child(1) {
-    --contact-link-y: 0.16rem;
-    --contact-link-rotation: -1.2deg;
-  }
-
-  .contact-disclosure__panel a:nth-child(2) {
-    --contact-link-y: -0.16rem;
-    --contact-link-rotation: 0.8deg;
-  }
-
-  .contact-disclosure__panel a:nth-child(3) {
-    --contact-link-y: 0.22rem;
-    --contact-link-rotation: -0.7deg;
-  }
-
-  .contact-disclosure__panel a:nth-child(4) {
-    --contact-link-y: -0.08rem;
-    --contact-link-rotation: 1.1deg;
-  }
-
-  .contact-disclosure__panel a:nth-child(5) {
-    --contact-link-y: 0.14rem;
-    --contact-link-rotation: -0.8deg;
-  }
-
-  .contact-disclosure__panel a:nth-child(6) {
-    --contact-link-y: -0.12rem;
-    --contact-link-rotation: 0.7deg;
   }
 
   .contact-disclosure__panel a:hover,
   .contact-disclosure__panel a:focus-visible {
-    color: var(--color-ink);
-    text-decoration-color: color-mix(in srgb, var(--color-ink) 78%, transparent);
-    transform: translateY(calc(var(--contact-link-y) - 0.12rem)) rotate(var(--contact-link-rotation));
+    text-decoration-color: var(--color-ink);
   }
 
-  @media (max-width: 44rem) {
+  @keyframes contact-reveal {
+    from { opacity: 0; transform: translateY(-0.3rem); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-    .portfolio-navigation--fixed {
-      top: 0.55rem;
-      right: 0.65rem;
-    }
-
-    .portfolio-navigation--fixed .site-navigation {
-      padding-inline: 0.25rem;
-    }
-
-    .portfolio-navigation--footer {
-      min-height: 68svh;
-      padding: 12rem 1.25rem max(4.5rem, 9svh);
-    }
-
-    .portfolio-navigation--footer .site-navigation {
-      width: max-content;
-      gap: 1.9rem;
-    }
-
-    .portfolio-navigation--footer .site-navigation__work,
-    .portfolio-navigation--footer .contact-disclosure summary {
-      min-width: 5.25rem;
-      padding-inline: 0.45rem;
+  @media (max-width: 38rem) {
+    .portfolio-navigation {
+      padding: 0.45rem 0.7rem 1rem 1.2rem;
     }
 
     .site-navigation {
-      gap: 1.5rem;
-      font-size: 0.82rem;
+      gap: clamp(0.65rem, 3.4vw, 1.05rem);
+      font-size: clamp(0.78rem, 3.7vw, 0.9rem);
     }
 
     .navigation-action__art {
-      width: 3.35rem;
+      --drawn-icon-size: 3.25rem;
+      width: var(--drawn-icon-size);
     }
 
     .contact-disclosure__panel {
       display: grid;
-      width: min(19rem, calc(100vw - 2rem));
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.1rem 1.25rem;
-    }
-
-    .contact-disclosure__panel a:nth-child(odd) {
-      justify-self: end;
-      text-align: right;
-    }
-
-    .contact-disclosure__panel a:nth-child(even) {
-      justify-self: start;
-      text-align: left;
-    }
-
-    .portfolio-navigation--footer .contact-disclosure__panel {
-      bottom: calc(100% + 2rem);
-    }
-
-    .portfolio-navigation--fixed .contact-disclosure__panel {
-      width: max-content;
-      max-width: calc(100vw - 1rem);
       grid-template-columns: repeat(3, max-content);
-      gap: 0 clamp(0.55rem, 3vw, 0.85rem);
+      gap: 0 clamp(0.55rem, 2.7vw, 0.85rem);
     }
 
-    .portfolio-navigation--fixed .contact-disclosure__panel a {
-      justify-self: center;
-      font-size: 0.82rem;
-      text-align: center;
-    }
-
-    .portfolio-navigation--intro {
-      margin-top: clamp(1.4rem, 3vh, 1.75rem);
-    }
-
-    .portfolio-navigation--intro .site-navigation {
-      gap: 1.9rem;
-      font-size: 1rem;
-    }
-
-    .portfolio-navigation--intro .site-navigation__work,
-    .portfolio-navigation--intro .contact-disclosure summary {
-      min-width: 5.25rem;
-      padding-inline: 0.45rem;
-    }
-
-    .portfolio-navigation--intro .contact-disclosure__panel {
-      width: min(19rem, calc(100vw - 2rem));
-      margin-inline: auto;
+    .contact-disclosure__panel a {
+      justify-self: end;
+      font-size: 0.8rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .portfolio-navigation,
-    .navigation-action__label,
-    .navigation-action__art {
+    .site-navigation__link,
+    .contact-disclosure summary,
+    .contact-disclosure__panel {
       transition: none;
+      animation: none;
     }
 
+    .navigation-action__label,
+    .navigation-action__art {
+      transform: none;
+      transition: opacity 120ms linear;
+    }
+
+    .navigation-action__art {
+      transform: translate(-50%, -50%);
+    }
+
+    .site-navigation__link:focus-visible .navigation-action__label,
+    .contact-disclosure summary:focus-visible .navigation-action__label,
+    .contact-disclosure[open] summary .navigation-action__label {
+      transform: none;
+    }
+
+    .site-navigation__link:focus-visible .navigation-action__art,
+    .contact-disclosure summary:focus-visible .navigation-action__art,
+    .contact-disclosure[open] summary .navigation-action__art {
+      transform: translate(-50%, -50%);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .site-navigation__link:hover .navigation-action__label,
+      .contact-disclosure summary:hover .navigation-action__label {
+        transform: none;
+      }
+
+      .site-navigation__link:hover .navigation-action__art,
+      .contact-disclosure summary:hover .navigation-action__art {
+        transform: translate(-50%, -50%);
+      }
+    }
   }
 </style>
