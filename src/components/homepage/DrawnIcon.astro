@@ -27,7 +27,7 @@ const icons = {
 ---
 
 <span class={`drawn-icon drawn-icon--${icon}`} aria-hidden="true">
-  <Image src={icons[icon]} alt="" width={512} {loading} />
+  <Image src={icons[icon]} alt="" width={512} {loading} decoding="async" />
 </span>
 
 <style>

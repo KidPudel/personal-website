@@ -62,6 +62,8 @@ Avoid manually restoring scroll position unless native browser restoration is pr
 
 ## Media
 
+`docs/MEDIA_PERFORMANCE.md` is the enforceable media-delivery contract and must be read before changing public media or animation assets.
+
 - Use Astro image optimization for project and portrait media.
 - Keep lossless authored line art lossless.
 - Lazy-load media below the first viewport.

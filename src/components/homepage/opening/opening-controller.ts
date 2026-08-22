@@ -51,14 +51,6 @@ class OpeningSequence extends HTMLElement {
         return;
       }
 
-      const source = window.matchMedia('(max-width: 44.999rem)').matches
-        ? skyVideo.dataset.mobileSrc
-        : skyVideo.dataset.src;
-      if (!skyVideo.getAttribute('src') && source) {
-        skyVideo.src = source;
-        skyVideo.load();
-      }
-
       skyVideo.removeAttribute('data-autoplay-blocked');
       void skyVideo.play().then(
         () => skyVideo.removeAttribute('data-autoplay-blocked'),
@@ -212,9 +204,7 @@ class OpeningSequence extends HTMLElement {
       signal: this.abort.signal,
     });
     openingHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
-    finalHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
     openingHello.dispatchEvent(new CustomEvent('hello-animation-play'));
-    finalHello.dispatchEvent(new CustomEvent('hello-animation-play'));
 
     const handleVisibilityChange = () => {
       setSkyPlayback(document.visibilityState === 'visible' && !completed);
@@ -249,8 +239,6 @@ class OpeningSequence extends HTMLElement {
     this.animations.forEach((animation) => animation.cancel());
     this.animations.clear();
     this.skyVideo?.pause();
-    this.skyVideo?.removeAttribute('src');
-    this.skyVideo?.load();
     this.skyVideo = undefined;
     delete this.dataset.enhanced;
   }

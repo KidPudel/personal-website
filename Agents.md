@@ -44,6 +44,14 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 - Complete and verify one milestone before moving to the next. Keep the site buildable during the rebuild.
 - Run relevant checks and inspect desktop and mobile states before marking a milestone complete.
 
+## Media performance
+
+- Before changing public media, animation assets, image composition, video delivery, or loading behavior, read `docs/MEDIA_PERFORMANCE.md` completely and follow its contract.
+- Every media-related change must pass `pnpm run media:check` and the normal production build.
+- Verify affected routes at representative desktop and mobile viewports.
+- Do not waive the contract by deleting attributes or weakening the checker. If a deliberate exception is necessary, document the reason in `docs/MEDIA_PERFORMANCE.md` and make the narrowest possible checker exception.
+- Optimizing delivery must not alter verified content, crop meaningful evidence incorrectly, remove alternative text, or make essential information depend on JavaScript or motion.
+
 ## Local development
 
 - Start the local website with `./website.sh --start`.

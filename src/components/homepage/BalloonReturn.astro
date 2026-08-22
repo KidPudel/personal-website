@@ -74,10 +74,16 @@ const optimizedFrames = await Promise.all(
         void frame.decode().catch(() => undefined);
       };
 
-      frames.forEach((_, index) => primeFrame(index));
-      const framesReady = Promise.all(
-        frames.map((frame) => frame.decode().catch(() => undefined)),
-      );
+      let framesReady: Promise<void[]> | undefined;
+      const prepareSequenceFrames = () => {
+        if (framesReady) return framesReady;
+
+        frames.forEach((_, index) => primeFrame(index));
+        framesReady = Promise.all(
+          frames.map((frame) => frame.decode().catch(() => undefined)),
+        );
+        return framesReady;
+      };
 
       const syncFrame = (index: number) => {
         primeFrame(index);
@@ -249,7 +255,7 @@ const optimizedFrames = await Promise.all(
         window.addEventListener('keydown', interrupt, { signal });
 
         try {
-          await framesReady;
+          await prepareSequenceFrames();
           if (signal.aborted) throw signal.reason;
 
           const startScrollY = window.scrollY;

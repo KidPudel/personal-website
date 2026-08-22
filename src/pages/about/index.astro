@@ -35,8 +35,11 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
             <Image
               src={realPortrait}
               alt="Igor smiling in a cap and orange life jacket while sitting in a boat"
-              width={640}
+              widths={[320, 480, 640]}
+              sizes="(max-width: 48rem) 72vw, 30rem"
               loading="eager"
+              decoding="async"
+              fetchpriority="high"
               format="webp"
             />
           </figure>
@@ -44,8 +47,10 @@ import BaseDocument from '../../layouts/BaseDocument.astro';
             <Image
               src={couplePortrait}
               alt="Igor and his girlfriend outdoors"
-              width={760}
+              widths={[380, 570, 760]}
+              sizes="(max-width: 48rem) 64vw, 28rem"
               loading="eager"
+              decoding="async"
               format="webp"
             />
           </figure>

@@ -59,6 +59,9 @@ const heroTitle = 'SuperGood';
           widths={[320, 480, 640]}
           sizes="(max-width: 760px) 42vw, 220px"
           format="webp"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
         />
         <Image
           src={checkout}
@@ -66,6 +69,8 @@ const heroTitle = 'SuperGood';
           widths={[320, 480, 640]}
           sizes="(max-width: 760px) 42vw, 220px"
           format="webp"
+          loading="eager"
+          decoding="async"
         />
         <Image
           src={ordersHistory}
@@ -73,6 +78,8 @@ const heroTitle = 'SuperGood';
           widths={[320, 480, 640]}
           sizes="(max-width: 760px) 42vw, 220px"
           format="webp"
+          loading="eager"
+          decoding="async"
         />
         <figcaption>Working product. The phones below are from the application I designed and built, not a later restyle.</figcaption>
       </figure>
@@ -221,7 +228,7 @@ const heroTitle = 'SuperGood';
             <h3>Put proof beside the photograph</h3>
             <p class="journey-map__decision">Weight, ingredients, nutrition, extra cooking time, and price sit with the add action. A photo no longer carries the entire value claim.</p>
             <figure>
-              <Image src={dishSheetLight} alt="Working dish sheet with photo, weight, price, nutrition, ingredients, and add to cart." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <Image src={dishSheetLight} alt="Working dish sheet with photo, weight, price, nutrition, ingredients, and add to cart." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" loading="lazy" decoding="async" />
               <figcaption>Working product</figcaption>
             </figure>
           </li>
@@ -230,7 +237,7 @@ const heroTitle = 'SuperGood';
             <h3>Keep time, count, and total in view</h3>
             <p class="journey-map__decision">Quantity moved onto the item. The persistent bar updates the order without sending the person away from the menu.</p>
             <figure>
-              <Image src={dishSheetDark} alt="Working dark dish sheet with a persistent order bar showing delivery time, count, and total." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <Image src={dishSheetDark} alt="Working dark dish sheet with a persistent order bar showing delivery time, count, and total." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" loading="lazy" decoding="async" />
               <figcaption>Working product</figcaption>
             </figure>
           </li>
@@ -239,7 +246,7 @@ const heroTitle = 'SuperGood';
             <h3>Confirm instead of rediscovering</h3>
             <p class="journey-map__decision">Address, delivery time, payment, bonuses, and total appear together. Each part can be changed locally without losing the order.</p>
             <figure>
-              <Image src={checkout} alt="Working checkout with address, delivery time, payment, bonuses, and order button." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <Image src={checkout} alt="Working checkout with address, delivery time, payment, bonuses, and order button." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" loading="lazy" decoding="async" />
               <figcaption>Working product</figcaption>
             </figure>
           </li>
@@ -248,7 +255,7 @@ const heroTitle = 'SuperGood';
             <h3>Turn a receipt into the next order</h3>
             <p class="journey-map__decision">Expandable cards expose individual dishes and the whole basket. Repeat actions make a finished or cancelled order useful again.</p>
             <figure>
-              <Image src={ordersHistory} alt="Working order history with expandable cards, repeat buttons, and add whole order." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" />
+              <Image src={ordersHistory} alt="Working order history with expandable cards, repeat buttons, and add whole order." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" loading="lazy" decoding="async" />
               <figcaption>Working product</figcaption>
             </figure>
           </li>

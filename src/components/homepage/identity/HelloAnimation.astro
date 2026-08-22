@@ -26,7 +26,11 @@ const frames = Object.entries(frameModules)
 
 <span class="hello-animation-with-text">
   <span class="sr-only">{text}</span>
-  <hello-animation class="hello-animation" aria-hidden="true">
+  <hello-animation
+    class="hello-animation"
+    aria-hidden="true"
+    data-opening={opening ? '' : undefined}
+  >
     {frames.map((frame, index) => {
       const completed = !opening && index === frames.length - 1;
       const initial = opening && index === 0;
@@ -60,7 +64,7 @@ const frames = Object.entries(frameModules)
         hidden
       ></button>
       <span class="hello-animation__click-cue" aria-hidden="true">
-        <Image src={clickCue} alt="" width={512} loading="eager" />
+        <Image src={clickCue} alt="" width={512} loading="lazy" decoding="async" />
       </span>
     </>
   )}
@@ -90,9 +94,10 @@ const frames = Object.entries(frameModules)
 
       if (this.reducedMotion.matches) {
         this.showCompletedFrame();
-      } else {
+      } else if (this.hasAttribute('data-opening')) {
         this.showFrame(0);
-        void this.prepare();
+      } else {
+        this.showCompletedFrame();
       }
     }
 

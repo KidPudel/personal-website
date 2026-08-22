@@ -6,21 +6,6 @@ import { identity } from '../../../content/homepage/identity';
 import HelloAnimation from '../identity/HelloAnimation.astro';
 ---
 
-<link
-  rel="preload"
-  href={skyVideoUrl}
-  as="video"
-  type="video/mp4"
-  media="(min-width: 45rem) and (prefers-reduced-motion: no-preference)"
-/>
-<link
-  rel="preload"
-  href={skyMobileVideoUrl}
-  as="video"
-  type="video/mp4"
-  media="(max-width: 44.999rem) and (prefers-reduced-motion: no-preference)"
-/>
-
 <opening-sequence class="opening-sequence">
   <div class="opening-sequence__scene">
     <div class="opening-sequence__sky" aria-hidden="true">
@@ -36,9 +21,10 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
       />
       <video
         data-opening-sky
-        data-src={skyVideoUrl}
-        data-mobile-src={skyMobileVideoUrl}
+        data-critical-media
         poster={skyPoster.src}
+        width="1280"
+        height="720"
         preload="auto"
         autoplay
         muted
@@ -47,7 +33,18 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
         disablepictureinpicture
         disableRemotePlayback
         tabindex="-1"
-      ></video>
+      >
+        <source
+          src={skyMobileVideoUrl}
+          type="video/mp4"
+          media="(max-width: 44.999rem) and (prefers-reduced-motion: no-preference)"
+        />
+        <source
+          src={skyVideoUrl}
+          type="video/mp4"
+          media="(min-width: 45rem) and (prefers-reduced-motion: no-preference)"
+        />
+      </video>
     </div>
 
     <div class="opening-sequence__greeting" aria-hidden="true" data-opening-greeting>

@@ -8,8 +8,9 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
-    "check": "astro check",
+    "build": "pnpm run check && astro build",
+    "check": "astro check && pnpm run media:check",
+    "media:check": "node scripts/check-media-performance.mjs",
     "preview": "astro preview"
   },
   "dependencies": {

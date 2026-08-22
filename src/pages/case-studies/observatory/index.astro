@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage, Image } from 'astro:assets';
 
 import observatoryTitleTexture from '../../../assets/case_study_images/ditchered_observatory_bg.png';
 import launchFilmPoster from '../../../assets/software-showcases/observatory/launch-film.png';
@@ -35,6 +35,12 @@ const releaseURL = 'https://github.com/KidPudel/Observatory/releases/latest';
 const launchFilmURL = 'https://www.youtube.com/watch?v=6LWORcxVZmY&t=5s';
 const launchFilmEmbedURL = 'https://www.youtube-nocookie.com/embed/6LWORcxVZmY?start=5&autoplay=1';
 const heroTitle = 'Observatory';
+const optimizedTitleTexture = await getImage({
+  src: observatoryTitleTexture,
+  width: 1600,
+  format: 'webp',
+  quality: 80,
+});
 
 const sketches = [
   { src: sketchGrouping, alt: 'Early sketch comparing loose processes with processes grouped by application.', caption: 'The first shift: from a loose field of processes to application groups.' },
@@ -75,7 +81,7 @@ const sketches = [
       <h1
         class="hero-title"
         aria-label={heroTitle}
-        style={`--hero-title-texture: url('${observatoryTitleTexture.src}')`}
+        style={`--hero-title-texture: url('${optimizedTitleTexture.src}')`}
       >
         {heroTitle.split('').map((letter, index) => (
           <span
@@ -116,6 +122,9 @@ const sketches = [
               widths={[720, 1080, 1280]}
               sizes="(max-width: 760px) 94vw, 820px"
               format="webp"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
             />
             <span class="hero-introduction__play" aria-hidden="true"></span>
           </span>
@@ -212,6 +221,11 @@ const sketches = [
                 <Image
                   src={personaIndependentTroubleshooter}
                   alt="Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture."
+                  widths={[240, 360, 480]}
+                  sizes="(max-width: 760px) 50vw, 16rem"
+                  format="webp"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <h3>Independent troubleshooter</h3>
@@ -260,6 +274,11 @@ const sketches = [
                 <Image
                   src={personaPerformanceVerifier}
                   alt="Hand-drawn portrait of the performance verifier persona writing on a clipboard."
+                  widths={[240, 360, 480]}
+                  sizes="(max-width: 760px) 50vw, 16rem"
+                  format="webp"
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <h3>Performance verifier</h3>
@@ -333,7 +352,7 @@ const sketches = [
       <div class="sketch-grid">
         {sketches.map((sketch, index) => (
           <figure>
-            <div class="sketch-surface"><Image src={sketch.src} alt={sketch.alt} /></div>
+            <div class="sketch-surface"><Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 38vw" format="webp" loading="lazy" decoding="async" /></div>
             <figcaption><span>0{index + 1}</span> {sketch.caption}</figcaption>
           </figure>
         ))}
@@ -355,9 +374,9 @@ const sketches = [
 
       <div class="scroll-story" data-scroll-story>
         <div class="scroll-story__stage" aria-live="off">
-          <figure data-story-frame="0" class="is-active"><Image src={prototypeNow} alt="Initial low-fidelity Now screen with application cards." /></figure>
-          <figure data-story-frame="1"><Image src={prototypeTest} alt="Initial low-fidelity test setup screen." /></figure>
-          <figure data-story-frame="2"><Image src={prototypeHistory} alt="Initial low-fidelity History screen with saved recordings." /></figure>
+          <figure data-story-frame="0" class="is-active"><Image src={prototypeNow} alt="Initial low-fidelity Now screen with application cards." widths={[480, 720, 960]} sizes="(max-width: 760px) 94vw, 58vw" format="webp" loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="1"><Image src={prototypeTest} alt="Initial low-fidelity test setup screen." widths={[480, 720, 960]} sizes="(max-width: 760px) 94vw, 58vw" format="webp" loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="2"><Image src={prototypeHistory} alt="Initial low-fidelity History screen with saved recordings." widths={[480, 720, 960]} sizes="(max-width: 760px) 94vw, 58vw" format="webp" loading="lazy" decoding="async" /></figure>
         </div>
         <ol class="scroll-story__steps">
           <li data-story-step="0" class="is-active"><span>04.1</span><h3>Now</h3><p>Grouped application cards made the whole application visible, but not yet easy to scan.</p></li>
@@ -367,8 +386,8 @@ const sketches = [
       </div>
 
       <div class="flow-evidence">
-        <figure><Image src={flowNow} alt="Early linear flow for the Now experience." /><figcaption><span>04.4</span> The smallest possible path through the live view.</figcaption></figure>
-        <figure><Image src={flowConsolidation} alt="Three prototype flows showing the consolidation of History into Saved Results within Tests." /><figcaption><span>04.5</span> I eventually folded History into Tests as Saved Results. Recording and reviewing were one workflow, not two products.</figcaption></figure>
+        <figure><Image src={flowNow} alt="Early linear flow for the Now experience." widths={[480, 720, 960]} sizes="(max-width: 760px) 94vw, 46vw" format="webp" loading="lazy" decoding="async" /><figcaption><span>04.4</span> The smallest possible path through the live view.</figcaption></figure>
+        <figure><Image src={flowConsolidation} alt="Three prototype flows showing the consolidation of History into Saved Results within Tests." widths={[480, 720, 960]} sizes="(max-width: 760px) 94vw, 46vw" format="webp" loading="lazy" decoding="async" /><figcaption><span>04.5</span> I eventually folded History into Tests as Saved Results. Recording and reviewing were one workflow, not two products.</figcaption></figure>
       </div>
     </section>
 
@@ -401,9 +420,9 @@ const sketches = [
           recognizable while a live plot kept the full picture visible.
         </p>
         <div class="validation-pair">
-          <figure><Image src={wireframeNowCards} alt="Wireframe of a card-based live application view." /><figcaption>Card grouping</figcaption></figure>
+          <figure><Image src={wireframeNowCards} alt="Wireframe of a card-based live application view." widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 36vw" format="webp" loading="lazy" decoding="async" /><figcaption>Card grouping</figcaption></figure>
           <span aria-hidden="true">→</span>
-          <figure><Image src={wireframeNowList} alt="Wireframe of a simplified list-based live application view." /><figcaption>List with live plot</figcaption></figure>
+          <figure><Image src={wireframeNowList} alt="Wireframe of a simplified list-based live application view." widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 36vw" format="webp" loading="lazy" decoding="async" /><figcaption>List with live plot</figcaption></figure>
         </div>
       </article>
 
@@ -414,9 +433,9 @@ const sketches = [
           created a more natural flow without overwhelming a non-technical user.
         </p>
         <div class="validation-pair">
-          <figure><Image src={wireframeTestComplex} alt="Wireframe combining test setup, recent tests, and an active recording." /><figcaption>Everything at once</figcaption></figure>
+          <figure><Image src={wireframeTestComplex} alt="Wireframe combining test setup, recent tests, and an active recording." widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 36vw" format="webp" loading="lazy" decoding="async" /><figcaption>Everything at once</figcaption></figure>
           <span aria-hidden="true">→</span>
-          <figure><Image src={wireframeTestSetup} alt="Wireframe of a simplified controlled test setup." /><figcaption>Choose, configure, start</figcaption></figure>
+          <figure><Image src={wireframeTestSetup} alt="Wireframe of a simplified controlled test setup." widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 36vw" format="webp" loading="lazy" decoding="async" /><figcaption>Choose, configure, start</figcaption></figure>
         </div>
       </article>
 
@@ -427,9 +446,9 @@ const sketches = [
           made it easy to move between the list and a wide result without navigating back and forth.
         </p>
         <div class="validation-pair">
-          <figure><Image src={wireframeHistory} alt="Wireframe of a separate History destination." /><figcaption>History as a destination</figcaption></figure>
+          <figure><Image src={wireframeHistory} alt="Wireframe of a separate History destination." widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 36vw" format="webp" loading="lazy" decoding="async" /><figcaption>History as a destination</figcaption></figure>
           <span aria-hidden="true">→</span>
-          <figure><Image src={wireframeSavedResults} alt="Wireframe of Saved Results inside the Tests workflow." /><figcaption>Saved Results inside Tests</figcaption></figure>
+          <figure><Image src={wireframeSavedResults} alt="Wireframe of Saved Results inside the Tests workflow." widths={[320, 480, 640]} sizes="(max-width: 760px) 92vw, 36vw" format="webp" loading="lazy" decoding="async" /><figcaption>Saved Results inside Tests</figcaption></figure>
         </div>
       </article>
     </section>
@@ -456,13 +475,13 @@ const sketches = [
 
       <div class="scroll-story scroll-story--outcome" data-scroll-story>
         <div class="scroll-story__stage" aria-live="off">
-          <figure data-story-frame="0" class="is-active"><Image src={outcomeNow} alt="Final Observatory Now screen with live application data and a chart." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
-          <figure data-story-frame="1"><Image src={outcomeProcessDetails} alt="Expanded process details in the final Observatory live view." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
-          <figure data-story-frame="2"><Image src={outcomeMemory} alt="Final Observatory memory timeline chart." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
-          <figure data-story-frame="3"><Image src={outcomeTestSetup} alt="Final Observatory controlled test setup screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
-          <figure data-story-frame="4"><Image src={outcomeRecording} alt="Final Observatory guided recording screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
-          <figure data-story-frame="5"><Image src={outcomeSavedResults} alt="Final Observatory Saved Results screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
-          <figure data-story-frame="6"><Image src={outcomeComparison} alt="Final Observatory comparison screen showing synchronized metric timelines." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /></figure>
+          <figure data-story-frame="0" class="is-active"><Image src={outcomeNow} alt="Final Observatory Now screen with live application data and a chart." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="1"><Image src={outcomeProcessDetails} alt="Expanded process details in the final Observatory live view." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="2"><Image src={outcomeMemory} alt="Final Observatory memory timeline chart." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="3"><Image src={outcomeTestSetup} alt="Final Observatory controlled test setup screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="4"><Image src={outcomeRecording} alt="Final Observatory guided recording screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="5"><Image src={outcomeSavedResults} alt="Final Observatory Saved Results screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+          <figure data-story-frame="6"><Image src={outcomeComparison} alt="Final Observatory comparison screen showing synchronized metric timelines." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
         </div>
         <ol class="scroll-story__steps">
           <li data-story-step="0" class="is-active"><span>06.1 / Now</span><h3>Read the whole application.</h3><p>A compact application list keeps the live picture scannable.</p></li>

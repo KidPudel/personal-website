@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { getImage, Image } from 'astro:assets';
 
 import discoursesCover from '../../assets/games/discourses/cover.png';
 import discoursesScene from '../../assets/games/discourses/winter-scene.jpeg';
@@ -24,6 +24,18 @@ interface Props {
 
 const { slug } = Astro.props;
 const diagram = slug === 'receipt-processing' || slug === 'ordering-platform' || slug === 'card-system-study';
+const discoursesPoster = await getImage({
+  src: discoursesScene,
+  width: 960,
+  format: 'webp',
+  quality: 82,
+});
+const snakeOptimizedPoster = await getImage({
+  src: snakePoster,
+  width: 960,
+  format: 'webp',
+  quality: 82,
+});
 const snowflakes = Array.from({ length: 16 }, (_, index) => {
   const duration = 4.7 + (index % 5) * 0.6;
   return {
@@ -47,8 +59,10 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
         sizes="(max-width: 760px) 94vw, 58vw"
         format="webp"
         loading="eager"
+        decoding="async"
+        fetchpriority="high"
       />
-      <Image class="observatory-media__icon" src={observatoryIcon} alt="" width={150} loading="lazy" />
+      <Image class="observatory-media__icon" src={observatoryIcon} alt="" width={150} loading="lazy" decoding="async" />
     </div>
   )}
 
@@ -60,6 +74,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
       sizes="(max-width: 760px) 94vw, 45vw"
       format="webp"
       loading="lazy"
+      decoding="async"
     />
   )}
 
@@ -72,8 +87,9 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
         sizes="(max-width: 760px) 94vw, 45vw"
         format="webp"
         loading="lazy"
+        decoding="async"
       />
-      <Image class="bee-media__icon" src={chineseBeeIcon} alt="" width={128} loading="lazy" />
+      <Image class="bee-media__icon" src={chineseBeeIcon} alt="" width={128} loading="lazy" decoding="async" />
     </div>
   )}
 
@@ -96,30 +112,29 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
     <div class="discourses-media">
       <video
         src={discoursesTeaser}
-        poster={discoursesScene.src}
+        poster={discoursesPoster.src}
         width="960"
         height="540"
-        autoplay
         controls
         loop
         muted
         playsinline
-        preload="metadata"
+        preload="none"
         aria-label="Discourses by Campfire gameplay in a snowy mountain forest"
       >
         Your browser does not support embedded video.
       </video>
-      <Image class="discourses-media__cover" src={discoursesCover} alt="" width={360} loading="lazy" />
+      <Image class="discourses-media__cover" src={discoursesCover} alt="" width={360} loading="lazy" decoding="async" />
     </div>
   )}
 
   {slug === 'santa-foundation' && (
     <div class="santa-media" role="img" aria-label="Pixel art scene from Santa Foundation with a flying elf and falling snow">
-      <Image class="santa-media__layer" src={santaSky} alt="" width={800} loading="lazy" />
-      <Image class="santa-media__layer" src={santaMountains} alt="" width={800} loading="lazy" />
-      <Image class="santa-media__layer" src={santaCity} alt="" width={800} loading="lazy" />
+      <Image class="santa-media__layer" src={santaSky} alt="" width={800} loading="lazy" decoding="async" />
+      <Image class="santa-media__layer" src={santaMountains} alt="" width={800} loading="lazy" decoding="async" />
+      <Image class="santa-media__layer" src={santaCity} alt="" width={800} loading="lazy" decoding="async" />
       <div class="santa-media__sleigh">
-        <Image src={santaSleigh} alt="" width={128} loading="lazy" />
+        <Image src={santaSleigh} alt="" width={128} loading="lazy" decoding="async" />
       </div>
       <div class="santa-media__snow" aria-hidden="true">
         {snowflakes.map((flake) => (
@@ -128,6 +143,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
             alt=""
             width={16}
             loading="lazy"
+            decoding="async"
             style={`--snow-delay:${flake.delay.toFixed(2)}s;--snow-drift:${flake.drift.toFixed(2)}rem;--snow-duration:${flake.duration.toFixed(2)}s;--snow-left:${flake.left}%;--snow-opacity:${flake.opacity.toFixed(2)};--snow-size:${flake.size.toFixed(2)}rem;`}
           />
         ))}
@@ -140,10 +156,12 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
     <video
       class="snake-media"
       src={snakeVideo}
-      poster={snakePoster.src}
+      poster={snakeOptimizedPoster.src}
+      width="1150"
+      height="720"
       controls
       playsinline
-      preload="metadata"
+      preload="none"
       aria-label="Snake built with Go and raylib"
     >
       Your browser does not support embedded video.
@@ -159,6 +177,7 @@ const snowflakes = Array.from({ length: 16 }, (_, index) => {
       sizes="(max-width: 760px) 90vw, 30vw"
       format="webp"
       loading="lazy"
+      decoding="async"
     />
   )}
 

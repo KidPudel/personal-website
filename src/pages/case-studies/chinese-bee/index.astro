@@ -30,7 +30,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
     <li><a href="#outcome" data-index-link="outcome"><span>05</span><span class="chapter-index__name">Outcome</span></a></li>
     <li><a href="#reflection" data-index-link="reflection"><span>06</span><span class="chapter-index__name">Reflection</span></a></li>
   </ol>
-</nav><main id="main-content"><header class="hero"><p class="eyebrow">Product design · Telegram learning prototype</p><h1 class="hero-title">Two Sticks</h1><p class="hero__line">Write the character, without leaving the chat.</p><p class="hero__intro">Two Sticks was a Telegram prototype for learning Chinese characters. A 2024 MPGU diploma supplied the pedagogical ground. I turned that ground into a product and built the bot, the API, and the handwriting web app inside Telegram. The implementation originally used the name Chinese Bee.</p><dl class="facts"><div><dt>Role</dt><dd>Product direction, UX/UI, bot, API, handwriting app</dd></div><div><dt>When</dt><dd>2024, with a diploma project at MPGU</dd></div><div><dt>Research</dt><dd>2024 MPGU diploma: copybooks, methods, competitors, masterclass</dd></div><div><dt>Outcome</dt><dd>Shipped prototype, no longer hosted</dd></div></dl><figure class="hero-stage"><div class="hero-stage__phones"><Image src={startScreen} alt="Two Sticks introduction and first learning prompt in Telegram." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} /><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} /><Image src={writeScreen} alt="Two Sticks handwriting Web App with a drawn character and recognition score." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} /></div><Image src={beeIcon} alt="" widths={[96, 144, 180]} sizes="(max-width: 760px) 4.5rem, 7.5rem" format="webp" class="hero-stage__icon" /><figcaption>Working screens from the Telegram learning loop.</figcaption></figure></header><section class="chapter" id="context" data-index-section>
+</nav><main id="main-content"><header class="hero"><p class="eyebrow">Product design · Telegram learning prototype</p><h1 class="hero-title">Two Sticks</h1><p class="hero__line">Write the character, without leaving the chat.</p><p class="hero__intro">Two Sticks was a Telegram prototype for learning Chinese characters. A 2024 MPGU diploma supplied the pedagogical ground. I turned that ground into a product and built the bot, the API, and the handwriting web app inside Telegram. The implementation originally used the name Chinese Bee.</p><dl class="facts"><div><dt>Role</dt><dd>Product direction, UX/UI, bot, API, handwriting app</dd></div><div><dt>When</dt><dd>2024, with a diploma project at MPGU</dd></div><div><dt>Research</dt><dd>2024 MPGU diploma: copybooks, methods, competitors, masterclass</dd></div><div><dt>Outcome</dt><dd>Shipped prototype, no longer hosted</dd></div></dl><figure class="hero-stage"><div class="hero-stage__phones"><Image src={startScreen} alt="Two Sticks introduction and first learning prompt in Telegram." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} loading="eager" decoding="async" fetchpriority="high" /><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} loading="eager" decoding="async" /><Image src={writeScreen} alt="Two Sticks handwriting Web App with a drawn character and recognition score." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} loading="eager" decoding="async" /></div><Image src={beeIcon} alt="" widths={[96, 144, 180]} sizes="(max-width: 760px) 4.5rem, 7.5rem" format="webp" class="hero-stage__icon" loading="lazy" decoding="async" /><figcaption>Working screens from the Telegram learning loop.</figcaption></figure></header><section class="chapter" id="context" data-index-section>
   <header class="chapter__label">
     <span>01</span>
     <p>Context</p>
@@ -128,7 +128,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>Search returns matches, then a details card with Chinese, pinyin, meaning, HSK level, and Save.</dd></div>
         <div><dt>Why</dt><dd>A lookup that cannot feed practice is a dead end. Saving stays on the character card.</dd></div>
       </dl>
-      <figure><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} /></figure>
+      <figure><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
     <li>
       <p>02 Recall</p>
@@ -137,7 +137,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>Flashcards use the learner’s saved words and wait until five exist. The empty state says exactly how many are missing.</dd></div>
         <div><dt>Why</dt><dd>A flashcard feature with no plausible alternatives is interface theatre.</dd></div>
       </dl>
-      <figure><Image src={flashcardScreen} alt="Two Sticks flashcard practice using the learner’s saved characters." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} /></figure>
+      <figure><Image src={flashcardScreen} alt="Two Sticks flashcard practice using the learner’s saved characters." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
     <li class="is-sheet">
       <p>03 Understand</p>
@@ -146,7 +146,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>Generate a notebook sheet with structure, elements, similar characters, mnemonic, examples, and a writing grid.</dd></div>
         <div><dt>Why</dt><dd>The sheet turns pedagogical terms into a working object the learner can keep in the same chat.</dd></div>
       </dl>
-      <figure><Image src={notebookFilled} alt="Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid." widths={[480, 720, 960]} sizes="(max-width: 760px) 92vw, 320px" format="webp" quality={85} /></figure>
+      <figure><Image src={notebookFilled} alt="Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid." widths={[480, 720, 960]} sizes="(max-width: 760px) 92vw, 320px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
     <li>
       <p>04 Write</p>
@@ -155,7 +155,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>The Telegram Web App draws from the same saved set: prompt, canvas, clear, check, next.</dd></div>
         <div><dt>Limit</dt><dd>The API recognises similarity to the target character. It does not teach or verify stroke order.</dd></div>
       </dl>
-      <figure><Image src={writeScreen} alt="Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} /></figure>
+      <figure><Image src={writeScreen} alt="Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
   </ol>
 
@@ -182,8 +182,8 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
     </dl>
   </div>
   <div class="outcome-board">
-    <figure><Image src={notebookBlank} alt="Blank Two Sticks notebook sheet ready for character study." widths={[640, 960, 1280, 1600]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /><figcaption><span>05.1</span> A generated copybook page that stays with the learner.</figcaption></figure>
-    <figure><Image src={writeScreen} alt="Dictation Web App showing handwriting and an accuracy score." widths={[240, 360, 480, 640]} sizes="(max-width: 760px) 56vw, 360px" format="webp" quality={85} /><figcaption><span>05.2</span> The same saved set reaches the hand.</figcaption></figure>
+    <figure><Image src={notebookBlank} alt="Blank Two Sticks notebook sheet ready for character study." widths={[640, 960, 1280, 1600]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} loading="lazy" decoding="async" /><figcaption><span>05.1</span> A generated copybook page that stays with the learner.</figcaption></figure>
+    <figure><Image src={writeScreen} alt="Dictation Web App showing handwriting and an accuracy score." widths={[240, 360, 480, 640]} sizes="(max-width: 760px) 56vw, 360px" format="webp" quality={85} loading="lazy" decoding="async" /><figcaption><span>05.2</span> The same saved set reaches the hand.</figcaption></figure>
   </div>
 </section><section class="chapter reflection" id="reflection" data-index-section>
   <header class="chapter__label">
