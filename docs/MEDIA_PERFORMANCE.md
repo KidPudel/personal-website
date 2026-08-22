@@ -10,6 +10,8 @@ The document must become readable before optional media finishes loading. First-
 
 Fast presentation means that the browser can paint a correctly sized, meaningful result immediately and progressively improve it. It does not mean eagerly downloading the entire site.
 
+On GitHub Pages, even a very small cold asset request can add a separate network wait. A tiny critical poster or static animation state may be inlined when that avoids a visible empty interval. Keep inline media exceptional and size-bounded because it increases every HTML response.
+
 ## Images
 
 - Use Astro `Image`, `Picture`, or `getImage` for photographic, project, portrait, and screenshot media.
@@ -19,6 +21,7 @@ Fast presentation means that the browser can paint a correctly sized, meaningful
 - Use `loading="eager"`, `decoding="async"`, and `fetchpriority="high"` only for the single most important first-viewport image on a route.
 - Other first-viewport images may be eager but must not receive high priority.
 - Use `loading="lazy"` and `decoding="async"` for media below the first viewport, hidden until interaction, or used only as decoration.
+- Prepare lazy images conservatively before they enter the viewport. Use an observer rather than making the whole document eager, and reduce the look-ahead distance when data saver or a slow connection is active.
 - Do not ship a full-resolution source through CSS `background-image` when a generated, size-bounded asset can provide the same result.
 - Preserve useful alternative text for meaningful media and empty alternatives for decorative media.
 - Do not render GIF animation. Use a muted MP4 or WebM with a static poster.
@@ -30,6 +33,8 @@ Fast presentation means that the browser can paint a correctly sized, meaningful
 - Every video needs intrinsic width and height, a lightweight poster, `playsinline`, and an explicit preload policy.
 - Use `preload="none"` for interaction-only and below-fold video. Use `metadata` only when duration or dimensions are needed before interaction.
 - `preload="auto"` and autoplay are reserved for an explicitly reviewed, silent, first-viewport experience marked `data-critical-media`.
+- A critical video must have an immediately presentable poster. If the poster is tiny and first-paint latency is visible on the current host, inline it instead of paying another cold request.
+- Deferred videos may move from `none` to `metadata` or `auto` as they approach the viewport. Respect data saver and slow connections, and do not autoplay them.
 - Autoplay video must be muted, loop only when the loop is intentional, pause when hidden, and retain a useful poster if playback is blocked.
 - Encode MP4 for progressive delivery with the `moov` atom before media data. Use broadly supported H.264 with `yuv420p`; omit audio from intentionally silent files.
 - A short video is not automatically a light video. Check encoded bytes, bitrate, dimensions, frame rate, and startup metadata.
@@ -39,6 +44,7 @@ Fast presentation means that the browser can paint a correctly sized, meaningful
 - Do not eagerly fetch or decode every frame when a component connects.
 - Load the active frame and only the neighbouring window required for reliable playback.
 - Interaction-only sequences may prepare all required frames after the user expresses intent, but never on the initial page critical path.
+- If a frame sequence shares the first viewport with critical video, show a static first frame immediately and wait until the video can play before fetching the remaining sequence.
 - Keep a static first or completed frame available without JavaScript and under reduced motion.
 - Stop frame work when the component is hidden, settled, disconnected, or reduced motion is active.
 

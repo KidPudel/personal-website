@@ -1,5 +1,5 @@
 ---
-import skyPoster from '../../../assets/art/dithered-sky-poster.webp';
+import skyPosterInline from '../../../assets/art/dithered-sky-poster.webp?inline';
 import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
 import { identity } from '../../../content/homepage/identity';
@@ -11,18 +11,18 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
     <div class="opening-sequence__sky" aria-hidden="true">
       <img
         class="opening-sequence__sky-poster"
-        src={skyPoster.src}
+        src={skyPosterInline}
         alt=""
         width="1280"
         height="720"
         loading="eager"
         fetchpriority="high"
-        decoding="async"
+        decoding="sync"
       />
       <video
         data-opening-sky
         data-critical-media
-        poster={skyPoster.src}
+        poster={skyPosterInline}
         width="1280"
         height="720"
         preload="auto"

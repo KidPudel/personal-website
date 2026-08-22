@@ -3,6 +3,7 @@ import { openingMotion } from './opening-motion';
 class OpeningSequence extends HTMLElement {
   private abort?: AbortController;
   private animations = new Set<Animation>();
+  private greetingTimer = 0;
   private skyVideo?: HTMLVideoElement;
 
   connectedCallback() {
@@ -203,8 +204,22 @@ class OpeningSequence extends HTMLElement {
       once: true,
       signal: this.abort.signal,
     });
-    openingHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
-    openingHello.dispatchEvent(new CustomEvent('hello-animation-play'));
+    let greetingStarted = false;
+    const startGreeting = () => {
+      if (greetingStarted || !this.isConnected) return;
+      greetingStarted = true;
+      window.clearTimeout(this.greetingTimer);
+      this.greetingTimer = 0;
+      openingHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
+      openingHello.dispatchEvent(new CustomEvent('hello-animation-play'));
+    };
+
+    if (skyVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+      startGreeting();
+    } else {
+      skyVideo.addEventListener('canplay', startGreeting, { once: true, signal: this.abort.signal });
+      this.greetingTimer = window.setTimeout(startGreeting, 1_200);
+    }
 
     const handleVisibilityChange = () => {
       setSkyPlayback(document.visibilityState === 'visible' && !completed);
@@ -236,6 +251,8 @@ class OpeningSequence extends HTMLElement {
 
   disconnectedCallback() {
     this.abort?.abort();
+    window.clearTimeout(this.greetingTimer);
+    this.greetingTimer = 0;
     this.animations.forEach((animation) => animation.cancel());
     this.animations.clear();
     this.skyVideo?.pause();

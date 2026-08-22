@@ -93,5 +93,48 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 
       if (skipTargetRequested) requestAnimationFrame(focusMainContent);
     </script>
+    <script is:inline>
+      const connection = navigator.connection;
+      const conserveData = Boolean(
+        connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? ''),
+      );
+      const approachMargin = conserveData ? '60% 0px' : '160% 0px';
+
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const image = entry.target;
+              image.loading = 'eager';
+              void image.decode().catch(() => undefined);
+              observer.unobserve(image);
+            });
+          },
+          { rootMargin: approachMargin },
+        );
+
+        document.querySelectorAll('img[loading="lazy"]').forEach((image) => {
+          imageObserver.observe(image);
+        });
+
+        const videoObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const video = entry.target;
+              video.preload = conserveData ? 'metadata' : 'auto';
+              video.load();
+              observer.unobserve(video);
+            });
+          },
+          { rootMargin: conserveData ? '30% 0px' : '100% 0px' },
+        );
+
+        document.querySelectorAll('video[data-deferred-media]').forEach((video) => {
+          videoObserver.observe(video);
+        });
+      }
+    </script>
   </body>
 </html>

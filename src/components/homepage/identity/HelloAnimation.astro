@@ -3,6 +3,8 @@ import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 
 import clickCue from '../../../assets/art/icons/Doodles_point_click.png';
+import completedFrameInline from '../../../assets/art/Hello-animation/hello_frame18.png?inline';
+import firstFrameInline from '../../../assets/art/Hello-animation/hello_frame1.png?inline';
 
 interface Props {
   text: string;
@@ -35,16 +37,21 @@ const frames = Object.entries(frameModules)
       const completed = !opening && index === frames.length - 1;
       const initial = opening && index === 0;
       const visible = completed || initial;
+      const inlineSource = initial
+        ? firstFrameInline
+        : completed
+          ? completedFrameInline
+          : undefined;
 
       return (
         <img
-          src={visible ? frame.src : undefined}
-          data-src={frame.src}
+          src={visible ? inlineSource : undefined}
+          data-src={visible ? undefined : frame.src}
           alt=""
           width={frame.width}
           height={frame.height}
           loading={visible ? 'eager' : 'lazy'}
-          decoding="async"
+          decoding={visible ? 'sync' : 'async'}
           hidden={!visible}
           data-hello-frame
           data-active={visible ? '' : undefined}
