@@ -1,0 +1,187 @@
+---
+import { Image } from 'astro:assets';
+
+import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
+import card1 from '../../../assets/showcase-cards/card1.png';
+import card2 from '../../../assets/showcase-cards/card2.png';
+import card3 from '../../../assets/showcase-cards/card3.png';
+import { sitePath } from '../../../config/site';
+import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
+import ShowcaseInfo from './ShowcaseInfo.astro';
+import SupergoodScreenStack from './SupergoodScreenStack.astro';
+import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
+
+const cards = [
+  {
+    background: card1,
+    name: 'Observatory',
+    pitch: 'Activity Monitor, but more.',
+    responsibility: 'Concept to launch: product design, identity, and storytelling.',
+    href: sitePath('/case-studies/observatory/'),
+  },
+  {
+    background: card2,
+    name: 'SuperGood',
+    pitch: 'Homemade food, without making the order feel like a gamble.',
+    responsibility: 'Research, product direction, UX/UI, and Flutter implementation.',
+    href: sitePath('/case-studies/supergood/'),
+  },
+  {
+    background: card3,
+    name: 'Two Sticks',
+    pitch: 'Write the character, without leaving the chat.',
+    responsibility: 'Product direction, UX/UI, bot, API, and handwriting app.',
+    href: sitePath('/case-studies/two-sticks/'),
+  },
+];
+---
+
+<div class="showcase">
+  <div class="showcase__composition">
+    {cards.map((card, index) => (
+      <div class={`showcase__card showcase__card--${index + 1}`}>
+        <Image
+          class="showcase__background"
+          src={card.background}
+          alt=""
+          widths={[480, 720, 960, 1280, 1600]}
+          sizes="(max-width: 44rem) calc(100vw - 2rem), 64vw"
+          loading="lazy"
+          decoding="async"
+          format="webp"
+          quality={82}
+        />
+        {index === 0 && <ObservatoryScreenStack />}
+        {index === 1 && <SupergoodScreenStack />}
+        {index === 2 && <TwoSticksScreenStack />}
+        <ShowcaseInfo pitch={card.pitch} responsibility={card.responsibility} />
+        <a
+          class="showcase__project-link"
+          href={card.href}
+          aria-label={`Open the ${card.name} case study`}
+          title={`Open the ${card.name} case study`}
+        >
+          <Image
+            class="showcase__project-link-icon"
+            src={entranceIcon}
+            alt=""
+            widths={[160, 240, 320]}
+            sizes="(max-width: 44rem) 6.6rem, 8.4rem"
+            loading="lazy"
+            decoding="async"
+            format="webp"
+            quality={90}
+          />
+        </a>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .showcase {
+    width: 100%;
+    padding: clamp(7rem, 13vw, 12rem) 0 clamp(7rem, 14vw, 13rem);
+  }
+
+  .showcase__composition {
+    display: grid;
+    width: min(calc(100% - 2 * clamp(1.5rem, 5vw, 5rem)), 90rem);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    margin-inline: auto;
+  }
+
+  .showcase__card {
+    position: relative;
+    overflow: hidden;
+    border-radius: clamp(0.8rem, 1.4vw, 1.35rem);
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.5rem 4rem rgb(17 17 15 / 0.1);
+  }
+
+  .showcase__card::after {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: inherit;
+    content: '';
+    pointer-events: none;
+  }
+
+  .showcase__card :global(.showcase__background) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  :global(.showcase__project-link) {
+    position: absolute;
+    z-index: 4;
+    top: clamp(0.65rem, 1.2vw, 1rem);
+    right: clamp(0.65rem, 1.2vw, 1rem);
+    display: grid;
+    width: clamp(2.2rem, 3.2vw, 2.8rem);
+    aspect-ratio: 1;
+    place-items: center;
+    border: 1px solid rgb(17 17 15 / 0.1);
+    border-radius: 999px;
+    background: rgb(248 248 248 / 0.92);
+    box-shadow: 0 0.15rem 0.55rem rgb(17 17 15 / 0.1);
+    color: inherit;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  :global(.showcase__project-link:focus-visible) {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 0.2rem;
+  }
+
+  :global(.showcase__project-link .showcase__project-link-icon) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: scale(3);
+  }
+
+  .showcase__card--1 {
+    z-index: 1;
+    grid-column: 1 / span 8;
+  }
+
+  .showcase__card--2 {
+    z-index: 2;
+    grid-column: 6 / span 7;
+    margin-top: -11%;
+  }
+
+  .showcase__card--3 {
+    z-index: 3;
+    grid-column: 2 / span 8;
+    margin-top: -7%;
+  }
+
+  @media (max-width: 44rem) {
+    .showcase {
+      padding: clamp(5rem, 18vw, 7rem) 0 clamp(6rem, 22vw, 8rem);
+    }
+
+    .showcase__composition {
+      display: flex;
+      width: min(calc(100% - 2rem), 34rem);
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .showcase__card {
+      width: 100%;
+      margin: 0;
+      border-radius: 0.8rem;
+      box-shadow:
+        0 1px 0 rgb(17 17 15 / 0.05),
+        0 0.8rem 2.4rem rgb(17 17 15 / 0.08);
+    }
+  }
+</style>

@@ -3,7 +3,6 @@ import { openingMotion } from './opening-motion';
 class OpeningSequence extends HTMLElement {
   private abort?: AbortController;
   private animations = new Set<Animation>();
-  private timers = new Set<number>();
   private skyVideo?: HTMLVideoElement;
 
   connectedCallback() {
@@ -11,16 +10,29 @@ class OpeningSequence extends HTMLElement {
     this.dataset.enhanced = 'true';
     this.abort = new AbortController();
 
-    const boxStage = this.querySelector<HTMLElement>('[data-opening-art]');
+    const greetingStage = this.querySelector<HTMLElement>('[data-opening-greeting]');
+    const openingHello = greetingStage?.querySelector<HTMLElement>('hello-animation');
     const sky = this.querySelector<HTMLElement>('.opening-sequence__sky');
     const skyVideo = this.querySelector<HTMLVideoElement>('[data-opening-sky]');
-    const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-opening-frame]'));
     const documentSurface = this.closest<HTMLElement>('[data-homepage]')
       ?.querySelector<HTMLElement>('[data-homepage-document]');
+    const finalGreeting = documentSurface?.querySelector<HTMLElement>(
+      '.hello-animation-with-text',
+    );
+    const finalHello = finalGreeting?.querySelector<HTMLElement>('hello-animation');
     const header = document.querySelector<HTMLElement>('[data-site-header]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    if (!boxStage || !sky || !skyVideo || !frames.length || !documentSurface || !header) {
+    if (
+      !greetingStage ||
+      !openingHello ||
+      !sky ||
+      !skyVideo ||
+      !documentSurface ||
+      !finalGreeting ||
+      !finalHello ||
+      !header
+    ) {
       return;
     }
 
@@ -28,38 +40,6 @@ class OpeningSequence extends HTMLElement {
     skyVideo.muted = true;
     skyVideo.loop = true;
     skyVideo.playsInline = true;
-
-    const frameSource = (frame: HTMLImageElement) =>
-      frame.dataset.src || frame.getAttribute('src') || '';
-    const primedFrames = new Set<number>([0]);
-
-    const primeFrame = (index: number) => {
-      const frame = frames[index];
-      if (!frame || primedFrames.has(index)) return;
-
-      const source = frameSource(frame);
-      if (!source) return;
-      frame.loading = 'eager';
-      frame.src = source;
-      primedFrames.add(index);
-      void frame.decode().catch(() => undefined);
-    };
-
-    const syncFrame = (index: number) => {
-      primeFrame(index);
-      for (let offset = 1; offset <= openingMotion.flipbookDecodeWindow; offset += 1) {
-        primeFrame(index + offset);
-        primeFrame(index - offset);
-      }
-
-      frames.forEach((frame, frameIndex) => {
-        const active = frameIndex === index;
-        frame.toggleAttribute('data-active', active);
-        frame.hidden = !active;
-      });
-    };
-
-    frames.forEach((_, index) => primeFrame(index));
 
     let skyPlaybackRequested = false;
     const setSkyPlayback = (active: boolean) => {
@@ -86,32 +66,21 @@ class OpeningSequence extends HTMLElement {
       );
     };
 
-    const schedule = (callback: () => void, delay: number) => {
-      const timer = window.setTimeout(() => {
-        this.timers.delete(timer);
-        callback();
-      }, delay);
-      this.timers.add(timer);
-    };
-
     let completed = false;
     const showCompletedOpening = () => {
       if (completed) return;
       completed = true;
-      this.animations.forEach((animation) => animation.cancel());
-      this.animations.clear();
-      this.timers.forEach((timer) => window.clearTimeout(timer));
-      this.timers.clear();
-      setSkyPlayback(false);
-      syncFrame(frames.length - 1);
-
+      document.documentElement.classList.add('opening-bypassed');
       this.removeAttribute('data-opening-live');
       this.setAttribute('data-complete', '');
+      finalGreeting.style.removeProperty('opacity');
       documentSurface.inert = false;
       documentSurface.removeAttribute('aria-hidden');
       header.inert = false;
       header.removeAttribute('aria-hidden');
-      document.documentElement.classList.add('opening-bypassed');
+      setSkyPlayback(false);
+      this.animations.forEach((animation) => animation.cancel());
+      this.animations.clear();
     };
 
     const alignHash = () => {
@@ -139,82 +108,113 @@ class OpeningSequence extends HTMLElement {
     documentSurface.setAttribute('aria-hidden', 'true');
     header.inert = true;
     header.setAttribute('aria-hidden', 'true');
+    finalGreeting.style.opacity = '0';
     setSkyPlayback(document.visibilityState === 'visible');
 
-    const documentRevealDuration = openingMotion.durationMs - openingMotion.contentRevealStartMs;
-    const animations = [
-      sky.animate(
+    const handoffGreeting = () => {
+      if (completed) return;
+
+      const openingRect = greetingStage.getBoundingClientRect();
+      const finalRect = finalGreeting.getBoundingClientRect();
+      const finalScaleX = finalRect.width / openingRect.width;
+      const finalScaleY = finalRect.height / openingRect.height;
+
+      greetingStage.style.top = '0';
+      greetingStage.style.left = '0';
+      greetingStage.style.width = `${openingRect.width}px`;
+      greetingStage.style.transform = `translate3d(${openingRect.left}px, ${openingRect.top}px, 0)`;
+
+      const greetingMove = greetingStage.animate(
+        [
+          {
+            opacity: 1,
+            transform: `translate3d(${openingRect.left}px, ${openingRect.top}px, 0) scale(1)`,
+          },
+          {
+            opacity: 1,
+            transform: `translate3d(${finalRect.left}px, ${finalRect.top}px, 0) scale(${finalScaleX}, ${finalScaleY})`,
+            offset: openingMotion.greetingCrossfadeStart,
+          },
+          {
+            opacity: 0,
+            transform: `translate3d(${finalRect.left}px, ${finalRect.top}px, 0) scale(${finalScaleX}, ${finalScaleY})`,
+          },
+        ],
+        {
+          duration: openingMotion.handoffDurationMs,
+          easing: openingMotion.easeInOut,
+          fill: 'forwards',
+        },
+      );
+      const skyFade = sky.animate(
         [
           { opacity: openingMotion.skyOpacityAtStart },
           { opacity: 0 },
         ],
         {
-          duration: openingMotion.durationMs,
+          duration: openingMotion.handoffDurationMs,
           easing: 'linear',
           fill: 'forwards',
         },
-      ),
-      boxStage.animate(
+      );
+      const documentReveal = documentSurface.animate(
         [
-          { opacity: 1, transform: 'scale(1)', offset: 0 },
-          {
-            opacity: 1,
-            transform: 'scale(1)',
-            offset: openingMotion.boxFadeStart,
-            easing: openingMotion.easeOut,
-          },
-          { opacity: 0, transform: 'scale(0.96)', offset: 1 },
+          { opacity: 0 },
+          { opacity: 1 },
         ],
         {
-          duration: openingMotion.durationMs,
-          easing: 'linear',
-          fill: 'forwards',
+          delay: openingMotion.contentRevealDelayMs,
+          duration: openingMotion.contentRevealDurationMs,
+          easing: openingMotion.easeOut,
+          fill: 'both',
         },
-      ),
-      documentSurface.animate(
+      );
+      const headerReveal = header.animate(
         [
           { opacity: 0, transform: 'translate3d(0, 0.75rem, 0)' },
           { opacity: 1, transform: 'translate3d(0, 0, 0)' },
         ],
         {
-          delay: openingMotion.contentRevealStartMs,
-          duration: documentRevealDuration,
+          delay: openingMotion.contentRevealDelayMs,
+          duration: openingMotion.contentRevealDurationMs,
           easing: openingMotion.easeOut,
           fill: 'both',
         },
-      ),
-      header.animate(
+      );
+      const finalGreetingReveal = finalGreeting.animate(
         [
-          { opacity: 0, transform: 'translate3d(0, 0.75rem, 0)' },
-          { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+          { opacity: 0 },
+          { opacity: 0, offset: openingMotion.greetingCrossfadeStart },
+          { opacity: 1 },
         ],
         {
-          delay: openingMotion.contentRevealStartMs,
-          duration: documentRevealDuration,
+          duration: openingMotion.handoffDurationMs,
           easing: openingMotion.easeOut,
-          fill: 'both',
+          fill: 'forwards',
         },
-      ),
-    ];
-    animations.forEach((animation) => this.animations.add(animation));
-
-    const frameStep = openingMotion.boxOpenDurationMs / Math.max(1, frames.length - 1);
-    frames.forEach((_, index) => schedule(() => syncFrame(index), frameStep * index));
-
-    schedule(() => {
-      documentSurface.querySelector('hello-animation')?.dispatchEvent(
-        new CustomEvent('hello-animation-prepare'),
       );
-      documentSurface.querySelector('hello-animation')?.dispatchEvent(
-        new CustomEvent('hello-animation-play'),
-      );
-    }, openingMotion.contentRevealStartMs);
-    schedule(() => {
-      documentSurface.querySelector('playful-word')?.dispatchEvent(new CustomEvent('thermal-hint'));
-    }, openingMotion.contentRevealStartMs + documentRevealDuration * 0.55);
 
-    const completionAnimation = animations[1];
-    void completionAnimation.finished.then(showCompletedOpening).catch(() => undefined);
+      [greetingMove, skyFade, documentReveal, headerReveal, finalGreetingReveal].forEach(
+        (animation) => this.animations.add(animation),
+      );
+      void documentReveal.finished
+        .then(() => {
+          documentSurface
+            .querySelector('playful-word')
+            ?.dispatchEvent(new CustomEvent('thermal-hint'));
+        })
+        .catch(() => undefined);
+      void greetingMove.finished.then(showCompletedOpening).catch(() => undefined);
+    };
+
+    openingHello.addEventListener('hello-animation-complete', handoffGreeting, {
+      once: true,
+      signal: this.abort.signal,
+    });
+    openingHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
+    finalHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
+    openingHello.dispatchEvent(new CustomEvent('hello-animation-play'));
+    finalHello.dispatchEvent(new CustomEvent('hello-animation-play'));
 
     const handleVisibilityChange = () => {
       setSkyPlayback(document.visibilityState === 'visible' && !completed);
@@ -248,8 +248,6 @@ class OpeningSequence extends HTMLElement {
     this.abort?.abort();
     this.animations.forEach((animation) => animation.cancel());
     this.animations.clear();
-    this.timers.forEach((timer) => window.clearTimeout(timer));
-    this.timers.clear();
     this.skyVideo?.pause();
     this.skyVideo?.removeAttribute('src');
     this.skyVideo?.load();

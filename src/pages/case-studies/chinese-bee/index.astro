@@ -1,10 +1,13 @@
 ---
+import { Image } from 'astro:assets';
+
+import flashcardScreen from '../../../assets/case_study_images/two-sticks/flash-card.png';
+import notebookBlank from '../../../assets/case_study_images/two-sticks/notebook-blank.png';
+import notebookFilled from '../../../assets/case_study_images/two-sticks/notebook-filled.png';
+import searchScreen from '../../../assets/case_study_images/two-sticks/search2.png';
+import startScreen from '../../../assets/case_study_images/two-sticks/start1.png';
+import writeScreen from '../../../assets/case_study_images/two-sticks/write.png';
 import beeIcon from '../../../assets/software-showcases/chinesebe_icon.png';
-import chatAndPractice from '../../../assets/evidence/cb3.png';
-import dictation from '../../../assets/evidence/cb2.png';
-import searchSave from '../../../assets/evidence/cb1.png';
-import notebookBlank from '../../../assets/case_study_images/chinesebee/notebook-blank.png';
-import notebookFilled from '../../../assets/case_study_images/chinesebee/notebook-filled.png';
 import { sitePath } from '../../../config/site';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 ---
@@ -14,7 +17,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
   description="How I designed and built Two Sticks, a Telegram prototype that turns character copywork into search, a saved set, flashcards, and handwriting with a score."
   pageClass="chinesebee-case-study"
   themeColor="#F7F1E4"
-  ogImage={dictation.src}
+  ogImage={searchScreen.src}
   canonicalPath={sitePath('/case-studies/two-sticks/')}
 >
 <nav class="topbar" aria-label="Case study navigation"><a href={sitePath('/work/')}>← Work</a><span>Two Sticks / Case study</span><a href="https://github.com/KidPudel/chinesebee_bot">Source ↗</a></nav><nav class="chapter-index" aria-label="Case study sections">
@@ -27,7 +30,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
     <li><a href="#outcome" data-index-link="outcome"><span>05</span><span class="chapter-index__name">Outcome</span></a></li>
     <li><a href="#reflection" data-index-link="reflection"><span>06</span><span class="chapter-index__name">Reflection</span></a></li>
   </ol>
-</nav><main id="main-content"><header class="hero"><p class="eyebrow">Product design · Telegram learning prototype</p><h1 class="hero-title">Two Sticks</h1><p class="hero__line">Write the character, without leaving the chat.</p><p class="hero__intro">Two Sticks was a Telegram prototype for learning Chinese characters. A 2024 MPGU diploma supplied the pedagogical ground. I turned that ground into a product and built the bot, the API, and the handwriting web app inside Telegram. The implementation originally used the name Chinese Bee.</p><dl class="facts"><div><dt>Role</dt><dd>Product direction, UX/UI, bot, API, handwriting app</dd></div><div><dt>When</dt><dd>2024, with a diploma project at MPGU</dd></div><div><dt>Research</dt><dd>2024 MPGU diploma: copybooks, methods, competitors, masterclass</dd></div><div><dt>Outcome</dt><dd>Shipped prototype, no longer hosted</dd></div></dl><figure class="hero-stage"><img src={searchSave.src} alt="Two Sticks in Telegram: search matches, a character card with Save, and flashcard practice." sizes="(max-width: 760px) 94vw, 820px" loading="lazy" decoding="async" width="1536" height="1024"><img src={beeIcon.src} alt="" loading="lazy" decoding="async" width="180" height="179" class="hero-stage__icon"><figcaption>Surviving product screens from the Telegram interaction.</figcaption></figure></header><section class="chapter" id="context" data-index-section>
+</nav><main id="main-content"><header class="hero"><p class="eyebrow">Product design · Telegram learning prototype</p><h1 class="hero-title">Two Sticks</h1><p class="hero__line">Write the character, without leaving the chat.</p><p class="hero__intro">Two Sticks was a Telegram prototype for learning Chinese characters. A 2024 MPGU diploma supplied the pedagogical ground. I turned that ground into a product and built the bot, the API, and the handwriting web app inside Telegram. The implementation originally used the name Chinese Bee.</p><dl class="facts"><div><dt>Role</dt><dd>Product direction, UX/UI, bot, API, handwriting app</dd></div><div><dt>When</dt><dd>2024, with a diploma project at MPGU</dd></div><div><dt>Research</dt><dd>2024 MPGU diploma: copybooks, methods, competitors, masterclass</dd></div><div><dt>Outcome</dt><dd>Shipped prototype, no longer hosted</dd></div></dl><figure class="hero-stage"><div class="hero-stage__phones"><Image src={startScreen} alt="Two Sticks introduction and first learning prompt in Telegram." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} /><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} /><Image src={writeScreen} alt="Two Sticks handwriting Web App with a drawn character and recognition score." widths={[240, 360, 480]} sizes="(max-width: 760px) 29vw, 240px" format="webp" quality={85} /></div><Image src={beeIcon} alt="" widths={[96, 144, 180]} sizes="(max-width: 760px) 4.5rem, 7.5rem" format="webp" class="hero-stage__icon" /><figcaption>Working screens from the Telegram learning loop.</figcaption></figure></header><section class="chapter" id="context" data-index-section>
   <header class="chapter__label">
     <span>01</span>
     <p>Context</p>
@@ -125,7 +128,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>Search returns matches, then a details card with Chinese, pinyin, meaning, HSK level, and Save.</dd></div>
         <div><dt>Why</dt><dd>A lookup that cannot feed practice is a dead end. Saving stays on the character card.</dd></div>
       </dl>
-      <figure><img src={searchSave.src} alt="Two Sticks search results, character details, save action, and saved-set practice." sizes="(max-width: 760px) 70vw, 220px" loading="lazy" decoding="async" width="1536" height="1024"></figure>
+      <figure><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} /></figure>
     </li>
     <li>
       <p>02 Recall</p>
@@ -134,7 +137,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>Flashcards use the learner’s saved words and wait until five exist. The empty state says exactly how many are missing.</dd></div>
         <div><dt>Why</dt><dd>A flashcard feature with no plausible alternatives is interface theatre.</dd></div>
       </dl>
-      <figure><img src={chatAndPractice.src} alt="Two Sticks chat practice next to the handwriting Web App." sizes="(max-width: 760px) 70vw, 220px" loading="lazy" decoding="async" width="1216" height="1294"></figure>
+      <figure><Image src={flashcardScreen} alt="Two Sticks flashcard practice using the learner’s saved characters." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} /></figure>
     </li>
     <li class="is-sheet">
       <p>03 Understand</p>
@@ -143,7 +146,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>Generate a notebook sheet with structure, elements, similar characters, mnemonic, examples, and a writing grid.</dd></div>
         <div><dt>Why</dt><dd>The sheet turns pedagogical terms into a working object the learner can keep in the same chat.</dd></div>
       </dl>
-      <figure><img src={notebookFilled.src} alt="Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid." sizes="(max-width: 760px) 88vw, 320px" loading="lazy" decoding="async" width="1600" height="1012"></figure>
+      <figure><Image src={notebookFilled} alt="Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid." widths={[480, 720, 960]} sizes="(max-width: 760px) 92vw, 320px" format="webp" quality={85} /></figure>
     </li>
     <li>
       <p>04 Write</p>
@@ -152,7 +155,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
         <div><dt>Decision</dt><dd>The Telegram Web App draws from the same saved set: prompt, canvas, clear, check, next.</dd></div>
         <div><dt>Limit</dt><dd>The API recognises similarity to the target character. It does not teach or verify stroke order.</dd></div>
       </dl>
-      <figure><img src={dictation.src} alt="Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score." sizes="(max-width: 760px) 70vw, 220px" loading="lazy" decoding="async" width="533" height="800"></figure>
+      <figure><Image src={writeScreen} alt="Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score." widths={[240, 360, 480]} sizes="(max-width: 760px) 46vw, 168px" format="webp" quality={85} /></figure>
     </li>
   </ol>
 
@@ -179,8 +182,8 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
     </dl>
   </div>
   <div class="outcome-board">
-    <figure><img src={notebookBlank.src} alt="Blank Two Sticks notebook sheet ready for character study." sizes="(max-width: 760px) 94vw, 920px" loading="lazy" decoding="async" width="1600" height="1022"><figcaption><span>05.1</span> A generated copybook page that stays with the learner.</figcaption></figure>
-    <figure><img src={dictation.src} alt="Dictation Web App showing handwriting and an accuracy score." sizes="(max-width: 760px) 70vw, 360px" loading="lazy" decoding="async" width="533" height="800"><figcaption><span>05.2</span> The same saved set reaches the hand.</figcaption></figure>
+    <figure><Image src={notebookBlank} alt="Blank Two Sticks notebook sheet ready for character study." widths={[640, 960, 1280, 1600]} sizes="(max-width: 760px) 94vw, 920px" format="webp" quality={85} /><figcaption><span>05.1</span> A generated copybook page that stays with the learner.</figcaption></figure>
+    <figure><Image src={writeScreen} alt="Dictation Web App showing handwriting and an accuracy score." widths={[240, 360, 480, 640]} sizes="(max-width: 760px) 56vw, 360px" format="webp" quality={85} /><figcaption><span>05.2</span> The same saved set reaches the hand.</figcaption></figure>
   </div>
 </section><section class="chapter reflection" id="reflection" data-index-section>
   <header class="chapter__label">
@@ -422,8 +425,8 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
 
   .hero-phones img {
     border-radius: 18px;
-    box-shadow: 0 18px 48px rgba(28, 25, 20, 0.12);
-    background: #111;
+    background: transparent;
+    filter: drop-shadow(0 18px 24px rgba(28, 25, 20, 0.12));
   }
 
   .hero-phones img:nth-child(1) { rotate: -3.2deg; translate: 0 18px; }
@@ -1070,10 +1073,20 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
     margin: 72px auto 0;
     text-align: left;
   }
-  .hero-stage > img:first-child {
+  .hero-stage__phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(8px, 2.2vw, 24px);
+    align-items: end;
+    padding: clamp(24px, 5vw, 56px) clamp(18px, 4vw, 44px) 0;
     border-radius: 18px;
-    box-shadow: 0 18px 48px rgba(26, 22, 16, 0.12);
-    background: #111;
+    overflow: hidden;
+    background: transparent;
+  }
+  .hero-stage__phones img {
+    width: 100%;
+    min-width: 0;
+    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.3));
   }
   .hero-stage__icon {
     position: absolute;
@@ -1117,6 +1130,7 @@ import BaseDocument from '../../../layouts/BaseDocument.astro';
   }
 
   @media (max-width: 760px) {
+    .hero-stage__phones { gap: 6px; padding: 18px 10px 0; }
     .hero-stage__icon { bottom: 18%; right: 1%; }
     .journey-map > li.is-sheet figure { width: min(100%, 100%); }
     .guide-figure { width: 100%; }

@@ -1,0 +1,65 @@
+---
+interface Props {
+  pitch: string;
+  responsibility: string;
+}
+
+const { pitch, responsibility } = Astro.props;
+---
+
+<div class="showcase-info">
+  <strong>{pitch}</strong>
+  <span>{responsibility}</span>
+</div>
+
+<style>
+  .showcase-info {
+    position: absolute;
+    z-index: 3;
+    top: clamp(0.65rem, 1.2vw, 1rem);
+    left: 50%;
+    display: grid;
+    width: max-content;
+    max-width: calc(100% - clamp(6.25rem, 10vw, 8rem));
+    justify-items: center;
+    gap: 0.2rem;
+    padding: 0.48rem clamp(0.75rem, 1.2vw, 1rem) 0.5rem;
+    border: 1px solid rgb(17 17 15 / 0.1);
+    border-radius: 999px;
+    background: rgb(248 248 248 / 0.92);
+    box-shadow: 0 0.15rem 0.55rem rgb(17 17 15 / 0.1);
+    color: rgb(17 17 15 / 0.72);
+    font-family: var(--font-reading);
+    letter-spacing: 0.005em;
+    line-height: 1.15;
+    pointer-events: none;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  strong {
+    color: rgb(17 17 15 / 0.9);
+    font-size: clamp(0.62rem, 0.82vw, 0.84rem);
+    font-weight: 750;
+  }
+
+  span {
+    font-size: clamp(0.48rem, 0.61vw, 0.64rem);
+    opacity: 0.82;
+  }
+
+  @media (max-width: 44rem) {
+    .showcase-info {
+      max-width: calc(100% - 6.25rem);
+      padding: 0.42rem 0.7rem 0.44rem;
+    }
+
+    strong {
+      font-size: 0.62rem;
+    }
+
+    span {
+      font-size: 0.48rem;
+    }
+  }
+</style>

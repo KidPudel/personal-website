@@ -1,19 +1,9 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-
 import BalloonReturn from './BalloonReturn.astro';
 import ElasticOverscrollBackdrop from './ElasticOverscrollBackdrop.astro';
 import IdentityIntroduction from './identity/IdentityIntroduction.astro';
 import OpeningSequence from './opening/OpeningSequence.astro';
-import ValuesEvidence from './values/ValuesEvidence.astro';
-
-interface Props {
-  observatory: CollectionEntry<'software'>;
-  foodProduct: CollectionEntry<'software'>;
-  chineseBee: CollectionEntry<'software'>;
-}
-
-const { observatory, foodProduct, chineseBee } = Astro.props;
+import ShowcaseCards from './showcase/ShowcaseCards.astro';
 ---
 
 <ElasticOverscrollBackdrop />
@@ -24,7 +14,7 @@ const { observatory, foodProduct, chineseBee } = Astro.props;
   <div class="homepage__document" data-homepage-document>
     <main id="main-content">
       <IdentityIntroduction />
-      <ValuesEvidence {observatory} {foodProduct} {chineseBee} />
+      <ShowcaseCards />
     </main>
 
     <BalloonReturn />

@@ -1,0 +1,22 @@
+---
+import factScreen from '../../../assets/case_study_images/two-sticks/fact.png';
+import flashcardScreen from '../../../assets/case_study_images/two-sticks/flash-card.png';
+import searchScreen from '../../../assets/case_study_images/two-sticks/search2.png';
+import startScreen from '../../../assets/case_study_images/two-sticks/start1.png';
+import handwritingScreen from '../../../assets/case_study_images/two-sticks/write.png';
+import MobileScreenStack from './MobileScreenStack.astro';
+
+const screens = [
+  { src: handwritingScreen, label: 'Handwriting', trim: { top: 46, bottom: 128, left: 39 } },
+  { src: factScreen, label: 'Facts', trim: { top: 91, bottom: 113, left: 46 } },
+  { src: flashcardScreen, label: 'Flashcards', trim: { top: 6, bottom: 14, left: 9 } },
+  { src: searchScreen, label: 'Word search', trim: { top: 4, bottom: 15, left: 8 } },
+  { src: startScreen, label: 'Start', trim: { top: 38, bottom: 114, left: 26 } },
+];
+---
+
+<MobileScreenStack
+  screens={screens}
+  ariaLabel="Cycle Two Sticks screens: Start, Word search, Flashcards, Facts, and Handwriting"
+  targetVisibleRatio={0.918}
+/>

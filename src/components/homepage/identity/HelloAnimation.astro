@@ -6,9 +6,11 @@ import clickCue from '../../../assets/art/icons/Doodles_point_click.png';
 
 interface Props {
   text: string;
+  interactive?: boolean;
+  opening?: boolean;
 }
 
-const { text } = Astro.props;
+const { text, interactive = true, opening = false } = Astro.props;
 const frameModules = import.meta.glob<{ default: ImageMetadata }>(
   '../../../assets/art/Hello-animation/hello_frame*.png',
   { eager: true },
@@ -26,39 +28,47 @@ const frames = Object.entries(frameModules)
   <span class="sr-only">{text}</span>
   <hello-animation class="hello-animation" aria-hidden="true">
     {frames.map((frame, index) => {
-      const completed = index === frames.length - 1;
+      const completed = !opening && index === frames.length - 1;
+      const initial = opening && index === 0;
+      const visible = completed || initial;
 
       return (
         <img
-          src={completed ? frame.src : undefined}
+          src={visible ? frame.src : undefined}
           data-src={frame.src}
           alt=""
           width={frame.width}
           height={frame.height}
-          loading={completed ? 'eager' : 'lazy'}
+          loading={visible ? 'eager' : 'lazy'}
           decoding="async"
-          hidden={!completed}
+          hidden={!visible}
           data-hello-frame
-          data-active={completed ? '' : undefined}
+          data-active={visible ? '' : undefined}
         />
       );
     })}
   </hello-animation>
-  <button
-    class="hello-animation__name-trigger"
-    type="button"
-    aria-label="Show a photo of Igor"
-    aria-controls="identity-portrait"
-    aria-expanded="false"
-    data-identity-portrait-trigger
-    hidden
-  ></button>
-  <span class="hello-animation__click-cue" aria-hidden="true">
-    <Image src={clickCue} alt="" width={512} loading="eager" />
-  </span>
+  {interactive && (
+    <>
+      <button
+        class="hello-animation__name-trigger"
+        type="button"
+        aria-label="Show a photo of Igor"
+        aria-controls="identity-portrait"
+        aria-expanded="false"
+        data-identity-portrait-trigger
+        hidden
+      ></button>
+      <span class="hello-animation__click-cue" aria-hidden="true">
+        <Image src={clickCue} alt="" width={512} loading="eager" />
+      </span>
+    </>
+  )}
 </span>
 
 <script>
+  import { openingMotion } from '../opening/opening-motion';
+
   class HelloAnimation extends HTMLElement {
     private animationFrame = 0;
     private cueTimer = 0;
@@ -109,6 +119,12 @@ const frames = Object.entries(frameModules)
       const frameCount = this.querySelectorAll('[data-hello-frame]').length;
       if (frameCount) this.showFrame(frameCount - 1);
       this.removeAttribute('data-playing');
+    }
+
+    private completePlayback() {
+      this.removeAttribute('data-playing');
+      this.revealClickCue();
+      this.dispatchEvent(new CustomEvent('hello-animation-complete', { bubbles: true }));
     }
 
     private revealClickCue() {
@@ -170,24 +186,24 @@ const frames = Object.entries(frameModules)
       this.played = true;
 
       if (this.reducedMotion?.matches) {
-        this.revealClickCue();
+        this.completePlayback();
         return;
       }
 
       await this.prepare();
       if (!this.isConnected) return;
       if (this.reducedMotion?.matches) {
-        this.revealClickCue();
+        this.completePlayback();
         return;
       }
 
       const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-hello-frame]'));
       if (!frames.length) {
-        this.revealClickCue();
+        this.completePlayback();
         return;
       }
 
-      const frameDuration = 82;
+      const frameDuration = openingMotion.greetingFrameDurationMs;
       let activeFrame = -1;
       let startedAt = 0;
       this.setAttribute('data-playing', '');
@@ -204,8 +220,7 @@ const frames = Object.entries(frameModules)
         if (activeFrame < frames.length - 1) {
           this.animationFrame = window.requestAnimationFrame(animate);
         } else {
-          this.removeAttribute('data-playing');
-          this.revealClickCue();
+          this.completePlayback();
         }
       };
 

@@ -1,23 +1,11 @@
 ---
-import { getImage } from 'astro:assets';
-import frame1 from '../../../assets/art/Doodles-box-opening/box_frame1.png';
-import frame2 from '../../../assets/art/Doodles-box-opening/box_frame2.png';
-import frame3 from '../../../assets/art/Doodles-box-opening/box_frame3.png';
-import frame4 from '../../../assets/art/Doodles-box-opening/box_frame4.png';
-import frame5 from '../../../assets/art/Doodles-box-opening/box_frame5.png';
-import frame6 from '../../../assets/art/Doodles-box-opening/box_frame6.png';
-import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
 import skyPoster from '../../../assets/art/dithered-sky-poster.webp';
 import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
-
-const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
-const optimizedFrames = await Promise.all(
-  frames.map((frame) => getImage({ src: frame, width: 1024, format: 'webp', quality: 'max' })),
-);
+import { identity } from '../../../content/homepage/identity';
+import HelloAnimation from '../identity/HelloAnimation.astro';
 ---
 
-<link rel="preload" href={optimizedFrames[0].src} as="image" fetchpriority="high" />
 <link
   rel="preload"
   href={skyVideoUrl}
@@ -35,50 +23,35 @@ const optimizedFrames = await Promise.all(
 
 <opening-sequence class="opening-sequence">
   <div class="opening-sequence__scene">
-      <div class="opening-sequence__sky" aria-hidden="true">
-        <img
-          class="opening-sequence__sky-poster"
-          src={skyPoster.src}
-          alt=""
-          width="1280"
-          height="720"
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-        />
-        <video
-          data-opening-sky
-          data-src={skyVideoUrl}
-          data-mobile-src={skyMobileVideoUrl}
-          poster={skyPoster.src}
-          preload="auto"
-          autoplay
-          muted
-          loop
-          playsinline
-          disablepictureinpicture
-          disableRemotePlayback
-          tabindex="-1"
-        ></video>
-      </div>
+    <div class="opening-sequence__sky" aria-hidden="true">
+      <img
+        class="opening-sequence__sky-poster"
+        src={skyPoster.src}
+        alt=""
+        width="1280"
+        height="720"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <video
+        data-opening-sky
+        data-src={skyVideoUrl}
+        data-mobile-src={skyMobileVideoUrl}
+        poster={skyPoster.src}
+        preload="auto"
+        autoplay
+        muted
+        loop
+        playsinline
+        disablepictureinpicture
+        disableRemotePlayback
+        tabindex="-1"
+      ></video>
+    </div>
 
-    <div class="opening-sequence__box" aria-hidden="true" data-opening-art>
-      {optimizedFrames.map((frame, index) => (
-        <img
-          class="opening-sequence__frame"
-          src={index === 0 ? frame.src : undefined}
-          data-src={frame.src}
-          alt=""
-          width="1024"
-          height="1024"
-          loading={index === 0 ? 'eager' : 'lazy'}
-          fetchpriority={index === 0 ? 'high' : 'low'}
-          decoding="async"
-          hidden={index !== 0}
-          data-opening-frame
-          data-active={index === 0 ? '' : undefined}
-        />
-      ))}
+    <div class="opening-sequence__greeting" aria-hidden="true" data-opening-greeting>
+      <HelloAnimation text={identity.hello} interactive={false} opening />
     </div>
   </div>
 </opening-sequence>
@@ -94,7 +67,7 @@ const optimizedFrames = await Promise.all(
     background: var(--color-field);
   }
 
-  .opening-sequence__box,
+  .opening-sequence__greeting,
   .opening-sequence__sky {
     display: none;
   }
@@ -105,36 +78,49 @@ const optimizedFrames = await Promise.all(
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence__sky,
-  :global(.js:not(.opening-bypassed)) .opening-sequence__box {
+  :global(.js:not(.opening-bypassed)) .opening-sequence__greeting {
     position: fixed;
-    inset: 0;
     display: block;
-    overflow: hidden;
-    overflow: clip;
+    pointer-events: none;
+  }
+
+  :global(.js:not(.opening-bypassed) [data-site-header]) {
+    opacity: 0;
     pointer-events: none;
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
+    inset: 0;
     z-index: 100;
+    overflow: hidden;
+    overflow: clip;
     opacity: 0.5;
   }
 
-  :global(.js:not(.opening-bypassed)) .opening-sequence__box {
+  :global(.js:not(.opening-bypassed)) .opening-sequence__greeting {
     z-index: 101;
-    container-type: size;
+    top: 50%;
+    left: 50%;
+    width: clamp(20rem, 58vw, 48rem);
     opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
+    transform-origin: top left;
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__sky,
-  :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__box {
+  :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__greeting {
     will-change: transform, opacity;
   }
 
   :global(.js.opening-bypassed) .opening-sequence__sky,
-  :global(.js.opening-bypassed) .opening-sequence__box,
+  :global(.js.opening-bypassed) .opening-sequence__greeting,
   .opening-sequence[data-complete] .opening-sequence__sky,
-  .opening-sequence[data-complete] .opening-sequence__box {
+  .opening-sequence[data-complete] .opening-sequence__greeting {
     display: none;
+  }
+
+  .opening-sequence__greeting :global(.hello-animation-with-text) {
+    width: 100%;
   }
 
   .opening-sequence__sky-poster,
@@ -160,29 +146,14 @@ const optimizedFrames = await Promise.all(
     -webkit-appearance: none;
   }
 
-  .opening-sequence__frame {
-    /* 1024 crops of the original 2048 canvases, placed back on that layout. */
-    --cover: max(100cqw, 100cqh);
-    position: absolute;
-    left: calc(50% - var(--cover) / 2 + var(--cover) * 514 / 2048);
-    top: calc(50% - var(--cover) / 2 + var(--cover) * 414 / 2048);
-    display: none;
-    width: calc(var(--cover) / 2);
-    height: calc(var(--cover) / 2);
-    max-width: none;
-    object-fit: contain;
-  }
-
-  .opening-sequence__frame[data-active] {
-    display: block;
-  }
-
-  .opening-sequence__frame[hidden] {
-    display: none;
+  @media (max-width: 44.999rem) {
+    :global(.js:not(.opening-bypassed)) .opening-sequence__greeting {
+      width: min(88vw, 34rem);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .opening-sequence__box,
+    :global(.js) .opening-sequence__greeting,
     :global(.js) .opening-sequence__sky {
       display: none;
     }

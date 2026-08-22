@@ -19,11 +19,7 @@ import PlayfulWord from './PlayfulWord.astro';
         <h1 id="intro-title" class="identity__summary">
           <span class="identity__passage">{identity.research}</span>
           <span class="identity__passage">
-            {identity.experience.before}<a
-              class="identity__deep-link identity__deep-link--experience"
-              href="#value-experience"
-              aria-label="Experience. Continue to why experience matters to me."
-            ><PlayfulWord word={identity.experience.word} /></a>{identity.experience.after}<br
+            {identity.experience.before}<PlayfulWord word={identity.experience.word} />{identity.experience.after}<br
               class="identity__figma-break"
             />{identity.experience.continuation}
           </span>
@@ -172,12 +168,6 @@ import PlayfulWord from './PlayfulWord.astro';
   .identity__deep-link {
     color: inherit;
     text-decoration: none;
-  }
-
-  .identity__deep-link--experience {
-    display: inline-block;
-    border-bottom: 0.11rem dotted currentColor;
-    line-height: 1.15;
   }
 
   .identity__deep-link--engineering {

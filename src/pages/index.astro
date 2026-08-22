@@ -1,17 +1,7 @@
 ---
-import { getEntry } from 'astro:content';
-
 import Homepage from '../components/homepage/Homepage.astro';
-import homepageShareImage from '../assets/software-showcases/observatory/launch-film.png';
+import homepageShareImage from '../assets/showcase-cards/card2.png';
 import BaseDocument from '../layouts/BaseDocument.astro';
-
-const observatory = await getEntry('software', 'observatory');
-const foodProduct = await getEntry('software', 'flutter-product');
-const chineseBee = await getEntry('software', 'chinese-bee');
-
-if (!observatory || !foodProduct || !chineseBee) {
-  throw new Error('The homepage content entries could not be loaded.');
-}
 ---
 
 <BaseDocument
@@ -21,5 +11,5 @@ if (!observatory || !foodProduct || !chineseBee) {
   themeColor="#F8F8F8"
   ogImage={homepageShareImage.src}
 >
-  <Homepage {observatory} {foodProduct} {chineseBee} />
+  <Homepage />
 </BaseDocument>

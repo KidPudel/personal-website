@@ -1,0 +1,269 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Screen {
+  src: ImageMetadata;
+  label: string;
+  trim?: {
+    top: number;
+    bottom: number;
+    left: number;
+  };
+}
+
+interface Props {
+  screens: Screen[];
+  ariaLabel: string;
+  targetVisibleRatio?: number;
+}
+
+const { screens, ariaLabel, targetVisibleRatio = 1 } = Astro.props;
+
+const getScreenStyle = (screen: Screen) => {
+  const trim = screen.trim ?? { top: 0, bottom: 0, left: 0 };
+  const visibleRatio = 1 - (trim.top + trim.bottom) / screen.src.height;
+  const scale = targetVisibleRatio / visibleRatio;
+  const bottomShift = scale * (trim.bottom / screen.src.height) * 100;
+  const visibleLeft = ((1 - scale) / 2 + scale * (trim.left / screen.src.width)) * 100;
+  const visibleTop = (1 - targetVisibleRatio) * 100;
+
+  return [
+    `--screen-ratio: ${screen.src.width} / ${screen.src.height}`,
+    `--screen-scale: ${scale}`,
+    `--screen-bottom-shift: ${bottomShift}%`,
+    `--screen-visible-left: ${visibleLeft}%`,
+    `--screen-visible-top: ${visibleTop}%`,
+  ].join('; ');
+};
+---
+
+<mobile-screen-stack class="mobile-stack">
+  <button type="button" class="mobile-stack__trigger" aria-label={ariaLabel}>
+    {screens.map((screen) => (
+      <span
+        class="mobile-stack__screen"
+        style={getScreenStyle(screen)}
+      >
+        <Image
+          src={screen.src}
+          alt=""
+          widths={[240, 360, 480, 600]}
+          sizes="(max-width: 44rem) 30vw, 18vw"
+          loading="lazy"
+          decoding="async"
+          format="webp"
+          quality={85}
+        />
+        <span class="mobile-stack__label">{screen.label}</span>
+      </span>
+    ))}
+  </button>
+</mobile-screen-stack>
+
+<script>
+  class MobileScreenStack extends HTMLElement {
+    private abort?: AbortController;
+    private animations = new Set<Animation>();
+    private cycling = false;
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      const trigger = this.querySelector<HTMLButtonElement>('.mobile-stack__trigger');
+      trigger?.addEventListener('click', this.cycle, { signal: this.abort.signal });
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.animations.forEach((animation) => animation.cancel());
+      this.animations.clear();
+      this.cycling = false;
+    }
+
+    private play(
+      element: HTMLElement,
+      keyframes: Keyframe[],
+      options: KeyframeAnimationOptions,
+    ) {
+      const animation = element.animate(keyframes, options);
+      this.animations.add(animation);
+      animation.finished.then(
+        () => this.animations.delete(animation),
+        () => this.animations.delete(animation),
+      );
+      return animation;
+    }
+
+    private cycle = async () => {
+      if (this.cycling) return;
+
+      const trigger = this.querySelector<HTMLButtonElement>('.mobile-stack__trigger');
+      const screens = Array.from(this.querySelectorAll<HTMLElement>('.mobile-stack__screen'));
+      const front = screens.at(-1);
+      if (!trigger || !front) return;
+
+      this.cycling = true;
+      this.setAttribute('data-cycling', '');
+
+      if (this.reducedMotion.matches) {
+        trigger.prepend(front);
+        this.cycling = false;
+        this.removeAttribute('data-cycling');
+        return;
+      }
+
+      const easing = 'cubic-bezier(0.23, 1, 0.32, 1)';
+      const exit = this.play(
+        front,
+        [
+          { opacity: 1, transform: getComputedStyle(front).transform },
+          { opacity: 0, transform: 'translate3d(0.875rem, 0, 0)' },
+        ],
+        { duration: 180, easing, fill: 'forwards' },
+      );
+
+      try {
+        await exit.finished;
+        trigger.prepend(front);
+        exit.cancel();
+
+        const enter = this.play(
+          front,
+          [
+            { opacity: 0, transform: 'translate3d(-0.375rem, 0, 0)' },
+            { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+          ],
+          { duration: 180, easing },
+        );
+        await enter.finished;
+      } catch {
+        // A disconnected component cancels its in-flight handoff.
+      } finally {
+        this.cycling = false;
+        this.removeAttribute('data-cycling');
+      }
+    };
+  }
+
+  if (!customElements.get('mobile-screen-stack')) {
+    customElements.define('mobile-screen-stack', MobileScreenStack);
+  }
+</script>
+
+<style>
+  .mobile-stack {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
+  .mobile-stack__trigger {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .mobile-stack__trigger:focus-visible {
+    border-radius: inherit;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: calc(-1 * var(--focus-width));
+  }
+
+  .mobile-stack__screen {
+    position: absolute;
+    top: 17%;
+    display: block;
+    height: 78%;
+    aspect-ratio: var(--screen-ratio);
+    filter: drop-shadow(0 0.75rem 0.9rem rgb(17 17 15 / 0.22));
+    transform: translate3d(0, 0, 0);
+    transition: transform 180ms var(--ease-out);
+  }
+
+  .mobile-stack__screen :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transform: translate3d(0, var(--screen-bottom-shift), 0) scale(var(--screen-scale));
+    transform-origin: bottom center;
+  }
+
+  .mobile-stack__label {
+    position: absolute;
+    z-index: 1;
+    top: calc(var(--screen-visible-top) + clamp(0.38rem, 0.8vw, 0.7rem));
+    left: calc(var(--screen-visible-left) + clamp(0.35rem, 0.7vw, 0.65rem));
+    display: inline-flex;
+    align-items: center;
+    padding: 0.22rem 0.46rem;
+    border: 1px solid rgb(17 17 15 / 0.1);
+    border-radius: 999px;
+    background: rgb(248 248 248 / 0.92);
+    box-shadow: 0 0.15rem 0.55rem rgb(17 17 15 / 0.1);
+    color: rgb(17 17 15 / 0.72);
+    font-family: var(--font-reading);
+    font-size: clamp(0.5rem, 0.62vw, 0.7rem);
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .mobile-stack__screen:nth-child(1) {
+    z-index: 1;
+    left: 4%;
+  }
+
+  .mobile-stack__screen:nth-child(2) {
+    z-index: 2;
+    left: 20%;
+  }
+
+  .mobile-stack__screen:nth-child(3) {
+    z-index: 3;
+    left: 36%;
+  }
+
+  .mobile-stack__screen:nth-child(4) {
+    z-index: 4;
+    left: 52%;
+  }
+
+  .mobile-stack__screen:nth-child(5) {
+    z-index: 5;
+    left: 68%;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mobile-stack__trigger:has(.mobile-stack__screen:hover) .mobile-stack__screen {
+      transform: translate3d(0, 0.375rem, 0);
+    }
+
+    .mobile-stack__trigger:has(.mobile-stack__screen:hover) .mobile-stack__screen:hover {
+      transform: translate3d(0, -0.875rem, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-stack__screen {
+      transform: none !important;
+      transition: none;
+    }
+  }
+</style>

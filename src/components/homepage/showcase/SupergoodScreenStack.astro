@@ -1,0 +1,22 @@
+---
+import basketScreen from '../../../assets/case_study_images/supergood/basket.png';
+import checkoutScreen from '../../../assets/case_study_images/supergood/checkout.png';
+import mapScreen from '../../../assets/case_study_images/supergood/map.png';
+import menuScreen from '../../../assets/case_study_images/supergood/menu-light.png';
+import trackingScreen from '../../../assets/case_study_images/supergood/order-tracking.png';
+import MobileScreenStack from './MobileScreenStack.astro';
+
+const screens = [
+  { src: mapScreen, label: 'Map', trim: { top: 0, bottom: 0, left: 20 } },
+  { src: trackingScreen, label: 'Tracking', trim: { top: 0, bottom: 0, left: 25 } },
+  { src: checkoutScreen, label: 'Checkout', trim: { top: 0, bottom: 1, left: 22 } },
+  { src: basketScreen, label: 'Basket', trim: { top: 11, bottom: 10, left: 44 } },
+  { src: menuScreen, label: 'Menu', trim: { top: 9, bottom: 18, left: 46 } },
+];
+---
+
+<MobileScreenStack
+  screens={screens}
+  ariaLabel="Cycle SuperGood screens: Menu, Basket, Checkout, Tracking, and Map"
+  targetVisibleRatio={0.975}
+/>

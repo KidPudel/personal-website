@@ -1,16 +1,16 @@
 import type { ImageMetadata } from 'astro';
 
-import chineseBee1 from '../../assets/evidence/cb1.png';
-import chineseBee2 from '../../assets/evidence/cb2.png';
-import chineseBee3 from '../../assets/evidence/cb3.png';
-import campfire1 from '../../assets/evidence/campfire1.png';
-import observatory1 from '../../assets/evidence/observatory1.png';
-import observatory2 from '../../assets/evidence/observatory2.png';
-import observatory3 from '../../assets/evidence/observatory3.png';
-import pizzaSushiWok1 from '../../assets/evidence/pzw1.png';
-import pizzaSushiWok2 from '../../assets/evidence/pzw2.png';
-import pizzaSushiWok3 from '../../assets/evidence/pzw3.png';
-import santaFoundation1 from '../../assets/evidence/secret_santa_foundation1.png';
+import observatory3 from '../../assets/case_study_images/outcome_screenshots/main.png';
+import observatory2 from '../../assets/case_study_images/outcome_screenshots/results-comparison.png';
+import observatory1 from '../../assets/case_study_images/outcome_screenshots/testing.png';
+import pizzaSushiWok2 from '../../assets/case_study_images/supergood/checkout.png';
+import pizzaSushiWok3 from '../../assets/case_study_images/supergood/menu-light.png';
+import pizzaSushiWok1 from '../../assets/case_study_images/supergood/order-tracking.png';
+import chineseBee3 from '../../assets/case_study_images/two-sticks/list-to-fill.png';
+import chineseBee1 from '../../assets/case_study_images/two-sticks/search2.png';
+import chineseBee2 from '../../assets/case_study_images/two-sticks/write.png';
+import campfire1 from '../../assets/games/discourses/cover.png';
+import santaFoundation1 from '../../assets/games/santa/secret_santa_foundation1.png';
 
 export type ValueProject =
   | 'Observatory'
