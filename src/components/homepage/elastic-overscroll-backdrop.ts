@@ -125,6 +125,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     let pull = 0;
     let target = 0;
     let velocity = 0;
+    let refreshArmed = false;
     let lastTime: number | undefined;
     let wheelDistance = 0;
     let pointerId: number | undefined;
@@ -188,6 +189,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       window.clearTimeout(this.releaseTimer);
       this.releaseTimer = 0;
       wheelDistance = 0;
+      refreshArmed = false;
       target = 0;
       requestRender();
     };
@@ -248,6 +250,10 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         maximumPull(),
         rubberband(Math.max(0, rawDistance), rubberbandDimension()),
       );
+      refreshArmed =
+        source === 'touch' &&
+        placement === 'top' &&
+        target >= maximumPull() - 0.5;
 
       if (source === 'touch') {
         pull = target;
@@ -371,12 +377,25 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     const endPointer = (event: PointerEvent) => {
       if (event.pointerId !== pointerId) return;
 
+      const shouldRefresh =
+        event.type === 'pointerup' &&
+        activePlacement === 'top' &&
+        refreshArmed &&
+        atEdge('top');
+
       pointerId = undefined;
       gestureLock = undefined;
       originX = 0;
       originY = 0;
       startScroll = 0;
       pullOffset = 0;
+
+      if (shouldRefresh) {
+        document.documentElement.setAttribute('data-refreshing', '');
+        window.requestAnimationFrame(() => window.location.reload());
+        return;
+      }
+
       if (pull > 0 || target > 0 || activePlacement) release();
     };
 
@@ -447,6 +466,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
     delete this.dataset.enhanced;
     document.documentElement.removeAttribute('data-elastic-edge');
+    document.documentElement.removeAttribute('data-refreshing');
   }
 }
 
