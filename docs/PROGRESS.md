@@ -1,10 +1,11 @@
 # Progress
 
-Last updated: 2026-08-22
+Last updated: 2026-08-23
 
 ## Completed milestone: immediate media presentation
 
-- The 1.7 KB opening poster and first visible animation states are embedded in the HTML, removing separate GitHub Pages requests before the opening can be presented.
+- The 9 KB opening poster and first visible animation states are embedded in the HTML, removing separate GitHub Pages requests before the opening can be presented.
+- The poster and both responsive opening videos now begin on the first visible sky frame instead of a black zero-frame.
 - Remaining greeting frames wait until the opening video can play, preventing the sequence from competing with critical media.
 - Deferred images begin decoding ahead of the viewport.
 - Below-fold videos retain their posters and begin preparing before they enter the viewport. Data-saver and slow connections use more conservative behavior.

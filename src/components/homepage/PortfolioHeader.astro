@@ -12,6 +12,7 @@ const aboutIsCurrent = pathname.includes('/about/');
     <a
       class="site-navigation__link drawn-icon-trigger"
       href={sitePath('/work/')}
+      data-work-navigation
       aria-current={workIsCurrent ? 'page' : undefined}
     >
       <span class="navigation-action__label">Work</span>
@@ -48,6 +49,7 @@ const aboutIsCurrent = pathname.includes('/about/');
 <script>
   class PortfolioNavigation extends HTMLElement {
     private abort?: AbortController;
+    private previewTimer?: number;
 
     connectedCallback() {
       this.abort?.abort();
@@ -55,6 +57,7 @@ const aboutIsCurrent = pathname.includes('/about/');
       const { signal } = this.abort;
       const details = this.querySelector<HTMLDetailsElement>('details');
       const summary = details?.querySelector<HTMLElement>('summary');
+      window.addEventListener('portfolio:preview-work', this.previewWork, { signal });
       if (!details || !summary) return;
 
       const syncExpandedState = () => {
@@ -86,7 +89,20 @@ const aboutIsCurrent = pathname.includes('/about/');
 
     disconnectedCallback() {
       this.abort?.abort();
+      window.clearTimeout(this.previewTimer);
+      this.querySelector('[data-work-navigation]')?.removeAttribute('data-preview-active');
     }
+
+    private previewWork = () => {
+      const workLink = this.querySelector<HTMLElement>('[data-work-navigation]');
+      if (!workLink) return;
+
+      window.clearTimeout(this.previewTimer);
+      workLink.setAttribute('data-preview-active', '');
+      this.previewTimer = window.setTimeout(() => {
+        workLink.removeAttribute('data-preview-active');
+      }, 2000);
+    };
   }
 
   if (!customElements.get('portfolio-navigation')) {
@@ -191,12 +207,14 @@ const aboutIsCurrent = pathname.includes('/about/');
   }
 
   .site-navigation__link:focus-visible,
+  .site-navigation__link[data-preview-active],
   .contact-disclosure summary:focus-visible,
   .contact-disclosure[open] summary {
     color: var(--color-copy);
   }
 
   .site-navigation__link:focus-visible .navigation-action__label,
+  .site-navigation__link[data-preview-active] .navigation-action__label,
   .contact-disclosure summary:focus-visible .navigation-action__label,
   .contact-disclosure[open] summary .navigation-action__label {
     opacity: 0;
@@ -204,6 +222,7 @@ const aboutIsCurrent = pathname.includes('/about/');
   }
 
   .site-navigation__link:focus-visible .navigation-action__art,
+  .site-navigation__link[data-preview-active] .navigation-action__art,
   .contact-disclosure summary:focus-visible .navigation-action__art,
   .contact-disclosure[open] summary .navigation-action__art {
     opacity: 1;
@@ -341,12 +360,14 @@ const aboutIsCurrent = pathname.includes('/about/');
     }
 
     .site-navigation__link:focus-visible .navigation-action__label,
+    .site-navigation__link[data-preview-active] .navigation-action__label,
     .contact-disclosure summary:focus-visible .navigation-action__label,
     .contact-disclosure[open] summary .navigation-action__label {
       transform: none;
     }
 
     .site-navigation__link:focus-visible .navigation-action__art,
+    .site-navigation__link[data-preview-active] .navigation-action__art,
     .contact-disclosure summary:focus-visible .navigation-action__art,
     .contact-disclosure[open] summary .navigation-action__art {
       transform: translate(-50%, -50%);

@@ -1,10 +1,11 @@
 ---
 import { Image } from 'astro:assets';
+import '@fontsource/instrument-serif/400.css';
 
 import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
-import card1 from '../../../assets/showcase-cards/card1.png';
-import card2 from '../../../assets/showcase-cards/card2.png';
-import card3 from '../../../assets/showcase-cards/card3.png';
+import observatoryCard from '../../../assets/showcase-cards/card1.png';
+import supergoodCard from '../../../assets/showcase-cards/card2.png';
+import twoSticksCard from '../../../assets/showcase-cards/card3.png';
 import { sitePath } from '../../../config/site';
 import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
 import ShowcaseInfo from './ShowcaseInfo.astro';
@@ -13,37 +14,50 @@ import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
 
 const cards = [
   {
-    background: card1,
+    background: observatoryCard,
     name: 'Observatory',
     pitch: 'Activity Monitor, but more.',
     responsibility: 'Concept to launch: product design, identity, and storytelling.',
     href: sitePath('/case-studies/observatory/'),
   },
   {
-    background: card2,
-    name: 'SuperGood',
-    pitch: 'Homemade food, without making the order feel like a gamble.',
-    responsibility: 'Research, product direction, UX/UI, and Flutter implementation.',
-    href: sitePath('/case-studies/supergood/'),
-  },
-  {
-    background: card3,
+    background: twoSticksCard,
     name: 'Two Sticks',
     pitch: 'Write the character, without leaving the chat.',
     responsibility: 'Product direction, UX/UI, bot, API, and handwriting app.',
     href: sitePath('/case-studies/two-sticks/'),
   },
+  {
+    background: supergoodCard,
+    name: 'SuperGood',
+    pitch: 'Homemade food, without making the order feel like a gamble.',
+    responsibility: 'Research, product direction, UX/UI, and Flutter implementation.',
+    href: sitePath('/case-studies/supergood/'),
+  },
 ];
 ---
 
-<div class="showcase">
+<showcase-cards class="showcase">
+  <h2 class="showcase__title">
+    <button
+      class="showcase__some"
+      type="button"
+      data-preview-work
+      aria-describedby="some-work-hint"
+    >some</button>
+    <span>of</span>
+    <span>my</span>
+    <span>work</span>
+  </h2>
+  <span id="some-work-hint" class="sr-only">Previews the Work navigation for two seconds.</span>
+
   <div class="showcase__grid">
     {cards.map((card, index) => (
       <article
         class:list={[
           'showcase__card',
           `showcase__card--${index + 1}`,
-          index > 0 && 'showcase__card--portrait',
+          index === 1 && 'showcase__card--portrait',
         ]}
       >
         <Image
@@ -51,15 +65,17 @@ const cards = [
           src={card.background}
           alt=""
           widths={[480, 720, 960, 1280, 1600]}
-          sizes="(max-width: 44rem) calc(100vw - 2rem), 64vw"
+          sizes={index === 1
+            ? '(max-width: 44rem) calc(100vw - 2rem), 28vw'
+            : '(max-width: 44rem) calc(100vw - 2rem), 62vw'}
           loading="lazy"
           decoding="async"
           format="webp"
           quality={82}
         />
         {index === 0 && <ObservatoryScreenStack />}
-        {index === 1 && <SupergoodScreenStack />}
-        {index === 2 && <TwoSticksScreenStack />}
+        {index === 1 && <TwoSticksScreenStack />}
+        {index === 2 && <SupergoodScreenStack />}
         <ShowcaseInfo pitch={card.pitch} responsibility={card.responsibility} />
         <a
           class="showcase__project-link"
@@ -82,24 +98,115 @@ const cards = [
       </article>
     ))}
   </div>
-</div>
+</showcase-cards>
+
+<script>
+  import { bind, set } from '@foleyjs/core';
+
+  class ShowcaseCards extends HTMLElement {
+    private abort?: AbortController;
+    private finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      set({ theme: 'mechanical', volume: 0.32, localize: 0.45 });
+      this.syncSoundPreferences();
+      bind(this);
+      this.querySelector('[data-preview-work]')?.addEventListener('click', () => {
+        window.dispatchEvent(new CustomEvent('portfolio:preview-work'));
+      }, { signal: this.abort.signal });
+      this.finePointer.addEventListener('change', this.syncSoundPreferences, {
+        signal: this.abort.signal,
+      });
+      this.reducedMotion.addEventListener('change', this.syncSoundPreferences, {
+        signal: this.abort.signal,
+      });
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+    }
+
+    private syncSoundPreferences = () => {
+      set({
+        hover: this.finePointer.matches,
+        muted: this.reducedMotion.matches,
+      });
+    };
+  }
+
+  if (!customElements.get('showcase-cards')) {
+    customElements.define('showcase-cards', ShowcaseCards);
+  }
+</script>
 
 <style>
   .showcase {
+    display: block;
     width: 100%;
     padding: clamp(6rem, 11vw, 10rem) 0 clamp(7rem, 12vw, 11rem);
   }
 
+  .showcase__title,
   .showcase__grid {
-    width: min(calc(100% - 2 * clamp(1.5rem, 5vw, 5rem)), 90rem);
+    width: min(calc(100% - 2 * var(--page-gutter)), 130rem);
     margin-inline: auto;
+  }
+
+  .showcase__title {
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.22em;
+    margin-top: 0;
+    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+    color: var(--color-ink);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    text-align: left;
+  }
+
+  .showcase__some {
+    display: inline-block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font: inherit;
+    font-style: italic;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 78%, transparent);
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.15em;
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .showcase__some:focus-visible {
+    border-radius: 0.08em;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .showcase__some:hover {
+      text-decoration-color: var(--color-ink);
+    }
   }
 
   .showcase__grid {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) repeat(2, minmax(12.5rem, 1fr));
-    align-items: stretch;
-    gap: clamp(0.85rem, 1.4vw, 1.35rem);
+    grid-template-areas:
+      'observatory bot'
+      'supergood bot';
+    grid-template-columns: minmax(0, 2fr) minmax(12.5rem, 1fr);
+    align-items: start;
+    gap: clamp(1rem, 3vw, 3.75rem);
   }
 
   .showcase__card {
@@ -130,7 +237,20 @@ const cards = [
   }
 
   .showcase__card--portrait {
-    aspect-ratio: 2 / 3;
+    aspect-ratio: 4 / 7;
+  }
+
+  .showcase__card--1 {
+    grid-area: observatory;
+  }
+
+  .showcase__card--2 {
+    grid-area: bot;
+  }
+
+  .showcase__card--3 {
+    grid-area: supergood;
+    aspect-ratio: 15 / 8;
   }
 
   :global(.showcase__project-link) {
@@ -162,36 +282,12 @@ const cards = [
     width: 100%;
     height: 100%;
     object-fit: contain;
+    opacity: 0.62;
     transform: scale(3);
   }
 
   :global(.showcase__project-link:active) {
     transform: scale(0.96);
-  }
-
-  .showcase__card--portrait :global(.mobile-stack__screen) {
-    top: 24%;
-    height: 70%;
-  }
-
-  .showcase__card--portrait :global(.mobile-stack__screen:nth-child(1)) {
-    left: 3%;
-  }
-
-  .showcase__card--portrait :global(.mobile-stack__screen:nth-child(2)) {
-    left: 14%;
-  }
-
-  .showcase__card--portrait :global(.mobile-stack__screen:nth-child(3)) {
-    left: 25%;
-  }
-
-  .showcase__card--portrait :global(.mobile-stack__screen:nth-child(4)) {
-    left: 36%;
-  }
-
-  .showcase__card--portrait :global(.mobile-stack__screen:nth-child(5)) {
-    left: 47%;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -206,12 +302,14 @@ const cards = [
       padding: clamp(5rem, 18vw, 7rem) 0 clamp(6rem, 22vw, 8rem);
     }
 
+    .showcase__title,
     .showcase__grid {
-      width: min(calc(100% - 2rem), 34rem);
+      width: min(calc(100% - 2 * var(--page-gutter)), 34rem);
     }
 
     .showcase__grid {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: none;
       gap: 1rem;
     }
 
@@ -222,12 +320,19 @@ const cards = [
         0 0.8rem 2.4rem rgb(17 17 15 / 0.08);
     }
 
-    .showcase__card--1 {
+    .showcase__card--1,
+    .showcase__card--2,
+    .showcase__card--3 {
       grid-column: auto;
+      grid-area: auto;
     }
 
     .showcase__card--portrait {
       aspect-ratio: 3 / 4;
+    }
+
+    .showcase__card--3 {
+      aspect-ratio: 16 / 10;
     }
 
     :global(.showcase__project-link) {

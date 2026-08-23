@@ -77,6 +77,10 @@ const icons = {
     transform: translate(-29.5%, -33%);
   }
 
+  :global(.drawn-icon-trigger[data-preview-active]) .drawn-icon {
+    animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     :global(.drawn-icon-trigger:hover) .drawn-icon {
       animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
@@ -91,6 +95,7 @@ const icons = {
   }
 
   @media (prefers-reduced-motion: reduce) {
+    :global(.drawn-icon-trigger[data-preview-active]) .drawn-icon,
     :global(.drawn-icon-trigger:hover) .drawn-icon {
       animation: none;
     }

@@ -1,22 +1,605 @@
 ---
-import factScreen from '../../../assets/case_study_images/two-sticks/fact.png';
-import flashcardScreen from '../../../assets/case_study_images/two-sticks/flash-card.png';
-import searchScreen from '../../../assets/case_study_images/two-sticks/search2.png';
-import startScreen from '../../../assets/case_study_images/two-sticks/start1.png';
-import handwritingScreen from '../../../assets/case_study_images/two-sticks/write.png';
-import MobileScreenStack from './MobileScreenStack.astro';
-
-const screens = [
-  { src: handwritingScreen, label: 'Handwriting', trim: { top: 46, bottom: 128, left: 39 } },
-  { src: factScreen, label: 'Facts', trim: { top: 91, bottom: 113, left: 46 } },
-  { src: flashcardScreen, label: 'Flashcards', trim: { top: 6, bottom: 14, left: 9 } },
-  { src: searchScreen, label: 'Word search', trim: { top: 4, bottom: 15, left: 8 } },
-  { src: startScreen, label: 'Start', trim: { top: 38, bottom: 114, left: 26 } },
+const steps = [
+  'Welcome',
+  'Character primer',
+  'Word search',
+  'Character details',
+  'Saved-word practice',
+  'Handwriting result',
 ];
 ---
 
-<MobileScreenStack
-  screens={screens}
-  ariaLabel="Cycle Two Sticks screens: Start, Word search, Flashcards, Facts, and Handwriting"
-  targetVisibleRatio={0.918}
-/>
+<two-sticks-demo class="two-sticks-demo" data-step="0" data-steps={JSON.stringify(steps)}>
+  <div class="two-sticks-demo__phone" aria-live="polite">
+    <div class="two-sticks-demo__status" aria-hidden="true">
+      <span>08:14</span>
+    </div>
+
+    <div class="two-sticks-demo__header" aria-hidden="true">
+      <span class="two-sticks-demo__back">‹</span>
+      <span class="two-sticks-demo__avatar">🐝</span>
+      <span class="two-sticks-demo__identity">
+        <strong>Две палочки</strong>
+        <small>бот</small>
+      </span>
+      <span class="two-sticks-demo__more">•••</span>
+    </div>
+
+    <div class="two-sticks-demo__conversation">
+      <section class="two-sticks-demo__step" data-demo-step="0" data-state-active>
+        <span class="two-sticks-demo__day">Сегодня</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot">
+          <strong>Что умеет этот бот?</strong><br />
+          Привет! Я китайская пчелка бот 🐝 Моя главная задача, помочь тебе легко и интуитивно изучать китайские иероглифы! 🇨🇳
+        </span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot">
+          Привет, Анастасия! Как насчет улучшить свой китайский?<br /><br />
+          Прежде чем начать, хочешь узнать о том как устроены иероглифы?
+        </span>
+        <span class="two-sticks-demo__actions">
+          <span>Да, хочу!</span><span>Уже знаю</span>
+        </span>
+      </section>
+
+      <section class="two-sticks-demo__step" data-demo-step="1" aria-hidden="true">
+        <span class="two-sticks-demo__day">Сегодня</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--user">Да, хочу!</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot">
+          <strong>Письменность</strong><br /><br />
+          Иероглифы: Китайская письменность состоит из иероглифов, каждый из которых представляет собой слово или морфему. Иероглифы могут состоять из одного или более ключей и фонетических компонентов.
+        </span>
+        <span class="two-sticks-demo__actions">
+          <span>Далее</span><span>Назад</span>
+        </span>
+      </section>
+
+      <section class="two-sticks-demo__step" data-demo-step="2" aria-hidden="true">
+        <span class="two-sticks-demo__day">Сегодня</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--user">/chinese_match</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot">Введи слово, которое ты ищешь 🔎</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--user">Идти</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot two-sticks-demo__message--results">
+          Вот что удалось найти ✨<br /><br />
+          去 · идти<br />
+          上学 · идти в школу<br />
+          上班 · идти на работу<br />
+          步行 · идти пешком<br />
+          深入 · идти вглубь
+        </span>
+        <span class="two-sticks-demo__actions"><span>去 · идти</span></span>
+      </section>
+
+      <section class="two-sticks-demo__step" data-demo-step="3" aria-hidden="true">
+        <span class="two-sticks-demo__day">Сегодня</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--user">去</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot two-sticks-demo__message--details">
+          <span><small>chinese</small><strong>去</strong></span>
+          <span><small>pinyin</small><strong>qù</strong></span>
+          <span><small>english</small><strong>go</strong></span>
+          <span><small>russian</small><strong>идти</strong></span>
+          <span><small>hsk level</small><strong>1</strong></span>
+        </span>
+        <span class="two-sticks-demo__actions">
+          <span>Сохранить</span><span>Назад</span>
+        </span>
+      </section>
+
+      <section class="two-sticks-demo__step" data-demo-step="4" aria-hidden="true">
+        <span class="two-sticks-demo__day">Сегодня</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--user">/saved_words</span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot two-sticks-demo__message--word-list">
+          <span>去 <small>идти</small></span>
+          <span>工作 <small>работа</small></span>
+          <span>旁边 <small>рядом с собой</small></span>
+          <span>家 <small>дом; здание</small></span>
+          <span>快 <small>быстрый; срочный</small></span>
+        </span>
+        <span class="two-sticks-demo__message two-sticks-demo__message--bot">Начать практиковаться в правописании?</span>
+        <span class="two-sticks-demo__actions">
+          <span>Да</span><span>Открыть прописи</span>
+        </span>
+      </section>
+
+      <section class="two-sticks-demo__step two-sticks-demo__step--writing" data-demo-step="5" aria-hidden="true">
+        <span class="two-sticks-demo__webapp-bar">Отмена <strong>Две палочки</strong> •••</span>
+        <span class="two-sticks-demo__word">идти</span>
+        <span class="two-sticks-demo__canvas" aria-label="Handwritten Chinese character qu">去</span>
+        <span class="two-sticks-demo__webapp-actions">
+          <span>Очистить</span><span>Проверить</span>
+        </span>
+        <span class="two-sticks-demo__next">Следующее слово</span>
+        <strong class="two-sticks-demo__score">90.77666401863098%</strong>
+      </section>
+    </div>
+
+    <span class="two-sticks-demo__hint" aria-hidden="true">
+      <span data-demo-progress>Click to continue · 1/{steps.length}</span>
+      <i></i>
+    </span>
+  </div>
+
+  <button
+    class="two-sticks-demo__trigger"
+    type="button"
+    data-foley-hover="on"
+    data-foley-click="switch"
+    aria-label={`Advance Two Sticks bot demo. Step 1 of ${steps.length}: ${steps[0]}`}
+  >
+    <span class="visually-hidden">Advance the Two Sticks bot demo</span>
+  </button>
+</two-sticks-demo>
+
+<script>
+  import { panFor, play } from '@foleyjs/core';
+
+  class TwoSticksDemo extends HTMLElement {
+    private abort?: AbortController;
+    private index = 0;
+    private steps: string[] = [];
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      this.steps = JSON.parse(this.dataset.steps ?? '[]');
+      const trigger = this.querySelector<HTMLButtonElement>('.two-sticks-demo__trigger');
+      trigger?.addEventListener('click', this.advance, { signal: this.abort.signal });
+      trigger?.addEventListener('pointerleave', this.playHoverOff, {
+        signal: this.abort.signal,
+      });
+      this.render();
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+    }
+
+    private advance = () => {
+      this.index = (this.index + 1) % this.steps.length;
+      this.render();
+    };
+
+    private playHoverOff = (event: PointerEvent) => {
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      play('off', { pan: panFor(event.currentTarget as HTMLElement) });
+    };
+
+    private render() {
+      this.dataset.step = String(this.index);
+
+      this.querySelectorAll<HTMLElement>('[data-demo-step]').forEach((step, index) => {
+        const state = index === this.index ? 'active' : index < this.index ? 'past' : 'next';
+        step.toggleAttribute('data-state-active', state === 'active');
+        step.toggleAttribute('data-state-past', state === 'past');
+        step.setAttribute('aria-hidden', String(state !== 'active'));
+      });
+
+      const trigger = this.querySelector<HTMLButtonElement>('.two-sticks-demo__trigger');
+      trigger?.setAttribute(
+        'aria-label',
+        `${this.index === this.steps.length - 1 ? 'Restart' : 'Advance'} Two Sticks bot demo. Step ${this.index + 1} of ${this.steps.length}: ${this.steps[this.index]}`,
+      );
+
+      const progress = this.querySelector<HTMLElement>('[data-demo-progress]');
+      if (progress) {
+        progress.textContent = `${this.index === this.steps.length - 1 ? 'Click to restart' : 'Click to continue'} · ${this.index + 1}/${this.steps.length}`;
+      }
+    }
+  }
+
+  if (!customElements.get('two-sticks-demo')) {
+    customElements.define('two-sticks-demo', TwoSticksDemo);
+  }
+</script>
+
+<style>
+  .two-sticks-demo {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: inherit;
+    container-type: inline-size;
+  }
+
+  .two-sticks-demo__phone {
+    position: absolute;
+    top: 17%;
+    left: 50%;
+    height: 80%;
+    aspect-ratio: 9 / 19.5;
+    overflow: hidden;
+    border: clamp(0.25rem, 1.7cqi, 0.46rem) solid #09090b;
+    border-radius: clamp(1.3rem, 7.5cqi, 2.15rem);
+    background: #111114;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.2),
+      0 0 0 2px rgb(17 17 15 / 0.42),
+      0 1rem 2.2rem rgb(17 17 15 / 0.34);
+    color: #f5f5f6;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(0.5rem, 2.45cqi, 0.72rem);
+    line-height: 1.28;
+    transform: translateX(-50%);
+    transition: box-shadow 160ms var(--ease-out);
+  }
+
+  .two-sticks-demo__phone::before {
+    position: absolute;
+    z-index: 8;
+    top: clamp(0.27rem, 1.8cqi, 0.42rem);
+    left: 50%;
+    width: 34%;
+    height: clamp(0.62rem, 4.2cqi, 0.9rem);
+    border: 1px solid rgb(255 255 255 / 0.04);
+    border-radius: 99px;
+    background: #000;
+    box-shadow: inset 0 0 0.3rem rgb(255 255 255 / 0.035);
+    content: '';
+    transform: translateX(-50%);
+  }
+
+  .two-sticks-demo__phone::after {
+    position: absolute;
+    z-index: 8;
+    bottom: clamp(0.18rem, 1.2cqi, 0.3rem);
+    left: 50%;
+    width: 34%;
+    height: clamp(0.12rem, 0.8cqi, 0.18rem);
+    border-radius: 99px;
+    background: rgb(255 255 255 / 0.82);
+    content: '';
+    transform: translateX(-50%);
+  }
+
+  .two-sticks-demo__status {
+    display: flex;
+    height: clamp(0.82rem, 5.2cqi, 1.25rem);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(0.55rem, 4cqi, 0.85rem);
+    background: #111114;
+    color: rgb(255 255 255 / 0.78);
+    font-size: 0.72em;
+    letter-spacing: 0.03em;
+  }
+
+  .two-sticks-demo__header {
+    display: grid;
+    height: clamp(1.65rem, 11cqi, 2.45rem);
+    grid-template-columns: auto auto 1fr auto;
+    align-items: center;
+    gap: clamp(0.25rem, 1.8cqi, 0.42rem);
+    padding: 0 clamp(0.4rem, 3cqi, 0.7rem);
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(25 25 29 / 0.96);
+  }
+
+  .two-sticks-demo__back {
+    color: #4da3ff;
+    font-size: 1.55em;
+    line-height: 1;
+  }
+
+  .two-sticks-demo__avatar {
+    display: grid;
+    width: clamp(1rem, 7cqi, 1.55rem);
+    aspect-ratio: 1;
+    place-items: center;
+    border-radius: 50%;
+    background: #e8bd55;
+    font-size: 0.86em;
+  }
+
+  .two-sticks-demo__identity {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    line-height: 1.05;
+  }
+
+  .two-sticks-demo__identity strong {
+    overflow: hidden;
+    font-size: 0.88em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .two-sticks-demo__identity small {
+    margin-top: 0.1rem;
+    color: rgb(255 255 255 / 0.46);
+    font-size: 0.65em;
+  }
+
+  .two-sticks-demo__more {
+    color: #4da3ff;
+    letter-spacing: 0.08em;
+  }
+
+  .two-sticks-demo__conversation {
+    position: absolute;
+    inset: clamp(2.47rem, 16.2cqi, 3.7rem) 0 0;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 12% 18%, rgb(255 255 255 / 0.035) 0 0.15rem, transparent 0.17rem),
+      radial-gradient(circle at 79% 44%, rgb(255 255 255 / 0.03) 0 0.2rem, transparent 0.22rem),
+      linear-gradient(145deg, #101015, #0c0c10);
+  }
+
+  .two-sticks-demo__step {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: clamp(0.45rem, 3.5cqi, 0.8rem) clamp(0.4rem, 3cqi, 0.7rem) clamp(1.65rem, 11cqi, 2.4rem);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(7%, 0, 0);
+    transition:
+      opacity 220ms var(--ease-out),
+      transform 220ms var(--ease-in-out);
+  }
+
+  .two-sticks-demo__step[data-state-active] {
+    z-index: 2;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .two-sticks-demo__step[data-state-past] {
+    transform: translate3d(-7%, 0, 0);
+  }
+
+  .two-sticks-demo__day {
+    align-self: center;
+    margin: 0 0 clamp(0.28rem, 2cqi, 0.48rem);
+    padding: 0.16rem 0.42rem;
+    border-radius: 99px;
+    background: rgb(25 25 29 / 0.78);
+    color: rgb(255 255 255 / 0.55);
+    font-size: 0.68em;
+  }
+
+  .two-sticks-demo__message {
+    display: block;
+    width: fit-content;
+    max-width: 88%;
+    margin-top: clamp(0.18rem, 1.4cqi, 0.32rem);
+    padding: clamp(0.28rem, 2.25cqi, 0.5rem) clamp(0.35rem, 2.7cqi, 0.58rem);
+    border-radius: clamp(0.42rem, 2.8cqi, 0.65rem);
+  }
+
+  .two-sticks-demo__message--bot {
+    align-self: flex-start;
+    border-bottom-left-radius: 0.15rem;
+    background: #29292e;
+  }
+
+  .two-sticks-demo__message--user {
+    align-self: flex-end;
+    border-bottom-right-radius: 0.15rem;
+    background: linear-gradient(135deg, #7456d7, #934be0);
+  }
+
+  .two-sticks-demo__actions {
+    display: grid;
+    width: 88%;
+    align-self: flex-start;
+    gap: 1px;
+    margin-top: 0.16rem;
+    overflow: hidden;
+    border-radius: 0.4rem;
+  }
+
+  .two-sticks-demo__actions > span {
+    padding: clamp(0.22rem, 1.65cqi, 0.34rem) 0.35rem;
+    background: #29292e;
+    color: #4da3ff;
+    text-align: center;
+  }
+
+  .two-sticks-demo__message--results {
+    width: 88%;
+  }
+
+  .two-sticks-demo__message--details {
+    display: grid;
+    width: 88%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.34rem, 2.4cqi, 0.52rem);
+  }
+
+  .two-sticks-demo__message--details > span {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .two-sticks-demo__message--details > span:first-child {
+    grid-row: span 2;
+  }
+
+  .two-sticks-demo__message--details > span:first-child strong {
+    margin: auto 0;
+    font-size: 3.2em;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .two-sticks-demo__message--details small,
+  .two-sticks-demo__word-list small {
+    color: rgb(255 255 255 / 0.48);
+    font-size: 0.72em;
+  }
+
+  .two-sticks-demo__message--word-list {
+    display: grid;
+    width: 88%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.34rem, 2.4cqi, 0.52rem);
+  }
+
+  .two-sticks-demo__message--word-list > span {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.18em;
+  }
+
+  .two-sticks-demo__step--writing {
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+    background: #d9b77e;
+    color: #16130e;
+  }
+
+  .two-sticks-demo__webapp-bar {
+    display: flex;
+    width: 100%;
+    height: clamp(1.7rem, 11cqi, 2.5rem);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(0.4rem, 3cqi, 0.7rem);
+    background: #17171a;
+    color: #4da3ff;
+    font-size: 0.72em;
+  }
+
+  .two-sticks-demo__webapp-bar strong {
+    color: #f5f5f6;
+  }
+
+  .two-sticks-demo__word {
+    margin-top: clamp(0.65rem, 4.8cqi, 1rem);
+    font-size: 1.18em;
+    font-weight: 700;
+  }
+
+  .two-sticks-demo__canvas {
+    display: grid;
+    width: 62%;
+    aspect-ratio: 1;
+    place-items: center;
+    margin-top: clamp(0.55rem, 4cqi, 0.85rem);
+    border: 1px solid rgb(17 17 15 / 0.18);
+    background:
+      linear-gradient(to right, transparent 49.7%, rgb(17 17 15 / 0.08) 50%, transparent 50.3%),
+      linear-gradient(to bottom, transparent 49.7%, rgb(17 17 15 / 0.08) 50%, transparent 50.3%),
+      #fff;
+    box-shadow: 0 0.3rem 0.7rem rgb(17 17 15 / 0.12);
+    font-family: 'Kaiti SC', 'STKaiti', serif;
+    font-size: clamp(3rem, 28cqi, 5.6rem);
+    line-height: 1;
+  }
+
+  .two-sticks-demo__webapp-actions {
+    display: flex;
+    gap: 0.18rem;
+    margin-top: 0.24rem;
+    font-size: 0.62em;
+  }
+
+  .two-sticks-demo__webapp-actions > span,
+  .two-sticks-demo__next {
+    padding: 0.22rem 0.35rem;
+    border: 1px solid rgb(17 17 15 / 0.18);
+    border-radius: 0.18rem;
+    background: #f4f2ed;
+  }
+
+  .two-sticks-demo__next {
+    margin-top: 0.22rem;
+    font-size: 0.62em;
+  }
+
+  .two-sticks-demo__score {
+    margin-top: clamp(0.35rem, 2.8cqi, 0.58rem);
+    font-size: 1.08em;
+  }
+
+  .two-sticks-demo__hint {
+    position: absolute;
+    z-index: 4;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    min-height: clamp(1.45rem, 9cqi, 2rem);
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    background: linear-gradient(to top, rgb(9 9 11 / 0.96), rgb(9 9 11 / 0.74));
+    color: rgb(255 255 255 / 0.66);
+    padding-bottom: clamp(0.22rem, 1.4cqi, 0.34rem);
+    font-size: 0.66em;
+    letter-spacing: 0.015em;
+  }
+
+  .two-sticks-demo__hint i {
+    width: 0.3rem;
+    aspect-ratio: 1;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(-45deg);
+  }
+
+  .two-sticks-demo[data-step='5'] .two-sticks-demo__hint {
+    color: #d9b77e;
+  }
+
+  .two-sticks-demo__trigger {
+    position: absolute;
+    z-index: 3;
+    top: 17%;
+    left: 50%;
+    height: 80%;
+    aspect-ratio: 9 / 19.5;
+    padding: 0;
+    border: 0;
+    border-radius: clamp(1.3rem, 7.5cqi, 2.15rem);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    touch-action: manipulation;
+    transform: translateX(-50%);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .two-sticks-demo__trigger:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 0.2rem;
+  }
+
+  .two-sticks-demo__trigger:active {
+    transform: translateX(-50%) scale(0.99);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .two-sticks-demo:has(.two-sticks-demo__trigger:hover) .two-sticks-demo__phone {
+      box-shadow: 0 1.2rem 2.5rem rgb(17 17 15 / 0.42);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .two-sticks-demo__step {
+      transform: none;
+      transition: opacity 120ms var(--ease-out);
+    }
+
+    .two-sticks-demo__trigger:active {
+      transform: translateX(-50%);
+    }
+  }
+</style>

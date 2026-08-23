@@ -25,7 +25,7 @@ const screens = [
     aria-label="Cycle Observatory outcome screens: Live view, Test setup, Recording, Saved results, and Comparison"
   >
     {screens.map((screen) => (
-      <span class="observatory-stack__screen">
+      <span class="observatory-stack__screen" data-foley-hover="tick">
         <Image
           src={screen.src}
           alt=""
@@ -43,6 +43,8 @@ const screens = [
 </observatory-screen-stack>
 
 <script>
+  import { panFor, play } from '@foleyjs/core';
+
   class ObservatoryScreenStack extends HTMLElement {
     private abort?: AbortController;
     private animations = new Set<Animation>();
@@ -77,7 +79,7 @@ const screens = [
       return animation;
     }
 
-    private cycle = async () => {
+    private cycle = async (event: MouseEvent) => {
       if (this.cycling) return;
 
       const trigger = this.querySelector<HTMLButtonElement>('.observatory-stack__trigger');
@@ -87,11 +89,18 @@ const screens = [
       const front = screens.at(-1);
       if (!trigger || !front) return;
 
+      const clicked = event.target instanceof Element
+        ? event.target.closest<HTMLElement>('.observatory-stack__screen')
+        : null;
+      const nextFront = clicked && clicked !== front ? clicked : screens.at(-2);
+      if (!nextFront) return;
+
       this.cycling = true;
       this.setAttribute('data-cycling', '');
+      play('swoosh', { pan: panFor(nextFront) });
 
       if (this.reducedMotion.matches) {
-        trigger.prepend(front);
+        this.rotateToFront(trigger, nextFront);
         this.cycling = false;
         this.removeAttribute('data-cycling');
         return;
@@ -109,11 +118,11 @@ const screens = [
 
       try {
         await exit.finished;
-        trigger.prepend(front);
+        this.rotateToFront(trigger, nextFront);
         exit.cancel();
 
         const enter = this.play(
-          front,
+          nextFront,
           [
             { opacity: 0, transform: 'translate3d(0, 0.375rem, 0)' },
             { opacity: 1, transform: 'translate3d(0, 0, 0)' },
@@ -128,6 +137,15 @@ const screens = [
         this.removeAttribute('data-cycling');
       }
     };
+
+    private rotateToFront(trigger: HTMLButtonElement, target: HTMLElement) {
+      while (trigger.lastElementChild !== target) {
+        const front = trigger.lastElementChild;
+        if (!front) return;
+        trigger.prepend(front);
+      }
+    }
+
   }
 
   if (!customElements.get('observatory-screen-stack')) {
@@ -206,37 +224,37 @@ const screens = [
 
   .observatory-stack__screen:nth-child(1) {
     z-index: 1;
-    top: 35%;
-    left: 18%;
-    --screen-width: 64%;
+    top: 23%;
+    left: 10%;
+    --screen-width: 78%;
   }
 
   .observatory-stack__screen:nth-child(2) {
     z-index: 2;
-    top: 41%;
-    left: 16%;
-    --screen-width: 68%;
+    top: 29%;
+    left: 8%;
+    --screen-width: 82%;
   }
 
   .observatory-stack__screen:nth-child(3) {
     z-index: 3;
-    top: 47%;
-    left: 14%;
-    --screen-width: 72%;
+    top: 35%;
+    left: 6%;
+    --screen-width: 86%;
   }
 
   .observatory-stack__screen:nth-child(4) {
     z-index: 4;
-    top: 53%;
-    left: 12%;
-    --screen-width: 76%;
+    top: 41%;
+    left: 4%;
+    --screen-width: 90%;
   }
 
   .observatory-stack__screen:nth-child(5) {
     z-index: 5;
-    top: 59%;
-    left: 10%;
-    --screen-width: 80%;
+    top: 47%;
+    left: 1%;
+    --screen-width: 96%;
   }
 
   @media (hover: hover) and (pointer: fine) {

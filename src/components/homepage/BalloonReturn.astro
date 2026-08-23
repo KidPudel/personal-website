@@ -37,6 +37,7 @@ const optimizedFrames = await Promise.all(
 </balloon-return>
 
 <script>
+  import { panFor, play } from '@foleyjs/core';
   import { balloonReturnMotion } from './balloon-return-motion';
 
   class BalloonReturn extends HTMLElement {
@@ -137,6 +138,7 @@ const optimizedFrames = await Promise.all(
       const playArrival = async (signal: AbortSignal) => {
         for (const index of [2, 3, 4]) {
           syncFrame(index);
+          if (index === 3) play('drop', { pan: panFor(trigger) });
           await wait(balloonReturnMotion.frameDurationMs, signal);
         }
       };
@@ -299,6 +301,7 @@ const optimizedFrames = await Promise.all(
           return;
         }
 
+        play('rise', { pan: panFor(trigger) });
         void runSequence();
       }, { signal: this.abort.signal });
 

@@ -4,7 +4,7 @@ import { Image } from 'astro:assets';
 import checkout from '../../../assets/case_study_images/supergood/checkout.png';
 import dishSheetDark from '../../../assets/case_study_images/supergood/dish-sheet-dark.png';
 import dishSheetLight from '../../../assets/case_study_images/supergood/dish-sheet-light.png';
-import ordersHistory from '../../../assets/case_study_images/supergood/orders-history.png';
+import history from '../../../assets/case_study_images/supergood/history.png';
 import { sitePath } from '../../../config/site';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 
@@ -73,9 +73,9 @@ const heroTitle = 'SuperGood';
           decoding="async"
         />
         <Image
-          src={ordersHistory}
+          src={history}
           alt="Working SuperGood order history with expandable cards and repeat-order actions."
-          widths={[320, 480, 640]}
+          widths={[320, 480, 597]}
           sizes="(max-width: 760px) 42vw, 220px"
           format="webp"
           loading="eager"
@@ -255,7 +255,7 @@ const heroTitle = 'SuperGood';
             <h3>Turn a receipt into the next order</h3>
             <p class="journey-map__decision">Expandable cards expose individual dishes and the whole basket. Repeat actions make a finished or cancelled order useful again.</p>
             <figure>
-              <Image src={ordersHistory} alt="Working order history with expandable cards, repeat buttons, and add whole order." widths={[360, 480, 640]} sizes="(max-width: 760px) 70vw, 220px" format="webp" loading="lazy" decoding="async" />
+              <Image src={history} alt="Working order history with expandable cards, repeat buttons, and add whole order." widths={[360, 480, 597]} sizes="(max-width: 760px) 70vw, 220px" format="webp" loading="lazy" decoding="async" />
               <figcaption>Working product</figcaption>
             </figure>
           </li>
