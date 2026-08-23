@@ -4,6 +4,7 @@ class OpeningSequence extends HTMLElement {
   private abort?: AbortController;
   private animations = new Set<Animation>();
   private greetingTimer = 0;
+  private scrollFrame = 0;
   private skyVideo?: HTMLVideoElement;
 
   connectedCallback() {
@@ -17,6 +18,9 @@ class OpeningSequence extends HTMLElement {
     const skyVideo = this.querySelector<HTMLVideoElement>('[data-opening-sky]');
     const documentSurface = this.closest<HTMLElement>('[data-homepage]')
       ?.querySelector<HTMLElement>('[data-homepage-document]');
+    const skyFadeTarget = documentSurface?.querySelector<HTMLElement>(
+      '[data-opening-sky-fade-target]',
+    );
     const finalGreeting = documentSurface?.querySelector<HTMLElement>(
       '.hello-animation-with-text',
     );
@@ -30,6 +34,7 @@ class OpeningSequence extends HTMLElement {
       !sky ||
       !skyVideo ||
       !documentSurface ||
+      !skyFadeTarget ||
       !finalGreeting ||
       !finalHello ||
       !header
@@ -60,20 +65,51 @@ class OpeningSequence extends HTMLElement {
     };
 
     let completed = false;
-    const showCompletedOpening = () => {
+    let persistSky = false;
+
+    const syncPersistentSky = () => {
+      this.scrollFrame = 0;
+      if (!persistSky) return;
+
+      const fadeDistance = Math.max(skyFadeTarget.offsetTop, 1);
+      const progress = Math.min(Math.max(window.scrollY / fadeDistance, 0), 1);
+      const opacity = openingMotion.skyOpacityAtIntro * (1 - progress);
+      sky.style.opacity = `${opacity}`;
+      setSkyPlayback(opacity > 0 && document.visibilityState === 'visible');
+    };
+
+    const requestPersistentSkySync = () => {
+      if (!persistSky || this.scrollFrame) return;
+      this.scrollFrame = window.requestAnimationFrame(syncPersistentSky);
+    };
+
+    const hidePersistentSky = () => {
+      persistSky = false;
+      this.removeAttribute('data-persist-sky');
+      sky.style.removeProperty('opacity');
+      setSkyPlayback(false);
+    };
+
+    const showCompletedOpening = (keepSky = false) => {
       if (completed) return;
       completed = true;
+      persistSky = keepSky;
       document.documentElement.classList.add('opening-bypassed');
       this.removeAttribute('data-opening-live');
       this.setAttribute('data-complete', '');
+      if (persistSky) this.setAttribute('data-persist-sky', '');
       finalGreeting.style.removeProperty('opacity');
       documentSurface.inert = false;
       documentSurface.removeAttribute('aria-hidden');
       header.inert = false;
       header.removeAttribute('aria-hidden');
-      setSkyPlayback(false);
       this.animations.forEach((animation) => animation.cancel());
       this.animations.clear();
+      if (persistSky) {
+        syncPersistentSky();
+      } else {
+        setSkyPlayback(false);
+      }
     };
 
     const alignHash = () => {
@@ -91,7 +127,7 @@ class OpeningSequence extends HTMLElement {
       document.documentElement.classList.contains('opening-bypassed');
 
     if (bypassOpening()) {
-      showCompletedOpening();
+      showCompletedOpening(false);
       alignHash();
       return;
     }
@@ -142,7 +178,7 @@ class OpeningSequence extends HTMLElement {
       const skyFade = sky.animate(
         [
           { opacity: openingMotion.skyOpacityAtStart },
-          { opacity: 0 },
+          { opacity: openingMotion.skyOpacityAtIntro },
         ],
         {
           duration: openingMotion.handoffDurationMs,
@@ -197,7 +233,7 @@ class OpeningSequence extends HTMLElement {
             ?.dispatchEvent(new CustomEvent('thermal-hint'));
         })
         .catch(() => undefined);
-      void greetingMove.finished.then(showCompletedOpening).catch(() => undefined);
+      void greetingMove.finished.then(() => showCompletedOpening(true)).catch(() => undefined);
     };
 
     openingHello.addEventListener('hello-animation-complete', handoffGreeting, {
@@ -222,14 +258,26 @@ class OpeningSequence extends HTMLElement {
     }
 
     const handleVisibilityChange = () => {
+      if (persistSky) {
+        syncPersistentSky();
+        return;
+      }
       setSkyPlayback(document.visibilityState === 'visible' && !completed);
     };
     const handleHashChange = () => {
-      showCompletedOpening();
+      showCompletedOpening(false);
       alignHash();
     };
+    const handleReducedMotionChange = () => {
+      if (!reducedMotion.matches) return;
+      if (completed) {
+        hidePersistentSky();
+      } else {
+        showCompletedOpening(false);
+      }
+    };
     const retryBlockedSkyPlayback = () => {
-      if (completed || !skyVideo.hasAttribute('data-autoplay-blocked')) return;
+      if ((completed && !persistSky) || !skyVideo.hasAttribute('data-autoplay-blocked')) return;
       skyPlaybackRequested = false;
       setSkyPlayback(true);
     };
@@ -238,7 +286,14 @@ class OpeningSequence extends HTMLElement {
       signal: this.abort.signal,
     });
     window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
-    reducedMotion.addEventListener('change', showCompletedOpening, { signal: this.abort.signal });
+    window.addEventListener('scroll', requestPersistentSkySync, {
+      passive: true,
+      signal: this.abort.signal,
+    });
+    window.addEventListener('resize', requestPersistentSkySync, { signal: this.abort.signal });
+    reducedMotion.addEventListener('change', handleReducedMotionChange, {
+      signal: this.abort.signal,
+    });
     window.addEventListener('pointerdown', retryBlockedSkyPlayback, {
       capture: true,
       passive: true,
@@ -251,6 +306,8 @@ class OpeningSequence extends HTMLElement {
 
   disconnectedCallback() {
     this.abort?.abort();
+    window.cancelAnimationFrame(this.scrollFrame);
+    this.scrollFrame = 0;
     window.clearTimeout(this.greetingTimer);
     this.greetingTimer = 0;
     this.animations.forEach((animation) => animation.cancel());

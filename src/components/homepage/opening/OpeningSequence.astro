@@ -87,8 +87,11 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
-    inset: 0;
+    inset: 0 auto auto 0;
     z-index: 100;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     overflow: clip;
     opacity: 0.5;
@@ -109,11 +112,27 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
     will-change: transform, opacity;
   }
 
-  :global(.js.opening-bypassed) .opening-sequence__sky,
   :global(.js.opening-bypassed) .opening-sequence__greeting,
-  .opening-sequence[data-complete] .opening-sequence__sky,
   .opening-sequence[data-complete] .opening-sequence__greeting {
     display: none;
+  }
+
+  :global(.js.opening-bypassed) .opening-sequence__sky {
+    display: none;
+  }
+
+  :global(.js.opening-bypassed) .opening-sequence[data-persist-sky] .opening-sequence__sky {
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 100;
+    display: block;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    overflow: clip;
+    opacity: 0.25;
+    pointer-events: none;
   }
 
   .opening-sequence__greeting :global(.hello-animation-with-text) {
