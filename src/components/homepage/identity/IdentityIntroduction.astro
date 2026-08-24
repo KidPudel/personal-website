@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 
 import joyfulCircle from '../../../assets/art/elements/circled.png';
-import { sitePath } from '../../../config/site';
 import { identity } from '../../../content/homepage/identity';
 import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
@@ -38,10 +37,9 @@ import PlayfulWord from './PlayfulWord.astro';
               /></a>{identity.purpose.after}
           </span>
           <span class="identity__passage">
-            {identity.engineering.before}<a
-              class="identity__deep-link identity__deep-link--engineering"
-              href={sitePath('/work/#product-design')}
-            >{identity.engineering.word}</a>{identity.engineering.after}<br
+            {identity.engineering.before}<span
+              class="identity__engineering-word"
+            >{identity.engineering.word}</span>{identity.engineering.after}<br
               class="identity__figma-break"
             />{identity.engineering.continuation}<br
               class="identity__figma-break"
@@ -167,22 +165,10 @@ import PlayfulWord from './PlayfulWord.astro';
     outline-offset: var(--focus-offset);
   }
 
-  .identity__deep-link {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .identity__deep-link--engineering {
-    border-bottom: 0.1rem dotted currentColor;
+  .identity__engineering-word {
     font-family: 'Roboto Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
     font-size: 0.91em;
     letter-spacing: -0.035em;
-  }
-
-  .identity__deep-link:focus-visible {
-    border-radius: 0.08em;
-    outline: var(--focus-width) solid var(--color-focus);
-    outline-offset: var(--focus-offset);
   }
 
   @media (max-width: 52rem) {

@@ -1,37 +1,10 @@
 ---
-import { connectLinks, sitePath } from '../../config/site';
+import { connectLinks } from '../../config/site';
 import DrawnIcon from './DrawnIcon.astro';
-
-const pathname = Astro.url.pathname;
-const workIsCurrent = pathname.includes('/work/') || pathname.includes('/case-studies/');
-const aboutIsCurrent = pathname.includes('/about/');
 ---
 
 <portfolio-navigation class="portfolio-navigation" data-site-header>
   <nav class="site-navigation" aria-label="Primary navigation">
-    <a
-      class="site-navigation__link drawn-icon-trigger"
-      href={sitePath('/work/')}
-      data-work-navigation
-      aria-current={workIsCurrent ? 'page' : undefined}
-    >
-      <span class="navigation-action__label">Work</span>
-      <span class="navigation-action__art" aria-hidden="true">
-        <DrawnIcon icon="work" loading="eager" />
-      </span>
-    </a>
-
-    <a
-      class="site-navigation__link drawn-icon-trigger"
-      href={sitePath('/about/')}
-      aria-current={aboutIsCurrent ? 'page' : undefined}
-    >
-      <span class="navigation-action__label">About me</span>
-      <span class="navigation-action__art" aria-hidden="true">
-        <DrawnIcon icon="who" loading="eager" />
-      </span>
-    </a>
-
     <details id="site-contact" class="contact-disclosure">
       <summary class="drawn-icon-trigger">
         <span class="navigation-action__label">Get in touch</span>
@@ -49,7 +22,7 @@ const aboutIsCurrent = pathname.includes('/about/');
 <script>
   class PortfolioNavigation extends HTMLElement {
     private abort?: AbortController;
-    private previewTimer?: number;
+    private compactObserver?: IntersectionObserver;
 
     connectedCallback() {
       this.abort?.abort();
@@ -57,11 +30,13 @@ const aboutIsCurrent = pathname.includes('/about/');
       const { signal } = this.abort;
       const details = this.querySelector<HTMLDetailsElement>('details');
       const summary = details?.querySelector<HTMLElement>('summary');
-      window.addEventListener('portfolio:preview-work', this.previewWork, { signal });
-      if (!details || !summary) return;
+      const panel = details?.querySelector<HTMLElement>('.contact-disclosure__panel');
+      this.observeIntroduction();
+      if (!details || !summary || !panel) return;
 
       const syncExpandedState = () => {
         summary.setAttribute('aria-expanded', String(details.open));
+        this.syncContactSurface(details, panel);
       };
 
       const revealContact = () => {
@@ -82,6 +57,7 @@ const aboutIsCurrent = pathname.includes('/about/');
         summary.focus();
       }, { signal });
       window.addEventListener('hashchange', revealContact, { signal });
+      window.addEventListener('resize', syncExpandedState, { signal });
 
       syncExpandedState();
       revealContact();
@@ -89,19 +65,41 @@ const aboutIsCurrent = pathname.includes('/about/');
 
     disconnectedCallback() {
       this.abort?.abort();
-      window.clearTimeout(this.previewTimer);
-      this.querySelector('[data-work-navigation]')?.removeAttribute('data-preview-active');
+      this.compactObserver?.disconnect();
     }
 
-    private previewWork = () => {
-      const workLink = this.querySelector<HTMLElement>('[data-work-navigation]');
-      if (!workLink) return;
+    private observeIntroduction = () => {
+      this.compactObserver?.disconnect();
+      this.removeAttribute('data-compact');
 
-      window.clearTimeout(this.previewTimer);
-      workLink.setAttribute('data-preview-active', '');
-      this.previewTimer = window.setTimeout(() => {
-        workLink.removeAttribute('data-preview-active');
-      }, 2000);
+      const introduction = document.querySelector<HTMLElement>('#intro');
+      if (!introduction || !('IntersectionObserver' in window)) return;
+
+      this.compactObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry) return;
+          this.toggleAttribute('data-compact', !entry.isIntersecting);
+        },
+        { rootMargin: '-20% 0px 0px 0px' },
+      );
+      this.compactObserver.observe(introduction);
+    };
+
+    private syncContactSurface = (details: HTMLDetailsElement, panel: HTMLElement) => {
+      if (!details.open) {
+        this.style.setProperty('--contact-surface-left', '5rem');
+        this.style.setProperty('--contact-surface-bottom', '2.5rem');
+        return;
+      }
+
+      const headerBounds = this.getBoundingClientRect();
+      const panelBounds = panel.getBoundingClientRect();
+      const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize);
+      const leftExtension = Math.max(0, headerBounds.left - panelBounds.left + rootFontSize * 6);
+      const bottomExtension = Math.max(0, panelBounds.bottom - headerBounds.bottom + rootFontSize * 2.5);
+
+      this.style.setProperty('--contact-surface-left', `${leftExtension}px`);
+      this.style.setProperty('--contact-surface-bottom', `${bottomExtension}px`);
     };
   }
 
@@ -121,12 +119,25 @@ const aboutIsCurrent = pathname.includes('/about/');
     color: var(--color-ink);
     font-family: var(--font-reading);
     isolation: isolate;
+    --contact-surface-bottom: 2.5rem;
+    --contact-surface-left: 5rem;
+    transform: translateY(0);
+    transition: transform 220ms var(--ease-in-out);
+  }
+
+  .portfolio-navigation[data-compact] {
+    transform: translateY(clamp(-2.25rem, -3vw, -1rem));
+  }
+
+  .portfolio-navigation:has(.contact-disclosure[open]) {
+    --contact-surface-bottom: 6rem;
+    --contact-surface-left: 18rem;
   }
 
   .portfolio-navigation::before {
     position: absolute;
     z-index: -1;
-    inset: 0;
+    inset: 0 0 calc(-1 * var(--contact-surface-bottom)) calc(-1 * var(--contact-surface-left));
     background: color-mix(in srgb, var(--color-field) 18%, transparent);
     backdrop-filter: blur(14px) saturate(1.08);
     -webkit-backdrop-filter: blur(14px) saturate(1.08);
@@ -140,6 +151,9 @@ const aboutIsCurrent = pathname.includes('/about/');
       linear-gradient(to top, transparent 0, black 42%, black 100%);
     -webkit-mask-composite: source-in;
     pointer-events: none;
+    transition:
+      bottom 180ms var(--ease-out),
+      left 180ms var(--ease-out);
   }
 
   .site-navigation {
@@ -152,7 +166,6 @@ const aboutIsCurrent = pathname.includes('/about/');
     white-space: nowrap;
   }
 
-  .site-navigation__link,
   .contact-disclosure summary {
     position: relative;
     display: inline-flex;
@@ -183,11 +196,6 @@ const aboutIsCurrent = pathname.includes('/about/');
       text-decoration-color 150ms ease;
   }
 
-  .site-navigation__link[aria-current='page'] .navigation-action__label {
-    text-decoration-style: solid;
-    text-decoration-color: var(--color-ink);
-  }
-
   .navigation-action__art {
     position: absolute;
     top: 50%;
@@ -206,48 +214,38 @@ const aboutIsCurrent = pathname.includes('/about/');
       transform 180ms var(--ease-out);
   }
 
-  .site-navigation__link:focus-visible,
-  .site-navigation__link[data-preview-active],
   .contact-disclosure summary:focus-visible,
   .contact-disclosure[open] summary {
     color: var(--color-copy);
   }
 
-  .site-navigation__link:focus-visible .navigation-action__label,
-  .site-navigation__link[data-preview-active] .navigation-action__label,
   .contact-disclosure summary:focus-visible .navigation-action__label,
   .contact-disclosure[open] summary .navigation-action__label {
     opacity: 0;
     transform: scale(0.96);
   }
 
-  .site-navigation__link:focus-visible .navigation-action__art,
-  .site-navigation__link[data-preview-active] .navigation-action__art,
   .contact-disclosure summary:focus-visible .navigation-action__art,
   .contact-disclosure[open] summary .navigation-action__art {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
   }
 
-  .site-navigation__link:focus-visible,
   .contact-disclosure summary:focus-visible,
   .contact-disclosure__panel a:focus-visible {
     border-radius: 0.1rem;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .site-navigation__link:hover,
     .contact-disclosure summary:hover {
       color: var(--color-copy);
     }
 
-    .site-navigation__link:hover .navigation-action__label,
     .contact-disclosure summary:hover .navigation-action__label {
       opacity: 0;
       transform: scale(0.96);
     }
 
-    .site-navigation__link:hover .navigation-action__art,
     .contact-disclosure summary:hover .navigation-action__art {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1) rotate(0deg);
@@ -279,11 +277,6 @@ const aboutIsCurrent = pathname.includes('/about/');
     justify-content: flex-end;
     gap: 0.2rem clamp(0.8rem, 2vw, 1.3rem);
     padding: 0.55rem 0.4rem 0.8rem 1.4rem;
-    background: color-mix(in srgb, var(--color-field) 24%, transparent);
-    backdrop-filter: blur(15px) saturate(1.08);
-    -webkit-backdrop-filter: blur(15px) saturate(1.08);
-    mask-image: linear-gradient(to right, transparent 0, black 10%, black 100%);
-    -webkit-mask-image: linear-gradient(to right, transparent 0, black 10%, black 100%);
     transform-origin: 100% 0;
     animation: contact-reveal 180ms var(--ease-out) both;
   }
@@ -319,6 +312,15 @@ const aboutIsCurrent = pathname.includes('/about/');
       padding: 0.45rem 0.7rem 1rem 1.2rem;
     }
 
+    .portfolio-navigation[data-compact] {
+      transform: translateY(0);
+    }
+
+    .portfolio-navigation:has(.contact-disclosure[open]) {
+      --contact-surface-bottom: 9rem;
+      --contact-surface-left: 6rem;
+    }
+
     .site-navigation {
       gap: clamp(0.65rem, 3.4vw, 1.05rem);
       font-size: clamp(0.78rem, 3.7vw, 0.9rem);
@@ -342,7 +344,14 @@ const aboutIsCurrent = pathname.includes('/about/');
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .site-navigation__link,
+    .portfolio-navigation {
+      transition: none;
+    }
+
+    .portfolio-navigation::before {
+      transition: none;
+    }
+
     .contact-disclosure summary,
     .contact-disclosure__panel {
       transition: none;
@@ -359,27 +368,21 @@ const aboutIsCurrent = pathname.includes('/about/');
       transform: translate(-50%, -50%);
     }
 
-    .site-navigation__link:focus-visible .navigation-action__label,
-    .site-navigation__link[data-preview-active] .navigation-action__label,
     .contact-disclosure summary:focus-visible .navigation-action__label,
     .contact-disclosure[open] summary .navigation-action__label {
       transform: none;
     }
 
-    .site-navigation__link:focus-visible .navigation-action__art,
-    .site-navigation__link[data-preview-active] .navigation-action__art,
     .contact-disclosure summary:focus-visible .navigation-action__art,
     .contact-disclosure[open] summary .navigation-action__art {
       transform: translate(-50%, -50%);
     }
 
     @media (hover: hover) and (pointer: fine) {
-      .site-navigation__link:hover .navigation-action__label,
       .contact-disclosure summary:hover .navigation-action__label {
         transform: none;
       }
 
-      .site-navigation__link:hover .navigation-action__art,
       .contact-disclosure summary:hover .navigation-action__art {
         transform: translate(-50%, -50%);
       }

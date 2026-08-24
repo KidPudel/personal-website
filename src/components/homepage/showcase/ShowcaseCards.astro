@@ -37,19 +37,10 @@ const cards = [
 ];
 ---
 
-<showcase-cards class="showcase" data-opening-sky-fade-target>
+<showcase-cards id="work" class="showcase" data-opening-sky-fade-target>
   <h2 class="showcase__title">
-    <button
-      class="showcase__some"
-      type="button"
-      data-preview-work
-      aria-describedby="some-work-hint"
-    >some</button>
-    <span>of</span>
-    <span>my</span>
-    <span>work</span>
+    my work
   </h2>
-  <span id="some-work-hint" class="sr-only">Previews the Work navigation for two seconds.</span>
 
   <div class="showcase__grid">
     {cards.map((card, index) => (
@@ -113,9 +104,6 @@ const cards = [
       set({ theme: 'mechanical', volume: 0.32, localize: 0.45 });
       this.syncSoundPreferences();
       bind(this);
-      this.querySelector('[data-preview-work]')?.addEventListener('click', () => {
-        window.dispatchEvent(new CustomEvent('portfolio:preview-work'));
-      }, { signal: this.abort.signal });
       this.finePointer.addEventListener('change', this.syncSoundPreferences, {
         signal: this.abort.signal,
       });
@@ -167,35 +155,6 @@ const cards = [
     letter-spacing: -0.035em;
     line-height: 1.1;
     text-align: left;
-  }
-
-  .showcase__some {
-    display: inline-block;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    font: inherit;
-    font-style: italic;
-    letter-spacing: inherit;
-    line-height: inherit;
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: color-mix(in srgb, var(--color-muted) 78%, transparent);
-    text-decoration-thickness: 0.07em;
-    text-underline-offset: 0.15em;
-    transition: text-decoration-color 150ms ease;
-  }
-
-  .showcase__some:focus-visible {
-    border-radius: 0.08em;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .showcase__some:hover {
-      text-decoration-color: var(--color-ink);
-    }
   }
 
   .showcase__grid {

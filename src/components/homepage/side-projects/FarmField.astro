@@ -1,0 +1,179 @@
+---
+import { Image } from 'astro:assets';
+
+import farmPoster from '../../../assets/games/farm-game/farm-poster.png';
+import groundTiles from '../../../assets/games/farm-game/ground_tiles.png';
+import hoe from '../../../assets/games/farm-game/hoe.png';
+import props from '../../../assets/games/farm-game/props.png';
+---
+
+<farm-field class="farm-field">
+  <button
+    class="farm-field__stage"
+    type="button"
+    aria-label="Use the hoe to prepare soil for planting a seed."
+    data-farm-stage
+  >
+    <Image
+      class="farm-field__poster"
+      src={farmPoster}
+      alt="A field with an area that is not grass."
+      widths={[320]}
+      sizes="(max-width: 60rem) calc(100vw - 2.3rem), 72vw"
+      loading="lazy"
+      decoding="async"
+      format="png"
+    />
+    <canvas
+      class="farm-field__canvas"
+      width="320"
+      height="180"
+      aria-hidden="true"
+      data-farm-canvas
+    ></canvas>
+
+    <span class="farm-field__cursor" aria-hidden="true" data-farm-cursor>
+      <Image
+        class="farm-field__hoe"
+        src={hoe}
+        alt=""
+        widths={[16]}
+        sizes="5vw"
+        loading="lazy"
+        decoding="async"
+        format="png"
+      />
+    </span>
+
+    <span class="farm-field__assets" aria-hidden="true">
+      <Image
+        src={groundTiles}
+        alt=""
+        widths={[160]}
+        sizes="160px"
+        loading="lazy"
+        decoding="async"
+        format="png"
+        data-farm-ground
+      />
+      <Image
+        src={props}
+        alt=""
+        widths={[128]}
+        sizes="128px"
+        loading="lazy"
+        decoding="async"
+        format="png"
+        data-farm-props
+      />
+    </span>
+  </button>
+</farm-field>
+
+<script>
+  import './farm-field';
+</script>
+
+<style>
+  .farm-field {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #425d5f;
+  }
+
+  .farm-field__stage {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .farm-field__stage:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: -0.35rem;
+  }
+
+  :global(.farm-field__poster),
+  .farm-field__canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  :global(.farm-field__poster) {
+    object-fit: cover;
+  }
+
+  .farm-field__canvas {
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .farm-field[data-ready] .farm-field__canvas {
+    opacity: 1;
+  }
+
+  .farm-field__cursor {
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 5%;
+    aspect-ratio: 1;
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .farm-field[data-cursor] .farm-field__cursor {
+    opacity: 1;
+  }
+
+  :global(.farm-field__hoe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    transform: translate3d(-28%, -72%, 0) rotate(0deg) scaleX(-1);
+    transform-origin: 28% 72%;
+    transition: transform 140ms var(--ease-out);
+  }
+
+  .farm-field[data-working] :global(.farm-field__hoe) {
+    transform: translate3d(-28%, -72%, 0) rotate(-18deg) scaleX(-1);
+  }
+
+  .farm-field__assets {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .farm-field[data-ready] .farm-field__stage:hover {
+      cursor: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.farm-field__hoe) {
+      transition: none;
+    }
+  }
+</style>

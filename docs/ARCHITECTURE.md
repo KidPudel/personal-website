@@ -1,6 +1,6 @@
 # Website architecture
 
-Last updated: 2026-08-19
+Last updated: 2026-08-24
 
 ## Purpose
 
@@ -18,9 +18,7 @@ Do not introduce a client application framework, global application state, a cli
 
 | Address | Responsibility |
 | --- | --- |
-| `/` | Personal homepage and current authored opening experience |
-| `/work/` | Complete work presentation |
-| `/about/` | Personal story, portraits, and the personal-note constellation |
+| `/` | Personal homepage, current authored opening experience, work presentation, and personal-note constellation |
 | `/case-studies/observatory/` | Observatory editorial case study |
 | `/case-studies/supergood/` | SuperGood editorial case study |
 | `/case-studies/two-sticks/` | Two Sticks editorial case study |
@@ -35,7 +33,7 @@ Preserve base-path behavior for both `/` and `/personal-website/` builds.
 
 `BaseDocument` owns metadata, canonical and social metadata, fonts, the skip link, reset styles, and shared focus behavior.
 
-The homepage owns its presentation and local enhancements. `/work/`, `/blog/`, and the case studies remain independent readable documents. A homepage experiment must not require those documents to share its motion or state.
+The homepage owns its presentation and local enhancements. `/blog/` and the case studies remain independent readable documents. A homepage experiment must not require those documents to share its motion or state.
 
 The DOM order is the reading order. CSS may create asymmetrical or overlapping compositions, but visual placement must not make essential meaning depend on that placement.
 

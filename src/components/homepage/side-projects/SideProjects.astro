@@ -1,0 +1,530 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource/instrument-serif/400.css';
+
+import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
+import discoursesPoster from '../../../assets/games/discourses/discourses-teaser.webp';
+import discoursesVideo from '../../../assets/games/discourses/discourses-teaser.mp4';
+import snakePoster from '../../../assets/games/snake/poster.jpg';
+import snakeVideo from '../../../assets/games/snake/snake-raylib.mp4';
+import bunPoster from '../../../assets/games/thelastofbuns/showcase-poster.webp';
+import bunVideo from '../../../assets/games/thelastofbuns/showcase.mp4';
+import ticTacToeImage from '../../../assets/games/tic-tac-toe/gameplay.png';
+import FarmField from './FarmField.astro';
+import SantaFlight from './SantaFlight.astro';
+import WeightedSwitchExperiment from './WeightedSwitchExperiment.astro';
+
+const cards = {
+  santa: {
+    name: 'Secret Santa Foundation',
+    href: 'https://itch.io/jam/secret-santa-2025/rate/4137573',
+  },
+  discourses: {
+    name: 'Discourses by Campfire',
+    href: 'https://kidpudel.itch.io/discourses-by-campfire',
+  },
+  buns: {
+    name: 'The Last of Buns',
+    href: 'https://github.com/KidPudel/The-Last-Of-Buns',
+  },
+  snake: {
+    name: 'Snake with Go and raylib',
+    href: 'https://x.com/kidpudel/status/1781656147990020293?s=20',
+  },
+  ticTacToe: {
+    name: 'Tic-Tac-Toe with C++ and OpenGL',
+    href: 'https://github.com/KidPudel/TicTacToe',
+  },
+  switch: {
+    name: 'X experiment',
+    href: 'https://x.com/kidpudel/status/2089804412319358998',
+  },
+  farm: {
+    name: 'Farming Game',
+    href: 'https://kidpudel.itch.io/farming-game',
+  },
+} as const;
+---
+
+<section id="side-projects" class="other-showcase" aria-labelledby="other-showcase-title">
+  <h2 id="other-showcase-title" class="other-showcase__title">
+    <span class="other-showcase__other">other</span>
+    <span>things</span>
+    <span>i’ve</span>
+    <span>made</span>
+  </h2>
+
+  <div class="other-showcase__grid">
+    <article class="other-showcase__card other-showcase__card--santa">
+      <SantaFlight />
+      <a
+        class="other-showcase__project-link"
+        href={cards.santa.href}
+        aria-label={`Open ${cards.santa.name}`}
+        title={`Open ${cards.santa.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+
+    <article class="other-showcase__card other-showcase__card--discourses">
+      <project-preview class="project-preview">
+        <video
+          src={discoursesVideo}
+          poster={discoursesPoster.src}
+          width="960"
+          height="540"
+          preload="none"
+          playsinline
+          muted
+          loop
+          data-deferred-media
+        >
+          Your browser does not support embedded video.
+        </video>
+        <button type="button" aria-label={`Play ${cards.discourses.name}`} data-project-preview></button>
+      </project-preview>
+      <a
+        class="other-showcase__project-link"
+        href={cards.discourses.href}
+        aria-label={`Open ${cards.discourses.name}`}
+        title={`Open ${cards.discourses.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+
+    <article class="other-showcase__card other-showcase__card--tic-tac-toe">
+      <div class="other-showcase__tic-tac-toe">
+        <Image
+          src={ticTacToeImage}
+          alt="Tic-Tac-Toe game board"
+          widths={[360, 560, 687]}
+          sizes="(max-width: 44rem) 72vw, 23vw"
+          loading="lazy"
+          decoding="async"
+          format="webp"
+          quality={82}
+        />
+      </div>
+      <a
+        class="other-showcase__project-link"
+        href={cards.ticTacToe.href}
+        aria-label={`Open ${cards.ticTacToe.name}`}
+        title={`Open ${cards.ticTacToe.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+
+    <article class="other-showcase__card other-showcase__card--buns">
+      <project-preview class="project-preview">
+        <video
+          src={bunVideo}
+          poster={bunPoster.src}
+          width="800"
+          height="450"
+          preload="none"
+          playsinline
+          muted
+          loop
+          data-deferred-media
+        >
+          Your browser does not support embedded video.
+        </video>
+        <button type="button" aria-label={`Play ${cards.buns.name}`} data-project-preview></button>
+      </project-preview>
+      <a
+        class="other-showcase__project-link"
+        href={cards.buns.href}
+        aria-label={`Open ${cards.buns.name}`}
+        title={`Open ${cards.buns.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+
+    <article class="other-showcase__card other-showcase__card--snake">
+      <project-preview class="project-preview">
+        <video
+          src={snakeVideo}
+          poster={snakePoster.src}
+          width="1150"
+          height="720"
+          preload="none"
+          playsinline
+          muted
+          loop
+          data-deferred-media
+        >
+          Your browser does not support embedded video.
+        </video>
+        <button type="button" aria-label={`Play ${cards.snake.name}`} data-project-preview></button>
+      </project-preview>
+      <a
+        class="other-showcase__project-link"
+        href={cards.snake.href}
+        aria-label={`Open ${cards.snake.name}`}
+        title={`Open ${cards.snake.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+
+    <article class="other-showcase__card other-showcase__card--switch">
+      <WeightedSwitchExperiment />
+      <a
+        class="other-showcase__project-link"
+        href={cards.switch.href}
+        aria-label={`Open ${cards.switch.name}`}
+        title={`Open ${cards.switch.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+
+    <article class="other-showcase__card other-showcase__card--farm">
+      <FarmField />
+      <a
+        class="other-showcase__project-link"
+        href={cards.farm.href}
+        aria-label={`Open ${cards.farm.name}`}
+        title={`Open ${cards.farm.name}`}
+      >
+        <Image
+          class="other-showcase__project-link-icon"
+          src={entranceIcon}
+          alt=""
+          widths={[160, 240, 320]}
+          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
+          loading="lazy"
+          decoding="async"
+          format="png"
+        />
+      </a>
+    </article>
+  </div>
+</section>
+
+<script>
+  const previews = document.querySelectorAll<HTMLElement>('project-preview');
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  previews.forEach((preview) => {
+    const video = preview.querySelector('video');
+    const trigger = preview.querySelector<HTMLButtonElement>('[data-project-preview]');
+    if (!video || !trigger || preview.dataset.bound === 'true') return;
+    preview.dataset.bound = 'true';
+
+    const play = () => {
+      if (reducedMotion.matches) return;
+      void video.play();
+    };
+    const pause = () => video.pause();
+
+    trigger.addEventListener('click', () => {
+      if (video.paused) play();
+      else pause();
+    });
+    preview.addEventListener('pointerenter', () => {
+      if (finePointer.matches) play();
+    });
+    preview.addEventListener('pointerleave', pause);
+    trigger.addEventListener('blur', pause);
+
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0]?.isIntersecting) pause();
+    });
+    observer.observe(preview);
+  });
+</script>
+
+<style>
+  .other-showcase {
+    display: block;
+    width: 100%;
+    padding: 0 0 clamp(8rem, 13vw, 12rem);
+  }
+
+  .other-showcase__title,
+  .other-showcase__grid {
+    width: min(calc(100% - 2 * var(--page-gutter)), 130rem);
+    margin-inline: auto;
+  }
+
+  .other-showcase__title {
+    display: flex;
+    align-items: baseline;
+    column-gap: 0.22em;
+    margin-top: 0;
+    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+    color: var(--color-ink);
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    text-align: left;
+  }
+
+  .other-showcase__other {
+    font-style: italic;
+  }
+
+  .other-showcase__grid {
+    display: grid;
+    grid-template-areas:
+      'santa snake'
+      'discourses switch'
+      'farm farm'
+      'buns tic';
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1rem, 3vw, 3.75rem);
+  }
+
+  .other-showcase__card {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: clamp(0.8rem, 1.4vw, 1.35rem);
+    background: #111;
+    box-shadow: 0 1px 0 rgb(17 17 15 / 0.06), 0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+  }
+
+  .other-showcase__card::after {
+    position: absolute;
+    z-index: 7;
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: inherit;
+    content: '';
+    pointer-events: none;
+  }
+
+  .other-showcase__card--santa {
+    grid-area: santa;
+  }
+
+  .other-showcase__card--discourses {
+    grid-area: discourses;
+  }
+
+  .other-showcase__card--tic-tac-toe {
+    grid-area: tic;
+    background: #dedbd4;
+  }
+
+  .other-showcase__card--buns {
+    grid-area: buns;
+  }
+
+  .other-showcase__card--snake {
+    grid-area: snake;
+  }
+
+  .other-showcase__card--switch {
+    grid-area: switch;
+    background: #fff;
+  }
+
+  .other-showcase__card--farm {
+    grid-area: farm;
+    aspect-ratio: 16 / 9;
+    background: #425d5f;
+  }
+
+  .other-showcase__card--santa,
+  .other-showcase__card--discourses,
+  .other-showcase__card--buns {
+    aspect-ratio: 2 / 1;
+  }
+
+  .project-preview,
+  .other-showcase__tic-tac-toe {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .project-preview video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-preview button {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: block;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .project-preview button:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: -0.4rem;
+  }
+
+  .other-showcase__tic-tac-toe :global(img) {
+    display: block;
+    width: 78%;
+    height: auto;
+    max-height: 84%;
+    object-fit: contain;
+    filter: drop-shadow(0 0.75rem 1.2rem rgb(17 17 15 / 0.14));
+    transform: rotate(-1.4deg);
+  }
+
+  .other-showcase__project-link {
+    position: absolute;
+    z-index: 6;
+    top: clamp(0.65rem, 1.2vw, 1rem);
+    right: clamp(0.65rem, 1.2vw, 1rem);
+    display: grid;
+    width: clamp(2.2rem, 3.2vw, 2.8rem);
+    aspect-ratio: 1;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgb(17 17 15 / 0.1);
+    border-radius: 999px;
+    background: rgb(248 248 248 / 0.92);
+    box-shadow: 0 0.15rem 0.55rem rgb(17 17 15 / 0.1);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+  }
+
+  .other-showcase__project-link:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 0.2rem;
+  }
+
+  .other-showcase__project-link :global(.other-showcase__project-link-icon) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0.62;
+    transform: translateY(-0.14rem) scale(2.65);
+  }
+
+  .other-showcase__project-link:active {
+    transform: scale(0.96);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .other-showcase__project-link:hover {
+      box-shadow: 0 0.25rem 0.8rem rgb(17 17 15 / 0.16);
+      transform: scale(1.04);
+    }
+  }
+
+  @media (max-width: 60rem) {
+    .other-showcase {
+      padding-bottom: clamp(7rem, 24vw, 9rem);
+    }
+
+    .other-showcase__title,
+    .other-showcase__grid {
+      width: min(calc(100% - 2 * var(--page-gutter)), 44rem);
+    }
+
+    .other-showcase__grid {
+      grid-template-areas:
+        'santa'
+        'discourses'
+        'snake'
+        'switch'
+        'farm'
+        'buns'
+        'tic';
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .other-showcase__card--santa,
+    .other-showcase__card--discourses,
+    .other-showcase__card--buns {
+      aspect-ratio: 2 / 1;
+    }
+
+    .other-showcase__project-link {
+      width: 2.75rem;
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .other-showcase__title,
+    .other-showcase__grid {
+      width: min(calc(100% - 2 * var(--page-gutter)), 34rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .other-showcase__project-link {
+      transition-duration: 0ms;
+    }
+  }
+</style>

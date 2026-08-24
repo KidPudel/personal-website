@@ -5,10 +5,8 @@ import blogIcon from '../../assets/art/icons/Doodles_blog.png';
 import connectIcon from '../../assets/art/icons/Doodles_connect.png';
 import gamesIcon from '../../assets/art/icons/Doodles_games.png';
 import softwareIcon from '../../assets/art/icons/Doodles_software.png';
-import whoIcon from '../../assets/art/icons/Doodles_whoiam.png';
-import workIcon from '../../assets/art/icons/Doodles_work.png';
 
-type IconName = 'who' | 'blog' | 'connect' | 'work' | 'software' | 'games';
+type IconName = 'blog' | 'connect' | 'software' | 'games';
 
 interface Props {
   icon: IconName;
@@ -17,10 +15,8 @@ interface Props {
 
 const { icon, loading = 'lazy' } = Astro.props;
 const icons = {
-  who: whoIcon,
   blog: blogIcon,
   connect: connectIcon,
-  work: workIcon,
   software: softwareIcon,
   games: gamesIcon,
 };
@@ -47,11 +43,6 @@ const icons = {
     opacity: var(--drawn-icon-opacity, 0.72);
   }
 
-  .drawn-icon--who :global(img) {
-    width: 270%;
-    transform: translate(-30%, -26%);
-  }
-
   .drawn-icon--blog :global(img) {
     width: 320%;
     transform: translate(-36%, -37%);
@@ -62,11 +53,6 @@ const icons = {
     transform: translate(-31%, -31%);
   }
 
-  .drawn-icon--work :global(img) {
-    width: 320%;
-    transform: translate(-31%, -33%);
-  }
-
   .drawn-icon--software :global(img) {
     width: 300%;
     transform: translate(-29%, -36%);
@@ -75,10 +61,6 @@ const icons = {
   .drawn-icon--games :global(img) {
     width: 270%;
     transform: translate(-29.5%, -33%);
-  }
-
-  :global(.drawn-icon-trigger[data-preview-active]) .drawn-icon {
-    animation: drawn-icon-wobble var(--drawn-icon-wobble-duration) steps(1, end) infinite;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -95,7 +77,6 @@ const icons = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.drawn-icon-trigger[data-preview-active]) .drawn-icon,
     :global(.drawn-icon-trigger:hover) .drawn-icon {
       animation: none;
     }

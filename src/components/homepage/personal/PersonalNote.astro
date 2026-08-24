@@ -13,469 +13,289 @@ const doodleModules = import.meta.glob<{ default: ImageMetadata }>(
 const doodles = Object.entries(doodleModules)
   .sort(([firstPath], [secondPath]) => firstPath.localeCompare(secondPath))
   .map(([, module]) => module.default);
-
-function hashString(value: string) {
-  let hash = 2166136261;
-  for (let i = 0; i < value.length; i += 1) {
-    hash ^= value.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function doodlePlacement(src: string, index: number, count: number) {
-  const hash = hashString(src);
-  const angle = (index / Math.max(1, count)) * Math.PI * 2 - Math.PI / 2 + ((hash % 15) - 7) * 0.04;
-  const x = 50 + Math.cos(angle) * (38 + (hash % 9));
-  const y = 50 + Math.sin(angle) * (32 + ((hash >> 3) % 9));
-  const rotation = ((hash % 17) - 8) * 1.15;
-  const size = 5.6 + (hash % 4) * 0.45;
-
-  return {
-    x: Math.min(93, Math.max(7, x)),
-    y: Math.min(90, Math.max(10, y)),
-    rotation,
-    size,
-    delay: index * 36,
-  };
-}
 ---
 
-<personal-note>
-  <section id="personal" class="personal-note" aria-labelledby="personal-title">
-    <h2 id="personal-title">{personalNote.heading}</h2>
+<section id="personal" class="personal-note" aria-labelledby="personal-title">
+  <h2 id="personal-title" class="personal-note__title">{personalNote.heading}</h2>
 
-    <ul class="personal-note__notes" role="list">
-      {personalNote.items.map((item) => (
-        <li class={`personal-note__slot personal-note__slot--${item.id}`}>
-          {'href' in item ? (
-            <a class="personal-note__item" href={sitePath(item.href)}>
-              {item.label}
-            </a>
-          ) : (
-            <button
-              class="personal-note__item"
-              type="button"
-              data-personal-action={item.action}
-              aria-controls={item.action === 'doodles' ? 'personal-doodles' : 'personal-portrait'}
-              aria-expanded="false"
-              aria-label={
-                item.action === 'doodles'
-                  ? 'Show handwritten doodles'
-                  : 'Show a photo of Igor and his girlfriend'
-              }
-              disabled
-            >
-              {item.label}
-            </button>
-          )}
-          {item.id === 'boyfriend' && (
-            <figure id="personal-portrait" class="personal-note__portrait" data-personal-portrait aria-hidden="true">
-              <Image
-                src={couplePortrait}
-                alt="Igor and his girlfriend outdoors"
-                width={640}
-                loading="lazy"
-                decoding="async"
-                format="webp"
-              />
-            </figure>
-          )}
-        </li>
-      ))}
-    </ul>
+  <div class="personal-note__columns">
+    {personalNote.columns.map((column) => (
+      <div class="personal-note__column">
+        {column.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    ))}
+  </div>
 
-    <div id="personal-doodles" class="personal-note__doodles" data-doodle-field aria-hidden="true">
-      {doodles.map((doodle, index) => {
-        const placement = doodlePlacement(doodle.src, index, doodles.length);
-        return (
-          <img
-            class="personal-note__doodle"
-            src={doodle.src}
-            width={doodle.width}
-            height={doodle.height}
-            alt=""
-            draggable="false"
-            loading="lazy"
-            decoding="async"
-            data-personal-doodle
-            style={`--rest-x: ${placement.x.toFixed(1)}%; --rest-y: ${placement.y.toFixed(1)}%; --rot: ${placement.rotation.toFixed(1)}deg; --doodle-size: ${placement.size}rem; --delay: ${placement.delay}ms`}
-          />
-        );
-      })}
-    </div>
-  </section>
-</personal-note>
+  <ul class="personal-note__facts">
+    {personalNote.items.map((item) => (
+      <li>
+        {'href' in item ? (
+          <a href={sitePath(item.href)}>{item.label}</a>
+        ) : (
+          <details class="personal-note__fact">
+            <summary>
+              <span>{item.label}</span>
+              <span class="personal-note__indicator" aria-hidden="true"></span>
+            </summary>
 
-<script>
-  import './personal-note';
-</script>
+            <div class="personal-note__reveal">
+              {item.action === 'portrait' ? (
+                <figure class="personal-note__portrait">
+                  <Image
+                    src={couplePortrait}
+                    alt="Igor and his girlfriend outdoors"
+                    widths={[320, 480, 640]}
+                    sizes="(max-width: 52rem) calc(100vw - 2.5rem), 28rem"
+                    loading="lazy"
+                    decoding="async"
+                    format="webp"
+                  />
+                </figure>
+              ) : (
+                <div class="personal-note__doodles" aria-label="A selection of Igor’s doodles">
+                  {doodles.map((doodle) => (
+                    <img
+                      src={doodle.src}
+                      width={doodle.width}
+                      height={doodle.height}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </details>
+        )}
+      </li>
+    ))}
+  </ul>
+</section>
 
 <style>
-  personal-note {
-    display: block;
-  }
-
   .personal-note {
-    --note-ink: color-mix(in srgb, var(--color-ink) 46%, var(--color-field));
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: min(calc(100% - clamp(2rem, 6vw, 5rem)), 58rem);
-    min-height: clamp(28rem, 68svh, 38rem);
-    margin: clamp(2.5rem, 6vh, 4.5rem) auto 0;
+    display: block;
+    width: 100%;
+    padding: 0 0 clamp(8rem, 13vw, 12rem);
+    interpolate-size: allow-keywords;
   }
 
-  .personal-note h2 {
-    position: relative;
-    z-index: 1;
-    max-width: 14em;
-    margin: 0;
+  .personal-note__title,
+  .personal-note__columns,
+  .personal-note__facts {
+    width: min(calc(100% - 2 * var(--page-gutter)), 130rem);
+    margin-inline: auto;
+  }
+
+  .personal-note__title {
+    margin-top: 0;
+    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
     color: var(--color-ink);
-    font-family: var(--font-editorial);
-    font-size: clamp(1.55rem, 2.5vw, 2.35rem);
-    font-style: italic;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
     font-weight: 400;
-    letter-spacing: -0.015em;
-    line-height: 1.2;
-    text-align: center;
-    text-shadow:
-      0 0 0.9rem var(--color-field),
-      0 0 1.8rem var(--color-field);
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    text-align: left;
   }
 
-  .personal-note__notes {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
+  .personal-note__columns {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(11.5rem, 18rem) minmax(0, 1fr);
-    grid-template-rows: 1fr 1fr 1fr;
-    gap: clamp(0.75rem, 2vw, 1.5rem);
-    padding: clamp(2rem, 6vh, 3.75rem) clamp(0.75rem, 3vw, 1.75rem);
+    grid-template-columns: repeat(2, minmax(0, 35rem));
+    gap: clamp(2.5rem, 5vw, 7rem);
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
+    letter-spacing: 0.025em;
+    line-height: 1.3;
+  }
+
+  .personal-note__column {
+    min-width: 0;
+  }
+
+  .personal-note__column p {
     margin: 0;
-    list-style: none;
-    pointer-events: none;
-    overflow-anchor: none;
   }
 
-  .personal-note__slot {
-    --rest-x: 0px;
-    --rest-y: 0px;
-    width: max-content;
-    max-width: min(16.5rem, 100%);
-    translate: var(--rest-x) var(--rest-y);
+  .personal-note__column p + p {
+    margin-top: 1.25lh;
   }
 
-  .personal-note__slot--engineer {
-    grid-column: 1;
-    grid-row: 1;
-    justify-self: end;
-    align-self: end;
-    max-width: 11.5rem;
-    --rest-x: -0.35rem;
-    --rest-y: 0.7rem;
-    rotate: -2.6deg;
+  .personal-note__facts {
+    display: grid;
+    gap: 0.7rem;
+    padding-left: 1.15rem;
+    margin-block: clamp(2.75rem, 4vw, 4rem) 0;
+    color: var(--color-copy);
+    font-size: clamp(1rem, 0.25vw + 0.95rem, 1.1rem);
   }
 
-  .personal-note__slot--boyfriend {
-    position: relative;
-    grid-column: 3;
-    grid-row: 1;
-    justify-self: start;
-    align-self: end;
-    max-width: 15.5rem;
-    --rest-x: 0.45rem;
-    --rest-y: 0.15rem;
-    rotate: 2.2deg;
+  .personal-note__facts li {
+    padding-left: 0.2rem;
   }
 
-  .personal-note__slot--games {
-    grid-column: 1;
-    grid-row: 3;
-    justify-self: end;
-    align-self: start;
-    --rest-x: -0.7rem;
-    --rest-y: 0.35rem;
-    rotate: -1.8deg;
-  }
-
-  .personal-note__slot--blog {
-    grid-column: 2;
-    grid-row: 3;
-    justify-self: center;
-    align-self: start;
-    --rest-x: 0px;
-    --rest-y: 0.85rem;
-    rotate: -2deg;
-  }
-
-  .personal-note__slot--sketcher {
-    grid-column: 3;
-    grid-row: 3;
-    justify-self: start;
-    align-self: start;
-    max-width: 14.5rem;
-    --rest-x: 0.55rem;
-    --rest-y: -0.15rem;
-    rotate: 2.8deg;
-  }
-
-  .personal-note__item {
-    pointer-events: auto;
-    display: inline-block;
-    max-width: 100%;
-    min-height: 2.75rem;
-    padding: 0.45rem 0.1rem;
-    border: 0;
-    background: transparent;
-    color: var(--note-ink);
-    font-family: var(--font-special);
-    font-size: clamp(1.02rem, 1.55vw, 1.28rem);
-    font-weight: 400;
-    letter-spacing: 0.01em;
-    line-height: 1.28;
-    text-align: inherit;
-    text-decoration: underline dotted;
-    text-decoration-color: color-mix(in srgb, var(--note-ink) 55%, transparent);
+  .personal-note__facts a,
+  .personal-note__fact summary {
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 68%, transparent);
     text-decoration-thickness: 0.08rem;
-    text-underline-offset: 0.2em;
+    text-underline-offset: 0.24rem;
+  }
+
+  .personal-note__fact {
+    max-width: min(100%, 40rem);
+  }
+
+  .personal-note__fact summary {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    gap: 0.55rem;
+    margin-block: -0.55rem;
     cursor: pointer;
+    list-style: none;
+    touch-action: manipulation;
   }
 
-  .personal-note__slot--engineer .personal-note__item,
-  .personal-note__slot--games .personal-note__item {
-    text-align: right;
+  .personal-note__fact summary::-webkit-details-marker {
+    display: none;
   }
 
-  .personal-note__item:disabled {
-    color: var(--note-ink);
-    opacity: 1;
-    cursor: pointer;
+  .personal-note__indicator {
+    position: relative;
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    flex: none;
+    transition: transform 200ms var(--ease-in-out);
   }
 
-  :global(html.js personal-note:not([data-constellation='revealed'])) .personal-note__item,
-  :global(html.js personal-note:not([data-constellation='revealed'])) .personal-note__item:disabled {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .personal-note__item:hover,
-  .personal-note__item:focus-visible {
-    color: color-mix(in srgb, var(--color-ink) 68%, var(--color-field));
-    text-decoration-color: color-mix(in srgb, var(--color-ink) 42%, transparent);
-  }
-
-  .personal-note__item:focus-visible {
-    outline: 3px solid var(--color-accent);
-    outline-offset: 0.25rem;
-  }
-
-  .personal-note__doodles {
+  .personal-note__indicator::before,
+  .personal-note__indicator::after {
     position: absolute;
-    inset: -1.5rem;
-    z-index: 3;
-    pointer-events: none;
+    top: calc(50% - 0.04rem);
+    left: 0;
+    width: 100%;
+    height: 0.08rem;
+    background: currentColor;
+    content: '';
   }
 
-  .personal-note__doodle {
-    position: absolute;
-    left: var(--spawn-x, 50%);
-    top: var(--spawn-y, 50%);
-    z-index: 0;
-    width: var(--doodle-size, 6.2rem);
-    max-width: none;
-    height: auto;
+  .personal-note__indicator::after {
+    transform: rotate(90deg);
+  }
+
+  .personal-note__fact[open] .personal-note__indicator {
+    transform: rotate(45deg);
+  }
+
+  .personal-note__fact::details-content {
+    block-size: 0;
+    overflow: hidden;
     opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(0.18);
-    cursor: grab;
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: none;
-    filter: drop-shadow(0 0.12rem 0.28rem rgb(17 17 15 / 0.08));
     transition:
-      left 680ms cubic-bezier(0.22, 1.12, 0.32, 1) var(--delay, 0ms),
-      top 680ms cubic-bezier(0.22, 1.12, 0.32, 1) var(--delay, 0ms),
-      opacity 280ms ease var(--delay, 0ms),
-      transform 680ms cubic-bezier(0.22, 1.12, 0.32, 1) var(--delay, 0ms),
-      filter 180ms ease;
+      block-size 200ms var(--ease-out),
+      opacity 160ms var(--ease-out),
+      content-visibility 200ms allow-discrete;
   }
 
-  :global(personal-note[data-doodles-visible]) .personal-note__doodle {
-    left: var(--rest-x);
-    top: var(--rest-y);
-    opacity: 0.86;
-    pointer-events: auto;
-    transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);
+  .personal-note__fact[open]::details-content {
+    block-size: auto;
+    opacity: 1;
   }
 
-  :global(personal-note[data-doodles-visible]) .personal-note__doodle[data-placed] {
-    left: var(--hold-x);
-    top: var(--hold-y);
+  .personal-note__reveal {
+    transform: translateY(-0.35rem);
+    transform-origin: top left;
+    transition: transform 200ms var(--ease-out);
   }
 
-  :global(personal-note[data-doodles-visible]) .personal-note__doodle[data-dragging] {
-    z-index: 4;
-    cursor: grabbing;
-    filter: drop-shadow(0 0.35rem 0.55rem rgb(17 17 15 / 0.16));
-    transition: none;
+  .personal-note__fact[open] .personal-note__reveal {
+    transform: translateY(0);
   }
 
   .personal-note__portrait {
-    position: absolute;
-    z-index: 4;
-    top: calc(100% + 0.8rem);
-    right: 0;
-    left: auto;
-    width: 12.5rem;
-    margin: 0;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: translateY(0.45rem) rotate(1.6deg) scale(0.94);
-    transform-origin: center top;
-    filter: drop-shadow(0 0.28rem 0.7rem rgb(17 17 15 / 0.14));
-    transition:
-      opacity 220ms ease 80ms,
-      transform 280ms ease 40ms,
-      visibility 0s 320ms;
+    width: min(100%, 28rem);
+    margin: 1.15rem 0 0.5rem;
+    filter: drop-shadow(0 0.4rem 1rem rgb(17 17 15 / 0.12));
   }
 
   .personal-note__portrait :global(img) {
     display: block;
     width: 100%;
     height: auto;
-    aspect-ratio: 1280 / 853;
-    object-fit: cover;
-    object-position: 46% 42%;
-    border-radius: 0.45rem;
+    border-radius: 0.5rem;
   }
 
-  :global(personal-note[data-portrait-visible]) .personal-note__slot--boyfriend {
-    z-index: 5;
+  .personal-note__doodles {
+    display: grid;
+    max-width: 31rem;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(0.4rem, 1vw, 0.85rem);
+    padding-top: 1rem;
   }
 
-  :global(personal-note[data-portrait-visible]) .personal-note__portrait {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) rotate(1.6deg) scale(1);
-    transition-delay: 80ms, 40ms, 0s;
+  .personal-note__doodles img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: contain;
+    filter: grayscale(1);
   }
 
-  @media (max-width: 50rem) {
-    .personal-note {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 0;
-      width: min(calc(100% - 1.5rem), 26rem);
-      margin-top: 3rem;
-      padding: 1.25rem 0 2.5rem;
-      gap: 0;
+  .personal-note__facts a:hover,
+  .personal-note__facts a:focus-visible,
+  .personal-note__fact summary:hover,
+  .personal-note__fact summary:focus-visible {
+    color: var(--color-ink);
+    text-decoration-color: currentColor;
+  }
+
+  .personal-note__facts a:focus-visible,
+  .personal-note__fact summary:focus-visible {
+    border-radius: 0.08em;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (max-width: 52rem) {
+    .personal-note__title,
+    .personal-note__columns,
+    .personal-note__facts {
+      width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
     }
 
-    .personal-note h2 {
-      max-width: 12em;
-      margin-bottom: 2rem;
-      font-size: clamp(1.4rem, 6.4vw, 1.85rem);
-    }
-
-    .personal-note__notes {
-      position: static;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      gap: 1.55rem;
-      padding: 0;
-    }
-
-    .personal-note__slot,
-    .personal-note__slot--engineer,
-    .personal-note__slot--boyfriend,
-    .personal-note__slot--games,
-    .personal-note__slot--blog,
-    .personal-note__slot--sketcher {
-      --rest-x: 0px;
-      --rest-y: 0px;
-      max-width: 16.5rem;
-      justify-self: center;
-      align-self: center;
-      text-align: center;
-      rotate: 0deg;
-    }
-
-    .personal-note__slot--engineer {
-      rotate: -1.4deg;
-    }
-
-    .personal-note__slot--boyfriend {
-      position: relative;
-      rotate: 1.6deg;
-    }
-
-    :global(personal-note[data-portrait-visible]) .personal-note__slot--boyfriend {
-      margin-bottom: 8.5rem;
-    }
-
-    .personal-note__portrait {
-      top: calc(100% + 0.7rem);
-      left: 50%;
-      right: auto;
-      width: min(11.25rem, 78vw);
-      transform: translateX(-50%) translateY(0.4rem) rotate(1.6deg) scale(0.94);
-    }
-
-    :global(personal-note[data-portrait-visible]) .personal-note__portrait {
-      transform: translateX(-50%) translateY(0) rotate(1.6deg) scale(1);
-    }
-
-    .personal-note__slot--games {
-      rotate: -1.1deg;
-    }
-
-    .personal-note__slot--blog {
-      rotate: -1.8deg;
-    }
-
-    .personal-note__slot--sketcher {
-      rotate: 1.9deg;
-    }
-
-    .personal-note__item,
-    .personal-note__slot--engineer .personal-note__item,
-    .personal-note__slot--games .personal-note__item {
-      text-align: center;
+    .personal-note__columns {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25lh;
+      font-size: 1.0625rem;
+      line-height: 1.3;
     }
 
     .personal-note__doodles {
-      inset: -0.5rem;
-    }
-
-    .personal-note__doodle {
-      width: calc(var(--doodle-size, 6.2rem) * 0.82);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(html.js personal-note:not([data-constellation='revealed'])) .personal-note__item {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .personal-note__doodle {
-      left: var(--rest-x);
-      top: var(--rest-y);
-      transform: translate(-50%, -50%) rotate(var(--rot, 0deg)) scale(1);
-      transition: opacity 160ms ease;
-    }
-
-    :global(personal-note[data-doodles-visible]) .personal-note__doodle[data-dragging] {
+    .personal-note__indicator {
       transition: none;
     }
 
-    .personal-note__portrait {
+    .personal-note__fact::details-content {
+      transition:
+        block-size 0ms,
+        opacity 160ms ease,
+        content-visibility 0ms allow-discrete;
+    }
+
+    .personal-note__reveal {
+      transform: none;
       transition: none;
     }
   }

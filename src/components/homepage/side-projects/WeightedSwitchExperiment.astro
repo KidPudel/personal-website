@@ -1,0 +1,80 @@
+<weighted-switch class="weighted-switch">
+  <button
+    class="weighted-switch__control"
+    type="button"
+    role="switch"
+    aria-checked="true"
+    aria-label="Weighted switch experiment"
+  >
+    <span class="weighted-switch__fill" aria-hidden="true"></span>
+    <span class="weighted-switch__thumb" aria-hidden="true"></span>
+  </button>
+</weighted-switch>
+
+<script>
+  import './weighted-switch';
+</script>
+
+<style>
+  .weighted-switch {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: clamp(1rem, 2.5vw, 2rem);
+    background: #fff;
+  }
+
+  .weighted-switch__control {
+    --switch-height: clamp(3.25rem, 5vw, 5rem);
+    --switch-width: calc(var(--switch-height) * 2.2);
+    --switch-pad: calc(var(--switch-height) * 0.075);
+    --thumb-ratio: 0.63;
+
+    position: relative;
+    width: var(--switch-width);
+    height: var(--switch-height);
+    flex: 0 0 auto;
+    padding: var(--switch-pad);
+    overflow: hidden;
+    border: 0;
+    border-radius: 999px;
+    background: #e8e8ed;
+    box-shadow: 0 0.65rem 1.75rem rgb(0 0 0 / 0.08), 0 0.12rem 0.4rem rgb(0 0 0 / 0.05);
+    cursor: pointer;
+    isolation: isolate;
+    touch-action: manipulation;
+  }
+
+  .weighted-switch__control:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 0.35rem;
+  }
+
+  .weighted-switch__fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: #007aff;
+    filter: blur(0);
+    pointer-events: none;
+    transform: translate3d(-100%, 0, 0);
+  }
+
+  .weighted-switch__thumb {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: calc(var(--thumb-ratio) * 100%);
+    height: 100%;
+    border-radius: 999px;
+    background: #fff;
+    backface-visibility: hidden;
+    box-shadow: 0 0.1rem 0.32rem rgb(0 0 0 / 0.16);
+    pointer-events: none;
+    transform: translateX(0);
+    transform-origin: left center;
+  }
+
+</style>

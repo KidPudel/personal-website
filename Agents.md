@@ -29,7 +29,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | An evidence object's layout | `src/components/homepage/values/EvidenceObject.astro` |
 | Writing document | `src/pages/blog/index.astro` and `src/components/homepage/WritingPreview.astro` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
-| Work document | `src/components/homepage/WorkPortfolio.astro` |
+| Homepage work showcase | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
 
 ## Execution

@@ -39,21 +39,21 @@ export const valuesPremise = 'Three things important to me.';
 
 export const personalNote = {
   heading: 'A few more things about me',
+  columns: [
+    [
+      'From a young age, I’ve mostly lived through a lens shaped by the games, films, and music that left an impact on me. I came to appreciate how something made by another person can come alive, grow beyond itself, and become part of your own life.',
+      'I chose to pursue software engineering, but over the years something kept feeling off. The moments that felt right were the ones when I was creating experiences, games, interactions, and things people could actually feel something through.',
+    ],
+    [
+      'Eventually, I had enough history to see the pattern. I took time away to listen to myself and let myself pursue what I actually care about. Looking back, none of those years feel wasted. They shaped my taste, my values, and my ability to bring ideas into reality.',
+      'I have a strong instinct for atmosphere and rely heavily on inner feeling. In my designs, I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
+    ],
+  ],
   items: [
-    {
-      id: 'engineer',
-      label: 'experienced software engineer',
-      href: '/work/#product-design',
-    },
     {
       id: 'boyfriend',
       label: 'Proud boyfriend to the best girlfriend in the world',
       action: 'portrait',
-    },
-    {
-      id: 'games',
-      label: 'Hobby game designer',
-      href: '/work/#games',
     },
     {
       id: 'sketcher',
@@ -67,8 +67,6 @@ export const personalNote = {
     },
   ],
 } as const;
-
-export type PersonalNoteItem = (typeof personalNote.items)[number];
 
 export const values: readonly ValuePassage[] = [
   {
