@@ -111,7 +111,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     this.abort = new AbortController();
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const homepage = document.querySelector<HTMLElement>('[data-homepage]');
+    const documentSurface = document.querySelector<HTMLElement>('[data-homepage-document]');
     const layers = new Map<Placement, EdgeLayer>();
 
     this.querySelectorAll<HTMLElement>('[data-elastic-layer]').forEach((host) => {
@@ -127,7 +127,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       }
     });
 
-    if (!homepage || layers.size !== 2) return;
+    if (!documentSurface || layers.size !== 2) return;
 
     let activePlacement: Placement | undefined;
     let pull = 0;
@@ -184,7 +184,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         resetLayer(layer);
       });
 
-      homepage.style.transform = activePlacement
+      documentSurface.style.transform = activePlacement
         ? `translate3d(0, ${activePlacement === 'top' ? visualPull : -visualPull}px, 0)`
         : '';
 
@@ -544,8 +544,8 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     if (this.frame) window.cancelAnimationFrame(this.frame);
     this.frame = 0;
 
-    const homepage = document.querySelector<HTMLElement>('[data-homepage]');
-    if (homepage) homepage.style.transform = '';
+    const documentSurface = document.querySelector<HTMLElement>('[data-homepage-document]');
+    if (documentSurface) documentSurface.style.transform = '';
 
     delete this.dataset.enhanced;
     document.documentElement.removeAttribute('data-elastic-edge');
