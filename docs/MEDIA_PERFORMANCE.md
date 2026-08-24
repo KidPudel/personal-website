@@ -36,6 +36,7 @@ On GitHub Pages, even a very small cold asset request can add a separate network
 - A critical video must have an immediately presentable poster. If the poster is tiny and first-paint latency is visible on the current host, inline it instead of paying another cold request.
 - Deferred videos may move from `none` to `metadata` or `auto` as they approach the viewport. Respect data saver and slow connections, and do not autoplay them.
 - Autoplay video must be muted, loop only when the loop is intentional, pause when hidden, and retain a useful poster if playback is blocked.
+- The homepage side-project MP4 previews are a reviewed GIF-replacement exception. They may begin silent looping playback only while intersecting the viewport, must keep `preload="none"` and a parser-discoverable source, and must pause offscreen or while the document is hidden. Reduced-motion, data-saver, and slow-connection visits keep the static poster.
 - Encode MP4 for progressive delivery with the `moov` atom before media data. Use broadly supported H.264 with `yuv420p`; omit audio from intentionally silent files.
 - A short video is not automatically a light video. Check encoded bytes, bitrate, dimensions, frame rate, and startup metadata.
 

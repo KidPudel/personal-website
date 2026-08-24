@@ -77,7 +77,7 @@ const cards = {
     </article>
 
     <article class="other-showcase__card other-showcase__card--discourses">
-      <project-preview class="project-preview">
+      <div class="project-preview">
         <video
           src={discoursesVideo}
           poster={discoursesPoster.src}
@@ -91,21 +91,7 @@ const cards = {
         >
           Your browser does not support embedded video.
         </video>
-        <button
-          type="button"
-          aria-label={`Play ${cards.discourses.name}`}
-          aria-pressed="false"
-          data-project-name={cards.discourses.name}
-          data-project-preview
-        >
-          <span class="project-preview__control" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path class="project-preview__play-icon" d="M9 7.3v9.4l7.4-4.7z"></path>
-              <path class="project-preview__pause-icon" d="M8.25 7h2.5v10h-2.5zm5 0h2.5v10h-2.5z"></path>
-            </svg>
-          </span>
-        </button>
-      </project-preview>
+      </div>
       <a
         class="other-showcase__project-link"
         href={cards.discourses.href}
@@ -158,7 +144,7 @@ const cards = {
     </article>
 
     <article class="other-showcase__card other-showcase__card--buns">
-      <project-preview class="project-preview">
+      <div class="project-preview">
         <video
           src={bunVideo}
           poster={bunPoster.src}
@@ -172,21 +158,7 @@ const cards = {
         >
           Your browser does not support embedded video.
         </video>
-        <button
-          type="button"
-          aria-label={`Play ${cards.buns.name}`}
-          aria-pressed="false"
-          data-project-name={cards.buns.name}
-          data-project-preview
-        >
-          <span class="project-preview__control" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path class="project-preview__play-icon" d="M9 7.3v9.4l7.4-4.7z"></path>
-              <path class="project-preview__pause-icon" d="M8.25 7h2.5v10h-2.5zm5 0h2.5v10h-2.5z"></path>
-            </svg>
-          </span>
-        </button>
-      </project-preview>
+      </div>
       <a
         class="other-showcase__project-link"
         href={cards.buns.href}
@@ -207,7 +179,7 @@ const cards = {
     </article>
 
     <article class="other-showcase__card other-showcase__card--snake">
-      <project-preview class="project-preview">
+      <div class="project-preview">
         <video
           src={snakeVideo}
           poster={snakePoster.src}
@@ -221,21 +193,7 @@ const cards = {
         >
           Your browser does not support embedded video.
         </video>
-        <button
-          type="button"
-          aria-label={`Play ${cards.snake.name}`}
-          aria-pressed="false"
-          data-project-name={cards.snake.name}
-          data-project-preview
-        >
-          <span class="project-preview__control" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false">
-              <path class="project-preview__play-icon" d="M9 7.3v9.4l7.4-4.7z"></path>
-              <path class="project-preview__pause-icon" d="M8.25 7h2.5v10h-2.5zm5 0h2.5v10h-2.5z"></path>
-            </svg>
-          </span>
-        </button>
-      </project-preview>
+      </div>
       <a
         class="other-showcase__project-link"
         href={cards.snake.href}
@@ -300,54 +258,43 @@ const cards = {
 </section>
 
 <script>
-  const previews = document.querySelectorAll<HTMLElement>('project-preview');
-  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const previewVideos = document.querySelectorAll<HTMLVideoElement>('.project-preview video');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const connection = (
+    navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }
+  ).connection;
+  const conserveData = Boolean(
+    connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? ''),
+  );
+  const visibleVideos = new Set<HTMLVideoElement>();
 
-  previews.forEach((preview) => {
-    const video = preview.querySelector('video');
-    const trigger = preview.querySelector<HTMLButtonElement>('[data-project-preview]');
-    if (!video || !trigger || preview.dataset.bound === 'true') return;
-    preview.dataset.bound = 'true';
+  const play = (video: HTMLVideoElement) => {
+    if (reducedMotion.matches || conserveData || document.hidden) return;
+    void video.play().catch(() => undefined);
+  };
 
-    const play = () => {
-      if (reducedMotion.matches) return;
-      void video.play();
-    };
-    const pause = () => video.pause();
-    const syncPlaybackState = () => {
-      const isPlaying = !video.paused && !video.ended;
-      const projectName = trigger.dataset.projectName ?? 'project preview';
-      trigger.setAttribute('aria-pressed', String(isPlaying));
-      trigger.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${projectName}`);
-    };
-    const syncMotionPreference = () => {
-      trigger.disabled = reducedMotion.matches;
-      if (reducedMotion.matches) pause();
-    };
-
-    trigger.addEventListener('click', () => {
-      if (video.paused) play();
-      else pause();
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const video = entry.target as HTMLVideoElement;
+      if (entry.isIntersecting) {
+        visibleVideos.add(video);
+        play(video);
+      } else {
+        visibleVideos.delete(video);
+        video.pause();
+      }
     });
-    preview.addEventListener('pointerenter', () => {
-      if (finePointer.matches) play();
-    });
-    preview.addEventListener('pointerleave', () => {
-      if (finePointer.matches) pause();
-    });
-    trigger.addEventListener('blur', pause);
-    video.addEventListener('play', syncPlaybackState);
-    video.addEventListener('pause', syncPlaybackState);
-    reducedMotion.addEventListener('change', syncMotionPreference);
-    syncMotionPreference();
-    syncPlaybackState();
-
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries[0]?.isIntersecting) pause();
-    });
-    observer.observe(preview);
   });
+
+  previewVideos.forEach((video) => observer.observe(video));
+
+  const syncPlayback = () => {
+    previewVideos.forEach((video) => video.pause());
+    if (!reducedMotion.matches && !document.hidden) visibleVideos.forEach(play);
+  };
+
+  reducedMotion.addEventListener('change', syncPlayback);
+  document.addEventListener('visibilitychange', syncPlayback);
 </script>
 
 <style>
@@ -463,57 +410,6 @@ const cards = {
     object-fit: cover;
   }
 
-  .project-preview button {
-    position: absolute;
-    z-index: 2;
-    inset: 0;
-    display: block;
-    width: 100%;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  .project-preview button:focus-visible {
-    outline: var(--focus-width) solid var(--color-focus);
-    outline-offset: -0.4rem;
-  }
-
-  .project-preview button:disabled {
-    cursor: default;
-  }
-
-  .project-preview__control {
-    display: none;
-    width: 3rem;
-    aspect-ratio: 1;
-    margin: auto;
-    place-items: center;
-    border: 1px solid rgb(255 255 255 / 0.34);
-    border-radius: 999px;
-    background: rgb(17 17 15 / 0.66);
-    box-shadow: 0 0.25rem 1rem rgb(17 17 15 / 0.22);
-    color: #fff;
-  }
-
-  .project-preview__control svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    fill: currentColor;
-  }
-
-  .project-preview__pause-icon {
-    display: none;
-  }
-
-  .project-preview button[aria-pressed='true'] .project-preview__play-icon {
-    display: none;
-  }
-
-  .project-preview button[aria-pressed='true'] .project-preview__pause-icon {
-    display: block;
-  }
-
   .other-showcase__tic-tac-toe :global(img) {
     display: block;
     width: 78%;
@@ -568,12 +464,6 @@ const cards = {
     }
   }
 
-  @media (hover: none), (pointer: coarse) {
-    .project-preview__control {
-      display: grid;
-    }
-  }
-
   @media (max-width: 60rem) {
     .other-showcase {
       padding-bottom: clamp(7rem, 24vw, 9rem);
@@ -618,10 +508,6 @@ const cards = {
   @media (prefers-reduced-motion: reduce) {
     .other-showcase__project-link {
       transition-duration: 0ms;
-    }
-
-    .project-preview__control {
-      display: none;
     }
   }
 </style>
