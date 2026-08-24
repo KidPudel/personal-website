@@ -1,12 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 
-import blogIcon from '../../assets/art/icons/Doodles_blog.png';
 import connectIcon from '../../assets/art/icons/Doodles_connect.png';
-import gamesIcon from '../../assets/art/icons/Doodles_games.png';
-import softwareIcon from '../../assets/art/icons/Doodles_software.png';
 
-type IconName = 'blog' | 'connect' | 'software' | 'games';
+type IconName = 'connect';
 
 interface Props {
   icon: IconName;
@@ -15,10 +12,7 @@ interface Props {
 
 const { icon, loading = 'lazy' } = Astro.props;
 const icons = {
-  blog: blogIcon,
   connect: connectIcon,
-  software: softwareIcon,
-  games: gamesIcon,
 };
 ---
 
@@ -43,24 +37,9 @@ const icons = {
     opacity: var(--drawn-icon-opacity, 0.72);
   }
 
-  .drawn-icon--blog :global(img) {
-    width: 320%;
-    transform: translate(-36%, -37%);
-  }
-
   .drawn-icon--connect :global(img) {
     width: 340%;
     transform: translate(-31%, -31%);
-  }
-
-  .drawn-icon--software :global(img) {
-    width: 300%;
-    transform: translate(-29%, -36%);
-  }
-
-  .drawn-icon--games :global(img) {
-    width: 270%;
-    transform: translate(-29.5%, -33%);
   }
 
   @media (hover: hover) and (pointer: fine) {

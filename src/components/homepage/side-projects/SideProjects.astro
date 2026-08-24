@@ -48,7 +48,7 @@ const cards = {
 
 <section id="side-projects" class="other-showcase" aria-labelledby="other-showcase-title">
   <h2 id="other-showcase-title" class="other-showcase__title">
-    <span class="other-showcase__other">other</span>
+    <span>more</span>
     <span>things</span>
     <span>i’ve</span>
     <span>made</span>
@@ -91,7 +91,20 @@ const cards = {
         >
           Your browser does not support embedded video.
         </video>
-        <button type="button" aria-label={`Play ${cards.discourses.name}`} data-project-preview></button>
+        <button
+          type="button"
+          aria-label={`Play ${cards.discourses.name}`}
+          aria-pressed="false"
+          data-project-name={cards.discourses.name}
+          data-project-preview
+        >
+          <span class="project-preview__control" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path class="project-preview__play-icon" d="M9 7.3v9.4l7.4-4.7z"></path>
+              <path class="project-preview__pause-icon" d="M8.25 7h2.5v10h-2.5zm5 0h2.5v10h-2.5z"></path>
+            </svg>
+          </span>
+        </button>
       </project-preview>
       <a
         class="other-showcase__project-link"
@@ -159,7 +172,20 @@ const cards = {
         >
           Your browser does not support embedded video.
         </video>
-        <button type="button" aria-label={`Play ${cards.buns.name}`} data-project-preview></button>
+        <button
+          type="button"
+          aria-label={`Play ${cards.buns.name}`}
+          aria-pressed="false"
+          data-project-name={cards.buns.name}
+          data-project-preview
+        >
+          <span class="project-preview__control" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path class="project-preview__play-icon" d="M9 7.3v9.4l7.4-4.7z"></path>
+              <path class="project-preview__pause-icon" d="M8.25 7h2.5v10h-2.5zm5 0h2.5v10h-2.5z"></path>
+            </svg>
+          </span>
+        </button>
       </project-preview>
       <a
         class="other-showcase__project-link"
@@ -195,7 +221,20 @@ const cards = {
         >
           Your browser does not support embedded video.
         </video>
-        <button type="button" aria-label={`Play ${cards.snake.name}`} data-project-preview></button>
+        <button
+          type="button"
+          aria-label={`Play ${cards.snake.name}`}
+          aria-pressed="false"
+          data-project-name={cards.snake.name}
+          data-project-preview
+        >
+          <span class="project-preview__control" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path class="project-preview__play-icon" d="M9 7.3v9.4l7.4-4.7z"></path>
+              <path class="project-preview__pause-icon" d="M8.25 7h2.5v10h-2.5zm5 0h2.5v10h-2.5z"></path>
+            </svg>
+          </span>
+        </button>
       </project-preview>
       <a
         class="other-showcase__project-link"
@@ -276,6 +315,16 @@ const cards = {
       void video.play();
     };
     const pause = () => video.pause();
+    const syncPlaybackState = () => {
+      const isPlaying = !video.paused && !video.ended;
+      const projectName = trigger.dataset.projectName ?? 'project preview';
+      trigger.setAttribute('aria-pressed', String(isPlaying));
+      trigger.setAttribute('aria-label', `${isPlaying ? 'Pause' : 'Play'} ${projectName}`);
+    };
+    const syncMotionPreference = () => {
+      trigger.disabled = reducedMotion.matches;
+      if (reducedMotion.matches) pause();
+    };
 
     trigger.addEventListener('click', () => {
       if (video.paused) play();
@@ -284,8 +333,15 @@ const cards = {
     preview.addEventListener('pointerenter', () => {
       if (finePointer.matches) play();
     });
-    preview.addEventListener('pointerleave', pause);
+    preview.addEventListener('pointerleave', () => {
+      if (finePointer.matches) pause();
+    });
     trigger.addEventListener('blur', pause);
+    video.addEventListener('play', syncPlaybackState);
+    video.addEventListener('pause', syncPlaybackState);
+    reducedMotion.addEventListener('change', syncMotionPreference);
+    syncMotionPreference();
+    syncPlaybackState();
 
     const observer = new IntersectionObserver((entries) => {
       if (!entries[0]?.isIntersecting) pause();
@@ -320,10 +376,6 @@ const cards = {
     letter-spacing: -0.035em;
     line-height: 1.1;
     text-align: left;
-  }
-
-  .other-showcase__other {
-    font-style: italic;
   }
 
   .other-showcase__grid {
@@ -427,6 +479,41 @@ const cards = {
     outline-offset: -0.4rem;
   }
 
+  .project-preview button:disabled {
+    cursor: default;
+  }
+
+  .project-preview__control {
+    display: none;
+    width: 3rem;
+    aspect-ratio: 1;
+    margin: auto;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.34);
+    border-radius: 999px;
+    background: rgb(17 17 15 / 0.66);
+    box-shadow: 0 0.25rem 1rem rgb(17 17 15 / 0.22);
+    color: #fff;
+  }
+
+  .project-preview__control svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor;
+  }
+
+  .project-preview__pause-icon {
+    display: none;
+  }
+
+  .project-preview button[aria-pressed='true'] .project-preview__play-icon {
+    display: none;
+  }
+
+  .project-preview button[aria-pressed='true'] .project-preview__pause-icon {
+    display: block;
+  }
+
   .other-showcase__tic-tac-toe :global(img) {
     display: block;
     width: 78%;
@@ -481,6 +568,12 @@ const cards = {
     }
   }
 
+  @media (hover: none), (pointer: coarse) {
+    .project-preview__control {
+      display: grid;
+    }
+  }
+
   @media (max-width: 60rem) {
     .other-showcase {
       padding-bottom: clamp(7rem, 24vw, 9rem);
@@ -525,6 +618,10 @@ const cards = {
   @media (prefers-reduced-motion: reduce) {
     .other-showcase__project-link {
       transition-duration: 0ms;
+    }
+
+    .project-preview__control {
+      display: none;
     }
   }
 </style>

@@ -1,0 +1,315 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  alt: string;
+  src: ImageMetadata;
+}
+
+const { alt, src } = Astro.props;
+---
+
+<holo-portrait>
+  <div class="holo-portrait__surface">
+    <Image
+      src={src}
+      alt={alt}
+      widths={[320, 480, 640]}
+      sizes="(max-width: 52rem) calc(100vw - 2.5rem), 28rem"
+      loading="lazy"
+      decoding="async"
+      format="webp"
+    />
+    <span class="holo-portrait__foil" aria-hidden="true"></span>
+    <svg
+      class="holo-portrait__hearts"
+      viewBox="0 0 320 230"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+    >
+      <defs>
+        <path
+          id="holo-heart"
+          d="M0 18C-16 4-25-5-25-18c0-10 7-17 17-17 6 0 12 3 16 9 4-6 10-9 16-9 10 0 17 7 17 17 0 13-9 22-25 36L8 25 0 18Z"
+          transform="scale(.7)"
+          vector-effect="non-scaling-stroke"
+        />
+      </defs>
+      <use href="#holo-heart" transform="translate(25 25) rotate(-12) scale(.28)" />
+      <use href="#holo-heart" transform="translate(92 38) rotate(5) scale(.36)" />
+      <use href="#holo-heart" transform="translate(165 23) rotate(10) scale(.24)" />
+      <use href="#holo-heart" transform="translate(245 38) rotate(-5) scale(.33)" />
+      <use href="#holo-heart" transform="translate(304 18) rotate(14) scale(.22)" />
+      <use href="#holo-heart" transform="translate(51 55) rotate(8) scale(.24)" />
+      <use href="#holo-heart" transform="translate(145 54) rotate(-6) scale(.2)" />
+      <use href="#holo-heart" transform="translate(235 69) rotate(13) scale(.27)" />
+      <use href="#holo-heart" transform="translate(8 84) rotate(3) scale(.35)" />
+      <use href="#holo-heart" transform="translate(60 105) rotate(-8) scale(.23)" />
+      <use href="#holo-heart" transform="translate(125 86) rotate(6) scale(.38)" />
+      <use href="#holo-heart" transform="translate(203 78) rotate(-12) scale(.25)" />
+      <use href="#holo-heart" transform="translate(281 105) rotate(8) scale(.32)" />
+      <use href="#holo-heart" transform="translate(38 120) rotate(-3) scale(.18)" />
+      <use href="#holo-heart" transform="translate(89 132) rotate(14) scale(.25)" />
+      <use href="#holo-heart" transform="translate(151 111) rotate(-10) scale(.2)" />
+      <use href="#holo-heart" transform="translate(218 128) rotate(5) scale(.27)" />
+      <use href="#holo-heart" transform="translate(274 139) rotate(-13) scale(.18)" />
+      <use href="#holo-heart" transform="translate(33 154) rotate(-7) scale(.3)" />
+      <use href="#holo-heart" transform="translate(104 165) rotate(11) scale(.24)" />
+      <use href="#holo-heart" transform="translate(166 145) rotate(-4) scale(.35)" />
+      <use href="#holo-heart" transform="translate(238 164) rotate(2) scale(.22)" />
+      <use href="#holo-heart" transform="translate(305 150) rotate(-8) scale(.34)" />
+      <use href="#holo-heart" transform="translate(56 190) rotate(7) scale(.2)" />
+      <use href="#holo-heart" transform="translate(127 188) rotate(-12) scale(.27)" />
+      <use href="#holo-heart" transform="translate(191 181) rotate(3) scale(.19)" />
+      <use href="#holo-heart" transform="translate(260 199) rotate(10) scale(.26)" />
+      <use href="#holo-heart" transform="translate(16 215) rotate(6) scale(.25)" />
+      <use href="#holo-heart" transform="translate(84 215) rotate(-10) scale(.33)" />
+      <use href="#holo-heart" transform="translate(153 205) rotate(5) scale(.22)" />
+      <use href="#holo-heart" transform="translate(222 218) rotate(-3) scale(.31)" />
+      <use href="#holo-heart" transform="translate(289 210) rotate(10) scale(.24)" />
+    </svg>
+    <span class="holo-portrait__glare" aria-hidden="true"></span>
+  </div>
+</holo-portrait>
+
+<script>
+  class HoloPortrait extends HTMLElement {
+    private readonly reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private readonly finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    private readonly target = { x: 0, y: 0 };
+    private readonly position = { x: 0, y: 0 };
+    private readonly velocity = { x: 0, y: 0 };
+    private surface: HTMLElement | null = null;
+    private foil: HTMLElement | null = null;
+    private hearts: HTMLElement | null = null;
+    private glare: HTMLElement | null = null;
+    private frame = 0;
+    private previousTime = 0;
+
+    connectedCallback() {
+      this.surface = this.querySelector<HTMLElement>('.holo-portrait__surface');
+      this.foil = this.querySelector<HTMLElement>('.holo-portrait__foil');
+      this.hearts = this.querySelector<HTMLElement>('.holo-portrait__hearts');
+      this.glare = this.querySelector<HTMLElement>('.holo-portrait__glare');
+
+      if (!this.surface || !this.foil || !this.hearts || !this.glare) return;
+
+      this.addEventListener('pointermove', this.handlePointerMove);
+      this.addEventListener('pointerleave', this.handlePointerLeave);
+      this.reducedMotion.addEventListener('change', this.handlePreferenceChange);
+      this.finePointer.addEventListener('change', this.handlePreferenceChange);
+      document.addEventListener('visibilitychange', this.handleVisibilityChange);
+    }
+
+    disconnectedCallback() {
+      this.removeEventListener('pointermove', this.handlePointerMove);
+      this.removeEventListener('pointerleave', this.handlePointerLeave);
+      this.reducedMotion.removeEventListener('change', this.handlePreferenceChange);
+      this.finePointer.removeEventListener('change', this.handlePreferenceChange);
+      document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+      window.cancelAnimationFrame(this.frame);
+    }
+
+    private readonly handlePointerMove = (event: PointerEvent) => {
+      if (!this.canMove || !this.surface) return;
+
+      const bounds = this.surface.getBoundingClientRect();
+      this.target.x = Math.max(-1, Math.min(1, ((event.clientX - bounds.left) / bounds.width) * 2 - 1));
+      this.target.y = Math.max(-1, Math.min(1, ((event.clientY - bounds.top) / bounds.height) * 2 - 1));
+      this.startSpring();
+    };
+
+    private readonly handlePointerLeave = () => {
+      this.target.x = 0;
+      this.target.y = 0;
+      this.startSpring();
+    };
+
+    private readonly handlePreferenceChange = () => {
+      if (this.canMove) return;
+      this.reset();
+    };
+
+    private readonly handleVisibilityChange = () => {
+      if (!document.hidden) return;
+      this.reset();
+    };
+
+    private get canMove() {
+      return this.finePointer.matches && !this.reducedMotion.matches;
+    }
+
+    private startSpring() {
+      if (this.frame || !this.canMove) return;
+      this.previousTime = performance.now();
+      this.frame = window.requestAnimationFrame(this.animateSpring);
+    }
+
+    private readonly animateSpring = (time: number) => {
+      const elapsed = Math.min((time - this.previousTime) / 1000, 1 / 30);
+      this.previousTime = time;
+
+      // Decorative pointer motion uses the site's single physical response:
+      // mass 1, stiffness 100, damping 10.
+      const stiffness = 100;
+      const damping = 10;
+
+      for (const axis of ['x', 'y'] as const) {
+        const acceleration =
+          stiffness * (this.target[axis] - this.position[axis]) - damping * this.velocity[axis];
+        this.velocity[axis] += acceleration * elapsed;
+        this.position[axis] += this.velocity[axis] * elapsed;
+      }
+
+      this.paint();
+
+      const settled =
+        Math.abs(this.target.x - this.position.x) < 0.001 &&
+        Math.abs(this.target.y - this.position.y) < 0.001 &&
+        Math.abs(this.velocity.x) < 0.001 &&
+        Math.abs(this.velocity.y) < 0.001;
+
+      if (settled) {
+        this.position.x = this.target.x;
+        this.position.y = this.target.y;
+        this.velocity.x = 0;
+        this.velocity.y = 0;
+        this.paint();
+        this.frame = 0;
+        return;
+      }
+
+      this.frame = window.requestAnimationFrame(this.animateSpring);
+    };
+
+    private paint() {
+      if (!this.surface || !this.foil || !this.hearts || !this.glare) return;
+
+      const { x, y } = this.position;
+      const distance = Math.min(1, Math.hypot(x, y));
+      const angle = Math.atan2(y, x) * (180 / Math.PI);
+      const heartReveal = Math.max(0, (distance - 0.34) / 0.66);
+
+      this.surface.style.transform =
+        `rotateX(${(-y * 8).toFixed(3)}deg) rotateY(${(x * 8).toFixed(3)}deg)`;
+      this.foil.style.transform = `translate3d(${(-x * 7).toFixed(3)}%, ${(-y * 7).toFixed(3)}%, 0) rotate(${(angle * 0.08).toFixed(3)}deg)`;
+      this.foil.style.opacity = (distance * 0.58).toFixed(3);
+      this.hearts.style.transform =
+        `translate3d(${(-x * 9).toFixed(3)}%, ${(-y * 9).toFixed(3)}%, 0)`;
+      this.hearts.style.opacity =
+        (heartReveal * heartReveal * (3 - 2 * heartReveal) * 0.72).toFixed(3);
+      this.glare.style.transform = `translate3d(${(x * 24).toFixed(3)}%, ${(y * 24).toFixed(3)}%, 0)`;
+      this.glare.style.opacity = (distance * 0.42).toFixed(3);
+    }
+
+    private reset() {
+      window.cancelAnimationFrame(this.frame);
+      this.frame = 0;
+      this.target.x = 0;
+      this.target.y = 0;
+      this.position.x = 0;
+      this.position.y = 0;
+      this.velocity.x = 0;
+      this.velocity.y = 0;
+      this.paint();
+    }
+  }
+
+  if (!customElements.get('holo-portrait')) {
+    customElements.define('holo-portrait', HoloPortrait);
+  }
+</script>
+
+<style>
+  holo-portrait {
+    display: block;
+    perspective: 70rem;
+  }
+
+  .holo-portrait__surface {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--color-field);
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .holo-portrait__surface :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .holo-portrait__foil,
+  .holo-portrait__hearts,
+  .holo-portrait__glare {
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .holo-portrait__foil {
+    z-index: 1;
+    width: 150%;
+    height: 150%;
+    background:
+      repeating-linear-gradient(
+        108deg,
+        #ff7480 0%,
+        #ffe26c 12%,
+        #8cffad 24%,
+        #82e9ff 36%,
+        #92a2ff 48%,
+        #e98cff 60%,
+        #ff7480 72%
+      );
+    filter: saturate(1.15) contrast(1.1);
+    inset: -25%;
+    mix-blend-mode: color-dodge;
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+  }
+
+  .holo-portrait__glare {
+    z-index: 3;
+    width: 130%;
+    height: 130%;
+    background: radial-gradient(circle at center, rgb(255 255 255 / 0.8), rgb(255 255 255 / 0) 52%);
+    inset: -15%;
+    mix-blend-mode: screen;
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+  }
+
+  .holo-portrait__hearts {
+    z-index: 2;
+    width: 130%;
+    height: 130%;
+    fill: none;
+    filter: drop-shadow(0 0 0.22rem rgb(255 255 255 / 0.7));
+    inset: -15%;
+    mix-blend-mode: overlay;
+    opacity: 0;
+    stroke: rgb(255 255 255 / 0.7);
+    stroke-width: 1.7;
+    will-change: transform, opacity;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .holo-portrait__surface {
+      transform: none !important;
+      transition: none;
+    }
+
+    .holo-portrait__foil,
+    .holo-portrait__hearts,
+    .holo-portrait__glare {
+      opacity: 0 !important;
+      transform: none !important;
+    }
+  }
+</style>

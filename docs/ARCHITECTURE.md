@@ -23,8 +23,6 @@ Do not introduce a client application framework, global application state, a cli
 | `/case-studies/supergood/` | SuperGood editorial case study |
 | `/case-studies/two-sticks/` | Two Sticks editorial case study |
 | `/case-studies/chinese-bee/` | Legacy route with Two Sticks as its canonical URL |
-| `/blog/` | Writing index |
-| `/blog/[slug]/` | Approved article document |
 | Existing legacy paths | Static redirects to the closest current document or anchor |
 
 Preserve base-path behavior for both `/` and `/personal-website/` builds.
@@ -33,13 +31,13 @@ Preserve base-path behavior for both `/` and `/personal-website/` builds.
 
 `BaseDocument` owns metadata, canonical and social metadata, fonts, the skip link, reset styles, and shared focus behavior.
 
-The homepage owns its presentation and local enhancements. `/blog/` and the case studies remain independent readable documents. A homepage experiment must not require those documents to share its motion or state.
+The homepage owns its presentation and local enhancements. The case studies remain independent readable documents. A homepage experiment must not require those documents to share its motion or state.
 
 The DOM order is the reading order. CSS may create asymmetrical or overlapping compositions, but visual placement must not make essential meaning depend on that placement.
 
 ## Content and evidence
 
-Typed content collections are the source for verified software, games, and writing records. Homepage identity and values copy live in `src/content/homepage/`. Components may curate and reframe those records but must not invent claims, metrics, responsibilities, or personal facts.
+Typed content collections are the source for verified software and game records. Homepage identity and values copy live in `src/content/homepage/`. Components may curate and reframe those records but must not invent claims, metrics, responsibilities, or personal facts.
 
 Preserve content, project media, portraits, résumé files, deployment configuration, and independent case-study material across visual rebuilds unless Igor explicitly replaces them.
 

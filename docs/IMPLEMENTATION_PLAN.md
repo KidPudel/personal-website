@@ -1,8 +1,33 @@
 # Implementation plan
 
-Last updated: 2026-08-24
+Last updated: 2026-08-25
 
-## Current milestone: homepage about consolidation
+## Current milestone: complete doodle collection
+
+Status: complete
+
+- Include every `Doodles_*.png` artwork in the “Editorial and illustrative sketcher” disclosure.
+- Preserve the authored lossless PNGs, intrinsic dimensions, lazy loading, and responsive grid.
+- Verify all 15 artworks render at desktop and mobile sizes without overflow.
+
+## Previous milestone: external blog simplification
+
+Status: complete
+
+- Send the homepage blog link directly to Igor's Medium profile.
+- Remove the local blog index, article route, preview component, unpublished placeholder entry, and unused writing collection.
+- Verify the removed routes are absent from the production output for both deployment base paths.
+
+## Previous milestone: personal portrait holo treatment
+
+Status: complete
+
+- Give the existing couple portrait a pointer-responsive holographic foil, glare, hidden hearts, and tilt treatment inspired by the authored reference.
+- Keep the enhancement dependency-free, static-host compatible, and free of additional media requests.
+- Preserve the native disclosure, responsive lazy image, no-JavaScript presentation, and stable reduced-motion and coarse-pointer states.
+- Verify diagnostics, the media contract, both deployment base paths, and representative desktop and mobile layouts.
+
+## Previous milestone: homepage about consolidation
 
 Status: complete
 

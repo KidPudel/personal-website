@@ -1,10 +1,9 @@
 ---
-import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 import couplePortrait from '../../../assets/life/me_and_bebe.png';
-import { sitePath } from '../../../config/site';
 import { personalNote } from '../../../content/homepage/values';
+import HoloPortrait from './HoloPortrait.astro';
 
 const doodleModules = import.meta.glob<{ default: ImageMetadata }>(
   '../../../assets/art/doodles/Doodles_*.png',
@@ -30,7 +29,7 @@ const doodles = Object.entries(doodleModules)
     {personalNote.items.map((item) => (
       <li>
         {'href' in item ? (
-          <a href={sitePath(item.href)}>{item.label}</a>
+          <a href={item.href}>{item.label}</a>
         ) : (
           <details class="personal-note__fact">
             <summary>
@@ -41,18 +40,13 @@ const doodles = Object.entries(doodleModules)
             <div class="personal-note__reveal">
               {item.action === 'portrait' ? (
                 <figure class="personal-note__portrait">
-                  <Image
+                  <HoloPortrait
                     src={couplePortrait}
                     alt="Igor and his girlfriend outdoors"
-                    widths={[320, 480, 640]}
-                    sizes="(max-width: 52rem) calc(100vw - 2.5rem), 28rem"
-                    loading="lazy"
-                    decoding="async"
-                    format="webp"
                   />
                 </figure>
               ) : (
-                <div class="personal-note__doodles" aria-label="A selection of Igor’s doodles">
+                <div class="personal-note__doodles" aria-label="All of Igor’s doodles">
                   {doodles.map((doodle) => (
                     <img
                       src={doodle.src}
@@ -222,13 +216,6 @@ const doodles = Object.entries(doodleModules)
     width: min(100%, 28rem);
     margin: 1.15rem 0 0.5rem;
     filter: drop-shadow(0 0.4rem 1rem rgb(17 17 15 / 0.12));
-  }
-
-  .personal-note__portrait :global(img) {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 0.5rem;
   }
 
   .personal-note__doodles {

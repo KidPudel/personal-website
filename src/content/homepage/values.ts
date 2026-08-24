@@ -63,7 +63,7 @@ export const personalNote = {
     {
       id: 'blog',
       label: 'I have a blog',
-      href: '/blog/',
+      href: 'https://medium.com/@iggysleepy',
     },
   ],
 } as const;

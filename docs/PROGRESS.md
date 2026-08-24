@@ -1,8 +1,25 @@
 # Progress
 
-Last updated: 2026-08-24
+Last updated: 2026-08-25
 
-## Completed milestone: homepage about consolidation
+## Completed milestone: complete doodle collection
+
+- The “Editorial and illustrative sketcher” disclosure now presents all 15 matching doodle artworks, including the six newly added files.
+- The complete collection retains lossless source delivery, intrinsic sizing, lazy loading, and the existing responsive grid.
+
+## Previous completed milestone: external blog simplification
+
+- Retargeted “I have a blog” directly to Igor's Medium profile.
+- Removed the local writing index, article route, preview component, unpublished placeholder entry, and writing content collection.
+
+## Previous completed milestone: personal portrait holo treatment
+
+- Added a pointer-responsive holographic treatment to the existing couple portrait, with tilt, lagging foil, localized glare, and hidden hearts directly on the image.
+- Kept the effect dependency-free and compatible with GitHub Pages. It adds no media request and preserves the optimized lazy portrait.
+- Limited movement to fine hover pointers. Coarse pointers, no-JavaScript visits, and reduced-motion visits keep a stable photograph.
+- The spring stops once settled or when the page is hidden, and the resting photograph returns to its original appearance.
+
+## Previous completed milestone: homepage about consolidation
 
 - Moved “A few more things about me” to the end of the homepage after both work showcases.
 - Matched its heading to the work sections and simplified the personal facts to a static list.
@@ -39,6 +56,11 @@ Last updated: 2026-08-24
 
 ## Verification
 
+- The production homepage contains all 15 doodle images, each with intrinsic dimensions and `loading="lazy"`.
+- The homepage blog link resolves directly to `https://medium.com/@iggysleepy`, and production output contains no `/blog/` route.
+- The holo portrait responds smoothly on desktop and returns to rest without browser warnings.
+- At 390 by 844, the opened portrait is fully visible, uses the generated responsive image, and causes no horizontal overflow.
+- The media contract and Astro diagnostics pass, as do production builds for both `/` and `/personal-website/`.
 - Measured deployed GitHub Pages responses at roughly 250 to 440 milliseconds before the first byte for the tested cold HTML and media requests.
 - Astro diagnostics and the media contract pass with no errors, warnings, or hints.
 - The production build passes for the deployed `/personal-website/` base path.
