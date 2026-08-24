@@ -19,6 +19,9 @@ interface EdgeLayer {
 const FIELD_SEAM = 0.58;
 const PALETTE_SPAN = FIELD_SEAM * 0.9;
 const RUBBERBAND_CONSTANT = 0.55;
+const MOMENTUM_DECELERATION_RATE = 0.998;
+const MOMENTUM_RESPONSE_SECONDS = 0.4;
+const INPUT_IDLE_DELAY_MS = 280;
 const EDGE_SLOP = 4;
 const GESTURE_SLOP = 8;
 
@@ -92,10 +95,15 @@ const rubberband = (distance: number, dimension: number) =>
   (distance * dimension * RUBBERBAND_CONSTANT) /
   (dimension + RUBBERBAND_CONSTANT * Math.abs(distance));
 
+const projectMomentum = (velocity: number) =>
+  (velocity / 1000) *
+  (MOMENTUM_DECELERATION_RATE / (1 - MOMENTUM_DECELERATION_RATE));
+
 class ElasticOverscrollBackdrop extends HTMLElement {
   private abort?: AbortController;
   private frame = 0;
   private releaseTimer = 0;
+  private scrollIdleTimer = 0;
 
   connectedCallback() {
     if (this.dataset.enhanced) return;
@@ -134,6 +142,9 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     let originY = 0;
     let startScroll = 0;
     let pullOffset = 0;
+    let touchScrollActive = false;
+    let lastScrollY = window.scrollY;
+    let lastScrollTime = performance.now();
 
     const maximumPull = () => Math.min(180, Math.max(96, window.innerHeight * 0.18));
     const rubberbandDimension = () => Math.max(window.innerHeight, 1);
@@ -233,11 +244,12 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     const setPull = (
       placement: Placement,
       rawDistance: number,
-      source: 'touch' | 'wheel',
+      source: 'momentum' | 'touch' | 'wheel',
       releaseAfterInput = false,
+      initialVelocity = 0,
     ) => {
       if (reducedMotion.matches) return;
-      if (source === 'wheel' && !atEdge(placement)) return;
+      if (source !== 'touch' && !atEdge(placement)) return;
       if (source === 'touch' && !atEdge(placement) && activePlacement !== placement) return;
 
       if (activePlacement && activePlacement !== placement) {
@@ -261,12 +273,19 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         lastTime = undefined;
         paint();
       } else {
+        if (source === 'momentum') {
+          velocity = Math.min(
+            Math.max(0, initialVelocity),
+            maximumPull() / MOMENTUM_RESPONSE_SECONDS,
+          );
+          lastTime = undefined;
+        }
         requestRender();
       }
 
       if (!releaseAfterInput) return;
       window.clearTimeout(this.releaseTimer);
-      this.releaseTimer = window.setTimeout(release, 280);
+      this.releaseTimer = window.setTimeout(release, INPUT_IDLE_DELAY_MS);
     };
 
     const normalizedWheelDistance = (event: WheelEvent) => {
@@ -294,7 +313,39 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     };
 
     const handleScroll = () => {
+      const now = performance.now();
+      const nextScrollY = window.scrollY;
+      const elapsedSeconds = Math.max((now - lastScrollTime) / 1000, 0.001);
+      const scrollVelocity = (nextScrollY - lastScrollY) / elapsedSeconds;
+      const wasAtBottom = lastScrollY >= maximumScroll() - EDGE_SLOP;
+
+      if (touchScrollActive) {
+        window.clearTimeout(this.scrollIdleTimer);
+        this.scrollIdleTimer = window.setTimeout(() => {
+          touchScrollActive = false;
+          this.scrollIdleTimer = 0;
+        }, INPUT_IDLE_DELAY_MS);
+      }
+
       if (activePlacement && !atEdge(activePlacement) && pointerId === undefined) release();
+
+      if (
+        touchScrollActive &&
+        !wasAtBottom &&
+        atEdge('bottom') &&
+        scrollVelocity > 0
+      ) {
+        setPull(
+          'bottom',
+          projectMomentum(scrollVelocity),
+          'momentum',
+          true,
+          scrollVelocity,
+        );
+      }
+
+      lastScrollY = nextScrollY;
+      lastScrollTime = now;
     };
 
     const overscrollFor = (deltaY: number) => {
@@ -353,6 +404,22 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         velocity = 0;
         lastTime = undefined;
       }
+    };
+
+    const handleTouchStart = () => {
+      touchScrollActive = true;
+      lastScrollY = window.scrollY;
+      lastScrollTime = performance.now();
+      window.clearTimeout(this.scrollIdleTimer);
+      this.scrollIdleTimer = 0;
+    };
+
+    const handleTouchEnd = () => {
+      window.clearTimeout(this.scrollIdleTimer);
+      this.scrollIdleTimer = window.setTimeout(() => {
+        touchScrollActive = false;
+        this.scrollIdleTimer = 0;
+      }, INPUT_IDLE_DELAY_MS);
     };
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -433,9 +500,24 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       passive: true,
       signal: this.abort.signal,
     });
+    document.addEventListener('touchstart', handleTouchStart, {
+      capture: true,
+      passive: true,
+      signal: this.abort.signal,
+    });
     document.addEventListener('touchmove', handleTouchMove, {
       capture: true,
       passive: false,
+      signal: this.abort.signal,
+    });
+    document.addEventListener('touchend', handleTouchEnd, {
+      capture: true,
+      passive: true,
+      signal: this.abort.signal,
+    });
+    document.addEventListener('touchcancel', handleTouchEnd, {
+      capture: true,
+      passive: true,
       signal: this.abort.signal,
     });
     document.addEventListener('pointerup', endPointer, {
@@ -457,6 +539,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
   disconnectedCallback() {
     window.clearTimeout(this.releaseTimer);
+    window.clearTimeout(this.scrollIdleTimer);
     this.abort?.abort();
     if (this.frame) window.cancelAnimationFrame(this.frame);
     this.frame = 0;
