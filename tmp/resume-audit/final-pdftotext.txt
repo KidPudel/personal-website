@@ -1,0 +1,68 @@
+IGOR KUPCHINENKO
+PRODUCT DESIGNER
+i.kupchinenko@gmail.com | Portfolio: kidpudel.github.io/personal-website
+LinkedIn: linkedin.com/in/iggydev | GitHub: github.com/KidPudel
+
+SUMMARY
+Product designer with a software engineering and independent game development background. I find the real need behind a
+product, then carry the experience from user research and problem framing through interaction design, visual design,
+prototyping, and implementation. Game design informs how I use feedback, motion, pacing, and system behavior to make
+products clear, engaging, and a little more joyful.
+
+SKILLS
+Product design: User-centered design, product direction, user research, user interviews, problem framing, information architecture,
+user flows, wireframing, UX/UI design, interaction design, visual design, high-fidelity prototyping, motion design, usability testing,
+adaptive design
+Tools and implementation: Figma, Flutter, Godot, Unity, Vue, FastAPI, Go; mobile, desktop, web, and playable products
+
+PRODUCT DESIGN EXPERIENCE
+Independent Product Designer | Observatory
+
+Jul 2026 - Aug 2026
+• Conducted 5 exploratory user interviews and synthesized 2 working personas, revealing that people investigated the
+performance of an application or task, not an isolated process.
+• Designed the product direction, information architecture, user flows, Figma wireframes, UX/UI, interaction design, visual
+identity, and motion for a native macOS activity monitor.
+• Released version 0.1.1 with application-level process totals, controlled tests, and local, reopenable comparisons; directed
+AI-assisted implementation from authored specifications and produced the launch film.
+Mobile Product Designer & Developer | PizzaSushiWok (SuperGood)
+Jan 2023 - Jul 2024
+• Proposed replacing separate Android and iOS apps with one Flutter product, then owned product direction, user research,
+information architecture, UX/UI design, and implementation through production.
+• Used customer conversations, contextual inquiry, competitive analysis, prototype task tests, comparison tests, and polls to
+reshape menu navigation, dish details, repeat ordering, checkout, payment and 3DS, maps, courier tracking, loyalty, and
+promotions.
+• Designed adaptive layouts and implemented the end-to-end order journey, improving usability and reliability while
+requirements changed.
+Product Designer & Developer | Two Sticks (Chinese Bee)
+2024
+• Translated a 2024 MPGU diploma team's pedagogical research into a coherent Telegram learning flow across search,
+saved vocabulary, flashcards, character guidance, notebook sheets, handwriting practice, and OCR scoring.
+• Owned product direction, information architecture, UX/UI and interaction design, then built the bot, FastAPI backend, data
+model, and Vue web app into a shipped prototype.
+
+GAME DESIGN EXPERIENCE
+Mobile Game Designer & Prototype Developer | Short-term studio
+
+Nov 2022 - Jan 2023
+• Turned mobile game concepts into playable Android prototypes in short cycles using Unity and Jetpack Compose, owning
+player experience, interaction flow, feedback, presentation, and scope.
+Independent Game Designer & Developer | Self-directed projects
+2019 - Present
+• Designed and shipped 2D and 3D Godot games, combining mechanics, progression, difficulty, feedback, visual art,
+animation, sound, and stateful systems into complete player experiences.
+• Iterated Santa Foundation after external player feedback by changing hazard visibility, movement, spawning, timing, and
+difficulty; built Discourses by Campfire's environment, data-driven systems, 3D art, music, and sound.
+
+SOFTWARE ENGINEERING EXPERIENCE
+Software Developer | Paycos, contract
+
+Jul 2024 - Dec 2025
+• Developed payment, order-processing, and digital-receipt workflows in Go across PostgreSQL, Kafka, Redis, gRPC, and
+Protobuf, translating complex product rules into stateful systems.
+
+EDUCATION AND LANGUAGES
+Bachelor of Computer & Information Science | Moscow Finance and Law Academy (MFUA) | 2019 - 2023
+English: B2
+
+

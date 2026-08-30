@@ -1,11 +1,11 @@
 export const identity = {
   hello: 'Hello, I’m Igor.',
   role: 'Product designer.',
-  research: 'I research to find a real need that the world is missing.',
+  research: 'I research to understand what people really need and design the right thing for them.',
   experience: {
     before: 'I design ',
-    word: 'experience',
-    after: ' that will leave something with people,',
+    word: 'experiences',
+    after: ' that leave something with people,',
     continuation: ' even beyond the moment they use the product.',
   },
   purpose: {
@@ -15,11 +15,8 @@ export const identity = {
     after: '.',
     href: 'https://www.youtube.com/watch?v=A_u2WFTfbcg',
   },
-  engineering: {
-    before: 'I bring my ',
-    word: 'software-engineering',
-    after: ' background to carry',
-    continuation: ' ideas into reality without losing what matters about',
-    conclusion: ' experience in the first place.',
+  practice: {
+    first: 'I use my software-engineering background and AI to explore ideas directly in code.',
+    second: ' Game design deepens how I think about interaction, motivation, and psychology.',
   },
 } as const;

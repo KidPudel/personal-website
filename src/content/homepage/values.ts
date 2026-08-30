@@ -41,12 +41,12 @@ export const personalNote = {
   heading: 'A few more things about me',
   columns: [
     [
-      'From a young age, I’ve mostly lived through a lens shaped by the games, films, and music that left an impact on me. I came to appreciate how something made by another person can come alive, grow beyond itself, and become part of your own life.',
-      'I chose to pursue software engineering, but over the years something kept feeling off. The moments that felt right were the ones when I was creating experiences, games, interactions, and things people could actually feel something through.',
+      'From a young age, I’ve seen much of life through a lens shaped by the games, films, and music that stayed with me. They showed me how something made by another person can come alive, grow beyond itself, and become part of your own life.',
+      'I chose to pursue software engineering, but over the years something kept feeling off. The moments that felt right were the ones when I was shaping experiences: making games, experimenting with interactions, and creating things people could feel something through.',
     ],
     [
-      'Eventually, I had enough history to see the pattern. I took time away to listen to myself and let myself pursue what I actually care about. Looking back, none of those years feel wasted. They shaped my taste, my values, and my ability to bring ideas into reality.',
-      'I have a strong instinct for atmosphere and rely heavily on inner feeling. In my designs, I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
+      'Eventually, I had enough history to see the pattern. I took time away to listen to myself and let myself pursue what I actually care about. Looking back, none of those years feel wasted. Software engineering taught me to treat code as a creative material and carry ideas into reality. Game design taught me how interaction, motivation, and psychology shape what people do. Both now make me a better product designer.',
+      'I have a strong instinct for atmosphere and rely heavily on inner feeling. Product design gives that instinct direction. It begins with understanding who I’m designing for, finding what they really need, and making the right thing for them. I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
     ],
   ],
   items: [

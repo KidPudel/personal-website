@@ -37,13 +37,7 @@ import PlayfulWord from './PlayfulWord.astro';
               /></a>{identity.purpose.after}
           </span>
           <span class="identity__passage">
-            {identity.engineering.before}<span
-              class="identity__engineering-word"
-            >{identity.engineering.word}</span>{identity.engineering.after}<br
-              class="identity__figma-break"
-            />{identity.engineering.continuation}<br
-              class="identity__figma-break"
-            />{identity.engineering.conclusion}
+            {identity.practice.first}{identity.practice.second}
           </span>
         </h1>
       </div>
@@ -163,12 +157,6 @@ import PlayfulWord from './PlayfulWord.astro';
     border-radius: 0.08em;
     outline: var(--focus-width) solid var(--color-focus);
     outline-offset: var(--focus-offset);
-  }
-
-  .identity__engineering-word {
-    font-family: 'Roboto Mono', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-    font-size: 0.91em;
-    letter-spacing: -0.035em;
   }
 
   @media (max-width: 52rem) {

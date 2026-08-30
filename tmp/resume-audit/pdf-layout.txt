@@ -1,0 +1,52 @@
+IGOR KUPCHINENKO
+PRODUCT DESIGNER
+i.kupchinenko@gmail.com | linkedin.com/in/iggydev | github.com/KidPudel | kidpudel.github.io/personal-website
+
+PROFESSIONAL SUMMARY
+I design products from what a person should be able to do, then shape the interface and the systems that make the
+experience real. The strongest evidence is Observatory, a native macOS activity monitor taken from research through a
+working release and launch film; a production food-ordering product; an independent learning product; and games
+shaped through player feedback.
+
+CORE CAPABILITIES
+Experience and product design: product direction, information architecture, user flows, visual identity, motion, adaptive
+interfaces, and usability iteration
+Behavior and systems: state, rules, workflows, feedback over time, and the boundary between interface and product logic
+Prototyping: sketches, wireframes, motion, Figma, Flutter, and playable builds
+Product judgment: clarifying the real need, iterating with evidence, and designing within what can actually be built
+
+RELEVANT PRODUCT EXPERIENCE
+Product Designer | Observatory, independent macOS product                                                   Jul 2026 - Aug 2026
+research, UX/UI, visual identity, launch film | Case study
+ • Designed a native macOS activity monitor that groups related processes into application totals, records controlled
+   tests, and keeps results local, reopenable, and comparable.
+ • Ran 5 exploratory interviews and used two working personas to decide what to show first: a readable whole
+   application, with process detail and comparable recordings available when needed.
+ • Designed the information architecture, user flows, UX/UI, visual identity, and launch film, iterating from sketches and
+   an early prototype through wireframes, including folding History into Tests as Saved Results.
+Mobile Product Designer & Developer | PizzaSushiWok                                                       Jan 2023 - Jul 2024
+ordering workflows, payments, maps, adaptive layouts
+ • Proposed consolidating separate Android and iOS applications into one Flutter product and carried it from an
+   incomplete need through production readiness.
+ • Designed and implemented the ordering journey across menu navigation, basket and checkout, payment and 3DS,
+   maps and addresses, courier status, promotions, loyalty, bonuses, and themes.
+ • Created adaptive layouts and custom menu-scrolling behavior, then improved usability, performance, reliability, and
+   presentation quality under changing requirements.
+Product Designer & Developer | Chinese Bee, independent learning product                                          Completed
+learning workflow, handwriting practice, quizzes, recognition feedback
+ • Designed a coherent learning workflow across multilingual character search, word details, saved vocabulary, quizzes,
+   guidance, handwriting practice, and recognition feedback.
+ • Connected chat, saved learning state, practice eligibility, freehand input, and accuracy feedback into one useful
+   capability rather than a collection of disconnected features.
+ADDITIONAL EXPERIENCE
+ Developer at Paycos, contract (Jul 2024 - Dec 2025), on payments, order-processing, and receipt systems.
+ • Mobile Game Designer & Prototype Developer for a short-term studio (Nov 2022 - Jan 2023). Independent Godot
+   games shaped through player feedback.
+EDUCATION
+Bachelor of Computer & Information Science | Moscow Finance and Law Academy (MFUA) | 2019 - 2023
+
+
+
+
+                                              Igor Kupchinenko | Product Designer Resume
+
