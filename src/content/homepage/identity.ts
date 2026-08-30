@@ -1,7 +1,7 @@
 export const identity = {
   hello: 'Hello, I’m Igor.',
   role: 'Product designer.',
-  research: 'I research to understand what people really need and design the right thing for them.',
+  research: 'I research to find a real need that the world is missing.',
   experience: {
     before: 'I design ',
     word: 'experiences',
