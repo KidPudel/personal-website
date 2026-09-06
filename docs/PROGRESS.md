@@ -1,8 +1,41 @@
 # Progress
 
-Last updated: 2026-08-25
+Last updated: 2026-09-07
 
-## Completed milestone: complete doodle collection
+## Completed milestone: visual opening and shared case-study navigation
+
+- Added two optimized prototype screens beside the Instagram introduction on desktop and directly below it on mobile. Preserved the quiet article typography and inline evidence.
+- Unified all case-study headers through PortfolioHeader: Home links to the homepage and swaps to Igor's existing home doodle on hover/focus, using the same treatment as Get in touch.
+- Removed duplicate project/category header labels and redundant chapter-index labels. Kept source links in project footers; unified footer Home destinations.
+- Verified all four case studies at desktop/mobile sizes, keyboard doodle focus, contact opening/dismissal, Home navigation, and unchanged homepage navigation. Media checks and normal/root/base-path production builds pass.
+
+## Completed milestone: minimal sans-serif Instagram case study
+
+- Rebuilt the page around one sans-serif font and a consistent reading alignment. Body text scales from 18px to 24px; headings share one treatment. Removed the bookmark ornament, serif/italic shifts, and redundant project kicker.
+- Replaced every case-study disclosure with visible inline media. No dividers or boxed presentation sections.
+- Added visibility-based muted looping video playback without native sliders. Plain Play/Pause buttons preserve user control, and playback pauses offscreen or in hidden documents. Reduced-motion/data-saver visits wait for explicit play.
+- Documented the user-authorized autoplay exception in the media contract. Original recordings and optimized derivatives are preserved.
+- Verified desktop/mobile layout, no horizontal overflow, automatic playback, manual pause, and offscreen pausing. Astro diagnostics, media checks, and root/base-path builds pass.
+
+## Completed milestone: Instagram editorial flow and web media
+
+- Removed case-study dividers, boxed media panels, the separate video gallery, and repeated section labels. Embedded each walkthrough with its design decision and simplified the interview summary into continuous reading.
+- Kept a distinct but calmer heading hierarchy and consistent body text for inline notes.
+- Fixed the enlarged 161-pixel wireframe by explicitly setting source dimensions and capping display width. Responsive image sets include source resolution; wireframe PNGs remain lossless.
+- Added three user-controlled walkthroughs with WebP posters, native controls, `preload="none"`, and 540/720-pixel H.264 fast-start derivatives. Silent audio removed after verification. Original recordings preserved; `scripts/prepare-instagram-media.mjs` reproduces derivatives.
+- Video payload totals 2.82 MB or 4.21 MB per selected resolution versus 17.67 MB of originals, a 76–84% reduction. No autoplay or eager video preload.
+- Desktop (1280 × 900) and mobile (390 × 844) layouts inspected without overflow. The small feed wireframe renders at 161 pixels on both. Astro/media checks and root/base-path builds pass.
+
+## Completed milestone: Instagram Saves editorial case study
+
+- Added `/case-studies/instagram-saves-redesign/` and a matching homepage feature.
+- Created an editorial narrative using eight conversations plus Igor's own experience, with 17 authored screenshots, notebook spreads, and wireframes.
+- Kept the AI search results and collection feed framed as prototype proposals. Identified the private annotation editor's unresolved relationship to the proposed shared notes.
+- Added responsive optimized media, full-size image links, and native wireframe disclosures. The narrative and controls are server-rendered; no new client script or animation is required.
+- Verified desktop at 1280 × 900 and mobile at 390 × 844 and 320 × 740 without horizontal overflow. Verified homepage navigation, image links, and keyboard disclosure operation; no relevant browser errors were reported.
+- Normal, local-root, and `/personal-website/` production builds pass. Astro diagnostics report zero errors, warnings, and hints; the media contract passes. Production HTML has one h1, image dimensions, generated assets, and base-aware links.
+
+## Previous completed milestone: complete doodle collection
 
 - The “Editorial and illustrative sketcher” disclosure now presents all 15 matching doodle artworks, including the six newly added files.
 - The complete collection retains lossless source delivery, intrinsic sizing, lazy loading, and the existing responsive grid.

@@ -1,8 +1,43 @@
 # Implementation plan
 
-Last updated: 2026-08-25
+Last updated: 2026-09-07
 
-## Current milestone: complete doodle collection
+## Current milestone: visual opening and shared case-study navigation
+
+Status: complete
+
+- Introduce the Instagram prototype visually within the opening viewport, using responsive source-bounded screenshots.
+- Share Home and contact navigation across every case study, reusing Igor's doodles and the existing accessible interaction.
+- Remove redundant header labels and verify desktop/mobile layouts, navigation, media checks, and production paths.
+
+## Previous milestone: minimal sans-serif Instagram case study
+
+Status: complete
+
+- Use Instrument Sans throughout, with a consistent 780px reading column and larger responsive body copy.
+- Remove decorative typography and all case-study expand/collapse controls; show evidence inline.
+- Play muted walkthroughs while visible, with a simple accessible pause control, offscreen suspension, and reduced-motion/data-saver poster defaults.
+- Verify responsive presentation, playback, media contract, and both production base paths.
+
+## Previous milestone: Instagram editorial flow and web media
+
+Status: complete
+
+- Integrate the three authored walkthroughs into the narrative with deferred, optimized delivery and static posters.
+- Cap media display sizes by source dimensions and retain readable, responsive evidence.
+- Reduce interruptions in the typography and composition: remove dividers, repeated labels, and separate presentation panels.
+- Verify media checks, production builds, desktop/mobile layout, and native media controls.
+
+## Previous milestone: Instagram Saves editorial case study
+
+Status: complete
+
+- Build `/case-studies/instagram-saves-redesign/` as an independent, image-led editorial document using Igor's project account and supplied media.
+- Connect the interview patterns to saving suggestions, retrieval, annotations, pins, shared context, and a collection feed. Distinguish proposed behavior from tested outcomes.
+- Include a homepage feature linking to the case study, native expandable wireframes, and full-size optimized image links.
+- Verify mobile and desktop presentation, image delivery, keyboard disclosures, Astro diagnostics, and both deployment base paths.
+
+## Previous milestone: complete doodle collection
 
 Status: complete
 

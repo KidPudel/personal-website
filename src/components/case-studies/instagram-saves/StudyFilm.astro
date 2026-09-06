@@ -1,0 +1,85 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  small: string;
+  large: string;
+  poster: ImageMetadata;
+
+}
+const { id, title, description, small, large, poster } = Astro.props;
+const cover = await getImage({ src: poster, width: 720, format: 'webp', quality: 85 });
+---
+<study-film>
+<figure class="study-film">
+  <video muted loop playsinline preload="none" poster={cover.src} width={720} height={1280}
+    aria-label={title} aria-describedby={`${id}-caption`}>
+    <source src={small} type="video/mp4" media="(max-resolution: 1.5dppx)" />
+    <source src={large} type="video/mp4" />
+    <a href={large}>Watch {title}</a>
+  </video>
+  <button type="button" hidden aria-label={`Play ${title}`}>Play</button>
+  <noscript><a href={large}>Watch {title}</a></noscript>
+  <figcaption id={`${id}-caption`}>
+    <span>{description}</span>
+  </figcaption>
+</figure>
+</study-film>
+<script>
+  class StudyFilm extends HTMLElement {
+    private cleanup?: () => void;
+    connectedCallback() {
+      this.cleanup?.();
+      const video = this.querySelector('video')!;
+      const button = this.querySelector('button')!;
+      const motion = matchMedia('(prefers-reduced-motion: reduce)');
+      const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+      const conserve = connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? '');
+      let visible = false;
+      let userPaused = false;
+      let explicitPlay = false;
+      let failed = false;
+      const abort = new AbortController();
+      const syncLabel = () => {
+        button.textContent = video.paused ? 'Play' : 'Pause';
+        button.setAttribute('aria-label', `${video.paused ? 'Play' : 'Pause'} ${video.getAttribute('aria-label')}`);
+      };
+      const sync = () => {
+        if (visible && !document.hidden && !userPaused && !failed && (explicitPlay || (!motion.matches && !conserve))) {
+          void video.play().catch(() => { failed = true; syncLabel(); });
+        } else video.pause();
+      };
+      button.hidden = false;
+      button.addEventListener('click', () => {
+        if (video.paused) { userPaused = false; explicitPlay = true; failed = false; }
+        else { userPaused = true; explicitPlay = false; }
+        sync();
+      }, { signal: abort.signal });
+      video.addEventListener('play', syncLabel, { signal: abort.signal });
+      video.addEventListener('pause', syncLabel, { signal: abort.signal });
+      document.addEventListener('visibilitychange', sync, { signal: abort.signal });
+      motion.addEventListener('change', () => { explicitPlay = false; sync(); }, { signal: abort.signal });
+      const observer = new IntersectionObserver(entries => {
+        visible = entries[0].isIntersecting && entries[0].intersectionRatio >= .35;
+        sync();
+      }, { threshold: [0, .35] });
+      observer.observe(video);
+      this.cleanup = () => { observer.disconnect(); abort.abort(); video.pause(); };
+    }
+    disconnectedCallback() { this.cleanup?.(); }
+  }
+  if (!customElements.get('study-film')) customElements.define('study-film', StudyFilm);
+</script>
+<style>
+  study-film { display: block; }
+  button { display: block; min-height: 44px; padding: 8px 0; margin-left: auto; border: 0; background: none; color: #605a62; font: inherit; font-size: var(--study-small); cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+  button[hidden] { display: none; }
+
+  .study-film { margin: 0; min-width: 0; }
+  video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: contain; border-radius: 6px; background: white;  }
+  figcaption { margin-top: 14px; color: #605a62; font-size: var(--study-small, .9375rem); line-height: 1.6; }
+  a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--study-body, 1.0625rem); color: inherit; text-underline-offset: 5px; }
+</style>

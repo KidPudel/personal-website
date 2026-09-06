@@ -3,7 +3,9 @@ import { Image } from 'astro:assets';
 
 import connectIcon from '../../assets/art/icons/Doodles_connect.png';
 
-type IconName = 'connect';
+import homeIcon from '../../assets/art/doodles/Doodles_home.png';
+
+type IconName = 'connect' | 'home';
 
 interface Props {
   icon: IconName;
@@ -13,6 +15,7 @@ interface Props {
 const { icon, loading = 'lazy' } = Astro.props;
 const icons = {
   connect: connectIcon,
+  home: homeIcon,
 };
 ---
 
@@ -40,6 +43,11 @@ const icons = {
   .drawn-icon--connect :global(img) {
     width: 340%;
     transform: translate(-31%, -31%);
+  }
+
+  .drawn-icon--home :global(img) {
+    width: 300%;
+    transform: translate(-32%, -30%);
   }
 
   @media (hover: hover) and (pointer: fine) {

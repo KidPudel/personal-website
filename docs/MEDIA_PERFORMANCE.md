@@ -40,6 +40,10 @@ On GitHub Pages, even a very small cold asset request can add a separate network
 - Encode MP4 for progressive delivery with the `moov` atom before media data. Use broadly supported H.264 with `yuv420p`; omit audio from intentionally silent files.
 - A short video is not automatically a light video. Check encoded bytes, bitrate, dimensions, frame rate, and startup metadata.
 
+### Instagram case-study walkthroughs
+
+User-authorized exception: the three Instagram prototype walkthroughs play silently and loop only while substantially visible. Keep parser-discoverable sources and `preload="none"`; start playback through a visibility observer, not an HTML autoplay attribute. Pause offscreen and on hidden documents. Reduced-motion and data-saver visits retain posters until explicit play. Provide a small keyboard-accessible Play/Pause button without native timeline controls. Failed playback keeps the poster and Play action. No-JavaScript visits retain posters and direct video links.
+
 ## Flipbooks and animated image sequences
 
 - Do not eagerly fetch or decode every frame when a component connects.

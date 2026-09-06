@@ -1,12 +1,19 @@
 ---
-import { connectLinks } from '../../config/site';
+import { connectLinks, sitePath } from '../../config/site';
 import DrawnIcon from './DrawnIcon.astro';
+
+interface Props { showHome?: boolean; }
+const { showHome = false } = Astro.props;
 ---
 
-<portfolio-navigation class="portfolio-navigation" data-site-header>
+<portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--case-study": showHome }]} data-site-header>
   <nav class="site-navigation" aria-label="Primary navigation">
+    {showHome && <a class="navigation-action drawn-icon-trigger" href={sitePath('/')}>
+      <span class="navigation-action__label">Home</span>
+      <span class="navigation-action__art" aria-hidden="true"><DrawnIcon icon="home" loading="eager" /></span>
+    </a>}
     <details id="site-contact" class="contact-disclosure">
-      <summary class="drawn-icon-trigger">
+      <summary class="navigation-action drawn-icon-trigger">
         <span class="navigation-action__label">Get in touch</span>
         <span class="navigation-action__art" aria-hidden="true">
           <DrawnIcon icon="connect" loading="eager" />
@@ -156,6 +163,15 @@ import DrawnIcon from './DrawnIcon.astro';
       left 180ms var(--ease-out);
   }
 
+  .portfolio-navigation--case-study {
+    position: relative;
+    width: 100%;
+    padding: 24px max(24px, var(--page-gutter)) 20px;
+  }
+  .portfolio-navigation--case-study::before { display: none; }
+  .portfolio-navigation--case-study .site-navigation { justify-content: space-between; font-size: 18px; }
+  .portfolio-navigation--case-study .contact-disclosure__panel { background: var(--color-field); border-radius: 8px; }
+
   .site-navigation {
     display: flex;
     align-items: center;
@@ -166,7 +182,7 @@ import DrawnIcon from './DrawnIcon.astro';
     white-space: nowrap;
   }
 
-  .contact-disclosure summary {
+  .navigation-action {
     position: relative;
     display: inline-flex;
     min-height: 2.75rem;
@@ -214,39 +230,39 @@ import DrawnIcon from './DrawnIcon.astro';
       transform 180ms var(--ease-out);
   }
 
-  .contact-disclosure summary:focus-visible,
+  .navigation-action:focus-visible,
   .contact-disclosure[open] summary {
     color: var(--color-copy);
   }
 
-  .contact-disclosure summary:focus-visible .navigation-action__label,
+  .navigation-action:focus-visible .navigation-action__label,
   .contact-disclosure[open] summary .navigation-action__label {
     opacity: 0;
     transform: scale(0.96);
   }
 
-  .contact-disclosure summary:focus-visible .navigation-action__art,
+  .navigation-action:focus-visible .navigation-action__art,
   .contact-disclosure[open] summary .navigation-action__art {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1) rotate(0deg);
   }
 
-  .contact-disclosure summary:focus-visible,
+  .navigation-action:focus-visible,
   .contact-disclosure__panel a:focus-visible {
     border-radius: 0.1rem;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .contact-disclosure summary:hover {
+    .navigation-action:hover {
       color: var(--color-copy);
     }
 
-    .contact-disclosure summary:hover .navigation-action__label {
+    .navigation-action:hover .navigation-action__label {
       opacity: 0;
       transform: scale(0.96);
     }
 
-    .contact-disclosure summary:hover .navigation-action__art {
+    .navigation-action:hover .navigation-action__art {
       opacity: 1;
       transform: translate(-50%, -50%) scale(1) rotate(0deg);
     }
@@ -257,12 +273,12 @@ import DrawnIcon from './DrawnIcon.astro';
     scroll-margin-top: 5rem;
   }
 
-  .contact-disclosure summary {
+  .navigation-action {
     cursor: pointer;
     list-style: none;
   }
 
-  .contact-disclosure summary::-webkit-details-marker {
+  .navigation-action::-webkit-details-marker {
     display: none;
   }
 
@@ -352,7 +368,7 @@ import DrawnIcon from './DrawnIcon.astro';
       transition: none;
     }
 
-    .contact-disclosure summary,
+    .navigation-action,
     .contact-disclosure__panel {
       transition: none;
       animation: none;
@@ -368,22 +384,22 @@ import DrawnIcon from './DrawnIcon.astro';
       transform: translate(-50%, -50%);
     }
 
-    .contact-disclosure summary:focus-visible .navigation-action__label,
+    .navigation-action:focus-visible .navigation-action__label,
     .contact-disclosure[open] summary .navigation-action__label {
       transform: none;
     }
 
-    .contact-disclosure summary:focus-visible .navigation-action__art,
+    .navigation-action:focus-visible .navigation-action__art,
     .contact-disclosure[open] summary .navigation-action__art {
       transform: translate(-50%, -50%);
     }
 
     @media (hover: hover) and (pointer: fine) {
-      .contact-disclosure summary:hover .navigation-action__label {
+      .navigation-action:hover .navigation-action__label {
         transform: none;
       }
 
-      .contact-disclosure summary:hover .navigation-action__art {
+      .navigation-action:hover .navigation-action__art {
         transform: translate(-50%, -50%);
       }
     }

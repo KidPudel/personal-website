@@ -1,0 +1,181 @@
+---
+import { Image } from 'astro:assets';
+import saved from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/all_saved_new.png';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+import StudyFilm from '../../../components/case-studies/instagram-saves/StudyFilm.astro';
+import StudyImage from '../../../components/case-studies/instagram-saves/StudyImage.astro';
+import { sitePath } from '../../../config/site';
+import saveOld from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/save_old.png';
+import saveNew from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/save_new.png';
+import annotation from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/annotation.png';
+import actions from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/action_prompt_for_save.png';
+import spider from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/search_spider.png';
+import newYork from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/search_new_york.png';
+import filter from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/filter.png';
+import filterResult from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/filter_result.png';
+import feed from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/collection_feed.png';
+import doodlesOne from '../../../assets/case_study_images/instagram-saves-redesign/interview-doodles/interview set 1.png';
+import doodlesTwo from '../../../assets/case_study_images/instagram-saves-redesign/interview-doodles/interview set 2.png';
+import saveFlow from '../../../assets/case_study_images/instagram-saves-redesign/wireframes/wireframe_flow_save.png';
+import managementFlow from '../../../assets/case_study_images/instagram-saves-redesign/wireframes/wireframe_flow_saves_management.png';
+import promptFlow from '../../../assets/case_study_images/instagram-saves-redesign/wireframes/wireframe_prompt_redesign.png';
+import savingFilmSmall from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/01-easier-save-540.mp4?url';
+import savingFilmLarge from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/01-easier-save-720.mp4?url';
+import savingFilmPoster from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/01-easier-save-poster.png';
+import managementFilmSmall from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/02-flexible-management-540.mp4?url';
+import managementFilmLarge from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/02-flexible-management-720.mp4?url';
+import managementFilmPoster from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/02-flexible-management-poster.png';
+import searchFilmSmall from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/03-search-and-filter-540.mp4?url';
+import searchFilmLarge from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/03-search-and-filter-720.mp4?url';
+import searchFilmPoster from '../../../assets/case_study_images/instagram-saves-redesign/showcase-videos/web/03-search-and-filter-poster.png';
+import feedWireframe from '../../../assets/case_study_images/instagram-saves-redesign/wireframes/wireframe_saves_collection_feed.png';
+---
+<BaseDocument title="Instagram Saves, worth coming back to | Igor Kupchinenko"
+  description="A product design experiment about finding what you saved, remembering why, and giving it a way back into your day. Eight conversations, sketches, and an Instagram Saves redesign prototype."
+  pageClass="instagram-case-study">
+  <main id="main-content">
+    <header class="hero wrap">
+      <div class="hero-copy">
+      
+      <h1>Instagram Saves,<br />worth coming back to.</h1>
+      <p class="dek">The more you save, the less you can find. I wanted to give Instagram Saves a way back.</p>
+      <div class="byline"><span>By Igor Kupchinenko</span><span>Research, UX/UI, prototyping</span></div>
+      </div>
+      <div class="hero-preview" aria-label="A preview of the redesigned Saves">
+        <Image src={saved} alt="Redesigned Saved screen with search, collections, and a grid of saved posts." widths={[220, 320, 388]} sizes="(max-width: 700px) 42vw, (max-width: 1100px) 200px, 220px" format="webp" quality={90} loading="eager" decoding="async" fetchpriority="high" />
+        <Image src={saveNew} alt="Redesigned save sheet with suggested collections." widths={[220, 320, 388]} sizes="(max-width: 700px) 42vw, (max-width: 1100px) 200px, 220px" format="webp" quality={90} loading="eager" decoding="async" />
+      </div>
+    </header>
+
+    <section class="reading intro" id="problem">
+      
+      <h2>You saved it for later. Later has arrived.</h2>
+      <p>You remember the reel. More or less. Maybe it was about a place you wanted to visit. Maybe it had exactly the visual reference you needed. You open Saved and start scrolling.</p>
+      <p>Still scrolling.</p>
+      <p>I kept running into this myself. A reference I needed again and again would disappear into the pile. Saving worked. Getting back to what I saved was another story.</p>
+      <p>So I spoke to eight people. With my own experience alongside theirs, the same problem kept appearing in different forms.</p>
+    </section>
+
+    <section class="research wrap" aria-labelledby="research-title">
+      <div class="section-heading"><h2 id="research-title">Different people. The same growing pile.</h2></div>
+      <div class="notebooks">
+        <StudyImage src={doodlesOne} kind="spread" alt="First notebook spread of Igor's interview doodles and handwritten observations about saving and finding posts." caption="My interview notes, drawn as well as written." />
+        <StudyImage src={doodlesTwo} kind="spread" alt="Second notebook spread with sketched people and notes about revisiting, organizing, and remembering saves." caption="These conversations informed the direction, not a claim about every Instagram user." />
+      </div>
+      <div class="voices">
+        <div><h3>Too much to file.</h3><p>A regular user dumped everything into All Saves. A creator lost track of why something belonged in a collection. A traveler could not always tell which country a reel showed.</p></div>
+        <div><h3>Too little to remember.</h3><p>A couple used shared collections to escape messy DMs, but lost each other’s context. A creative remembered a description or a time, then had to scroll anyway.</p></div>
+        <div><h3>Too easy to leave there.</h3><p>Years of saves buried useful posts. Manual organizing felt like work. One person rejected Saves altogether: collecting things had started replacing doing them.</p></div>
+      </div>
+      <p class="turning-point">The work was being left to your future self.</p>
+    </section>
+
+    <section class="chapter wrap" id="saving">
+      <div class="chapter-copy"><h2>A small decision. Every. Single. Time.</h2>
+        <p>You are watching a reel. Then, suddenly, you are filing it. Find a collection, decide whether it fits, or create another one and think of a name.</p>
+        <p>It is easy to skip that work. Which is how everything ends up in All Saves.</p>
+        <p>I put two suggestions above the collection list: the closest existing collection, and a possible new one with a name already attached. The idea is to reduce the decision without taking it away.</p>
+        <p class="margin-note">A suggestion can be wrong. Keeping the full collection list matters just as much as offering a shortcut.</p>
+      </div>
+      <div class="embedded-film">
+        <StudyFilm id="saving-film" title="An easier save." description="A familiar tap, with a helpful collection suggestion."
+          small={savingFilmSmall} large={savingFilmLarge} poster={savingFilmPoster} />
+      </div>
+      <div class="process"><div class="pair">
+        <StudyImage src={saveOld} alt="Original save sheet showing the collection list." caption="The original collection list." />
+        <StudyImage src={saveNew} alt="Redesigned save sheet suggesting an existing collection and a possible new collection." caption="Suggestions above the full list." />
+      </div></div>
+      <div class="process"><StudyImage src={saveFlow} kind="wireframe" alt="Early three-screen wireframe flow from watching a reel to a save prompt and suggested collections." /></div>
+    </section>
+
+    <section class="finding" id="finding">
+      <div class="wrap">
+        <div class="reading"><h2>You remember a spider. Not a folder.</h2><p>The thing you remember should be enough to start looking. A subject, a place, a note you left yourself. Search belongs right inside Saved, where the need appears.</p><p>The prototype proposes search across titles, annotations, and AI-assisted descriptions of posts. It gives a half-remembered reel another route back to you.</p></div>
+        <div class="embedded-film">
+          <StudyFilm id="search-film" title="Less scrolling. More finding." description="Start with what you remember, then narrow the search."
+            small={searchFilmSmall} large={searchFilmLarge} poster={searchFilmPoster} />
+        </div>
+        <div class="process"><div class="pair">
+          <StudyImage src={spider} alt="Prototype search for spider returning two saved posts." caption="A subject you remember." />
+          <StudyImage src={newYork} alt="Prototype search for new york returning three saved posts." caption="A place you remember." />
+        </div></div>
+        <p class="reading caveat">These are designed result states. Whether semantic search can reliably retrieve the right save still needs testing with real collections.</p>
+      </div>
+    </section>
+
+    <section class="chapter wrap time-chapter">
+      <div class="chapter-copy"><h2>Sometimes you only remember when.</h2><p>For someone with years of saves, even a rough time window can help. I added oldest-first sorting and a date range alongside search, so remembering when becomes useful too.</p><p>You should not have to scroll through every year to get to one of them.</p></div>
+      <div class="pair lilac"><StudyImage src={filter} alt="Saved search filter with latest-first and oldest-first sorting and a saved-date range from August 28, 2025 to August 27, 2026." caption="Narrow the time window." /><StudyImage src={filterResult} alt="Travel search results with the selected date range and latest-first sort shown above the grid." caption="Keep the active range visible with the results." /></div>
+    </section>
+
+    <section class="chapter wrap" id="meaning">
+      <div class="reading"><h2>I saved this for a reason. What was it?</h2><p>A collection says where something belongs. It does not necessarily say why you cared. A short annotation can hold that thought, and become another way to find the post later.</p><p>For the references you return to often, there is a simpler answer: pin them. Keep them at the top instead of making yourself find them again.</p></div>
+      <div class="embedded-film">
+        <StudyFilm id="management-film" title="Make saves yours." description="Add a note, leave a reaction, keep a reference close."
+          small={managementFilmSmall} large={managementFilmLarge} poster={managementFilmPoster} />
+      </div>
+      <div class="shared-note"><div><h3>And what did you think of it?</h3><p>The couple’s problem felt familiar to me. A shared collection gathers the posts, but the conversation about them is still buried in DMs. I proposed shared annotations and emoji reactions so that context could stay with the save.</p><p class="margin-note">One unresolved detail: the annotation editor shown here still says “Only you can see and search this note.” Shared notes need an explicit audience state before this flow is ready to test.</p></div></div>
+      <div class="process"><div class="pair"><StudyImage src={annotation} alt="Annotation editor with a note about a limited blue palette." /><StudyImage src={actions} alt="Saved-post actions for pinning, annotations, and shared reactions." /></div><StudyImage src={managementFlow} kind="wireframe" alt="Wireframe sequence exploring saved-content management, collections, and search states." /><StudyImage src={promptFlow} kind="wireframe" alt="Wireframe exploration of saved-item prompts and actions within the collections grid." /></div>
+    </section>
+
+    <section class="feed-chapter wrap" id="returning">
+      <div><h2>What if saving is where the intention ends?</h2><p>One person’s objection went deeper than finding things. Saves felt like a passive dump. Keeping something for later had become a substitute for doing anything with it.</p><p>My proposal: let a collection become your feed. Alongside Following and Favorites, choose Collections, then the one you want to see. A Design collection could become the feed you come back to by default.</p><p>It gives what you already chose a place in your everyday browsing. Whether that leads to action, or just another kind of scrolling, is an open question.</p></div>
+      <StudyImage src={feed} alt="Instagram feed menu expanded to show Following, Favorites, and Collections with Design, Travel, Art, and Health choices." caption="A way back through the front door: a collection in the main feed selector." />
+      <div class="process"><StudyImage src={feedWireframe} kind="wireframe" alt="Early feed wireframe adding a Collection submenu beneath Following and Favorites." /></div>
+    </section>
+
+    <footer class="ending wrap">
+      <h2>Saving is the beginning. Returning is the point.</h2>
+      <div class="ending-copy"><p>This prototype connects three moments that had drifted apart: saving something, remembering why, and finding it again.</p><p>The next step is to put it in front of people with their own saves. Can they retrieve a half-remembered post? Do suggestions make saving easier? Does a collection feed help them use what they kept?</p><p>That is the part the screens cannot answer yet.</p></div>
+      <div class="end-links"><a href={sitePath('/')}>Home</a><a href="#main-content">Back to the beginning ↑</a></div>
+    </footer>
+  </main>
+</BaseDocument>
+
+<style>
+  main { --study-body: clamp(1.125rem, 1.5vw, 1.5rem); --study-small: clamp(1rem, 1.15vw, 1.125rem); color: #29252d; font-family: var(--font-reading); }
+  .wrap, .reading { width: min(780px, calc(100% - 48px)); margin-inline: auto; }
+  .wrap .reading { width: 100%; }
+  a { color: inherit; text-underline-offset: 5px; }
+  .end-links a { display: inline-flex; align-items: center; min-height: 44px; }
+  .hero { width: min(1200px, calc(100% - 80px)); display: grid; grid-template-columns: 1.25fr 1fr; align-items: center; gap: 56px; padding-block: 48px 64px; }
+  .hero-preview { display: flex; justify-content: center; align-items: flex-start; gap: 20px; }
+  .hero-preview img { width: min(220px, calc((100% - 20px) / 2)); height: auto; border-radius: 20px; }
+  .hero-preview img + img { margin-top: 48px; }
+  @media (min-width: 701px) and (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; width: min(780px, calc(100% - 48px)); gap: 36px; }
+    .hero-preview img { width: 200px; }
+  }
+  h1, h2, h3 { font-family: inherit; font-weight: 700; text-wrap: balance; }
+  h1 { margin: 0 0 30px; font-size: clamp(2.25rem, 4.1vw, 4rem); line-height: 1.12; letter-spacing: -.045em; }
+  h2 { margin: 0 0 24px; font-size: clamp(1.55rem, 2.25vw, 2.125rem); line-height: 1.3; letter-spacing: -.025em; }
+  h3 { font-size: var(--study-body); line-height: 1.6; margin: 0 0 6px; }
+  p { font-size: var(--study-body); line-height: 1.65; margin: 0 0 24px; }
+  .dek { color: #895272; }
+  .byline { display: flex; flex-wrap: wrap; gap: 8px 26px; margin-top: 30px; font-size: var(--study-small); color: #696169; }
+  .intro, .chapter, .finding, .feed-chapter, .ending { padding-block: 50px; }
+  .research { padding-block: 30px; }
+  .notebooks { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-block: 36px; }
+  .voices > div { margin-block: 28px; }
+  .turning-point { margin-top: 35px; color: #895272; }
+  .embedded-film { width: min(420px, 100%); margin: 36px auto; }
+  .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 300px)); justify-content: center; gap: 36px; margin-block: 36px; }
+  .process { margin-block: 36px; }
+  .process :global(figure) { margin: 30px auto; }
+  .shared-note { margin-top: 40px; }
+  .margin-note, .caveat { color: #605a62; }
+  .feed-chapter > :global(figure) { margin-block: 36px; }
+  .end-links { display: flex; justify-content: space-between; gap: 24px; margin-top: 60px; font-size: var(--study-small); }
+  section[id] { scroll-margin-top: 40px; }
+  @media (max-width: 700px) {
+    .wrap, .reading { width: calc(100% - 40px); }
+    .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 38px 20px; }
+    .hero-preview { gap: 16px; }
+    .hero-preview img { width: calc((100% - 16px) / 2); border-radius: 14px; }
+    .hero-preview img + img { margin-top: 28px; }
+    .intro, .chapter, .finding, .feed-chapter, .ending { padding-block: 35px; }
+    .notebooks, .pair { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .embedded-film { width: min(360px, 100%); }
+    .end-links { flex-wrap: wrap; }
+  }
+</style>
