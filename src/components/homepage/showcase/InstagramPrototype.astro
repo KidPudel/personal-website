@@ -1,0 +1,239 @@
+---
+import InstagramPrototypeApp from './instagram-prototype/InstagramPrototypeApp.jsx';
+import { sitePath } from '../../../config/site';
+
+const prototypeImage = (name: string) => sitePath(`/instagram-showcase/thumbnails/${name}.webp`);
+const stories = [
+  ['profile-avatar-cat', 'Your story'],
+  ['profile-garden-cat', 'anna'],
+  ['profile-music-today', 'studio'],
+  ['profile-mountain-friends', 'alex'],
+  ['profile-canopy', 'roam'],
+];
+---
+
+<div
+  class="instagram-prototype"
+  aria-label="Interactive enhanced Instagram Saves product concept"
+>
+  <div class="instagram-prototype__device" aria-hidden="true">
+    <div class="instagram-prototype__topbar">
+      <span class="instagram-prototype__plus">+</span>
+      <span class="instagram-prototype__wordmark">Instagram⌄</span>
+      <span class="instagram-prototype__heart">♡</span>
+    </div>
+
+    <div class="instagram-prototype__stories">
+      {stories.map(([image, label]) => (
+        <div class="instagram-prototype__story">
+          <span class="instagram-prototype__story-ring">
+            <img src={prototypeImage(image)} alt="" width="48" height="48" loading="lazy" decoding="async" />
+          </span>
+          <span>{label}</span>
+        </div>
+      ))}
+    </div>
+
+    <div class="instagram-prototype__author">
+      <img src={prototypeImage('profile-music-today')} alt="" width="34" height="34" loading="lazy" decoding="async" />
+      <span><strong>process.practice</strong><small>Suggested for you · Health</small></span>
+      <b>•••</b>
+    </div>
+
+    <img
+      class="instagram-prototype__post"
+      src={prototypeImage('healthy-habits')}
+      alt=""
+      width="384"
+      height="480"
+      loading="lazy"
+      decoding="async"
+    />
+
+    <div class="instagram-prototype__actions">
+      <span>♡ <b>12.8K</b></span>
+      <span>◯ <b>384</b></span>
+      <span>⌁</span>
+      <span class="instagram-prototype__bookmark">♧</span>
+    </div>
+    <p class="instagram-prototype__caption"><strong>process.practice</strong> Healthy habits for creatives. A small idea worth saving.</p>
+    <div class="instagram-prototype__nav"><b>●</b><span>▣</span><span>⌁</span><span>⌕</span><span>◉</span></div>
+  </div>
+  <InstagramPrototypeApp client:visible={{ rootMargin: '240px' }} />
+</div>
+
+<style>
+  .instagram-prototype {
+    position: absolute;
+    z-index: 2;
+    top: 16%;
+    left: 50%;
+    display: block;
+    width: 64%;
+    height: 80%;
+    transform: translateX(-50%);
+  }
+
+  .instagram-prototype__device {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(91%, calc(96% * 390 / 844));
+    max-height: 96%;
+    aspect-ratio: 390 / 844;
+    border: 1px solid rgb(255 255 255 / 0.76);
+    border-radius: 10% / 4.7%;
+    background: #fff;
+    box-shadow:
+      0 0 0 clamp(0.3rem, 1.2vw, 0.7rem) rgb(255 255 255 / 0.28),
+      0 0 0 clamp(0.38rem, 1.7vw, 0.95rem) rgb(190 220 255 / 0.25),
+      0 1rem 2rem rgb(23 54 96 / 0.22);
+    color: #0f0f0f;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    transform: translate(-50%, -50%);
+  }
+
+  .instagram-prototype__topbar,
+  .instagram-prototype__author,
+  .instagram-prototype__actions,
+  .instagram-prototype__nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .instagram-prototype__topbar {
+    justify-content: space-between;
+    height: 8%;
+    padding: 0 7%;
+  }
+
+  .instagram-prototype__plus,
+  .instagram-prototype__heart {
+    font-size: clamp(0.65rem, 2vw, 1.4rem);
+  }
+
+  .instagram-prototype__wordmark {
+    font-family: Georgia, serif;
+    font-size: clamp(0.55rem, 1.7vw, 1.16rem);
+    font-style: italic;
+  }
+
+  .instagram-prototype__stories {
+    display: flex;
+    gap: 3%;
+    height: 13%;
+    padding: 1% 4% 0;
+    overflow: hidden;
+  }
+
+  .instagram-prototype__story {
+    flex: 0 0 18%;
+    min-width: 0;
+    font-size: clamp(0.22rem, 0.62vw, 0.43rem);
+    text-align: center;
+  }
+
+  .instagram-prototype__story-ring {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 7%;
+    padding: 5%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7a00, #ff1678 48%, #8e35ff);
+  }
+
+  .instagram-prototype__story img,
+  .instagram-prototype__author img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .instagram-prototype__story img {
+    border: 1px solid white;
+  }
+
+  .instagram-prototype__author {
+    height: 7%;
+    gap: 3%;
+    padding: 0 4%;
+    font-size: clamp(0.25rem, 0.74vw, 0.52rem);
+  }
+
+  .instagram-prototype__author > img {
+    width: 9%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .instagram-prototype__author span {
+    display: grid;
+    line-height: 1.2;
+  }
+
+  .instagram-prototype__author small {
+    color: #666;
+    font-size: 0.86em;
+  }
+
+  .instagram-prototype__author b {
+    margin-left: auto;
+    letter-spacing: 0.08em;
+  }
+
+  .instagram-prototype__post {
+    display: block;
+    width: 100%;
+    height: 58%;
+    object-fit: cover;
+  }
+
+  .instagram-prototype__actions {
+    gap: 4%;
+    height: 5%;
+    padding: 0 4%;
+    font-size: clamp(0.3rem, 0.9vw, 0.62rem);
+  }
+
+  .instagram-prototype__actions b {
+    font-size: 0.76em;
+  }
+
+  .instagram-prototype__bookmark {
+    margin-left: auto;
+  }
+
+  .instagram-prototype__caption {
+    height: 4%;
+    margin: 0;
+    padding: 0 4%;
+    font-size: clamp(0.22rem, 0.62vw, 0.44rem);
+    line-height: 1.25;
+  }
+
+  .instagram-prototype__nav {
+    position: absolute;
+    right: 4%;
+    bottom: 1.2%;
+    left: 4%;
+    justify-content: space-between;
+    height: 6%;
+    padding: 0 5%;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.94);
+    box-shadow: 0 0.15rem 0.75rem rgb(0 0 0 / 0.12);
+    font-size: clamp(0.35rem, 1.1vw, 0.76rem);
+  }
+
+  @media (max-width: 44rem) {
+    .instagram-prototype {
+      top: 15%;
+      width: 60%;
+      height: 82%;
+    }
+  }
+</style>

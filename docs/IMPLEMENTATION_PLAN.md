@@ -2,7 +2,16 @@
 
 Last updated: 2026-09-07
 
-## Current milestone: visual opening and shared case-study navigation
+## Current milestone: four-card homepage work showcase
+
+Status: complete
+
+- Recompose “my work” as the authored alternating-span grid: Observatory and Instagram Saves above Two Sticks and SuperGood.
+- Place the enhanced Instagram Saves prototype directly inside its card, starting on the feed and opening save tools only through interaction.
+- Keep the prototype isolated, deferred, base-path aware, responsive, and backed by an accurate static feed preview.
+- Optimize imported prototype media and verify the card layout and interaction at desktop and mobile sizes.
+
+## Previous milestone: visual opening and shared case-study navigation
 
 Status: complete
 

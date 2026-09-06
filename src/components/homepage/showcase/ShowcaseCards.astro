@@ -6,10 +6,10 @@ import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
 import clickCue from '../../../assets/art/icons/Doodles_point_click.png';
 import observatoryCard from '../../../assets/showcase-cards/card1.png';
 import supergoodCard from '../../../assets/showcase-cards/card2.png';
-import twoSticksCard from '../../../assets/showcase-cards/card3.png';
-import instagramSearch from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/search_spider.png';
-import instagramSave from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/save_new.png';
+import instagramCard from '../../../assets/showcase-cards/card3.png';
+import twoSticksPortraitCard from '../../../assets/showcase-cards/card4.png';
 import { sitePath } from '../../../config/site';
+import InstagramPrototype from './InstagramPrototype.astro';
 import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
 import ShowcaseInfo from './ShowcaseInfo.astro';
 import SupergoodScreenStack from './SupergoodScreenStack.astro';
@@ -22,13 +22,29 @@ const cards = [
     pitch: 'Activity Monitor, but more.',
     responsibility: 'Concept to launch: product design, identity, and storytelling.',
     href: sitePath('/case-studies/observatory/'),
+    area: 'observatory',
+    kind: 'observatory',
+    portrait: false,
   },
   {
-    background: twoSticksCard,
+    background: instagramCard,
+    name: 'Instagram Saves redesign',
+    pitch: 'The more you save, the less you can find.',
+    responsibility: 'Research, UX/UI, and prototyping.',
+    href: sitePath('/case-studies/instagram-saves-redesign/'),
+    area: 'instagram',
+    kind: 'instagram',
+    portrait: true,
+  },
+  {
+    background: twoSticksPortraitCard,
     name: 'Two Sticks',
     pitch: 'Learn Chinese, all inside one bot.',
     responsibility: 'Product direction, UX/UI, and engineering.',
     href: sitePath('/case-studies/two-sticks/'),
+    area: 'chinese',
+    kind: 'chinese',
+    portrait: true,
   },
   {
     background: supergoodCard,
@@ -36,6 +52,9 @@ const cards = [
     pitch: 'Homemade food, without the guesswork.',
     responsibility: 'Research, product design, and Flutter build.',
     href: sitePath('/case-studies/supergood/'),
+    area: 'supergood',
+    kind: 'supergood',
+    portrait: false,
   },
 ];
 ---
@@ -62,20 +81,20 @@ const cards = [
   </div>
 
   <div class="showcase__grid">
-    {cards.map((card, index) => (
+    {cards.map((card) => (
       <article
         class:list={[
           'showcase__card',
-          `showcase__card--${index + 1}`,
-          index === 1 && 'showcase__card--portrait',
+          `showcase__card--${card.area}`,
+          card.portrait && 'showcase__card--portrait',
         ]}
       >
         <Image
           class="showcase__background"
           src={card.background}
           alt=""
-          widths={[480, 720, 960, 1280, 1600]}
-          sizes={index === 1
+          widths={card.portrait ? [360, 480, 720] : [480, 720, 960, 1280, 1600]}
+          sizes={card.portrait
             ? '(max-width: 44rem) calc(100vw - 2rem), 28vw'
             : '(max-width: 44rem) calc(100vw - 2rem), 62vw'}
           loading="lazy"
@@ -83,9 +102,10 @@ const cards = [
           format="webp"
           quality={82}
         />
-        {index === 0 && <ObservatoryScreenStack />}
-        {index === 1 && <TwoSticksScreenStack />}
-        {index === 2 && <SupergoodScreenStack />}
+        {card.kind === 'observatory' && <ObservatoryScreenStack />}
+        {card.kind === 'instagram' && <InstagramPrototype />}
+        {card.kind === 'chinese' && <TwoSticksScreenStack />}
+        {card.kind === 'supergood' && <SupergoodScreenStack />}
         <ShowcaseInfo pitch={card.pitch} responsibility={card.responsibility} />
         <a
           class="showcase__project-link"
@@ -107,18 +127,6 @@ const cards = [
       </article>
     ))}
   </div>
-  <a class="instagram-feature" href={sitePath('/case-studies/instagram-saves-redesign/')}>
-    <div class="instagram-feature__copy">
-      <span class="instagram-feature__label">Instagram Saves · Product design experiment</span>
-      <h3>Saved.<br />And then <em>what?</em></h3>
-      <p>The more you save, the less you can find.</p>
-      <span class="instagram-feature__link">Read the case study ↗</span>
-    </div>
-    <div class="instagram-feature__screens" aria-hidden="true">
-      <Image src={instagramSave} alt="" widths={[280, 388]} sizes="(max-width: 700px) 30vw, 230px" format="webp" loading="lazy" decoding="async" />
-      <Image src={instagramSearch} alt="" widths={[280, 388]} sizes="(max-width: 700px) 30vw, 230px" format="webp" loading="lazy" decoding="async" />
-    </div>
-  </a>
 </showcase-cards>
 
 <script>
@@ -161,32 +169,6 @@ const cards = [
 </script>
 
 <style>
-  .instagram-feature {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    gap: 2rem;
-    width: min(calc(100% - 2 * var(--page-gutter)), 130rem);
-    margin: clamp(1rem, 3vw, 3.75rem) auto 0;
-    padding: clamp(1.5rem, 4vw, 4rem);
-    background: #f2dce3;
-    color: #252027;
-    border-radius: 1rem;
-    text-decoration: none;
-  }
-  .instagram-feature__label { font-size: .7rem; line-height: 1.6; }
-  .instagram-feature h3 { margin: 1.5rem 0; font: 400 clamp(2.8rem, 5vw, 5rem)/.98 'Instrument Serif', Georgia, serif; letter-spacing: -.03em; }
-  .instagram-feature h3 em { color: #895272; }
-  .instagram-feature p { font-size: .9rem; margin: 0 0 2rem; }
-  .instagram-feature__link { font-size: .8rem; text-decoration: underline; text-underline-offset: 5px; }
-  .instagram-feature__screens { display: flex; justify-content: center; align-items: center; gap: 1rem; }
-  .instagram-feature__screens img { width: calc(50% - .5rem); max-width: 230px; height: auto; border-radius: 18px; box-shadow: 0 12px 24px -12px rgb(25 20 28 / 20%); }
-  @media (max-width: 700px) {
-    .instagram-feature { grid-template-columns: 1fr; width: min(calc(100% - 2 * var(--page-gutter)), 34rem); }
-    .instagram-feature__screens { max-width: 300px; width: 100%; margin-inline: auto; }
-    .instagram-feature__screens img { border-radius: 12px; }
-  }
-
   .showcase {
     display: block;
     width: 100%;
@@ -251,18 +233,19 @@ const cards = [
   .showcase__grid {
     display: grid;
     grid-template-areas:
-      'observatory bot'
-      'supergood bot';
-    grid-template-columns: minmax(0, 2fr) minmax(12.5rem, 1fr);
-    align-items: start;
+      'observatory observatory instagram'
+      'chinese supergood supergood';
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: clamp(1rem, 3vw, 3.75rem);
+    aspect-ratio: 21 / 20;
   }
 
   .showcase__card {
     position: relative;
     overflow: hidden;
     min-width: 0;
-    aspect-ratio: 4 / 3;
+    height: 100%;
     border-radius: clamp(0.8rem, 1.4vw, 1.35rem);
     box-shadow:
       0 1px 0 rgb(17 17 15 / 0.06),
@@ -286,20 +269,23 @@ const cards = [
   }
 
   .showcase__card--portrait {
-    aspect-ratio: 4 / 7;
+    aspect-ratio: auto;
   }
 
-  .showcase__card--1 {
+  .showcase__card--observatory {
     grid-area: observatory;
   }
 
-  .showcase__card--2 {
-    grid-area: bot;
+  .showcase__card--instagram {
+    grid-area: instagram;
   }
 
-  .showcase__card--3 {
+  .showcase__card--chinese {
+    grid-area: chinese;
+  }
+
+  .showcase__card--supergood {
     grid-area: supergood;
-    aspect-ratio: 15 / 8;
   }
 
   :global(.showcase__project-link) {
@@ -371,8 +357,10 @@ const cards = [
 
     .showcase__grid {
       grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: none;
       grid-template-areas: none;
       gap: 1rem;
+      aspect-ratio: auto;
     }
 
     .showcase__card {
@@ -382,19 +370,14 @@ const cards = [
         0 0.8rem 2.4rem rgb(17 17 15 / 0.08);
     }
 
-    .showcase__card--1,
-    .showcase__card--2,
-    .showcase__card--3 {
+    .showcase__card--observatory,
+    .showcase__card--instagram,
+    .showcase__card--chinese,
+    .showcase__card--supergood {
       grid-column: auto;
       grid-area: auto;
-    }
-
-    .showcase__card--portrait {
+      height: auto;
       aspect-ratio: 3 / 4;
-    }
-
-    .showcase__card--3 {
-      aspect-ratio: 16 / 10;
     }
 
     :global(.showcase__project-link) {

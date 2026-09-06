@@ -2,7 +2,16 @@
 
 Last updated: 2026-09-07
 
-## Completed milestone: visual opening and shared case-study navigation
+## Completed milestone: four-card homepage work showcase
+
+- Rebuilt “my work” as the requested asymmetric four-card grid: Observatory spans two tracks at top left, Instagram Saves sits at top right, Two Sticks sits at bottom left, and SuperGood spans two tracks at bottom right.
+- Added the enhanced-only Instagram Saves prototype to its card, including the feed, saved collections, search and filters, collection creation, annotations, and sharing interactions from the authored prototype.
+- The experience now starts on its real feed state. The save sheet opens only after a bookmark action, and a matching server-rendered feed prevents a flash of the sheet before hydration.
+- Added layered translucent glass borders around the embedded phone. The interactive implementation is isolated in a shadow root and loads near the viewport instead of blocking the homepage.
+- Converted 59 imported prototype images to compact WebP derivatives and kept paths compatible with root and deployed base paths.
+- Verified the full grid and initial feed at 1280 × 900 and 390 × 844. Verified that the first bookmark opens the enhanced save sheet. Astro diagnostics and the media contract pass.
+
+## Previous completed milestone: visual opening and shared case-study navigation
 
 - Added two optimized prototype screens beside the Instagram introduction on desktop and directly below it on mobile. Preserved the quiet article typography and inline evidence.
 - Unified all case-study headers through PortfolioHeader: Home links to the homepage and swaps to Igor's existing home doodle on hover/focus, using the same treatment as Get in touch.
