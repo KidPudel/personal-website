@@ -2,7 +2,25 @@
 
 Last updated: 2026-09-07
 
-## Completed milestone: four-card homepage work showcase
+## Completed milestone: minimal case-study presentation and heading navigation
+
+- Unified Observatory, SuperGood, and Two Sticks with Instrument Sans, a 780px reading column, responsive 18–24px body type, and the homepage field background.
+- Removed numbered chapter labels, dividers, tinted panels, decorative phone treatments, and obsolete page styling. Kept Observatory’s wordmark and texture animation.
+- Replaced Observatory sticky screen sequences with inline screen/explanation pairs, preserving the product evidence and static reading order.
+- Added shared tick navigation to all four case studies. Each tick maps to an actual h2/h3, links to it, and tracks the active heading. Hover/focus labels identify destinations; mobile uses a horizontally scrollable strip with the active tick kept visible.
+- Verified desktop/mobile layouts, heading mapping, pointer/keyboard navigation, and matching backgrounds. Astro diagnostics, media checks, and root/deployment-path builds pass.
+
+## Completed milestone: case-study editorial revision
+
+- Revised Observatory, SuperGood, and Two Sticks using Instagram Saves as the reference for pacing and concrete language. Instagram remains unchanged.
+- Observatory now moves from the initial problem through a compact research summary into grouping, recording, and the actual interface iterations. Preserved both persona portraits and all screen/sketch evidence.
+- SuperGood follows meal choice, the changing order, checkout, and repeat ordering. Consolidated repeated scope and outcome explanations.
+- Two Sticks follows the learner’s actions in plain language, with the diploma team’s research attribution and the recognition score’s limits retained. The legacy Chinese Bee route continues to serve the same case study.
+- Reduced main-content text by approximately 27–32%. Replaced decision/why matrices with prose and corrected the product-story paragraphs’ label styling to readable body text.
+- Verified revised sections at 1280 × 900 and 390 × 844 with no horizontal overflow or observed browser errors. Static HTML checks confirm one h1, valid local anchors, unique IDs, and image alt/loading/dimension attributes.
+- Astro diagnostics and the media contract pass. Root and /personal-website/ builds pass, including verification with the project’s supported Node 24 runtime.
+
+## Previous completed milestone: four-card homepage work showcase
 
 - Rebuilt “my work” as the requested asymmetric four-card grid: Observatory spans two tracks at top left, Instagram Saves sits at top right, Two Sticks sits at bottom left, and SuperGood spans two tracks at bottom right.
 - Added the enhanced-only Instagram Saves prototype to its card, including the feed, saved collections, search and filters, collection creation, annotations, and sharing interactions from the authored prototype.

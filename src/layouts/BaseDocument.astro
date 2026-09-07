@@ -5,6 +5,7 @@ import '../styles/motion.css';
 
 import instrumentSansURL from '../assets/fonts/InstrumentSans-Regular.ttf?url';
 import PortfolioHeader from '../components/homepage/PortfolioHeader.astro';
+import ReadingProgress from '../components/case-studies/ReadingProgress.astro';
 
 interface Props {
   title: string;
@@ -64,6 +65,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <PortfolioHeader showHome={Astro.url.pathname.includes("/case-studies/")} />
     <slot />
+    {Astro.url.pathname.includes("/case-studies/") && <ReadingProgress />}
     <script is:inline>
       const skipLink = document.querySelector('.skip-link');
       const mainContent = document.getElementById('main-content');

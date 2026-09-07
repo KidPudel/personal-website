@@ -1,0 +1,112 @@
+<reading-progress hidden>
+  <nav aria-label="Case study sections"></nav>
+</reading-progress>
+
+<script>
+  class ReadingProgress extends HTMLElement {
+    private abort?: AbortController;
+    private resize?: ResizeObserver;
+    private frame = 0;
+    private active = -1;
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      const { signal } = this.abort;
+      const main = document.querySelector('main');
+      const nav = this.querySelector('nav');
+      if (!main || !nav) return;
+      const headings = Array.from(main.querySelectorAll<HTMLElement>('h2, h3'));
+      if (!headings.length) return;
+      nav.replaceChildren();
+      const links = headings.map((heading, index) => {
+        if (!heading.id) {
+          const stem = `study-${heading.textContent?.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || index}`;
+          let id = stem;
+          let suffix = 1;
+          while (document.getElementById(id)) id = `${stem}-${suffix++}`;
+          heading.id = id;
+        }
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.setAttribute('aria-label', heading.textContent?.trim() || `Section ${index + 1}`);
+        const tick = document.createElement('span');
+        tick.className = 'tick';
+        tick.setAttribute('aria-hidden', 'true');
+        const label = document.createElement('span');
+        label.className = 'label';
+        label.textContent = heading.textContent;
+        label.setAttribute('aria-hidden', 'true');
+        link.append(tick, label);
+        link.addEventListener('click', (event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+          event.preventDefault();
+          history.replaceState(null, '', `#${heading.id}`);
+          heading.scrollIntoView({ block: 'start', behavior: 'instant' });
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+          heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
+          schedule();
+        }, { signal });
+        nav.append(link);
+        return link;
+      });
+      const update = () => {
+        this.frame = 0;
+        let active = 0;
+        headings.forEach((heading, index) => {
+          if (heading.getBoundingClientRect().top <= Math.min(180, innerHeight * 0.25)) active = index;
+        });
+        if (main.getBoundingClientRect().bottom <= innerHeight + 2) active = headings.length - 1;
+        if (active !== this.active && window.matchMedia('(max-width: 1000px)').matches) {
+          const link = links[active];
+          nav.scrollTo({ left: link.offsetLeft - nav.clientWidth / 2 + link.clientWidth / 2, behavior: 'instant' });
+        }
+        this.active = active;
+        links.forEach((link, index) => {
+          if (index === active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
+      };
+      const schedule = () => {
+        if (!this.frame) this.frame = requestAnimationFrame(update);
+      };
+      this.hidden = false;
+      window.addEventListener('scroll', schedule, { passive: true, signal });
+      window.addEventListener('resize', schedule, { passive: true, signal });
+      this.resize = new ResizeObserver(schedule);
+      this.resize.observe(main);
+      update();
+    }
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.resize?.disconnect();
+      cancelAnimationFrame(this.frame);
+    }
+  }
+  if (!customElements.get('reading-progress')) customElements.define('reading-progress', ReadingProgress);
+</script>
+
+<style is:global>
+  reading-progress { position: fixed; z-index: 10; left: clamp(12px, 3vw, 48px); top: 50%; transform: translateY(-50%); width: 44px; }
+  reading-progress[hidden] { display: none; }
+  reading-progress nav { display: flex; flex-direction: column; height: auto; max-height: 76vh; justify-content: center; }
+  reading-progress a { position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 20px; min-height: 16px; flex: 0 1 20px; text-decoration: none; }
+  reading-progress .tick { display: block; width: 16px; height: 4px; border-radius: 4px; background: var(--color-ink); opacity: .18; transition: transform 120ms ease-out, opacity 120ms ease-out; }
+  reading-progress a[aria-current] .tick { opacity: 1; transform: scaleX(2); }
+  reading-progress .label { position: absolute; left: 48px; padding: 8px 12px; width: max-content; max-width: 280px; border-radius: 8px; background: var(--color-field); color: var(--color-ink); font: 14px/1.4 var(--font-reading); opacity: 0; visibility: hidden; pointer-events: none; }
+  reading-progress a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0; border-radius: 5px; }
+  reading-progress a:focus-visible .label { opacity: 1; visibility: visible; }
+  reading-progress a:focus-visible .tick { transition: none; }
+  @media (hover: hover) { reading-progress a:hover .label { opacity: 1; visibility: visible; } reading-progress a:hover .tick { opacity: 1; } }
+  @media (max-width: 1000px) {
+    reading-progress { left: 50%; top: auto; bottom: 8px; transform: translateX(-50%); width: min(calc(100% - 32px), 360px); padding: 0 8px; border-radius: 24px; background: var(--color-field); }
+    reading-progress nav { flex-direction: row; height: 44px; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+    reading-progress a { flex: 1 0 44px; height: 44px; }
+    reading-progress .tick { width: 4px; height: 12px; }
+    reading-progress a[aria-current] .tick { transform: scaleY(1.6); }
+    reading-progress .label { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { reading-progress .tick { transition: none; } }
+  @media print { reading-progress { display: none; } }
+</style>

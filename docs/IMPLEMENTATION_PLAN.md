@@ -2,7 +2,24 @@
 
 Last updated: 2026-09-07
 
-## Current milestone: four-card homepage work showcase
+## Completed milestone: minimal case-study presentation and heading navigation
+
+- Unified Observatory, SuperGood, and Two Sticks with Instrument Sans, a 780px reading column, responsive 18–24px body type, and the homepage field background.
+- Removed numbered chapter labels, dividers, tinted panels, decorative phone treatments, and obsolete page styling. Kept Observatory’s wordmark and texture animation.
+- Replaced Observatory sticky screen sequences with inline screen/explanation pairs, preserving the product evidence and static reading order.
+- Added shared tick navigation to all four case studies. Each tick maps to an actual h2/h3, links to it, and tracks the active heading. Hover/focus labels identify destinations; mobile uses a horizontally scrollable strip with the active tick kept visible.
+- Verified desktop/mobile layouts, heading mapping, pointer/keyboard navigation, and matching backgrounds. Astro diagnostics, media checks, and root/deployment-path builds pass.
+
+## Previous milestone: case-study editorial revision
+
+Status: complete
+
+- Use Instagram Saves as the writing reference for Observatory, SuperGood, and Two Sticks: concrete situations, clear decisions, and evidence beside the explanation.
+- Condense repeated research summaries, principles, feature inventories, and ownership statements while preserving verified facts, research attribution, project status, and limitations.
+- Keep the existing project media and ensure rewritten decision paragraphs use readable body typography.
+- Verify the revised routes at desktop/mobile sizes, static reading order, media contract, and root/deployment production builds.
+
+## Previous milestone: four-card homepage work showcase
 
 Status: complete
 
