@@ -25,12 +25,14 @@ const getScreenStyle = (screen: Screen) => {
   const visibleRatio = 1 - (trim.top + trim.bottom) / screen.src.height;
   const scale = targetVisibleRatio / visibleRatio;
   const bottomShift = scale * (trim.bottom / screen.src.height) * 100;
+  const leftShift = scale * (trim.left / screen.src.width) * 100;
   const visibleTop = (1 - targetVisibleRatio) * 100;
 
   return [
     `--screen-ratio: ${screen.src.width} / ${screen.src.height}`,
     `--screen-scale: ${scale}`,
     `--screen-bottom-shift: ${bottomShift}%`,
+    `--screen-left-shift: ${leftShift}%`,
     `--screen-visible-top: ${visibleTop}%`,
   ].join('; ');
 };
@@ -205,9 +207,9 @@ const getScreenStyle = (screen: Screen) => {
 
   .mobile-stack__screen {
     position: absolute;
-    top: 24%;
+    bottom: 6%;
     display: block;
-    height: 70%;
+    height: 68%;
     aspect-ratio: var(--screen-ratio);
     filter: drop-shadow(0 0.75rem 0.9rem rgb(17 17 15 / 0.22));
     transform: translate3d(0, 0, 0);
@@ -219,41 +221,49 @@ const getScreenStyle = (screen: Screen) => {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transform: translate3d(0, var(--screen-bottom-shift), 0) scale(var(--screen-scale));
+    transform: translate3d(
+      calc(-1 * var(--screen-left-shift)),
+      var(--screen-bottom-shift),
+      0
+    ) scale(var(--screen-scale));
     transform-origin: bottom center;
   }
 
   .mobile-stack__screen:nth-last-child(1) {
     z-index: 6;
-    left: 4%;
+    left: 5%;
   }
 
   .mobile-stack__screen:nth-last-child(2) {
     z-index: 5;
-    left: 18.4%;
+    left: 18%;
   }
 
   .mobile-stack__screen:nth-last-child(3) {
     z-index: 4;
-    left: 32.8%;
+    left: 31%;
   }
 
   .mobile-stack__screen:nth-last-child(4) {
     z-index: 3;
-    left: 47.2%;
+    left: 44%;
   }
 
   .mobile-stack__screen:nth-last-child(5) {
     z-index: 2;
-    left: 61.6%;
+    left: 57%;
   }
 
   .mobile-stack__screen:nth-last-child(6) {
     z-index: 1;
-    left: 76%;
+    left: 70%;
   }
 
   @media (max-width: 44rem) {
+    .mobile-stack__screen {
+      height: 70%;
+    }
+
     .mobile-stack__screen:nth-last-child(1) {
       left: 3%;
     }
