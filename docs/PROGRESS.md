@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-07
 
+## Instagram case-study feedback correction
+
+- Replaced the speculative testing-only ending with Igor’s reported positive feedback, preserving all three supplied quotes without invented attribution or measured outcomes. Closed on the design’s purpose.
+
 ## Completed milestone: minimal case-study presentation and heading navigation
 
 - Unified Observatory, SuperGood, and Two Sticks with Instrument Sans, a 780px reading column, responsive 18–24px body type, and the homepage field background.
