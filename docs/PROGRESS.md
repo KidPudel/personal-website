@@ -1,6 +1,13 @@
 # Progress
 
-Last updated: 2026-09-07
+Last updated: 2026-09-09
+
+## Resume revision
+
+- Reworked the English resume and added a Russian PDF and editable Word source in `public/resume/`. SuperGood leads as commercial design experience; personal and collaborative projects remain explicitly labelled.
+- Added the Instagram Saves concept to both versions. The Russian entry uses the descriptive heading “Поиск сохранённых публикаций” and links to the original case study; this is an editorial choice, not a legal compliance claim.
+- Shortened skills and engineering detail, added direct case-study links, and increased body text to 10.5 pt. Rebuild the Word sources with `scripts/build-resumes.py`, then render and visually verify PDFs before replacing the published assets.
+- Verified both complete one-page renders, text extraction, eight links per PDF, and clean Word accessibility audits. Local PDF routes return the exact files with `application/pdf`; production and root-path builds pass, including media checks. Deployment has not been performed.
 
 ## Instagram case-study feedback correction
 

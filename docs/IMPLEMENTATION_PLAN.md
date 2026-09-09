@@ -1,6 +1,10 @@
 # Implementation plan
 
-Last updated: 2026-09-07
+Last updated: 2026-09-09
+
+## Resume revision
+
+- Updated the English portfolio resume and added the Russian version using verified case-study evidence. See `docs/PROGRESS.md` for scope, verification, and rebuild instructions.
 
 ## Instagram case-study feedback correction
 
