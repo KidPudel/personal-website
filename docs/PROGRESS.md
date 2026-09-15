@@ -1,6 +1,12 @@
 # Progress
 
-Last updated: 2026-09-09
+Last updated: 2026-09-15
+
+## Resume revision: code and AI signals
+
+- Rewrote both resumes so the summary states the thesis directly: a product designer who researches, designs, and ships, prototypes in code, and directs AI coding agents. Named the actual media that were previously implicit: React and Remotion for the Instagram Saves prototype, SwiftUI built through Claude Code and Codex for Observatory, and the Astro/React portfolio site as Igor's own build.
+- Added a SuperGood bullet for the Material Design based theme and custom themed components (category-synced scrolling menu with animations). Restructured Skills into Design, Code, and Portfolio lines; dropped Vue; added Material Design, Godot, raylib and OpenGL. Page margins are 11 mm and Heading 1 spacing is tighter to keep one page. Marked Observatory as released on GitHub and aimed at developers and power users, matching its README. English stays at B2 by Igor's decision.
+- Both PDFs remain one page with eight links each and no em dashes. Rebuilt with `scripts/build-resumes.py` and rendered through LibreOffice. Figma component/variable depth is not claimed because it is not evidenced.
 
 ## Resume revision
 
