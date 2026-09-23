@@ -11,4 +11,9 @@ export default defineConfig({
   base,
   trailingSlash: 'always',
   integrations: [mdx(), react(), sitemap()],
+  vite: {
+    optimizeDeps: {
+      include: ['@foleyjs/core', 'lucide-react'],
+    },
+  },
 });

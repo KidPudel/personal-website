@@ -1,6 +1,15 @@
 # Progress
 
-Last updated: 2026-09-15
+Last updated: 2026-09-23
+
+## Completed milestone: website media and implementation audit
+
+- Checked all current routes at mobile and desktop widths. Images have intrinsic dimensions, no broken first-view sources were found, and inspected routes had no horizontal overflow. The responsive opening video selected its mobile and desktop source correctly.
+- Replaced the Discourses preview's 77-frame, 1.6 MB animated WebP poster with a 21 KB static first frame matching the video. The authored animation remains in source; `scripts/prepare-side-project-media.mjs` reproduces the derivative.
+- Removed the unused audio track from the muted Snake preview without re-encoding its video, reducing it from 1.7 MB to 1.0 MB. The original remains in source, and both homepage and prototype media use the silent derivative.
+- Removed side-project preview videos from the global `load()` preloader. A direct visit to `#side-projects` now starts visible previews on first entry and pauses them offscreen. Shortened image/video preload lookahead to reduce speculative work.
+- Added the deferred Instagram prototype's dependencies to Vite prebundling after a stale optimize-dependency response blocked hydration in the local dev server. Verified the card hydrates and its save sheet opens.
+- The media contract, Astro diagnostics, and production builds for both `/` and `/personal-website/` pass.
 
 ## Resume revision: code and AI signals
 

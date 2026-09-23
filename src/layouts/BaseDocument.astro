@@ -100,7 +100,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
       const conserveData = Boolean(
         connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? ''),
       );
-      const approachMargin = conserveData ? '60% 0px' : '160% 0px';
+      const approachMargin = conserveData ? '25% 0px' : '80% 0px';
 
       if ('IntersectionObserver' in window) {
         const imageObserver = new IntersectionObserver(
@@ -130,7 +130,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
               observer.unobserve(video);
             });
           },
-          { rootMargin: conserveData ? '30% 0px' : '100% 0px' },
+          { rootMargin: conserveData ? '15% 0px' : '50% 0px' },
         );
 
         document.querySelectorAll('video[data-deferred-media]').forEach((video) => {

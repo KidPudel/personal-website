@@ -1,6 +1,14 @@
 # Implementation plan
 
-Last updated: 2026-09-09
+Last updated: 2026-09-23
+
+## Completed milestone: website media and implementation audit
+
+- Audit every current route at desktop and mobile sizes, including media markup, intrinsic dimensions, responsive delivery, overflow, video metadata, and browser errors.
+- Replace the animated Discourses poster with its matching static first frame, strip unused audio from the muted Snake preview, and preserve the authored originals.
+- Prevent competing video preload and visibility playback work; shorten below-fold media lookahead without changing the presentation.
+- Prebundle deferred homepage dependencies for reliable local development hydration and verify the interactive Instagram card.
+- Pass media checks and production builds for root and deployed base paths.
 
 ## Resume revision
 

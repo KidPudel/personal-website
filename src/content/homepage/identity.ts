@@ -1,12 +1,12 @@
 export const identity = {
   hello: 'Hello, I’m Igor.',
   role: 'Product designer.',
-  research: 'I research to find a real need that the world is missing.',
+  research: 'I research to find a real need the world has overlooked.',
   experience: {
-    before: 'I design ',
-    word: 'experiences',
-    after: ' that leave something with people,',
-    continuation: ' even beyond the moment they use the product.',
+    before: 'I shape ',
+    word: 'products',
+    after: ' that give people something to keep,',
+    continuation: ' even beyond the moment they use them.',
   },
   purpose: {
     before: 'This is my professional attempt to make the world a',

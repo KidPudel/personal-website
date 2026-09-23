@@ -46,7 +46,7 @@ export const personalNote = {
     ],
     [
       'Eventually, I had enough history to see the pattern. I took time away to listen to myself and let myself pursue what I actually care about. Looking back, none of those years feel wasted. Software engineering taught me to treat code as a creative material and carry ideas into reality. Game design taught me how interaction, motivation, and psychology shape what people do. Both now make me a better product designer.',
-      'I have a strong instinct for atmosphere and rely heavily on inner feeling. Product design gives that instinct direction. It begins with understanding who I’m designing for, finding what they really need, and making the right thing for them. I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
+      'I have a strong instinct for atmosphere and trust my inner feeling. Product design gives that instinct direction. It begins with the people I’m designing for and what they really need. The product is how I reach them, so I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
     ],
   ],
   items: [

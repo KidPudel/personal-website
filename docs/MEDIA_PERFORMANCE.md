@@ -1,6 +1,6 @@
 # Media performance contract
 
-Last updated: 2026-08-22
+Last updated: 2026-09-23
 
 This document is the implementation contract for every image, video, flipbook, poster, and decorative media asset on the site. Future agents must read it before changing public media.
 
@@ -37,6 +37,7 @@ On GitHub Pages, even a very small cold asset request can add a separate network
 - Deferred videos may move from `none` to `metadata` or `auto` as they approach the viewport. Respect data saver and slow connections, and do not autoplay them.
 - Autoplay video must be muted, loop only when the loop is intentional, pause when hidden, and retain a useful poster if playback is blocked.
 - The homepage side-project MP4 previews are a reviewed GIF-replacement exception. They may begin silent looping playback only while intersecting the viewport, must keep `preload="none"` and a parser-discoverable source, and must pause offscreen or while the document is hidden. Reduced-motion, data-saver, and slow-connection visits keep the static poster.
+- Keep those visibility-controlled previews out of separate video preloaders that call `load()`. A competing `load()` can cancel an in-flight `play()` and leave a visible preview paused until it re-enters the viewport.
 - Encode MP4 for progressive delivery with the `moov` atom before media data. Use broadly supported H.264 with `yuv420p`; omit audio from intentionally silent files.
 - A short video is not automatically a light video. Check encoded bytes, bitrate, dimensions, frame rate, and startup metadata.
 

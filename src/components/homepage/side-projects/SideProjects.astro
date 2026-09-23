@@ -3,10 +3,10 @@ import { Image } from 'astro:assets';
 import '@fontsource/instrument-serif/400.css';
 
 import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
-import discoursesPoster from '../../../assets/games/discourses/discourses-teaser.webp';
+import discoursesPoster from '../../../assets/games/discourses/discourses-poster.webp';
 import discoursesVideo from '../../../assets/games/discourses/discourses-teaser.mp4';
 import snakePoster from '../../../assets/games/snake/poster.jpg';
-import snakeVideo from '../../../assets/games/snake/snake-raylib.mp4';
+import snakeVideo from '../../../assets/games/snake/snake-raylib-silent.mp4';
 import bunPoster from '../../../assets/games/thelastofbuns/showcase-poster.webp';
 import bunVideo from '../../../assets/games/thelastofbuns/showcase.mp4';
 import ticTacToeImage from '../../../assets/games/tic-tac-toe/gameplay.png';
@@ -87,7 +87,6 @@ const cards = {
           playsinline
           muted
           loop
-          data-deferred-media
         >
           Your browser does not support embedded video.
         </video>
@@ -154,7 +153,6 @@ const cards = {
           playsinline
           muted
           loop
-          data-deferred-media
         >
           Your browser does not support embedded video.
         </video>
@@ -189,7 +187,6 @@ const cards = {
           playsinline
           muted
           loop
-          data-deferred-media
         >
           Your browser does not support embedded video.
         </video>
@@ -258,6 +255,7 @@ const cards = {
 </section>
 
 <script>
+  // These previews own playback and loading; a separate video.load() can cancel play().
   const previewVideos = document.querySelectorAll<HTMLVideoElement>('.project-preview video');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const connection = (
