@@ -1,0 +1,66 @@
+---
+import { getCollection, render } from 'astro:content';
+
+import { sitePath } from '../../config/site';
+import BaseDocument from '../../layouts/BaseDocument.astro';
+import '../../styles/case-study.css';
+
+export async function getStaticPaths() {
+  // Posts published elsewhere only appear in the list and link out.
+  const posts = await getCollection('writing', ({ data }) => !data.externalUrl);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const dateFormat = new Intl.DateTimeFormat('en', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseDocument
+  title={`${post.data.title} | Igor Kupchinenko`}
+  description={post.data.summary}
+  pageClass="editorial-case-study blog-document"
+>
+  <main id="main-content">
+    <article class="blog-post">
+      <header class="blog-post__header">
+        <h1>{post.data.title}</h1>
+        {post.data.publishedAt && (
+          <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>
+            {dateFormat.format(post.data.publishedAt)}
+          </time>
+        )}
+      </header>
+      <Content />
+    </article>
+  </main>
+  <footer class="case-footer">
+    <nav aria-label="Blog links">
+      <a href={sitePath('/blog/')}>All posts</a>
+      <a href={sitePath('/')}>Home</a>
+    </nav>
+  </footer>
+</BaseDocument>
+
+<style>
+  .blog-post {
+    padding: 48px 0 24px;
+  }
+
+  .blog-post__header {
+    margin-bottom: 40px;
+  }
+
+  .blog-post__header h1 {
+    margin-bottom: 12px;
+  }
+
+  .blog-post__header time {
+    color: #656560;
+    font-size: var(--study-small);
+  }
+
+  .blog-post :global(h2) {
+    margin-top: 48px;
+  }
+</style>

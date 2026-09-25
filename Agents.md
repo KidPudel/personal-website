@@ -25,9 +25,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Opening scene (box and identity column together) | `src/components/homepage/opening/OpeningSequence.astro` |
 | Personal note copy | `src/content/homepage/values.ts` |
 | Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |
-| Values phrase morph and evidence burst | `src/components/homepage/values/value-voice-motion.ts`, `ValueVoice.astro`, and `ValuesEvidence.astro` |
-| An evidence object's layout | `src/components/homepage/values/EvidenceObject.astro` |
-| Writing document | `src/pages/blog/index.astro` and `src/components/homepage/WritingPreview.astro` |
+| Blog posts (local or linked out) | `src/content/writing/`; list in `src/components/blog/WritingList.astro`, pages in `src/pages/blog/` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
 | Homepage work showcase | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |

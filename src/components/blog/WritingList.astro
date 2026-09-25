@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content';
+
+import { sitePath } from '../../config/site';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// Newest first; undated posts (older, published elsewhere) go last.
+const posts = (await getCollection('writing')).sort(
+  (first, second) => (second.data.publishedAt?.getTime() ?? 0) - (first.data.publishedAt?.getTime() ?? 0),
+);
+
+const dateFormat = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<ul class:list={['writing-list', className]}>
+  {posts.map(({ id, data }) => (
+    <li class="writing-list__item">
+      <a
+        class="writing-list__link"
+        href={data.externalUrl ?? sitePath(`/blog/${id}/`)}
+      >
+        <span class="writing-list__title">{data.title}</span>
+        {data.externalLabel && <span class="writing-list__external"> on {data.externalLabel} ↗</span>}
+      </a>
+      <p class="writing-list__summary">{data.summary}</p>
+      {data.publishedAt && (
+        <time class="writing-list__date" datetime={data.publishedAt.toISOString().slice(0, 10)}>
+          {dateFormat.format(data.publishedAt)}
+        </time>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .writing-list {
+    display: grid;
+    gap: 1.6rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .writing-list__item {
+    max-width: 38rem;
+  }
+
+  .writing-list__link {
+    display: inline-block;
+    padding-block: 0.65rem;
+    margin-block: -0.3rem;
+    color: var(--color-ink);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 68%, transparent);
+    text-decoration-thickness: 0.08rem;
+    text-underline-offset: 0.24rem;
+  }
+
+  .writing-list__link:hover,
+  .writing-list__link:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  .writing-list__link:focus-visible {
+    border-radius: 0.08em;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  .writing-list__external {
+    color: var(--color-muted);
+  }
+
+  .writing-list__summary {
+    margin: 0.15rem 0 0;
+    color: var(--color-copy);
+    line-height: 1.45;
+  }
+
+  .writing-list__date {
+    display: block;
+    margin-top: 0.3rem;
+    color: var(--color-muted);
+    font-size: 0.9em;
+  }
+</style>

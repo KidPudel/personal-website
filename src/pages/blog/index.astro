@@ -1,0 +1,26 @@
+---
+import WritingList from '../../components/blog/WritingList.astro';
+import BaseDocument from '../../layouts/BaseDocument.astro';
+import '../../styles/case-study.css';
+---
+
+<BaseDocument
+  title="Blog | Igor Kupchinenko"
+  description="Writing by Igor Kupchinenko about product ideas and the things that shape them."
+  pageClass="editorial-case-study blog-document"
+>
+  <main id="main-content" class="blog-index">
+    <h1>Blog</h1>
+    <WritingList class="blog-index__list" />
+  </main>
+</BaseDocument>
+
+<style>
+  .blog-index {
+    padding: 48px 0 120px;
+  }
+
+  .blog-index__list {
+    font-size: var(--study-body);
+  }
+</style>

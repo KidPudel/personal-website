@@ -39,4 +39,16 @@ const games = defineCollection({
   }),
 });
 
-export const collections = { software, games };
+const writing = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    publishedAt: z.coerce.date().optional(),
+    // Posts that live elsewhere link out instead of getting a local page.
+    externalUrl: z.url().optional(),
+    externalLabel: z.string().optional(),
+  }),
+});
+
+export const collections = { software, games, writing };

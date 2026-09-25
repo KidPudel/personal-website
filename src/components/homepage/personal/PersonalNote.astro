@@ -3,6 +3,7 @@ import type { ImageMetadata } from 'astro';
 
 import couplePortrait from '../../../assets/life/me_and_bebe.png';
 import { personalNote } from '../../../content/homepage/values';
+import WritingList from '../../blog/WritingList.astro';
 import HoloPortrait from './HoloPortrait.astro';
 
 const doodleModules = import.meta.glob<{ default: ImageMetadata }>(
@@ -28,40 +29,38 @@ const doodles = Object.entries(doodleModules)
   <ul class="personal-note__facts">
     {personalNote.items.map((item) => (
       <li>
-        {'href' in item ? (
-          <a href={item.href}>{item.label}</a>
-        ) : (
-          <details class="personal-note__fact">
-            <summary>
-              <span>{item.label}</span>
-              <span class="personal-note__indicator" aria-hidden="true"></span>
-            </summary>
+        <details class="personal-note__fact">
+          <summary>
+            <span>{item.label}</span>
+            <span class="personal-note__indicator" aria-hidden="true"></span>
+          </summary>
 
-            <div class="personal-note__reveal">
-              {item.action === 'portrait' ? (
-                <figure class="personal-note__portrait">
-                  <HoloPortrait
-                    src={couplePortrait}
-                    alt="Igor and his girlfriend outdoors"
+          <div class="personal-note__reveal">
+            {item.action === 'portrait' ? (
+              <figure class="personal-note__portrait">
+                <HoloPortrait
+                  src={couplePortrait}
+                  alt="Igor and his girlfriend outdoors"
+                />
+              </figure>
+            ) : item.action === 'blog' ? (
+              <WritingList class="personal-note__writing" />
+            ) : (
+              <div class="personal-note__doodles" aria-label="All of Igor’s doodles">
+                {doodles.map((doodle) => (
+                  <img
+                    src={doodle.src}
+                    width={doodle.width}
+                    height={doodle.height}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
                   />
-                </figure>
-              ) : (
-                <div class="personal-note__doodles" aria-label="All of Igor’s doodles">
-                  {doodles.map((doodle) => (
-                    <img
-                      src={doodle.src}
-                      width={doodle.width}
-                      height={doodle.height}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </details>
-        )}
+                ))}
+              </div>
+            )}
+          </div>
+        </details>
       </li>
     ))}
   </ul>
@@ -130,7 +129,6 @@ const doodles = Object.entries(doodleModules)
     padding-left: 0.2rem;
   }
 
-  .personal-note__facts a,
   .personal-note__fact summary {
     color: inherit;
     text-decoration-line: underline;
@@ -218,6 +216,10 @@ const doodles = Object.entries(doodleModules)
     filter: drop-shadow(0 0.4rem 1rem rgb(17 17 15 / 0.12));
   }
 
+  .personal-note__reveal :global(.personal-note__writing) {
+    padding-block: 1.1rem 0.4rem;
+  }
+
   .personal-note__doodles {
     display: grid;
     max-width: 31rem;
@@ -235,15 +237,12 @@ const doodles = Object.entries(doodleModules)
     filter: grayscale(1);
   }
 
-  .personal-note__facts a:hover,
-  .personal-note__facts a:focus-visible,
   .personal-note__fact summary:hover,
   .personal-note__fact summary:focus-visible {
     color: var(--color-ink);
     text-decoration-color: currentColor;
   }
 
-  .personal-note__facts a:focus-visible,
   .personal-note__fact summary:focus-visible {
     border-radius: 0.08em;
     outline: var(--focus-width) solid var(--color-focus);

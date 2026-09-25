@@ -24,14 +24,27 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 ---
 
 <!doctype html>
-<html lang="en" class={pageClass}>
+<html lang="en" class={pageClass} data-base={import.meta.env.BASE_URL}>
   <head>
     <script is:inline>
       const skipTargetRequested = location.hash === '#main-content';
+      const navigationType = performance.getEntriesByType('navigation')[0]?.type;
+      const siteBase = document.documentElement.dataset.base ?? '/';
+      const arrivedFromSite = (() => {
+        try {
+          const referrer = new URL(document.referrer);
+          return referrer.origin === location.origin && referrer.pathname.startsWith(siteBase);
+        } catch {
+          return false;
+        }
+      })();
+      const returningWithinSite =
+        navigationType === 'back_forward' || (navigationType !== 'reload' && arrivedFromSite);
 
       document.documentElement.classList.add('js');
       if (
         location.hash ||
+        returningWithinSite ||
         window.matchMedia('(prefers-reduced-motion: reduce)').matches
       ) {
         document.documentElement.classList.add('opening-bypassed');
@@ -63,7 +76,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
-    <PortfolioHeader showHome={Astro.url.pathname.includes("/case-studies/")} />
+    <PortfolioHeader showHome={/\/(case-studies|blog)\//.test(Astro.url.pathname)} />
     <slot />
     {Astro.url.pathname.includes("/case-studies/") && <ReadingProgress />}
     <script is:inline>

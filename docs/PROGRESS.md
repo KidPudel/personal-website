@@ -1,6 +1,23 @@
 # Progress
 
-Last updated: 2026-09-23
+Last updated: 2026-09-25
+
+## Local blog
+
+- “I have a blog” now expands on the homepage like its sibling items and lists the posts. Local posts open at `/blog/<slug>/`; Identity Cage still links to Medium. `/blog/` lists the same posts on its own page. This replaces the Medium-only link from the earlier external blog simplification.
+- Posts live in the `writing` content collection (`src/content/writing/`). An `externalUrl` makes a post link out instead of getting a local page.
+- Published “Turn off one sound. Keep the rest.” with the sound-filtering film. The film keeps its audio because the sound is the subject, so it uses native controls, `preload="none"`, and a poster, with no autoplay. `scripts/prepare-blog-media.mjs` rebuilds the 720p and 1080p derivatives (1.7 MB and 2.7 MB, from 7.9 MB) and the poster; the source recording is unchanged.
+- Restyled Igor's snoring-frequency chart to match the article: no rules or eyebrow label, a statement title instead of a competing h2, “Every night” in the accent and the other answers in grey, values at the bar tips, bars scaled to the whole group. Figures checked against the AASM PDF (411/285/159/7 of 865). The film now closes the post, after the safety section it also demonstrates.
+- Verified at 1024 px and 375 px: correct source per viewport, poster loads, video decodes, no horizontal overflow or console errors. Astro diagnostics, the media contract, and root and `/personal-website/` builds pass. The post title reuses the film’s closing line and the date is 25 September 2026; both are placeholders for Igor to confirm.
+
+## Homepage motion polish
+
+- The opening greeting now holds for 300 ms after the handwriting completes, then moves into the page over 800 ms on a softer curve. The page is usable roughly 0.4 s sooner.
+- The "products" shimmer now starts 500 ms after the page finishes revealing, on a timer rather than depending on the reveal animation finishing.
+- The opening plays on a fresh arrival or reload. Arriving from another page of the site (Home link, back/forward) skips it, keeping the sky. Any scroll, tap, click, or key during the opening skips to the settled page with a 240 ms fade. Previously the deployed site replayed the full opening on both the Home link and back navigation whenever the browser did not restore the page from its back/forward cache.
+- The opening sky is sized to the large viewport (`100lvh`), so on iPhone Safari it continues beneath the bottom toolbar instead of ending in a hard edge.
+- Removed the orphaned hidden portrait button and click cue from the greeting, and the unused `values/` components. The values copy in `src/content/homepage/values.ts` is kept.
+- Verified timings and the settled page at 375 × 812 without console errors. Astro diagnostics, the media contract, and root and `/personal-website/` builds pass. The iPhone toolbar fix still needs checking on a real device.
 
 ## Completed milestone: website media and implementation audit
 

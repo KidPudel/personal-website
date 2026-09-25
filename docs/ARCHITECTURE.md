@@ -24,6 +24,8 @@ Do not introduce a client application framework, global application state, a cli
 | `/case-studies/supergood/` | SuperGood editorial case study |
 | `/case-studies/two-sticks/` | Two Sticks editorial case study |
 | `/case-studies/chinese-bee/` | Legacy route with Two Sticks as its canonical URL |
+| `/blog/` | Writing index from the `writing` collection; posts published elsewhere link out |
+| `/blog/<slug>/` | Local blog post |
 | Existing legacy paths | Static redirects to the closest current document or anchor |
 
 Preserve base-path behavior for both `/` and `/personal-website/` builds.

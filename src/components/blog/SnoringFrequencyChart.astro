@@ -1,0 +1,137 @@
+---
+// AASM Sleep Prioritization Survey (2021): bed partners who snore, n = 865.
+const responses = [
+  { label: 'Every night', percent: 48, count: 411, emphasis: true },
+  { label: 'Quite often', percent: 33, count: 285 },
+  { label: 'Once in a while', percent: 18, count: 159 },
+  { label: 'Never', percent: 1, count: 7 },
+];
+---
+
+<figure class="snoring-chart" aria-labelledby="snoring-chart-title">
+  <p id="snoring-chart-title" class="snoring-chart__title">For nearly half, it happens every night.</p>
+  <p class="snoring-chart__intro">
+    865 people in the U.S. whose bed partner snores were asked how often it happens.
+  </p>
+
+  <ul class="snoring-chart__bars">
+    {responses.map(({ label, percent, count, emphasis }) => (
+      <li class:list={['snoring-chart__row', { 'snoring-chart__row--emphasis': emphasis }]}>
+        <span class="snoring-chart__label">{label}</span>
+        <span class="snoring-chart__plot">
+          <span class="snoring-chart__bar" style={`--share: ${percent / 100}`} aria-hidden="true"></span>
+          <span class="snoring-chart__value">
+            {percent}%<span class="sr-only">, {count} people</span>
+          </span>
+        </span>
+      </li>
+    ))}
+  </ul>
+
+  <figcaption>
+    Percentages are rounded; three respondents answered “I don’t know.” The survey asked about
+    frequency, not lost sleep. Source: <a href="https://aasm.org/wp-content/uploads/2021/06/sleep-prioritization-survey-2021-partner-snoring.pdf">American Academy of Sleep Medicine, Sleep Prioritization Survey (2021)</a>.
+  </figcaption>
+</figure>
+
+<style>
+  .snoring-chart {
+    /* A lifted version of the night sky in the film's window. */
+    --chart-night: #4a5877;
+    --chart-rest: #d0d0d3;
+    margin: 48px 0;
+  }
+
+  .snoring-chart__title {
+    margin: 0 0 6px;
+    font-size: var(--study-body);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+
+  .snoring-chart__intro {
+    margin: 0 0 24px;
+    color: #656560;
+    font-size: var(--study-small);
+    line-height: 1.55;
+  }
+
+  .snoring-chart__bars {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .snoring-chart__row {
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    color: #656560;
+    font-size: var(--study-small);
+    line-height: 1.4;
+  }
+
+  .snoring-chart__row--emphasis {
+    color: var(--color-ink);
+  }
+
+  .snoring-chart__plot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Scaled to the whole group, so “nearly half” looks like nearly half. */
+  .snoring-chart__bar {
+    display: block;
+    flex: none;
+    width: calc((100% - 3.5rem) * var(--share));
+    min-width: 2px;
+    height: 10px;
+    border-radius: 0 4px 4px 0;
+    background: var(--chart-rest);
+  }
+
+  .snoring-chart__row--emphasis .snoring-chart__bar {
+    background: var(--chart-night);
+  }
+
+  .snoring-chart__value {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .snoring-chart figcaption {
+    max-width: 62ch;
+    margin-top: 24px;
+    color: #656560;
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .snoring-chart figcaption a {
+    text-decoration-style: dotted;
+    text-decoration-thickness: 0.08rem;
+    text-underline-offset: 0.24rem;
+  }
+
+  .snoring-chart figcaption a:hover,
+  .snoring-chart figcaption a:focus-visible {
+    color: var(--color-ink);
+  }
+
+  @media (max-width: 480px) {
+    .snoring-chart__bars {
+      gap: 14px;
+    }
+
+    .snoring-chart__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+  }
+</style>
