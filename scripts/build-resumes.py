@@ -17,7 +17,7 @@ CONTENT = {
     'en': {
         'name': 'IGOR KUPCHINENKO', 'role': 'PRODUCT DESIGNER · CONSUMER APPS · RESEARCH AND INTERACTION DESIGN',
         'portfolio_label': 'Portfolio: ', 'location': 'Moscow · office, hybrid or remote',
-        'summary': 'Product designer for consumer apps. I start with interviews and watching people use a product, then design the flows and information that show them what is happening, what comes next and what it costs. Shipped a food-ordering app on iOS and Android; since then, research-led projects built as working prototypes. A software-engineering background lets me test ideas in code, not only in Figma.',
+        'summary': 'Product designer for consumer apps. I start with interviews and watching people use a product, then design the flows and information that show them what is happening, what comes next and what it costs. Shipped a food-ordering app on iOS and Android; since then, research-led projects, including AI-assisted features. A software-engineering background lets me prototype in code and ship apps by directing AI coding agents.',
         'experience': 'PRODUCT DESIGN EXPERIENCE',
         'supergood': ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer, food delivery app | Aug 2023 - Jul 2024', [
             'Public reviews questioned both the app and whether the food was worth the price. Customer conversations, observed orders and prototype tasks showed people could not judge a dish, delivery time or total before paying.',
@@ -29,7 +29,7 @@ CONTENT = {
         'projects': [
             ('Instagram Saves redesign', 'Independent concept, coded prototype | 2026', 'instagram-saves-redesign', [
                 'Interviewed eight people about saving and finding posts. Synthesis showed the work of organising was left to their future selves: too much to file, too little to remember, too easy to leave.',
-                'Designed collection suggestions that shorten filing without removing choice, search by subject, place or note, date filters, pins, and collections as a feed for saves nobody revisits. Built as an interactive React prototype, live on my site.',
+                'Designed AI-assisted collection suggestions and search by subject, place or note. The full list stays one tap away, so a wrong suggestion never takes the choice away. Built as an interactive React prototype, live on my site.',
             ]),
             ('Observatory', 'Personal macOS app, built with AI coding agents from my specs, released on GitHub | Jul 2026 - Aug 2026', 'observatory', [
                 'Five interviews about recent performance checks defined two needs: see a whole application at once, and keep a recording to compare later. Grouped processes under their application, with detail one level below.',
@@ -42,7 +42,7 @@ CONTENT = {
             ('22bytes', 'Mobile Game Designer / Prototype Developer | Apr 2023 - Aug 2023', 'Designed and built playable Android game prototypes in short cycles: interaction, player feedback, scope.'),
         ],
         'skills_title': 'SKILLS',
-        'skills': 'Research: user interviews, customer development, usability testing, observation, synthesis, competitor analysis, CJM, JTBD, hypothesis framing.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, adaptive layouts, motion. Figma, Material Design, Apple HIG.\nCode: React, Flutter, HTML/CSS/JS; SwiftUI via AI coding agents (Claude Code, Codex); Go, Python.',
+        'skills': 'Research: user interviews, customer development, usability testing, observation, synthesis, competitor analysis, CJM, JTBD, hypothesis framing.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, adaptive layouts, motion. Figma, Material Design, Apple HIG.\nAI: designing AI-assisted features (suggestions, semantic search, error states); building with AI coding agents (Claude Code, Codex).\nCode: React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
         'education_title': 'EDUCATION AND LANGUAGES',
         'education': 'Diploma in Programming in Computer Systems, MFUA College | 2019 - 2023',
         'languages': 'Russian: native | English: B2 (upper-intermediate)',
@@ -50,7 +50,7 @@ CONTENT = {
     'ru': {
         'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР · B2C · ИССЛЕДОВАНИЯ И ПРОЕКТИРОВАНИЕ ИНТЕРФЕЙСОВ',
         'portfolio_label': 'Портфолио: ', 'location': 'Москва · офис, гибрид или удалённо',
-        'summary': 'Продуктовый дизайнер B2C-приложений. Начинаю с интервью и наблюдения за использованием, затем проектирую сценарии и подачу информации, чтобы человеку было понятно, что происходит, что дальше и сколько это стоит. Выпустил приложение заказа еды на iOS и Android, затем делал исследовательские проекты с рабочими прототипами в коде.',
+        'summary': 'Продуктовый дизайнер B2C-приложений. Начинаю с интервью и наблюдения за использованием, затем проектирую сценарии и подачу информации, чтобы человеку было понятно, что происходит, что дальше и сколько это стоит. Выпустил приложение заказа еды на iOS и Android, затем делал исследовательские проекты, включая AI-функции. Прототипирую в коде и довожу приложения до релиза с AI-агентами.',
         'experience': 'ОПЫТ В ПРОДУКТОВОМ ДИЗАЙНЕ',
         'supergood': ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик, доставка еды | август 2023 - июль 2024', [
             'В отзывах критиковали и приложение, и то, стоит ли еда своих денег. CustDev-интервью, наблюдение за заказом и задания на прототипе показали: до оплаты людям не хватало понимания блюда, срока доставки и суммы.',
@@ -62,7 +62,7 @@ CONTENT = {
         'projects': [
             ('Поиск сохранённых публикаций Instagram', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
                 'Провёл восемь интервью о том, как люди сохраняют и находят посты. Общий паттерн: разбор сохранённого откладывают на «потом», и найти нужное со временем всё сложнее.',
-                'Спроектировал подсказки коллекций (сокращают выбор, но не отнимают его), поиск по теме, месту или заметке, фильтр по дате, закрепление и коллекции как ленту. Прототип на React работает на моём сайте.',
+                'Спроектировал AI-подсказки коллекций и поиск по теме, месту или заметке. Полный список остаётся под рукой, чтобы ошибка подсказки не отнимала выбор. Прототип на React работает на моём сайте.',
             ]),
             ('Observatory', 'Личный проект на macOS, разработка с AI-агентами по моим спецификациям | июль 2026 - август 2026', 'observatory', [
                 'Пять интервью о проверках производительности выявили две потребности: видеть приложение целиком и сохранять запись для сравнения. Сгруппировал процессы по приложениям.',
@@ -75,7 +75,7 @@ CONTENT = {
             ('22bytes', 'Гейм-дизайнер / разработчик прототипов | апрель 2023 - август 2023', 'Быстро собирал игровые Android-прототипы: взаимодействие, фидбек игроку, объём.'),
         ],
         'skills_title': 'НАВЫКИ',
-        'skills': 'Исследования: CustDev и глубинные интервью, юзабилити-тесты, наблюдение, синтез, конкурентный анализ, CJM, JTBD, продуктовые гипотезы.\nДизайн: UX/UI, информационная архитектура, пользовательские сценарии, вайрфреймы, проектирование взаимодействия, прототипирование, дизайн-система, адаптив, моушн. Figma, Material Design, Apple HIG.\nКод: React, Flutter, HTML/CSS/JS; SwiftUI с AI-агентами (Claude Code, Codex); Go, Python.',
+        'skills': 'Исследования: CustDev и глубинные интервью, юзабилити-тесты, наблюдение, синтез, конкурентный анализ, CJM, JTBD, продуктовые гипотезы.\nДизайн: UX/UI, информационная архитектура, пользовательские сценарии, вайрфреймы, проектирование взаимодействия, прототипирование, дизайн-система, адаптив, моушн. Figma, Material Design, Apple HIG.\nAI: проектирование AI-функций (подсказки, семантический поиск, ошибки), разработка с AI-агентами (Claude Code, Codex).\nКод: React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
         'education_title': 'ОБРАЗОВАНИЕ И ЯЗЫКИ',
         'education': 'Колледж МФЮА, «Программирование в компьютерных системах» (СПО) | 2019 - 2023',
         'languages': 'Русский: родной | Английский: B2 (Upper-Intermediate)',
