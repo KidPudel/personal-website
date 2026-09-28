@@ -9,11 +9,14 @@ import { sitePath } from '../config/site';
   pageClass="composition-document"
   themeColor="#F8F8F8"
   robots="noindex"
+  translated={false}
 >
   <main id="main-content" class="not-found">
     <p>404</p>
     <h1>This page wandered off.</h1>
     <a href={sitePath('/')}>Back to Igor</a>
+    <p class="not-found__translation" lang="ru">Эта страница куда-то ушла.</p>
+    <a href={sitePath('/ru/')} lang="ru" hreflang="ru">Вернуться к Игорю</a>
   </main>
 </BaseDocument>
 
@@ -45,6 +48,11 @@ import { sitePath } from '../config/site';
     font-size: clamp(3.5rem, 10vw, 8rem);
     font-weight: 400;
     line-height: 0.95;
+  }
+
+  .not-found .not-found__translation {
+    margin-top: 1rem;
+    font-size: 1.25rem;
   }
 
   .not-found a {

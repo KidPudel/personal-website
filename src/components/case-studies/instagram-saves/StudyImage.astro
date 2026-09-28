@@ -9,12 +9,15 @@ interface Props {
   priority?: boolean;
   sizes?: string;
 }
+import { toLocale, translator } from '../../../i18n/locales';
+
 const { src, alt, caption, kind = 'phone', priority = false, sizes } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
 const widths = [...new Set([...(kind === 'phone' ? [280, 388] : [540, 800, 1080]).filter(width => width < src.width), src.width])];
 const full = await getImage({ src, width: src.width, format: kind === 'wireframe' ? 'png' : 'webp', quality: 90 });
 ---
 <figure style={`--source-width: ${src.width}px`} class:list={['study-image', `study-image--${kind}`]}>
-  <a href={full.src} aria-label={`Open image: ${alt}`}>
+  <a href={full.src} aria-label={`${t('Open image', 'Открыть изображение')}: ${alt}`}>
     <Image src={src} alt={alt} width={src.width} height={src.height} widths={widths}
       sizes={sizes ?? (kind === 'phone' ? '(max-width: 390px) calc(100vw - 80px), 300px' : kind === 'spread' ? '(max-width: 700px) calc(100vw - 40px), (max-width: 1200px) calc((100vw - 108px) / 2), 546px' : `(max-width: ${Math.min(src.width, 1040) + 40}px) calc(100vw - 40px), ${Math.min(src.width, 1040)}px`)}
       format={kind === 'wireframe' ? 'png' : 'webp'} quality={90}

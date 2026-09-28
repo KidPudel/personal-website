@@ -1,6 +1,15 @@
 # Progress
 
-Last updated: 2026-09-25
+Last updated: 2026-09-28
+
+## Russian version and language switcher
+
+- Every page now exists in English at its current address and in Russian under `/ru/`: homepage, blog index and posts, and all four case studies. The header's `en / ру` switcher links to the same page in the other language; each language is named in its own script.
+- English pages send a first-time visitor to the Russian page when Russian comes before English in the browser's language list. A choice made with the switcher is remembered in `localStorage` and overrides the system language. Russian pages never redirect, so shared `/ru/` links and search crawlers stay put. A language redirect still counts as a fresh arrival, so the opening plays.
+- Copy is translated in place: `t('English', 'Русский')` pairs in each component and case-study page, locale-keyed objects in `src/content/homepage/`, and Russian posts in `src/content/writing/ru/` under the English file name. Untranslated posts fall back to the English text on the Russian address.
+- The Latin fonts have no Cyrillic, so Cyrillic-only companions are loaded by `unicode-range` (English pages never fetch them): Golos Text for reading, Kurale for display, Playfair Display for the Instrument Serif headings, Caveat for handwriting. Caveat and Playfair are size-adjusted to match; «радостным» uses a horizontally stretched circle with the English circle's height.
+- Kept in English on purpose: the interactive Instagram mock (a replica of Instagram's English UI, marked `lang="en"`), the handwritten “Hello, I’m Igor.” image, product screen names in Observatory, and the internal selected-work prototype page. The Two Sticks bot demo was already Russian. The Russian copy uses informal «ты»; this is an editorial choice for Igor to confirm.
+- Verified: Astro diagnostics, the media contract, and root and `/personal-website/` builds pass; hreflang and canonical links are correct under both bases; the redirect logic was tested against eight language and saved-choice combinations; desktop and 375 px views have no horizontal overflow.
 
 ## Local blog
 

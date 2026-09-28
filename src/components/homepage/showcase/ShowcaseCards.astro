@@ -8,40 +8,45 @@ import observatoryCard from '../../../assets/showcase-cards/card1.png';
 import supergoodCard from '../../../assets/showcase-cards/card2.png';
 import instagramCard from '../../../assets/showcase-cards/card3.png';
 import twoSticksPortraitCard from '../../../assets/showcase-cards/card4.png';
-import { sitePath } from '../../../config/site';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
 import InstagramPrototype from './InstagramPrototype.astro';
 import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
 import ShowcaseInfo from './ShowcaseInfo.astro';
 import SupergoodScreenStack from './SupergoodScreenStack.astro';
 import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
 
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
 const cards = [
   {
     background: observatoryCard,
     name: 'Observatory',
-    pitch: 'Activity Monitor, but more.',
-    responsibility: 'Concept to launch: product design, identity, and storytelling.',
-    href: sitePath('/case-studies/observatory/'),
+    pitch: t('Activity Monitor, but more.', 'Мониторинг системы, но больше.'),
+    responsibility: t(
+      'Concept to launch: product design, identity, and storytelling.',
+      'От концепции до запуска: продуктовый дизайн, айдентика и сторителлинг.',
+    ),
+    href: localePath('/case-studies/observatory/', locale),
     area: 'observatory',
     kind: 'observatory',
     portrait: false,
   },
   {
     background: instagramCard,
-    name: 'Instagram Saves redesign',
-    pitch: 'The more you save, the less you can find.',
-    responsibility: 'Research, UX/UI, and prototyping.',
-    href: sitePath('/case-studies/instagram-saves-redesign/'),
+    name: t('Instagram Saves redesign', 'Редизайн сохранённого в Instagram'),
+    pitch: t('The more you save, the less you can find.', 'Чем больше сохраняешь, тем сложнее найти.'),
+    responsibility: t('Research, UX/UI, and prototyping.', 'Исследование, UX/UI и прототипирование.'),
+    href: localePath('/case-studies/instagram-saves-redesign/', locale),
     area: 'instagram',
     kind: 'instagram',
     portrait: true,
   },
   {
     background: twoSticksPortraitCard,
-    name: 'Two Sticks',
-    pitch: 'Learn Chinese, all inside one bot.',
-    responsibility: 'Product direction, UX/UI, and engineering.',
-    href: sitePath('/case-studies/two-sticks/'),
+    name: t('Two Sticks', 'Две палочки'),
+    pitch: t('Learn Chinese, all inside one bot.', 'Учить китайский, не выходя из одного бота.'),
+    responsibility: t('Product direction, UX/UI, and engineering.', 'Продуктовое видение, UX/UI и разработка.'),
+    href: localePath('/case-studies/two-sticks/', locale),
     area: 'chinese',
     kind: 'chinese',
     portrait: true,
@@ -49,9 +54,9 @@ const cards = [
   {
     background: supergoodCard,
     name: 'SuperGood',
-    pitch: 'Homemade food, without the guesswork.',
-    responsibility: 'Research, product design, and Flutter build.',
-    href: sitePath('/case-studies/supergood/'),
+    pitch: t('Homemade food, without the guesswork.', 'Домашняя еда, без гадания на кофейной гуще.'),
+    responsibility: t('Research, product design, and Flutter build.', 'Исследование, продуктовый дизайн и сборка на Flutter.'),
+    href: localePath('/case-studies/supergood/', locale),
     area: 'supergood',
     kind: 'supergood',
     portrait: false,
@@ -62,11 +67,11 @@ const cards = [
 <showcase-cards id="work" class="showcase" data-opening-sky-fade-target>
   <div class="showcase__heading">
     <h2 class="showcase__title">
-      my work
+      {t('my work', 'мои работы')}
     </h2>
 
     <p class="showcase__click-cue">
-      <span>try clicking around</span>
+      <span>{t('try clicking around', 'попробуй покликать')}</span>
       <span class="showcase__click-cue-art" aria-hidden="true">
         <Image
           src={clickCue}
@@ -110,8 +115,8 @@ const cards = [
         <a
           class="showcase__project-link"
           href={card.href}
-          aria-label={`Open the ${card.name} case study`}
-          title={`Open the ${card.name} case study`}
+          aria-label={t(`Open the ${card.name} case study`, `Открыть кейс «${card.name}»`)}
+          title={t(`Open the ${card.name} case study`, `Открыть кейс «${card.name}»`)}
         >
           <Image
             class="showcase__project-link-icon"
@@ -195,12 +200,17 @@ const cards = [
     column-gap: 0.22em;
     margin: 0;
     color: var(--color-ink);
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
     font-size: clamp(1.55rem, 2.4vw, 2.35rem);
     font-weight: 400;
     letter-spacing: -0.035em;
     line-height: 1.1;
     text-align: left;
+  }
+
+  .showcase__title:lang(ru) {
+    letter-spacing: -0.06em;
+    word-spacing: 0.14em;
   }
 
   .showcase__click-cue {

@@ -1,6 +1,9 @@
 ---
 import InstagramPrototypeApp from './instagram-prototype/InstagramPrototypeApp.jsx';
 import { sitePath } from '../../../config/site';
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
 
 const prototypeImage = (name: string) => sitePath(`/instagram-showcase/thumbnails/${name}.webp`);
 const stories = [
@@ -14,9 +17,12 @@ const stories = [
 
 <div
   class="instagram-prototype"
-  aria-label="Interactive enhanced Instagram Saves product concept"
+  aria-label={t(
+    'Interactive enhanced Instagram Saves product concept',
+    'Интерактивный концепт улучшенного сохранённого в Instagram (интерфейс на английском)',
+  )}
 >
-  <div class="instagram-prototype__device" aria-hidden="true">
+  <div class="instagram-prototype__device" aria-hidden="true" lang="en">
     <div class="instagram-prototype__topbar">
       <span class="instagram-prototype__plus">+</span>
       <span class="instagram-prototype__wordmark">Instagram⌄</span>
@@ -59,10 +65,16 @@ const stories = [
     <p class="instagram-prototype__caption"><strong>process.practice</strong> Healthy habits for creatives. A small idea worth saving.</p>
     <div class="instagram-prototype__nav"><b>●</b><span>▣</span><span>⌁</span><span>⌕</span><span>◉</span></div>
   </div>
-  <InstagramPrototypeApp client:visible={{ rootMargin: '240px' }} />
+  <div class="instagram-prototype__app" lang="en">
+    <InstagramPrototypeApp client:visible={{ rootMargin: '240px' }} />
+  </div>
 </div>
 
 <style>
+  .instagram-prototype__app {
+    display: contents;
+  }
+
   .instagram-prototype {
     position: absolute;
     z-index: 2;

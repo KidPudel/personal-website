@@ -29,6 +29,8 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
 | Homepage work showcase | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
+| Russian translation of any copy | The `t('English', 'Русский')` pair next to the English text, or the `ru` entry in `src/content/homepage/`; Russian posts in `src/content/writing/ru/` |
+| Language switcher and default-language redirect | `src/components/homepage/PortfolioHeader.astro`, `src/layouts/BaseDocument.astro` |
 
 ## Execution
 

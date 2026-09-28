@@ -1,15 +1,32 @@
 ---
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
 const steps = [
-  'Welcome',
-  'Character primer',
-  'Word search',
-  'Character details',
-  'Saved-word practice',
-  'Handwriting result',
+  t('Welcome', 'Приветствие'),
+  t('Character primer', 'Как устроены иероглифы'),
+  t('Word search', 'Поиск слова'),
+  t('Character details', 'Карточка иероглифа'),
+  t('Saved-word practice', 'Практика сохранённых слов'),
+  t('Handwriting result', 'Результат прописи'),
 ];
+// {step}, {total}, and {name} are filled in by the demo script.
+const labels = {
+  advance: t('Advance Two Sticks bot demo. Step {step} of {total}: {name}', 'Следующий шаг демо бота «Две палочки». Шаг {step} из {total}: {name}'),
+  restart: t('Restart Two Sticks bot demo. Step {step} of {total}: {name}', 'Начать демо бота «Две палочки» заново. Шаг {step} из {total}: {name}'),
+  continueHint: t('Click to continue', 'Нажми, чтобы продолжить'),
+  restartHint: t('Click to restart', 'Нажми, чтобы начать заново'),
+};
+const fill = (template: string, step: number) =>
+  template.replace('{step}', String(step + 1)).replace('{total}', String(steps.length)).replace('{name}', steps[step]);
 ---
 
-<two-sticks-demo class="two-sticks-demo" data-step="0" data-steps={JSON.stringify(steps)}>
+<two-sticks-demo
+  class="two-sticks-demo"
+  data-step="0"
+  data-steps={JSON.stringify(steps)}
+  data-labels={JSON.stringify(labels)}
+>
   <div class="two-sticks-demo__phone" aria-live="polite">
     <div class="two-sticks-demo__status" aria-hidden="true">
       <span>08:14</span>
@@ -103,7 +120,7 @@ const steps = [
       <section class="two-sticks-demo__step two-sticks-demo__step--writing" data-demo-step="5" aria-hidden="true">
         <span class="two-sticks-demo__webapp-bar">Отмена <strong>Две палочки</strong> •••</span>
         <span class="two-sticks-demo__word">идти</span>
-        <span class="two-sticks-demo__canvas" aria-label="Handwritten Chinese character qu">去</span>
+        <span class="two-sticks-demo__canvas" aria-label={t('Handwritten Chinese character qu', 'Написанный от руки китайский иероглиф qù')}>去</span>
         <span class="two-sticks-demo__webapp-actions">
           <span>Очистить</span><span>Проверить</span>
         </span>
@@ -113,7 +130,7 @@ const steps = [
     </div>
 
     <span class="two-sticks-demo__hint" aria-hidden="true">
-      <span data-demo-progress>Click to continue · 1/{steps.length}</span>
+      <span data-demo-progress>{labels.continueHint} · 1/{steps.length}</span>
       <i></i>
     </span>
   </div>
@@ -123,9 +140,9 @@ const steps = [
     type="button"
     data-foley-hover="on"
     data-foley-click="switch"
-    aria-label={`Advance Two Sticks bot demo. Step 1 of ${steps.length}: ${steps[0]}`}
+    aria-label={fill(labels.advance, 0)}
   >
-    <span class="visually-hidden">Advance the Two Sticks bot demo</span>
+    <span class="visually-hidden">{t('Advance the Two Sticks bot demo', 'Следующий шаг демо бота «Две палочки»')}</span>
   </button>
 </two-sticks-demo>
 
@@ -136,11 +153,18 @@ const steps = [
     private abort?: AbortController;
     private index = 0;
     private steps: string[] = [];
+    private labels = {
+      advance: 'Advance Two Sticks bot demo. Step {step} of {total}: {name}',
+      restart: 'Restart Two Sticks bot demo. Step {step} of {total}: {name}',
+      continueHint: 'Click to continue',
+      restartHint: 'Click to restart',
+    };
 
     connectedCallback() {
       this.abort?.abort();
       this.abort = new AbortController();
       this.steps = JSON.parse(this.dataset.steps ?? '[]');
+      this.labels = { ...this.labels, ...JSON.parse(this.dataset.labels ?? '{}') };
       const trigger = this.querySelector<HTMLButtonElement>('.two-sticks-demo__trigger');
       trigger?.addEventListener('click', this.advance, { signal: this.abort.signal });
       trigger?.addEventListener('pointerleave', this.playHoverOff, {
@@ -174,14 +198,18 @@ const steps = [
       });
 
       const trigger = this.querySelector<HTMLButtonElement>('.two-sticks-demo__trigger');
+      const lastStep = this.index === this.steps.length - 1;
       trigger?.setAttribute(
         'aria-label',
-        `${this.index === this.steps.length - 1 ? 'Restart' : 'Advance'} Two Sticks bot demo. Step ${this.index + 1} of ${this.steps.length}: ${this.steps[this.index]}`,
+        (lastStep ? this.labels.restart : this.labels.advance)
+          .replace('{step}', String(this.index + 1))
+          .replace('{total}', String(this.steps.length))
+          .replace('{name}', this.steps[this.index] ?? ''),
       );
 
       const progress = this.querySelector<HTMLElement>('[data-demo-progress]');
       if (progress) {
-        progress.textContent = `${this.index === this.steps.length - 1 ? 'Click to restart' : 'Click to continue'} · ${this.index + 1}/${this.steps.length}`;
+        progress.textContent = `${lastStep ? this.labels.restartHint : this.labels.continueHint} · ${this.index + 1}/${this.steps.length}`;
       }
     }
   }

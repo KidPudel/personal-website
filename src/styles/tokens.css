@@ -78,6 +78,58 @@
   font-display: swap;
 }
 
+/* Cyrillic companions for the Russian version. The Latin faces above have no
+   Cyrillic glyphs; unicode-range keeps these off English pages entirely. */
+@font-face {
+  font-family: 'Golos Text';
+  src: url('../assets/fonts/golos-text-cyrillic-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Golos Text';
+  src: url('../assets/fonts/golos-text-cyrillic-700-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Kurale';
+  src: url('../assets/fonts/kurale-cyrillic-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+/* Stands in for Instrument Serif, which has no Cyrillic. Scaled to match its
+   condensed proportions; headings also tighten tracking under :lang(ru). */
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('../assets/fonts/playfair-display-cyrillic-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  size-adjust: 86%;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Caveat';
+  src: url('../assets/fonts/caveat-cyrillic-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  /* Caveat draws far smaller than Bright Chalk at the same font size. */
+  size-adjust: 150%;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
 @layer tokens {
   :root {
     --color-field: #F8F8F8;
@@ -87,11 +139,11 @@
     --color-accent: #e35673;
     --color-focus: #7db7ff;
 
-    --font-reading: 'Instrument Sans', Arial, sans-serif;
-    --font-display: 'Averia Serif Libre', Georgia, serif;
-    --font-editorial: 'Crimson Text', Georgia, serif;
-    --font-special: 'Bright Chalk', 'Delius', Arial, sans-serif;
-    --font-distinctive: 'Cartoon Relief', 'Delius', Arial, sans-serif;
+    --font-reading: 'Instrument Sans', 'Golos Text', Arial, sans-serif;
+    --font-display: 'Averia Serif Libre', 'Kurale', Georgia, serif;
+    --font-editorial: 'Crimson Text', 'Kurale', Georgia, serif;
+    --font-special: 'Bright Chalk', 'Delius', 'Caveat', Arial, sans-serif;
+    --font-distinctive: 'Cartoon Relief', 'Delius', 'Caveat', Arial, sans-serif;
 
     --reading-width: 58ch;
     --page-gutter: clamp(1.25rem, 14.4vw, 15rem);

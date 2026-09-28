@@ -1,10 +1,16 @@
+---
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
+---
+
 <weighted-switch class="weighted-switch">
   <button
     class="weighted-switch__control"
     type="button"
     role="switch"
     aria-checked="true"
-    aria-label="Weighted switch experiment"
+    aria-label={t('Weighted switch experiment', 'Эксперимент с «тяжёлым» переключателем')}
   >
     <span class="weighted-switch__fill" aria-hidden="true"></span>
     <span class="weighted-switch__thumb" aria-hidden="true"></span>

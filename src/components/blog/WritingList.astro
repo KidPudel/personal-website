@@ -1,7 +1,6 @@
 ---
-import { getCollection } from 'astro:content';
-
-import { sitePath } from '../../config/site';
+import { localePath, toLocale, translator } from '../../i18n/locales';
+import { getWriting } from '../../lib/writing';
 
 interface Props {
   class?: string;
@@ -9,23 +8,32 @@ interface Props {
 
 const { class: className } = Astro.props;
 
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+
 // Newest first; undated posts (older, published elsewhere) go last.
-const posts = (await getCollection('writing')).sort(
-  (first, second) => (second.data.publishedAt?.getTime() ?? 0) - (first.data.publishedAt?.getTime() ?? 0),
+const posts = (await getWriting(locale)).sort(
+  (first, second) =>
+    (second.entry.data.publishedAt?.getTime() ?? 0) - (first.entry.data.publishedAt?.getTime() ?? 0),
 );
 
-const dateFormat = new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <ul class:list={['writing-list', className]}>
-  {posts.map(({ id, data }) => (
-    <li class="writing-list__item">
+  {posts.map(({ slug, entry: { data }, contentLocale }) => (
+    <li class="writing-list__item" lang={contentLocale === locale ? undefined : contentLocale}>
       <a
         class="writing-list__link"
-        href={data.externalUrl ?? sitePath(`/blog/${id}/`)}
+        href={data.externalUrl ?? localePath(`/blog/${slug}/`, locale)}
+        hreflang={data.externalLanguage}
       >
         <span class="writing-list__title">{data.title}</span>
-        {data.externalLabel && <span class="writing-list__external"> on {data.externalLabel} ↗</span>}
+        {data.externalLabel && (
+          <span class="writing-list__external">
+            {' '}{t('on', 'на')} {data.externalLabel}{data.externalLanguage && data.externalLanguage !== locale && t(', in Russian', ', на английском')} ↗
+          </span>
+        )}
       </a>
       <p class="writing-list__summary">{data.summary}</p>
       {data.publishedAt && (

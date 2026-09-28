@@ -10,7 +10,11 @@ interface Props {
   poster: ImageMetadata;
 
 }
+import { toLocale, translator } from '../../../i18n/locales';
+
 const { id, title, description, small, large, poster } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const labels = { play: t('Play', 'Играть'), pause: t('Pause', 'Пауза') };
 const cover = await getImage({ src: poster, width: 720, format: 'webp', quality: 85 });
 ---
 <study-film>
@@ -19,10 +23,10 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
     aria-label={title} aria-describedby={`${id}-caption`}>
     <source src={small} type="video/mp4" media="(max-resolution: 1.5dppx)" />
     <source src={large} type="video/mp4" />
-    <a href={large}>Watch {title}</a>
+    <a href={large}>{t('Watch', 'Смотреть:')} {title}</a>
   </video>
-  <button type="button" hidden aria-label={`Play ${title}`}>Play</button>
-  <noscript><a href={large}>Watch {title}</a></noscript>
+  <button type="button" hidden aria-label={`${labels.play}: ${title}`} data-labels={JSON.stringify(labels)}>{labels.play}</button>
+  <noscript><a href={large}>{t('Watch', 'Смотреть:')} {title}</a></noscript>
   <figcaption id={`${id}-caption`}>
     <span>{description}</span>
   </figcaption>
@@ -43,9 +47,11 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
       let explicitPlay = false;
       let failed = false;
       const abort = new AbortController();
+      const labels = { play: 'Play', pause: 'Pause', ...JSON.parse(button.dataset.labels ?? '{}') };
       const syncLabel = () => {
-        button.textContent = video.paused ? 'Play' : 'Pause';
-        button.setAttribute('aria-label', `${video.paused ? 'Play' : 'Pause'} ${video.getAttribute('aria-label')}`);
+        const label = video.paused ? labels.play : labels.pause;
+        button.textContent = label;
+        button.setAttribute('aria-label', `${label}: ${video.getAttribute('aria-label')}`);
       };
       const sync = () => {
         if (visible && !document.hidden && !userPaused && !failed && (explicitPlay || (!motion.matches && !conserve))) {

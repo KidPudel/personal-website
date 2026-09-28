@@ -28,6 +28,8 @@ Do not introduce a client application framework, global application state, a cli
 | `/blog/<slug>/` | Local blog post |
 | Existing legacy paths | Static redirects to the closest current document or anchor |
 
+Every translated route also exists under `/ru/` (for example `/ru/case-studies/observatory/`). Russian route files only render the English page component; Astro's i18n routing sets `Astro.currentLocale`, and components choose copy from it through `src/i18n/locales.ts`. The 404 page is shared and bilingual.
+
 Preserve base-path behavior for both `/` and `/personal-website/` builds.
 
 ## Document boundaries

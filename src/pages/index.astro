@@ -1,12 +1,18 @@
 ---
 import Homepage from '../components/homepage/Homepage.astro';
 import homepageShareImage from '../assets/showcase-cards/card2.png';
+import { toLocale, translator } from '../i18n/locales';
 import BaseDocument from '../layouts/BaseDocument.astro';
+
+const t = translator(toLocale(Astro.currentLocale));
 ---
 
 <BaseDocument
-  title="Igor Kupchinenko · Product Designer"
-  description="Product designer Igor Kupchinenko creates interactive products and the systems that make them real."
+  title={t('Igor Kupchinenko · Product Designer', 'Игорь Купчиненко · Продуктовый дизайнер')}
+  description={t(
+    'Product designer Igor Kupchinenko creates interactive products and the systems that make them real.',
+    'Продуктовый дизайнер Игорь Купчиненко создаёт интерактивные продукты и системы, которые делают их реальными.',
+  )}
   pageClass="composition-document homepage-document"
   themeColor="#F8F8F8"
   ogImage={homepageShareImage.src}

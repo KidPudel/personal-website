@@ -1,0 +1,50 @@
+---
+import { render } from 'astro:content';
+
+import { localePath, toLocale, translator } from '../../i18n/locales';
+import BaseDocument from '../../layouts/BaseDocument.astro';
+import type { LocalizedPost } from '../../lib/writing';
+import '../../styles/case-study.css';
+
+interface Props {
+  post: LocalizedPost;
+}
+
+const { post } = Astro.props;
+const { entry, contentLocale } = post;
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const { Content } = await render(entry);
+const dateFormat = new Intl.DateTimeFormat(contentLocale, {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<BaseDocument
+  title={`${entry.data.title} | ${t('Igor Kupchinenko', 'Игорь Купчиненко')}`}
+  description={entry.data.summary}
+  pageClass="editorial-case-study blog-document"
+>
+  <main id="main-content">
+    <article class="blog-post" lang={contentLocale === locale ? undefined : contentLocale}>
+      <header class="blog-post__header">
+        <h1>{entry.data.title}</h1>
+        {entry.data.publishedAt && (
+          <time datetime={entry.data.publishedAt.toISOString().slice(0, 10)}>
+            {dateFormat.format(entry.data.publishedAt)}
+          </time>
+        )}
+      </header>
+      <Content />
+    </article>
+  </main>
+  <footer class="case-footer">
+    <nav aria-label={t('Blog links', 'Ссылки блога')}>
+      <a href={localePath('/blog/', locale)}>{t('All posts', 'Все записи')}</a>
+      <a href={localePath('/', locale)}>{t('Home', 'Главная')}</a>
+    </nav>
+  </footer>
+</BaseDocument>

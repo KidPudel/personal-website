@@ -6,13 +6,19 @@ import mountains from '../../../assets/games/santa/mountains.png';
 import sky from '../../../assets/games/santa/sky-texture.png';
 import sleigh from '../../../assets/games/santa/sleigh-with-elf.png';
 import snowflake from '../../../assets/games/santa/snowflake.png';
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
 ---
 
 <santa-flight class="santa-flight" data-visible="true">
   <button
     class="santa-flight__scene"
     type="button"
-    aria-label="Fly Santa's sleigh. Hold to rise and release to fall."
+    aria-label={t(
+      "Fly Santa's sleigh. Hold to rise and release to fall.",
+      'Управляй санями Санты. Удерживай, чтобы подняться, и отпусти, чтобы снижаться.',
+    )}
   >
     <Image
       class="santa-flight__layer santa-flight__sky"

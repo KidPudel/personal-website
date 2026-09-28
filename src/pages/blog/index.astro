@@ -1,16 +1,22 @@
 ---
 import WritingList from '../../components/blog/WritingList.astro';
+import { toLocale, translator } from '../../i18n/locales';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 import '../../styles/case-study.css';
+
+const t = translator(toLocale(Astro.currentLocale));
 ---
 
 <BaseDocument
-  title="Blog | Igor Kupchinenko"
-  description="Writing by Igor Kupchinenko about product ideas and the things that shape them."
+  title={t('Blog | Igor Kupchinenko', 'Блог | Игорь Купчиненко')}
+  description={t(
+    'Writing by Igor Kupchinenko about product ideas and the things that shape them.',
+    'Тексты Игоря Купчиненко о продуктовых идеях и о том, что их формирует.',
+  )}
   pageClass="editorial-case-study blog-document"
 >
   <main id="main-content" class="blog-index">
-    <h1>Blog</h1>
+    <h1>{t('Blog', 'Блог')}</h1>
     <WritingList class="blog-index__list" />
   </main>
 </BaseDocument>

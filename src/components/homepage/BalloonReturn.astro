@@ -7,6 +7,11 @@ import frame4 from '../../assets/art/Doodles-baloon-fly/baloon_frame4.png';
 import frame5 from '../../assets/art/Doodles-baloon-fly/baloon_frame5.png';
 import frame6 from '../../assets/art/Doodles-baloon-fly/baloon_frame6.png';
 import frame7 from '../../assets/art/Doodles-baloon-fly/baloon_frame7.png';
+import { toLocale, translator } from '../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
+const returnLabel = t('Return to the introduction', 'Вернуться к началу');
+const returningLabel = t('Returning to the introduction', 'Возвращаемся к началу');
 
 const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
 const optimizedFrames = await Promise.all(
@@ -15,7 +20,13 @@ const optimizedFrames = await Promise.all(
 ---
 
 <balloon-return class="balloon-return">
-  <a class="balloon-return__trigger" href="#intro" aria-label="Return to the introduction">
+  <a
+    class="balloon-return__trigger"
+    href="#intro"
+    aria-label={returnLabel}
+    data-return-label={returnLabel}
+    data-returning-label={returningLabel}
+  >
     <span class="balloon-return__art" aria-hidden="true">
       {optimizedFrames.map((frame, index) => (
         <img
@@ -248,7 +259,7 @@ const optimizedFrames = await Promise.all(
         this.setAttribute('data-running', '');
         this.setAttribute('data-visible', '');
         trigger.setAttribute('aria-disabled', 'true');
-        trigger.setAttribute('aria-label', 'Returning to the introduction');
+        trigger.setAttribute('aria-label', trigger.dataset.returningLabel ?? '');
 
         const interrupt = () => stopSequence();
         window.addEventListener('wheel', interrupt, { passive: true, signal });
@@ -275,7 +286,7 @@ const optimizedFrames = await Promise.all(
         } finally {
           this.removeAttribute('data-running');
           trigger.removeAttribute('aria-disabled');
-          trigger.setAttribute('aria-label', 'Return to the introduction');
+          trigger.setAttribute('aria-label', trigger.dataset.returnLabel ?? '');
           if (!signal.aborted) this.sequenceAbort?.abort();
           syncVisibility(true);
           this.removeAttribute('data-resetting');

@@ -37,36 +37,60 @@ export interface ValuePassage {
 
 export const valuesPremise = 'Three things important to me.';
 
+const personalNoteItems = [
+  { id: 'boyfriend', action: 'portrait' },
+  { id: 'sketcher', action: 'doodles' },
+  { id: 'blog', action: 'blog' },
+] as const;
+
 export const personalNote = {
-  heading: 'A few more things about me',
-  columns: [
-    [
-      'From a young age, I’ve seen much of life through a lens shaped by the games, films, and music that stayed with me. They showed me how something made by another person can come alive, grow beyond itself, and become part of your own life.',
-      'I chose to pursue software engineering, but over the years something kept feeling off. The moments that felt right were the ones when I was shaping experiences: making games, experimenting with interactions, and creating things people could feel something through.',
+  en: {
+    heading: 'A few more things about me',
+    columns: [
+      [
+        'From a young age, I’ve seen much of life through a lens shaped by the games, films, and music that stayed with me. They showed me how something made by another person can come alive, grow beyond itself, and become part of your own life.',
+        'I chose to pursue software engineering, but over the years something kept feeling off. The moments that felt right were the ones when I was shaping experiences: making games, experimenting with interactions, and creating things people could feel something through.',
+      ],
+      [
+        'Eventually, I had enough history to see the pattern. I took time away to listen to myself and let myself pursue what I actually care about. Looking back, none of those years feel wasted. Software engineering taught me to treat code as a creative material and carry ideas into reality. Game design taught me how interaction, motivation, and psychology shape what people do. Both now make me a better product designer.',
+        'I have a strong instinct for atmosphere and trust my inner feeling. Product design gives that instinct direction. It begins with the people I’m designing for and what they really need. The product is how I reach them, so I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
+      ],
     ],
-    [
-      'Eventually, I had enough history to see the pattern. I took time away to listen to myself and let myself pursue what I actually care about. Looking back, none of those years feel wasted. Software engineering taught me to treat code as a creative material and carry ideas into reality. Game design taught me how interaction, motivation, and psychology shape what people do. Both now make me a better product designer.',
-      'I have a strong instinct for atmosphere and trust my inner feeling. Product design gives that instinct direction. It begins with the people I’m designing for and what they really need. The product is how I reach them, so I think about visuals, interaction, movement, sound, and small details as parts of one whole experience. I want that experience to make life a little more joyful and, at its best, leave something behind in how a person sees the world.',
+    items: personalNoteItems.map((item) => ({
+      ...item,
+      label: {
+        boyfriend: 'Proud boyfriend to the best girlfriend in the world',
+        sketcher: 'Editorial and illustrative sketcher',
+        blog: 'I have a blog',
+      }[item.id],
+    })),
+    portraitAlt: 'Igor and his girlfriend outdoors',
+    doodlesLabel: 'All of Igor’s doodles',
+  },
+  ru: {
+    heading: 'Ещё немного обо мне',
+    columns: [
+      [
+        'С детства я смотрю на жизнь во многом через призму игр, фильмов и музыки, которые остались со мной. Они показали мне, как вещь, сделанная другим человеком, может ожить, вырасти за свои пределы и стать частью твоей собственной жизни.',
+        'Я выбрал путь разработчика, но с годами что-то не давало покоя. Правильными казались моменты, когда я создавал опыт: делал игры, экспериментировал со взаимодействием и создавал вещи, через которые люди могли бы что-то почувствовать.',
+      ],
+      [
+        'Со временем накопилось достаточно, чтобы увидеть закономерность. Я взял паузу, чтобы прислушаться к себе и позволить себе заниматься тем, что мне действительно важно. Оглядываясь назад, я не считаю те годы потерянными. Разработка научила меня относиться к коду как к творческому материалу и воплощать идеи в жизнь. Геймдизайн научил понимать, как взаимодействие, мотивация и психология влияют на поступки людей. Сегодня и то и другое делает меня лучшим продуктовым дизайнером.',
+        'У меня сильное чутьё на атмосферу, и я доверяю внутреннему ощущению. Продуктовый дизайн даёт этому чутью направление. Он начинается с людей, для которых я проектирую, и с того, что им действительно нужно. Продукт становится способом до них дотянуться, поэтому визуал, взаимодействие, движение, звук и мелкие детали я воспринимаю как части одного цельного опыта. Я хочу, чтобы этот опыт делал жизнь чуть радостнее, а в лучшем случае оставлял след в том, как человек видит мир.',
+      ],
     ],
-  ],
-  items: [
-    {
-      id: 'boyfriend',
-      label: 'Proud boyfriend to the best girlfriend in the world',
-      action: 'portrait',
-    },
-    {
-      id: 'sketcher',
-      label: 'Editorial and illustrative sketcher',
-      action: 'doodles',
-    },
-    {
-      id: 'blog',
-      label: 'I have a blog',
-      action: 'blog',
-    },
-  ],
-} as const;
+    items: personalNoteItems.map((item) => ({
+      ...item,
+      label: {
+        boyfriend: 'Гордый парень лучшей девушки на свете',
+        sketcher: 'Рисую редакционные и иллюстративные скетчи',
+        blog: 'У меня есть блог',
+      }[item.id],
+    })),
+    portraitAlt: 'Игорь и его девушка на улице',
+    doodlesLabel: 'Все рисунки Игоря',
+  },
+};
 
 export const values: readonly ValuePassage[] = [
   {

@@ -1,10 +1,10 @@
 ---
-import BlogPost from '../../components/blog/BlogPost.astro';
-import { getWriting } from '../../lib/writing';
+import BlogPost from '../../../components/blog/BlogPost.astro';
+import { getWriting } from '../../../lib/writing';
 
 export async function getStaticPaths() {
-  // Posts published elsewhere only appear in the list and link out.
-  const posts = await getWriting('en');
+  // Every English post gets a Russian address; untranslated posts show the original.
+  const posts = await getWriting('ru');
   return posts
     .filter((post) => !post.entry.data.externalUrl)
     .map((post) => ({ params: { slug: post.slug }, props: { post } }));

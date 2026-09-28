@@ -5,20 +5,25 @@ import historyScreen from '../../../assets/case_study_images/supergood/history.p
 import mapScreen from '../../../assets/case_study_images/supergood/map.png';
 import menuScreen from '../../../assets/case_study_images/supergood/menu-light.png';
 import trackingScreen from '../../../assets/case_study_images/supergood/order-tracking.png';
+import { toLocale, translator } from '../../../i18n/locales';
 import MobileScreenStack from './MobileScreenStack.astro';
 
+const t = translator(toLocale(Astro.currentLocale));
 const screens = [
-  { src: historyScreen, label: 'History', trim: { top: 0, bottom: 28, left: 0 } },
-  { src: mapScreen, label: 'Map', trim: { top: 0, bottom: 0, left: 20 } },
-  { src: trackingScreen, label: 'Tracking', trim: { top: 0, bottom: 0, left: 25 } },
-  { src: checkoutScreen, label: 'Checkout', trim: { top: 0, bottom: 1, left: 22 } },
-  { src: basketScreen, label: 'Basket', trim: { top: 11, bottom: 10, left: 44 } },
-  { src: menuScreen, label: 'Menu', trim: { top: 9, bottom: 18, left: 46 } },
+  { src: historyScreen, label: t('History', 'История'), trim: { top: 0, bottom: 28, left: 0 } },
+  { src: mapScreen, label: t('Map', 'Карта'), trim: { top: 0, bottom: 0, left: 20 } },
+  { src: trackingScreen, label: t('Tracking', 'Отслеживание'), trim: { top: 0, bottom: 0, left: 25 } },
+  { src: checkoutScreen, label: t('Checkout', 'Оформление'), trim: { top: 0, bottom: 1, left: 22 } },
+  { src: basketScreen, label: t('Basket', 'Корзина'), trim: { top: 11, bottom: 10, left: 44 } },
+  { src: menuScreen, label: t('Menu', 'Меню'), trim: { top: 9, bottom: 18, left: 46 } },
 ];
 ---
 
 <MobileScreenStack
   screens={screens}
-  ariaLabel="Cycle SuperGood screens: Menu, Basket, Checkout, Tracking, Map, and History"
+  ariaLabel={t(
+    'Cycle SuperGood screens: Menu, Basket, Checkout, Tracking, Map, and History',
+    'Листать экраны SuperGood: меню, корзина, оформление, отслеживание, карта и история',
+  )}
   targetVisibleRatio={0.975}
 />

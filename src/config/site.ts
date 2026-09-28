@@ -15,11 +15,14 @@ export const sitePath = (path: string) => {
   return relativePath ? `${base}${relativePath}` : base;
 };
 
-export const connectLinks = [
-  { label: 'Email', href: publicLinks.email },
-  { label: 'LinkedIn', href: publicLinks.linkedin },
-  { label: 'X', href: publicLinks.x },
-  { label: 'itch.io', href: publicLinks.itch },
-  { label: 'GitHub', href: publicLinks.github },
-  { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume.pdf') },
-] as const;
+export const connectLinks = (locale: 'en' | 'ru') =>
+  [
+    { label: locale === 'ru' ? 'Почта' : 'Email', href: publicLinks.email },
+    { label: 'LinkedIn', href: publicLinks.linkedin },
+    { label: 'X', href: publicLinks.x },
+    { label: 'itch.io', href: publicLinks.itch },
+    { label: 'GitHub', href: publicLinks.github },
+    locale === 'ru'
+      ? { label: 'Резюме PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume-ru.pdf') }
+      : { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume.pdf') },
+  ] as const;

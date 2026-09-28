@@ -2,9 +2,12 @@
 import { Image } from 'astro:assets';
 
 import joyfulCircle from '../../../assets/art/elements/circled.png';
-import { identity } from '../../../content/homepage/identity';
+import { identity as identityCopy } from '../../../content/homepage/identity';
+import { toLocale } from '../../../i18n/locales';
 import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
+
+const identity = identityCopy[toLocale(Astro.currentLocale)];
 ---
 
 <identity-introduction class="identity-shell">
@@ -151,6 +154,14 @@ import PlayfulWord from './PlayfulWord.astro';
     opacity: 1;
     pointer-events: none;
     transform: translateY(-50%);
+  }
+
+  /* The Russian word is much longer. Keep the English circle's height and
+     overhang, and let the loop stretch horizontally instead of growing taller. */
+  .identity__joyful-link:lang(ru) .identity__joyful-circle {
+    left: -0.83em;
+    width: calc(100% + 2.1em);
+    height: 2.26em;
   }
 
   .identity__joyful-link:focus-visible {

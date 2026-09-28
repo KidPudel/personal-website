@@ -3,6 +3,7 @@ import skyPosterInline from '../../../assets/art/dithered-sky-poster.webp?inline
 import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
 import { identity } from '../../../content/homepage/identity';
+import { toLocale } from '../../../i18n/locales';
 import HelloAnimation from '../identity/HelloAnimation.astro';
 ---
 
@@ -48,7 +49,7 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
     </div>
 
     <div class="opening-sequence__greeting" aria-hidden="true" data-opening-greeting>
-      <HelloAnimation text={identity.hello} opening />
+      <HelloAnimation text={identity[toLocale(Astro.currentLocale)].hello} opening />
     </div>
   </div>
 </opening-sequence>

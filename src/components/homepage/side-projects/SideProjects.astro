@@ -13,7 +13,11 @@ import ticTacToeImage from '../../../assets/games/tic-tac-toe/gameplay.png';
 import FarmField from './FarmField.astro';
 import SantaFlight from './SantaFlight.astro';
 import WeightedSwitchExperiment from './WeightedSwitchExperiment.astro';
+import { toLocale, translator } from '../../../i18n/locales';
 
+const t = translator(toLocale(Astro.currentLocale));
+const videoFallback = t('Your browser does not support embedded video.', 'Браузер не поддерживает встроенное видео.');
+const openLabel = (name: string) => t(`Open ${name}`, `Открыть «${name}»`);
 const cards = {
   santa: {
     name: 'Secret Santa Foundation',
@@ -28,19 +32,19 @@ const cards = {
     href: 'https://github.com/KidPudel/The-Last-Of-Buns',
   },
   snake: {
-    name: 'Snake with Go and raylib',
+    name: t('Snake with Go and raylib', 'Змейка на Go и raylib'),
     href: 'https://x.com/kidpudel/status/1781656147990020293?s=20',
   },
   ticTacToe: {
-    name: 'Tic-Tac-Toe with C++ and OpenGL',
+    name: t('Tic-Tac-Toe with C++ and OpenGL', 'Крестики-нолики на C++ и OpenGL'),
     href: 'https://github.com/KidPudel/TicTacToe',
   },
   switch: {
-    name: 'X experiment',
+    name: t('X experiment', 'Эксперимент из X'),
     href: 'https://x.com/kidpudel/status/2089804412319358998',
   },
   farm: {
-    name: 'Farming Game',
+    name: t('Farming Game', 'Фермерская игра'),
     href: 'https://kidpudel.itch.io/farming-game',
   },
 } as const;
@@ -48,10 +52,9 @@ const cards = {
 
 <section id="side-projects" class="other-showcase" aria-labelledby="other-showcase-title">
   <h2 id="other-showcase-title" class="other-showcase__title">
-    <span>more</span>
-    <span>things</span>
-    <span>i’ve</span>
-    <span>made</span>
+    {t('more things i’ve made', 'что ещё я сделал').split(' ').map((word, index) => (
+      <>{index > 0 && ' '}<span>{word}</span></>
+    ))}
   </h2>
 
   <div class="other-showcase__grid">
@@ -60,8 +63,8 @@ const cards = {
       <a
         class="other-showcase__project-link"
         href={cards.santa.href}
-        aria-label={`Open ${cards.santa.name}`}
-        title={`Open ${cards.santa.name}`}
+        aria-label={openLabel(cards.santa.name)}
+        title={openLabel(cards.santa.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -88,14 +91,14 @@ const cards = {
           muted
           loop
         >
-          Your browser does not support embedded video.
+          {videoFallback}
         </video>
       </div>
       <a
         class="other-showcase__project-link"
         href={cards.discourses.href}
-        aria-label={`Open ${cards.discourses.name}`}
-        title={`Open ${cards.discourses.name}`}
+        aria-label={openLabel(cards.discourses.name)}
+        title={openLabel(cards.discourses.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -114,7 +117,7 @@ const cards = {
       <div class="other-showcase__tic-tac-toe">
         <Image
           src={ticTacToeImage}
-          alt="Tic-Tac-Toe game board"
+          alt={t('Tic-Tac-Toe game board', 'Игровое поле крестиков-ноликов')}
           widths={[360, 560, 687]}
           sizes="(max-width: 44rem) 72vw, 23vw"
           loading="lazy"
@@ -126,8 +129,8 @@ const cards = {
       <a
         class="other-showcase__project-link"
         href={cards.ticTacToe.href}
-        aria-label={`Open ${cards.ticTacToe.name}`}
-        title={`Open ${cards.ticTacToe.name}`}
+        aria-label={openLabel(cards.ticTacToe.name)}
+        title={openLabel(cards.ticTacToe.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -154,14 +157,14 @@ const cards = {
           muted
           loop
         >
-          Your browser does not support embedded video.
+          {videoFallback}
         </video>
       </div>
       <a
         class="other-showcase__project-link"
         href={cards.buns.href}
-        aria-label={`Open ${cards.buns.name}`}
-        title={`Open ${cards.buns.name}`}
+        aria-label={openLabel(cards.buns.name)}
+        title={openLabel(cards.buns.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -188,14 +191,14 @@ const cards = {
           muted
           loop
         >
-          Your browser does not support embedded video.
+          {videoFallback}
         </video>
       </div>
       <a
         class="other-showcase__project-link"
         href={cards.snake.href}
-        aria-label={`Open ${cards.snake.name}`}
-        title={`Open ${cards.snake.name}`}
+        aria-label={openLabel(cards.snake.name)}
+        title={openLabel(cards.snake.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -215,8 +218,8 @@ const cards = {
       <a
         class="other-showcase__project-link"
         href={cards.switch.href}
-        aria-label={`Open ${cards.switch.name}`}
-        title={`Open ${cards.switch.name}`}
+        aria-label={openLabel(cards.switch.name)}
+        title={openLabel(cards.switch.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -236,8 +239,8 @@ const cards = {
       <a
         class="other-showcase__project-link"
         href={cards.farm.href}
-        aria-label={`Open ${cards.farm.name}`}
-        title={`Open ${cards.farm.name}`}
+        aria-label={openLabel(cards.farm.name)}
+        title={openLabel(cards.farm.name)}
       >
         <Image
           class="other-showcase__project-link-icon"
@@ -315,12 +318,17 @@ const cards = {
     margin-top: 0;
     margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
     color: var(--color-ink);
-    font-family: 'Instrument Serif', Georgia, serif;
+    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
     font-size: clamp(1.55rem, 2.4vw, 2.35rem);
     font-weight: 400;
     letter-spacing: -0.035em;
     line-height: 1.1;
     text-align: left;
+  }
+
+  .other-showcase__title:lang(ru) {
+    letter-spacing: -0.06em;
+    word-spacing: 0.14em;
   }
 
   .other-showcase__grid {

@@ -27,7 +27,7 @@ import wireframeNowList from '../../../assets/case_study_images/validation_scree
 import wireframeSavedResults from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 11.png';
 import wireframeTestComplex from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 8.png';
 import wireframeTestSetup from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 10.png';
-import { sitePath } from '../../../config/site';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 import '../../../styles/case-study.css';
 
@@ -35,6 +35,8 @@ const repositoryURL = 'https://github.com/KidPudel/Observatory';
 const releaseURL = 'https://github.com/KidPudel/Observatory/releases/latest';
 const launchFilmURL = 'https://www.youtube.com/watch?v=6LWORcxVZmY&t=5s';
 const launchFilmEmbedURL = 'https://www.youtube-nocookie.com/embed/6LWORcxVZmY?start=5&autoplay=1';
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
 const heroTitle = 'Observatory';
 const optimizedTitleTexture = await getImage({
   src: observatoryTitleTexture,
@@ -44,16 +46,35 @@ const optimizedTitleTexture = await getImage({
 });
 
 const sketches = [
-  { src: sketchGrouping, alt: 'Early sketch comparing loose processes with processes grouped by application.', caption: 'The first shift: from a loose field of processes to application groups.' },
-  { src: sketchLevels, alt: 'Early sketch comparing application-level and process-level resource tables.', caption: 'Application totals first, with process detail one level below.' },
-  { src: sketchRecording, alt: 'Early sketch of two applications being observed over the same ten-second period.', caption: 'A shared recording window makes the comparison legible.' },
-  { src: sketchTestFlow, alt: 'Early sketch of selecting applications, recording each one, and reviewing the results.', caption: 'The first outline of a controlled test and its result.' },
+  {
+    src: sketchGrouping,
+    alt: t('Early sketch comparing loose processes with processes grouped by application.', 'Ранний скетч: разрозненные процессы против процессов, сгруппированных по приложениям.'),
+    caption: t('The first shift: from a loose field of processes to application groups.', 'Первый сдвиг: от россыпи процессов к группам по приложениям.'),
+  },
+  {
+    src: sketchLevels,
+    alt: t('Early sketch comparing application-level and process-level resource tables.', 'Ранний скетч: таблицы ресурсов на уровне приложения и на уровне процесса.'),
+    caption: t('Application totals first, with process detail one level below.', 'Сначала итог по приложению, детали процессов уровнем ниже.'),
+  },
+  {
+    src: sketchRecording,
+    alt: t('Early sketch of two applications being observed over the same ten-second period.', 'Ранний скетч: два приложения под наблюдением в течение одних и тех же десяти секунд.'),
+    caption: t('A shared recording window makes the comparison legible.', 'Общее окно записи делает сравнение понятным.'),
+  },
+  {
+    src: sketchTestFlow,
+    alt: t('Early sketch of selecting applications, recording each one, and reviewing the results.', 'Ранний скетч: выбор приложений, запись каждого и просмотр результатов.'),
+    caption: t('The first outline of a controlled test and its result.', 'Первый набросок контролируемого теста и его результата.'),
+  },
 ];
 ---
 
 <BaseDocument
-  title="Observatory case study | Igor Kupchinenko"
-  description="How I designed Observatory, a macOS activity monitor that groups related processes, records controlled tests, and keeps results available for comparison."
+  title={t('Observatory case study | Igor Kupchinenko', 'Кейс Observatory | Игорь Купчиненко')}
+  description={t(
+    'How I designed Observatory, a macOS activity monitor that groups related processes, records controlled tests, and keeps results available for comparison.',
+    'Как я проектировал Observatory, монитор активности для macOS, который группирует связанные процессы, записывает контролируемые тесты и сохраняет результаты для сравнения.',
+  )}
   pageClass="observatory-case-study editorial-case-study"
   ogImage={outcomeNow.src}
 >
@@ -78,17 +99,19 @@ const sketches = [
           </span>
         ))}
       </h1>
-      <p class="hero__line">Activity Monitor, but more.</p>
+      <p class="hero__line">{t('Activity Monitor, but more.', 'Мониторинг системы, но больше.')}</p>
       <p class="hero__intro">
-        An application could appear as several processes. A spike could disappear before I understood it.
-        I designed Observatory to bring those pieces together and record what happened while I worked.
+        {t(
+          'An application could appear as several processes. A spike could disappear before I understood it. I designed Observatory to bring those pieces together and record what happened while I worked.',
+          'Одно приложение может выглядеть как несколько процессов. Пик нагрузки может исчезнуть раньше, чем я успею в нём разобраться. Я спроектировал Observatory, чтобы собрать эти части вместе и записывать, что происходило, пока я работал.',
+        )}
       </p>
 
       <dl class="facts">
-        <div><dt>My role</dt><dd>Product direction, research, UX/UI, identity, motion</dd></div>
-        <div><dt>Research</dt><dd>5 exploratory interviews</dd></div>
-        <div><dt>Outcome</dt><dd>2026 · Working macOS prototype, release 0.1.1</dd></div>
-        <div><dt>Build</dt><dd>AI-directed development from my specifications</dd></div>
+        <div><dt>{t('My role', 'Моя роль')}</dt><dd>{t('Product direction, research, UX/UI, identity, motion', 'Продуктовое видение, исследование, UX/UI, айдентика, моушн')}</dd></div>
+        <div><dt>{t('Research', 'Исследование')}</dt><dd>{t('5 exploratory interviews', '5 исследовательских интервью')}</dd></div>
+        <div><dt>{t('Outcome', 'Результат')}</dt><dd>{t('2026 · Working macOS prototype, release 0.1.1', '2026 · Рабочий прототип для macOS, релиз 0.1.1')}</dd></div>
+        <div><dt>{t('Build', 'Разработка')}</dt><dd>{t('AI-directed development from my specifications', 'Разработка с AI по моим спецификациям')}</dd></div>
       </dl>
 
       <figure class="hero-introduction">
@@ -97,6 +120,7 @@ const sketches = [
           href={launchFilmURL}
           data-introduction-film
           data-embed-src={launchFilmEmbedURL}
+          data-embed-title={t('Observatory product introduction', 'Презентация Observatory')}
         >
           <span class="hero-introduction__stage">
             <Image
@@ -111,29 +135,35 @@ const sketches = [
             />
             <span class="hero-introduction__play" aria-hidden="true"></span>
           </span>
-          <span class="sr-only">Watch the Observatory product introduction on YouTube</span>
+          <span class="sr-only">{t('Watch the Observatory product introduction on YouTube', 'Смотреть презентацию Observatory на YouTube')}</span>
         </a>
-        <figcaption>Product introduction</figcaption>
+        <figcaption>{t('Product introduction', 'Презентация продукта')}</figcaption>
       </figure>
     </header>
 
     <section class="chapter" id="problem" data-index-section>
 
       <div class="chapter__body">
-        <h2>The numbers were there. The picture was not.</h2>
+        <h2>{t('The numbers were there. The picture was not.', 'Цифры были. Картины не было.')}</h2>
         <div class="prose">
           <p>
-            I would open Activity Monitor during resource-intensive work and look for the application I was using.
-            Its activity was spread across several processes. I had to find them, add their values in my head,
-            and keep watching. By then, the numbers had changed again.
+            {t(
+              'I would open Activity Monitor during resource-intensive work and look for the application I was using. Its activity was spread across several processes. I had to find them, add their values in my head, and keep watching. By then, the numbers had changed again.',
+              'Во время ресурсоёмкой работы я открывал Мониторинг системы и искал приложение, которым пользовался. Его активность была разбросана по нескольким процессам. Нужно было найти их, сложить значения в уме и продолжать следить. К этому моменту цифры уже снова менялись.',
+            )}
           </p>
           <p>
-            And once the task ended, there was nothing to return to. A screenshot caught one moment.
-            It could not tell me what happened across the whole run, or how the next run differed.
+            {t(
+              'And once the task ended, there was nothing to return to. A screenshot caught one moment. It could not tell me what happened across the whole run, or how the next run differed.',
+              'А когда задача заканчивалась, возвращаться было не к чему. Скриншот ловил один момент. Он не мог рассказать, что происходило за весь прогон и чем от него отличался следующий.',
+            )}
           </p>
         </div>
         <blockquote>
-          How can I see what an application did during the work, then return to the same evidence later?
+          {t(
+            'How can I see what an application did during the work, then return to the same evidence later?',
+            'Как увидеть, что приложение делало во время работы, и потом вернуться к тем же данным?',
+          )}
         </blockquote>
       </div>
     </section>
@@ -141,45 +171,63 @@ const sketches = [
     <section class="chapter" id="research" data-index-section>
 
       <div class="chapter__body">
-        <h2>People were looking for an application, too.</h2>
+        <h2>{t('People were looking for an application, too.', 'Люди тоже искали приложение.')}</h2>
         <div class="prose">
-          <p>I asked five people to walk me through the last time they investigated performance: what they wanted to know, where they looked, and what they could not find. These exploratory conversations suggested two needs to design for.</p>
+          <p>{t(
+            'I asked five people to walk me through the last time they investigated performance: what they wanted to know, where they looked, and what they could not find. These exploratory conversations suggested two needs to design for.',
+            'Я попросил пятерых человек рассказать, как они в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти. Эти исследовательские разговоры подсказали две потребности, под которые стоило проектировать.',
+          )}</p>
         </div>
         <div class="research-portraits">
           <figure><Image
                   src={personaIndependentTroubleshooter}
-                  alt="Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture."
+                  alt={t('Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture.', 'Нарисованный от руки портрет персоны «самостоятельный диагност»: человек в очках показывает жест «ОК».')}
                   widths={[240, 360, 480]}
                   sizes="180px"
                   format="webp"
                   loading="lazy"
                   decoding="async"
-                /><figcaption>Independent troubleshooter</figcaption>
-            <p>Someone checking their own Mac needed to see the whole application and catch a spike without piecing together a changing list.</p>
+                /><figcaption>{t('Independent troubleshooter', 'Самостоятельный диагност')}</figcaption>
+            <p>{t(
+              'Someone checking their own Mac needed to see the whole application and catch a spike without piecing together a changing list.',
+              'Человеку, который проверяет свой Mac, нужно было видеть приложение целиком и ловить пик, не собирая картину по меняющемуся списку.',
+            )}</p>
           </figure>
           <figure><Image
                   src={personaPerformanceVerifier}
-                  alt="Hand-drawn portrait of the performance verifier persona writing on a clipboard."
+                  alt={t('Hand-drawn portrait of the performance verifier persona writing on a clipboard.', 'Нарисованный от руки портрет персоны «проверяющий производительность»: человек делает записи на планшете для бумаг.')}
                   widths={[240, 360, 480]}
                   sizes="180px"
                   format="webp"
                   loading="lazy"
                   decoding="async"
-                /><figcaption>Performance verifier</figcaption>
-            <p>A developer comparing runs needed a recording they could reopen, with enough context to make the comparison useful.</p>
+                /><figcaption>{t('Performance verifier', 'Проверяющий производительность')}</figcaption>
+            <p>{t(
+              'A developer comparing runs needed a recording they could reopen, with enough context to make the comparison useful.',
+              'Разработчику, который сравнивает прогоны, нужна была запись, к которой можно вернуться, с контекстом, достаточным для полезного сравнения.',
+            )}</p>
           </figure>
         </div>
-        <p class="research-synthesis">Both started with an application or a task. That became my starting point for the interface.</p>
+        <p class="research-synthesis">{t(
+          'Both started with an application or a task. That became my starting point for the interface.',
+          'Оба начинали с приложения или задачи. С этого я и начал проектировать интерфейс.',
+        )}</p>
       </div>
     </section>
 
     <section class="chapter chapter--dark" id="direction" data-index-section>
 
       <div class="chapter__body">
-        <h2>Start with the app. Keep the detail within reach.</h2>
+        <h2>{t('Start with the app. Keep the detail within reach.', 'Начать с приложения. Держать детали под рукой.')}</h2>
         <div class="prose">
-          <p>I grouped related processes under the application they belonged to. You could read its total first, then open the individual processes when you needed to investigate.</p>
-          <p>For work that needed a closer look, I sketched a recording flow: choose applications, set a shared duration, and keep the results. Watching the numbers would no longer be the only way to catch what happened.</p>
+          <p>{t(
+            'I grouped related processes under the application they belonged to. You could read its total first, then open the individual processes when you needed to investigate.',
+            'Я сгруппировал связанные процессы под приложением, к которому они относятся. Сначала виден общий итог, а отдельные процессы можно открыть, когда нужно разобраться.',
+          )}</p>
+          <p>{t(
+            'For work that needed a closer look, I sketched a recording flow: choose applications, set a shared duration, and keep the results. Watching the numbers would no longer be the only way to catch what happened.',
+            'Для работы, которая требовала более пристального взгляда, я набросал сценарий записи: выбрать приложения, задать общую длительность и сохранить результаты. Следить за цифрами больше не было единственным способом поймать, что произошло.',
+          )}</p>
         </div>
       </div>
     </section>
@@ -187,8 +235,11 @@ const sketches = [
     <section class="image-chapter" aria-labelledby="sketches-title">
       <div class="image-chapter__heading">
 
-        <h2 id="sketches-title">What should stay together?</h2>
-        <p>I explored application groups, levels of detail, and recordings made over the same time window.</p>
+        <h2 id="sketches-title">{t('What should stay together?', 'Что должно быть вместе?')}</h2>
+        <p>{t(
+          'I explored application groups, levels of detail, and recordings made over the same time window.',
+          'Я исследовал группы приложений, уровни детализации и записи за одно и то же окно времени.',
+        )}</p>
       </div>
       <div class="sketch-grid">
         {sketches.map((sketch) => (
@@ -203,76 +254,84 @@ const sketches = [
     <section class="chapter chapter--wide" id="prototype" data-index-section>
 
       <div class="chapter__body">
-        <h2>The first version had three places to go.</h2>
+        <h2>{t('The first version had three places to go.', 'В первой версии было три раздела.')}</h2>
         <p class="wide-copy">
-          Now was for a quick look. Tests was for recording. History was for returning to the results.
-          Walking through that first prototype showed where these boundaries helped, and where they got in the way.
+          {t(
+            'Now was for a quick look. Tests was for recording. History was for returning to the results. Walking through that first prototype showed where these boundaries helped, and where they got in the way.',
+            '«Now» для быстрого взгляда. «Tests» для записи. «History» для возврата к результатам. Проход по первому прототипу показал, где эти границы помогали, а где мешали.',
+          )}
         </p>
       </div>
 
       <div class="study-sequence">
-<article class="study-step"><h3>Now</h3><p>Grouped application cards made the whole application visible, but not yet easy to scan.</p><figure><Image src={prototypeNow} alt="Initial low-fidelity Now screen with application cards." widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Tests</h3><p>Choose applications and configure a repeatable run before recording.</p><figure><Image src={prototypeTest} alt="Initial low-fidelity test setup screen." widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>History</h3><p>Reopen recordings and compare them after the live moment has passed.</p><figure><Image src={prototypeHistory} alt="Initial low-fidelity History screen with saved recordings." widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>Now</h3><p>{t('Grouped application cards made the whole application visible, but not yet easy to scan.', 'Сгруппированные карточки показывали приложение целиком, но пробегать их глазами было ещё непросто.')}</p><figure><Image src={prototypeNow} alt={t('Initial low-fidelity Now screen with application cards.', 'Первый черновой экран «Now» с карточками приложений.')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>Tests</h3><p>{t('Choose applications and configure a repeatable run before recording.', 'Выбрать приложения и настроить повторяемый прогон перед записью.')}</p><figure><Image src={prototypeTest} alt={t('Initial low-fidelity test setup screen.', 'Первый черновой экран настройки теста.')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>History</h3><p>{t('Reopen recordings and compare them after the live moment has passed.', 'Открывать записи заново и сравнивать их, когда живой момент уже прошёл.')}</p><figure><Image src={prototypeHistory} alt={t('Initial low-fidelity History screen with saved recordings.', 'Первый черновой экран «History» с сохранёнными записями.')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
 </div>
 
       <div class="flow-evidence">
-        <figure><Image src={flowNow} alt="Early linear flow for the Now experience." widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>The smallest possible path through the live view.</figcaption></figure>
-        <figure><Image src={flowConsolidation} alt="Three prototype flows showing the consolidation of History into Saved Results within Tests." widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>An early exploration of keeping recordings inside Tests.</figcaption></figure>
+        <figure><Image src={flowNow} alt={t('Early linear flow for the Now experience.', 'Ранний линейный сценарий для «Now».')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('The smallest possible path through the live view.', 'Самый короткий путь через живой просмотр.')}</figcaption></figure>
+        <figure><Image src={flowConsolidation} alt={t('Three prototype flows showing the consolidation of History into Saved Results within Tests.', 'Три сценария прототипа: «History» объединяется с «Saved Results» внутри «Tests».')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('An early exploration of keeping recordings inside Tests.', 'Ранняя попытка хранить записи внутри «Tests».')}</figcaption></figure>
       </div>
     </section>
 
     <section class="chapter" id="validation-intro" data-index-section>
 
       <div class="chapter__body">
-        <h2>Grouping helped. The cards got in the way.</h2>
+        <h2>{t('Grouping helped. The cards got in the way.', 'Группировка помогла. Карточки мешали.')}</h2>
         <p class="wide-copy">
-          The first prototype brought related processes together, but made each application a large card.
-          I could see the groups. Comparing them still took too much looking around.
-          Reviewing the tasks and critiquing the design led to three changes. These were design iterations, not findings from a formal usability study.
+          {t(
+            'The first prototype brought related processes together, but made each application a large card. I could see the groups. Comparing them still took too much looking around. Reviewing the tasks and critiquing the design led to three changes. These were design iterations, not findings from a formal usability study.',
+            'Первый прототип объединял связанные процессы, но превращал каждое приложение в большую карточку. Группы были видны. Сравнивать их всё равно приходилось, долго водя глазами по экрану. Разбор задач и критика дизайна привели к трём изменениям. Это были итерации дизайна, а не выводы формального юзабилити-исследования.',
+          )}
         </p>
       </div>
     </section>
 
     <section class="validation-board" aria-labelledby="validation-title">
       <header class="validation-board__heading">
-        <h2 id="validation-title">Less to scan. Fewer places to go.</h2>
+        <h2 id="validation-title">{t('Less to scan. Fewer places to go.', 'Меньше просматривать. Меньше переходить.')}</h2>
       </header>
 
       <article class="validation-case validation-case--cards">
         <p>
-          I replaced the card grid with a compact list. Applications could sit one below another,
-          with a live plot alongside them. Grouping stayed; the space each group demanded shrank.
+          {t(
+            'I replaced the card grid with a compact list. Applications could sit one below another, with a live plot alongside them. Grouping stayed; the space each group demanded shrank.',
+            'Я заменил сетку карточек компактным списком. Приложения идут одно под другим, а рядом живой график. Группировка осталась, но места под каждую группу стало нужно меньше.',
+          )}
         </p>
         <div class="validation-pair">
-          <figure><Image src={wireframeNowCards} alt="Wireframe of a card-based live application view." widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>Card grouping</figcaption></figure>
+          <figure><Image src={wireframeNowCards} alt={t('Wireframe of a card-based live application view.', 'Вайрфрейм живого просмотра приложений на карточках.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Card grouping', 'Группировка карточками')}</figcaption></figure>
 
-          <figure><Image src={wireframeNowList} alt="Wireframe of a simplified list-based live application view." widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>List with live plot</figcaption></figure>
+          <figure><Image src={wireframeNowList} alt={t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('List with live plot', 'Список с живым графиком')}</figcaption></figure>
         </div>
       </article>
 
       <article class="validation-case validation-case--tests">
         <p>
-          The test screen asked people to choose manual or automated testing before choosing an application.
-          I reversed that order: start with what you want to observe, then decide how to record it.
-          I also separated setup from the active recording.
+          {t(
+            'The test screen asked people to choose manual or automated testing before choosing an application. I reversed that order: start with what you want to observe, then decide how to record it. I also separated setup from the active recording.',
+            'Экран тестов просил выбрать ручное или автоматическое тестирование ещё до выбора приложения. Я поменял порядок: сначала то, за чем хочешь наблюдать, потом способ записи. А ещё отделил настройку от идущей записи.',
+          )}
         </p>
         <div class="validation-pair">
-          <figure><Image src={wireframeTestComplex} alt="Wireframe combining test setup, recent tests, and an active recording." widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>Everything at once</figcaption></figure>
+          <figure><Image src={wireframeTestComplex} alt={t('Wireframe combining test setup, recent tests, and an active recording.', 'Вайрфрейм, где на одном экране настройка теста, недавние тесты и идущая запись.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Everything at once', 'Всё сразу')}</figcaption></figure>
 
-          <figure><Image src={wireframeTestSetup} alt="Wireframe of a simplified controlled test setup." widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>Choose, configure, start</figcaption></figure>
+          <figure><Image src={wireframeTestSetup} alt={t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Choose, configure, start', 'Выбрать, настроить, запустить')}</figcaption></figure>
         </div>
       </article>
 
       <article class="validation-case validation-case--history">
         <p>
-          A recording ended in Tests, but reopening it meant going to History. I brought the results back into Tests
-          as Saved Results. A sidebar kept the list within reach while a result was open.
+          {t(
+            'A recording ended in Tests, but reopening it meant going to History. I brought the results back into Tests as Saved Results. A sidebar kept the list within reach while a result was open.',
+            'Запись заканчивалась в «Tests», а чтобы открыть её снова, нужно было идти в «History». Я вернул результаты в «Tests» в виде «Saved Results». Боковая панель держала список под рукой, пока открыт результат.',
+          )}
         </p>
         <div class="validation-pair">
-          <figure><Image src={wireframeHistory} alt="Wireframe of a separate History destination." widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>History as a destination</figcaption></figure>
+          <figure><Image src={wireframeHistory} alt={t('Wireframe of a separate History destination.', 'Вайрфрейм отдельного раздела «History».')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('History as a destination', '«History» как отдельный раздел')}</figcaption></figure>
 
-          <figure><Image src={wireframeSavedResults} alt="Wireframe of Saved Results inside the Tests workflow." widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>Saved Results inside Tests</figcaption></figure>
+          <figure><Image src={wireframeSavedResults} alt={t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Saved Results inside Tests', '«Saved Results» внутри «Tests»')}</figcaption></figure>
         </div>
       </article>
     </section>
@@ -280,47 +339,56 @@ const sketches = [
     <section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
 
       <div class="chapter__body">
-        <h2>A quick look, or a recording to come back to.</h2>
+        <h2>{t('A quick look, or a recording to come back to.', 'Быстрый взгляд или запись, к которой можно вернуться.')}</h2>
         <div class="prose prose--split">
           <p>
-            Observatory 0.1.1 runs on macOS 14 and later. For a quick check, the live view keeps sixty seconds of activity
-            in sight. For a longer investigation, Tests records one to four applications, with optional warm-up and repeated rounds.
+            {t(
+              'Observatory 0.1.1 runs on macOS 14 and later. For a quick check, the live view keeps sixty seconds of activity in sight. For a longer investigation, Tests records one to four applications, with optional warm-up and repeated rounds.',
+              'Observatory 0.1.1 работает на macOS 14 и новее. Для быстрой проверки живой просмотр держит перед глазами шестьдесят секунд активности. Для долгого разбора «Tests» записывает от одного до четырёх приложений, с необязательным прогревом и повторными раундами.',
+            )}
           </p>
           <p>
-            Recordings stay on the Mac. You can reopen them and align their timelines for comparison.
-            This is a working prototype: the core flow is available to try, with broader testing still ahead.
+            {t(
+              'Recordings stay on the Mac. You can reopen them and align their timelines for comparison. This is a working prototype: the core flow is available to try, with broader testing still ahead.',
+              'Записи остаются на Mac. Их можно открыть снова и выровнять таймлайны для сравнения. Это рабочий прототип: основной сценарий уже можно попробовать, а более широкое тестирование ещё впереди.',
+            )}
           </p>
         </div>
       </div>
 
       <div class="study-sequence">
-<article class="study-step"><h3>Read the whole application.</h3><p>A compact application list keeps the live picture scannable.</p><figure><Image src={outcomeNow} alt="Final Observatory Now screen with live application data and a chart." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Open detail only when it matters.</h3><p>Process data is present, but it waits until a row is expanded.</p><figure><Image src={outcomeProcessDetails} alt="Expanded process details in the final Observatory live view." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Keep the frame stable.</h3><p>CPU, memory, energy, and disk share one chart position.</p><figure><Image src={outcomeMemory} alt="Final Observatory memory timeline chart." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Define the observation.</h3><p>Select applications, choose a recording mode, then define the run.</p><figure><Image src={outcomeTestSetup} alt="Final Observatory controlled test setup screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Guide one run at a time.</h3><p>Manual mode guides the person through one application at a time.</p><figure><Image src={outcomeRecording} alt="Final Observatory guided recording screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Preserve the context.</h3><p>Saved results keep the meaning of each test after it ends.</p><figure><Image src={outcomeSavedResults} alt="Final Observatory Saved Results screen." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Make the same moment comparable.</h3><p>Synchronized timelines align evidence across results.</p><figure><Image src={outcomeComparison} alt="Final Observatory comparison screen showing synchronized metric timelines." widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Read the whole application.', 'Видеть приложение целиком.')}</h3><p>{t('A compact application list keeps the live picture scannable.', 'Компактный список приложений позволяет быстро окинуть взглядом живую картину.')}</p><figure><Image src={outcomeNow} alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Open detail only when it matters.', 'Открывать детали, только когда они важны.')}</h3><p>{t('Process data is present, but it waits until a row is expanded.', 'Данные процессов есть, но появляются, только когда строка раскрыта.')}</p><figure><Image src={outcomeProcessDetails} alt={t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Keep the frame stable.', 'Сохранять кадр стабильным.')}</h3><p>{t('CPU, memory, energy, and disk share one chart position.', 'Процессор, память, энергия и диск делят одно место для графика.')}</p><figure><Image src={outcomeMemory} alt={t('Final Observatory memory timeline chart.', 'Финальный график памяти во времени в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Define the observation.', 'Определить наблюдение.')}</h3><p>{t('Select applications, choose a recording mode, then define the run.', 'Выбрать приложения, режим записи, затем задать прогон.')}</p><figure><Image src={outcomeTestSetup} alt={t('Final Observatory controlled test setup screen.', 'Финальный экран настройки контролируемого теста в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Guide one run at a time.', 'Вести по одному прогону.')}</h3><p>{t('Manual mode guides the person through one application at a time.', 'Ручной режим ведёт человека по одному приложению за раз.')}</p><figure><Image src={outcomeRecording} alt={t('Final Observatory guided recording screen.', 'Финальный экран записи с подсказками в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Preserve the context.', 'Сохранить контекст.')}</h3><p>{t('Saved results keep the meaning of each test after it ends.', 'Сохранённые результаты хранят смысл каждого теста и после его окончания.')}</p><figure><Image src={outcomeSavedResults} alt={t('Final Observatory Saved Results screen.', 'Финальный экран «Saved Results» в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
+<article class="study-step"><h3>{t('Make the same moment comparable.', 'Сделать один и тот же момент сравнимым.')}</h3><p>{t('Synchronized timelines align evidence across results.', 'Синхронизированные таймлайны выравнивают данные разных результатов.')}</p><figure><Image src={outcomeComparison} alt={t('Final Observatory comparison screen showing synchronized metric timelines.', 'Финальный экран сравнения в Observatory с синхронизированными таймлайнами метрик.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
 </div>
     </section>
 
     <section class="chapter reflection" id="reflection" data-index-section>
 
       <div class="chapter__body">
-        <h2>The task ends. The evidence stays.</h2>
+        <h2>{t('The task ends. The evidence stays.', 'Задача заканчивается. Данные остаются.')}</h2>
         <div class="prose">
           <p>
-            I started by trying to read a moving list. The project became a way to return to something I had missed:
-            an application’s activity during a particular piece of work.
+            {t(
+              'I started by trying to read a moving list. The project became a way to return to something I had missed: an application’s activity during a particular piece of work.',
+              'Я начинал с попытки прочитать движущийся список. Проект стал способом вернуться к тому, что я пропустил: к активности приложения во время конкретной работы.',
+            )}
           </p>
           <p>
-            Alongside the product design and research, I made the telescope artwork, identity, and launch film.
-            I directed AI development of the application from my specifications.
+            {t(
+              'Alongside the product design and research, I made the telescope artwork, identity, and launch film. I directed AI development of the application from my specifications.',
+              'Помимо продуктового дизайна и исследования, я сделал иллюстрацию с телескопом, айдентику и фильм к запуску. Разработкой приложения с помощью AI я руководил по своим спецификациям.',
+            )}
           </p>
           <p>
-            Next, I want people who regularly troubleshoot or compare performance to use it on their own tasks.
-            Can they identify what happened? Can they tell which recordings are useful to compare?
-            Their answers should guide the comparison language and defaults.
+            {t(
+              'Next, I want people who regularly troubleshoot or compare performance to use it on their own tasks. Can they identify what happened? Can they tell which recordings are useful to compare? Their answers should guide the comparison language and defaults.',
+              'Дальше я хочу, чтобы люди, которые регулярно разбираются с производительностью или сравнивают её, попробовали приложение на своих задачах. Смогут ли они понять, что произошло? Смогут ли определить, какие записи полезно сравнивать? Их ответы должны подсказать формулировки сравнения и настройки по умолчанию.',
+            )}
           </p>
         </div>
       </div>
@@ -328,11 +396,11 @@ const sketches = [
   </main>
 
   <footer class="case-footer">
-    <nav aria-label="Observatory project links">
-      <a href={launchFilmURL}>Launch film ↗</a>
-      <a href={releaseURL}>Download 0.1.1 ↗</a>
-      <a href={repositoryURL}>Source ↗</a>
-      <a href={sitePath('/')}>Home</a>
+    <nav aria-label={t('Observatory project links', 'Ссылки проекта Observatory')}>
+      <a href={launchFilmURL}>{t('Launch film ↗', 'Фильм к запуску ↗')}</a>
+      <a href={releaseURL}>{t('Download 0.1.1 ↗', 'Скачать 0.1.1 ↗')}</a>
+      <a href={repositoryURL}>{t('Source ↗', 'Исходный код ↗')}</a>
+      <a href={localePath('/', locale)}>{t('Home', 'Главная')}</a>
     </nav>
   </footer>
 </BaseDocument>
@@ -348,7 +416,7 @@ const sketches = [
       const frame = document.createElement('iframe');
       frame.className = 'hero-introduction__player';
       frame.src = embedSrc;
-      frame.title = 'Observatory product introduction';
+      frame.title = link.dataset.embedTitle ?? '';
       frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
       frame.setAttribute('allowfullscreen', '');
       frame.referrerPolicy = 'strict-origin-when-cross-origin';

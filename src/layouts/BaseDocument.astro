@@ -6,6 +6,16 @@ import '../styles/motion.css';
 import instrumentSansURL from '../assets/fonts/InstrumentSans-Regular.ttf?url';
 import PortfolioHeader from '../components/homepage/PortfolioHeader.astro';
 import ReadingProgress from '../components/case-studies/ReadingProgress.astro';
+import {
+  defaultLocale,
+  localeDetails,
+  localePath,
+  localeStorageKey,
+  locales,
+  neutralPath,
+  toLocale,
+  translator,
+} from '../i18n/locales';
 
 interface Props {
   title: string;
@@ -15,20 +25,72 @@ interface Props {
   ogImage?: string;
   robots?: string;
   canonicalPath?: string;
+  /** False for documents that exist in one shared version, such as the 404 page. */
+  translated?: boolean;
 }
 
-const { title, description, pageClass, themeColor = '#F8F8F8', ogImage, robots, canonicalPath } = Astro.props;
+const {
+  title,
+  description,
+  pageClass,
+  themeColor = '#F8F8F8',
+  ogImage,
+  robots,
+  canonicalPath,
+  translated = true,
+} = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const pagePath = neutralPath(canonicalPath ?? Astro.url.pathname);
+const alternates = translated
+  ? locales.map((alternateLocale) => ({
+      locale: alternateLocale,
+      href: new URL(localePath(pagePath, alternateLocale), Astro.site).href,
+    }))
+  : [];
+// English pages send visitors whose system prefers Russian to the Russian page,
+// unless they chose a language with the switcher.
+const russianPath = translated && locale === defaultLocale ? localePath(pagePath, 'ru') : undefined;
 const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 ---
 
 <!doctype html>
-<html lang="en" class={pageClass} data-base={import.meta.env.BASE_URL}>
+<html lang={locale} class={pageClass} data-base={import.meta.env.BASE_URL}>
   <head>
+    {russianPath && (
+      <script is:inline define:vars={{ russianPath, localeStorageKey }}>
+        let chosenLocale = null;
+        try {
+          chosenLocale = localStorage.getItem(localeStorageKey);
+        } catch {}
+        const systemLanguages = navigator.languages?.length ? navigator.languages : [navigator.language ?? ''];
+        const systemLocale = systemLanguages
+          .map((language) => language.toLowerCase().split('-')[0])
+          .find((language) => language === 'ru' || language === 'en');
+
+        if ((chosenLocale ?? systemLocale) === 'ru') {
+          try {
+            sessionStorage.setItem('locale-redirect', russianPath);
+          } catch {}
+          location.replace(`${russianPath}${location.search}${location.hash}`);
+        }
+      </script>
+    )}
     <script is:inline>
       const skipTargetRequested = location.hash === '#main-content';
       const navigationType = performance.getEntriesByType('navigation')[0]?.type;
+      // A system-language redirect is still the visitor's first arrival.
+      const arrivedByLocaleRedirect = (() => {
+        try {
+          if (sessionStorage.getItem('locale-redirect') !== location.pathname) return false;
+          sessionStorage.removeItem('locale-redirect');
+          return true;
+        } catch {
+          return false;
+        }
+      })();
       const siteBase = document.documentElement.dataset.base ?? '/';
       const arrivedFromSite = (() => {
         try {
@@ -39,7 +101,8 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
         }
       })();
       const returningWithinSite =
-        navigationType === 'back_forward' || (navigationType !== 'reload' && arrivedFromSite);
+        !arrivedByLocaleRedirect &&
+        (navigationType === 'back_forward' || (navigationType !== 'reload' && arrivedFromSite));
 
       document.documentElement.classList.add('js');
       if (
@@ -63,8 +126,15 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
     <link rel="preload" href={instrumentSansURL} as="font" type="font/ttf" crossorigin="anonymous" />
     <link rel="icon" type="image/svg+xml" href={faviconURL} />
     <link rel="canonical" href={canonicalURL} />
+    {alternates.map((alternate) => (
+      <link rel="alternate" hreflang={alternate.locale} href={alternate.href} />
+    ))}
+    {alternates.length > 0 && (
+      <link rel="alternate" hreflang="x-default" href={alternates.find((alternate) => alternate.locale === defaultLocale)?.href} />
+    )}
     <title>{title}</title>
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={localeDetails[locale].ogLocale} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
@@ -75,8 +145,11 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
     {ogImageURL && <meta name="twitter:image" content={ogImageURL} />}
   </head>
   <body>
-    <a class="skip-link" href="#main-content">Skip to main content</a>
-    <PortfolioHeader showHome={/\/(case-studies|blog)\//.test(Astro.url.pathname)} />
+    <a class="skip-link" href="#main-content">{t('Skip to main content', 'Перейти к основному содержанию')}</a>
+    <PortfolioHeader
+      showHome={/\/(case-studies|blog)\//.test(Astro.url.pathname)}
+      alternatePath={translated ? pagePath : undefined}
+    />
     <slot />
     {Astro.url.pathname.includes("/case-studies/") && <ReadingProgress />}
     <script is:inline>

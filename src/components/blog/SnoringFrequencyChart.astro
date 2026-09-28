@@ -1,17 +1,25 @@
 ---
+import { toLocale, translator } from '../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
 // AASM Sleep Prioritization Survey (2021): bed partners who snore, n = 865.
 const responses = [
-  { label: 'Every night', percent: 48, count: 411, emphasis: true },
-  { label: 'Quite often', percent: 33, count: 285 },
-  { label: 'Once in a while', percent: 18, count: 159 },
-  { label: 'Never', percent: 1, count: 7 },
+  { label: t('Every night', 'Каждую ночь'), percent: 48, count: 411, emphasis: true },
+  { label: t('Quite often', 'Довольно часто'), percent: 33, count: 285 },
+  { label: t('Once in a while', 'Время от времени'), percent: 18, count: 159 },
+  { label: t('Never', 'Никогда'), percent: 1, count: 7 },
 ];
 ---
 
 <figure class="snoring-chart" aria-labelledby="snoring-chart-title">
-  <p id="snoring-chart-title" class="snoring-chart__title">For nearly half, it happens every night.</p>
+  <p id="snoring-chart-title" class="snoring-chart__title">
+    {t('For nearly half, it happens every night.', 'Почти у половины это происходит каждую ночь.')}
+  </p>
   <p class="snoring-chart__intro">
-    865 people in the U.S. whose bed partner snores were asked how often it happens.
+    {t(
+      '865 people in the U.S. whose bed partner snores were asked how often it happens.',
+      '865 жителей США, чей партнёр храпит, спросили, как часто это происходит.',
+    )}
   </p>
 
   <ul class="snoring-chart__bars">
@@ -21,7 +29,7 @@ const responses = [
         <span class="snoring-chart__plot">
           <span class="snoring-chart__bar" style={`--share: ${percent / 100}`} aria-hidden="true"></span>
           <span class="snoring-chart__value">
-            {percent}%<span class="sr-only">, {count} people</span>
+            {percent}%<span class="sr-only">, {count} {t('people', 'человек')}</span>
           </span>
         </span>
       </li>
@@ -29,8 +37,13 @@ const responses = [
   </ul>
 
   <figcaption>
-    Percentages are rounded; three respondents answered “I don’t know.” The survey asked about
-    frequency, not lost sleep. Source: <a href="https://aasm.org/wp-content/uploads/2021/06/sleep-prioritization-survey-2021-partner-snoring.pdf">American Academy of Sleep Medicine, Sleep Prioritization Survey (2021)</a>.
+    {t(
+      'Percentages are rounded; three respondents answered “I don’t know.” The survey asked about frequency, not lost sleep. Source: ',
+      'Проценты округлены; трое респондентов ответили «Не знаю». Опрос был о частоте, а не о потерянном сне. Источник: ',
+    )}<a href="https://aasm.org/wp-content/uploads/2021/06/sleep-prioritization-survey-2021-partner-snoring.pdf" hreflang="en">{t(
+      'American Academy of Sleep Medicine, Sleep Prioritization Survey (2021)',
+      'Американская академия медицины сна, Sleep Prioritization Survey (2021)',
+    )}</a>.
   </figcaption>
 </figure>
 

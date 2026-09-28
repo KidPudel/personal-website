@@ -48,6 +48,8 @@ const writing = defineCollection({
     // Posts that live elsewhere link out instead of getting a local page.
     externalUrl: z.url().optional(),
     externalLabel: z.string().optional(),
+    // Language of the linked page when it differs from this entry's language.
+    externalLanguage: z.enum(['en', 'ru']).optional(),
   }),
 });
 

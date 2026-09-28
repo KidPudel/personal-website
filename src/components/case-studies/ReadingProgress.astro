@@ -1,5 +1,11 @@
-<reading-progress hidden>
-  <nav aria-label="Case study sections"></nav>
+---
+import { toLocale, translator } from '../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
+---
+
+<reading-progress hidden data-section-label={t('Section', 'Раздел')}>
+  <nav aria-label={t('Case study sections', 'Разделы кейса')}></nav>
 </reading-progress>
 
 <script>
@@ -29,7 +35,7 @@
         }
         const link = document.createElement('a');
         link.href = `#${heading.id}`;
-        link.setAttribute('aria-label', heading.textContent?.trim() || `Section ${index + 1}`);
+        link.setAttribute('aria-label', heading.textContent?.trim() || `${this.dataset.sectionLabel ?? 'Section'} ${index + 1}`);
         const tick = document.createElement('span');
         tick.className = 'tick';
         tick.setAttribute('aria-hidden', 'true');

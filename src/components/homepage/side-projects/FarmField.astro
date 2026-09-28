@@ -5,19 +5,22 @@ import farmPoster from '../../../assets/games/farm-game/farm-poster.png';
 import groundTiles from '../../../assets/games/farm-game/ground_tiles.png';
 import hoe from '../../../assets/games/farm-game/hoe.png';
 import props from '../../../assets/games/farm-game/props.png';
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
 ---
 
 <farm-field class="farm-field">
   <button
     class="farm-field__stage"
     type="button"
-    aria-label="Use the hoe to prepare soil for planting a seed."
+    aria-label={t('Use the hoe to prepare soil for planting a seed.', 'Вскопать мотыгой землю, чтобы посадить семя.')}
     data-farm-stage
   >
     <Image
       class="farm-field__poster"
       src={farmPoster}
-      alt="A field with an area that is not grass."
+      alt={t('A field with an area that is not grass.', 'Поле с участком, на котором нет травы.')}
       widths={[320]}
       sizes="(max-width: 60rem) calc(100vw - 2.3rem), 72vw"
       loading="lazy"

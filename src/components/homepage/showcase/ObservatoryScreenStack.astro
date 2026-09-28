@@ -7,12 +7,15 @@ import setupScreen from '../../../assets/case_study_images/outcome_screenshots/t
 import testingScreen from '../../../assets/case_study_images/outcome_screenshots/testing.png';
 import resultsScreen from '../../../assets/case_study_images/outcome_screenshots/tests-results.png';
 
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
 const screens = [
-  { src: comparisonScreen, label: 'Comparison' },
-  { src: resultsScreen, label: 'Saved results' },
-  { src: testingScreen, label: 'Recording' },
-  { src: setupScreen, label: 'Test setup' },
-  { src: mainScreen, label: 'Live view' },
+  { src: comparisonScreen, label: t('Comparison', 'Сравнение') },
+  { src: resultsScreen, label: t('Saved results', 'Сохранённые результаты') },
+  { src: testingScreen, label: t('Recording', 'Запись') },
+  { src: setupScreen, label: t('Test setup', 'Настройка теста') },
+  { src: mainScreen, label: t('Live view', 'Живой просмотр') },
 ];
 ---
 
@@ -22,7 +25,10 @@ const screens = [
   <button
     type="button"
     class="observatory-stack__trigger"
-    aria-label="Cycle Observatory outcome screens: Live view, Test setup, Recording, Saved results, and Comparison"
+    aria-label={t(
+      'Cycle Observatory outcome screens: Live view, Test setup, Recording, Saved results, and Comparison',
+      'Листать итоговые экраны Observatory: живой просмотр, настройка теста, запись, сохранённые результаты и сравнение',
+    )}
   >
     {screens.map((screen) => (
       <span class="observatory-stack__screen" data-foley-hover="tick">

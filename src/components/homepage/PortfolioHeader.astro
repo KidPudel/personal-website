@@ -1,26 +1,62 @@
 ---
-import { connectLinks, sitePath } from '../../config/site';
+import { connectLinks } from '../../config/site';
+import { localeDetails, localePath, localeStorageKey, locales, toLocale, translator } from '../../i18n/locales';
 import DrawnIcon from './DrawnIcon.astro';
 
-interface Props { showHome?: boolean; }
-const { showHome = false } = Astro.props;
+interface Props {
+  showHome?: boolean;
+  /** Locale-neutral path of the current page, when it exists in the other language. */
+  alternatePath?: string;
+}
+const { showHome = false, alternatePath } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+// Each language is named in its own script, so either reader can find theirs.
+const switchLabels = { en: 'en', ru: 'ру' } as const;
 ---
 
 <portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--case-study": showHome }]} data-site-header>
-  <nav class="site-navigation" aria-label="Primary navigation">
-    {showHome && <a class="navigation-action drawn-icon-trigger" href={sitePath('/')}>
-      <span class="navigation-action__label">Home</span>
+  <nav class="site-navigation" aria-label={t('Primary navigation', 'Основная навигация')}>
+    {showHome && <a class="navigation-action drawn-icon-trigger" href={localePath('/', locale)}>
+      <span class="navigation-action__label">{t('Home', 'Главная')}</span>
       <span class="navigation-action__art" aria-hidden="true"><DrawnIcon icon="home" loading="eager" /></span>
     </a>}
+    {alternatePath && (
+      <span class="language-switch" role="group" aria-label={t('Language', 'Язык')}>
+        {locales.map((option, index) => (
+          <>
+            {index > 0 && <span class="language-switch__divider" aria-hidden="true">/</span>}
+            {option === locale ? (
+              <span class="language-switch__option" lang={option} aria-current="true">
+                <span aria-hidden="true">{switchLabels[option]}</span>
+                <span class="sr-only">{localeDetails[option].name}</span>
+              </span>
+            ) : (
+              <a
+                class="language-switch__option"
+                href={localePath(alternatePath, option)}
+                hreflang={option}
+                lang={option}
+                data-locale-switch={option}
+                data-locale-storage-key={localeStorageKey}
+              >
+                <span aria-hidden="true">{switchLabels[option]}</span>
+                <span class="sr-only">{localeDetails[option].name}</span>
+              </a>
+            )}
+          </>
+        ))}
+      </span>
+    )}
     <details id="site-contact" class="contact-disclosure">
       <summary class="navigation-action drawn-icon-trigger">
-        <span class="navigation-action__label">Get in touch</span>
+        <span class="navigation-action__label">{t('Get in touch', 'Связаться')}</span>
         <span class="navigation-action__art" aria-hidden="true">
           <DrawnIcon icon="connect" loading="eager" />
         </span>
       </summary>
       <div class="contact-disclosure__panel">
-        {connectLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+        {connectLinks(locale).map((link) => <a href={link.href}>{link.label}</a>)}
       </div>
     </details>
   </nav>
@@ -39,6 +75,15 @@ const { showHome = false } = Astro.props;
       const summary = details?.querySelector<HTMLElement>('summary');
       const panel = details?.querySelector<HTMLElement>('.contact-disclosure__panel');
       this.observeIntroduction();
+      this.querySelectorAll<HTMLAnchorElement>('[data-locale-switch]').forEach((link) => {
+        link.addEventListener('click', () => {
+          try {
+            localStorage.setItem(link.dataset.localeStorageKey ?? 'site-locale', link.dataset.localeSwitch ?? '');
+          } catch {
+            // The link still switches the language when storage is unavailable.
+          }
+        }, { signal });
+      });
       if (!details || !summary || !panel) return;
 
       const syncExpandedState = () => {
@@ -170,6 +215,7 @@ const { showHome = false } = Astro.props;
   }
   .portfolio-navigation--case-study::before { display: none; }
   .portfolio-navigation--case-study .site-navigation { justify-content: space-between; font-size: 18px; }
+  .portfolio-navigation--case-study .language-switch { margin-left: auto; }
   .portfolio-navigation--case-study .contact-disclosure__panel { background: var(--color-field); border-radius: 8px; }
 
   .site-navigation {
@@ -318,6 +364,51 @@ const { showHome = false } = Astro.props;
     text-decoration-color: var(--color-ink);
   }
 
+  .language-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--color-muted);
+    line-height: 1.15;
+  }
+
+  .language-switch__divider {
+    opacity: 0.6;
+  }
+
+  .language-switch__option {
+    display: inline-flex;
+    min-width: 2rem;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    touch-action: manipulation;
+  }
+
+  .language-switch__option[aria-current] {
+    color: var(--color-ink);
+  }
+
+  a.language-switch__option {
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: color-mix(in srgb, var(--color-muted) 56%, transparent);
+    text-decoration-thickness: 0.09rem;
+    text-underline-offset: 0.34rem;
+    transition: color 150ms ease, text-decoration-color 150ms ease;
+  }
+
+  a.language-switch__option:hover,
+  a.language-switch__option:focus-visible {
+    color: var(--color-ink);
+    text-decoration-color: var(--color-ink);
+  }
+
+  a.language-switch__option:focus-visible {
+    border-radius: 0.1rem;
+  }
+
   @keyframes contact-reveal {
     from { opacity: 0; transform: translateY(-0.3rem); }
     to { opacity: 1; transform: translateY(0); }
@@ -369,6 +460,7 @@ const { showHome = false } = Astro.props;
     }
 
     .navigation-action,
+    a.language-switch__option,
     .contact-disclosure__panel {
       transition: none;
       animation: none;

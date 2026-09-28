@@ -7,25 +7,28 @@ import notebookFilled from '../../../assets/case_study_images/two-sticks/noteboo
 import searchScreen from '../../../assets/case_study_images/two-sticks/search2.png';
 import startScreen from '../../../assets/case_study_images/two-sticks/start1.png';
 import writeScreen from '../../../assets/case_study_images/two-sticks/write.png';
-import { sitePath } from '../../../config/site';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 import '../../../styles/case-study.css';
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
 ---
 
 <BaseDocument
-  title="Two Sticks case study | Igor Kupchinenko"
-  description="How I designed and built Two Sticks, a Telegram prototype for looking up Chinese characters, practising recall, and writing them by hand."
+  title={t('Two Sticks case study | Igor Kupchinenko', 'Кейс «Две палочки» | Игорь Купчиненко')}
+  description={t('How I designed and built Two Sticks, a Telegram prototype for looking up Chinese characters, practising recall, and writing them by hand.', 'Как я спроектировал и собрал «Две палочки», прототип в Telegram, чтобы искать китайские иероглифы, тренировать их запоминание и писать их от руки.')}
   pageClass="chinesebee-case-study editorial-case-study"
   ogImage={searchScreen.src}
-  canonicalPath={sitePath('/case-studies/two-sticks/')}
+  canonicalPath={localePath('/case-studies/two-sticks/', locale)}
 >
-<main id="main-content"><header class="hero"><h1 class="hero-title">Two Sticks</h1><p class="hero__line">Write the character, without leaving the chat.</p><p class="hero__intro">You can recognise a Chinese character and still struggle to write it. I designed and built Two Sticks to connect looking up a character with practising it, all inside Telegram.</p><dl class="facts"><div><dt>Role</dt><dd>Product direction, UX/UI, bot, API, handwriting app</dd></div><div><dt>When</dt><dd>2024, with a diploma project at MPGU</dd></div><div><dt>Research</dt><dd>Based on the diploma team’s research</dd></div><div><dt>Outcome</dt><dd>Shipped prototype, no longer hosted</dd></div></dl><figure class="hero-stage"><div class="hero-stage__phones"><Image src={startScreen} alt="Two Sticks introduction and first learning prompt in Telegram." widths={[240, 360, 480]} sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px" format="webp" quality={85} loading="eager" decoding="async" fetchpriority="high" /><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px" format="webp" quality={85} loading="eager" decoding="async" /><Image src={writeScreen} alt="Two Sticks handwriting Web App with a drawn character and recognition score." widths={[240, 360, 480]} sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px" format="webp" quality={85} loading="eager" decoding="async" /></div><figcaption>Finding a character, saving it, and practising handwriting in Telegram.</figcaption></figure></header><section class="chapter" id="context" data-index-section>
+<main id="main-content"><header class="hero"><h1 class="hero-title">{t('Two Sticks', 'Две палочки')}</h1><p class="hero__line">{t('Write the character, without leaving the chat.', 'Написать иероглиф, не выходя из чата.')}</p><p class="hero__intro">{t('You can recognise a Chinese character and still struggle to write it. I designed and built Two Sticks to connect looking up a character with practising it, all inside Telegram.', 'Можно узнавать китайский иероглиф и всё равно с трудом его писать. Я спроектировал и собрал «Две палочки», чтобы связать поиск иероглифа с практикой, и всё это внутри Telegram.')}</p><dl class="facts"><div><dt>{t('Role', 'Роль')}</dt><dd>{t('Product direction, UX/UI, bot, API, handwriting app', 'Продуктовое видение, UX/UI, бот, API, приложение для прописей')}</dd></div><div><dt>{t('When', 'Когда')}</dt><dd>{t('2024, with a diploma project at MPGU', '2024, вместе с дипломным проектом в МПГУ')}</dd></div><div><dt>{t('Research', 'Исследование')}</dt><dd>{t('Based on the diploma team’s research', 'На основе исследования дипломной команды')}</dd></div><div><dt>{t('Outcome', 'Результат')}</dt><dd>{t('Shipped prototype, no longer hosted', 'Выпущенный прототип, сейчас не размещён')}</dd></div></dl><figure class="hero-stage"><div class="hero-stage__phones"><Image src={startScreen} alt={t('Two Sticks introduction and first learning prompt in Telegram.', 'Знакомство с ботом «Две палочки» и первое учебное задание в Telegram.')} widths={[240, 360, 480]} sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px" format="webp" quality={85} loading="eager" decoding="async" fetchpriority="high" /><Image src={searchScreen} alt={t('Two Sticks word search result with character details and a save action.', 'Результат поиска слова в «Двух палочках» с карточкой иероглифа и кнопкой сохранения.')} widths={[240, 360, 480]} sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px" format="webp" quality={85} loading="eager" decoding="async" /><Image src={writeScreen} alt={t('Two Sticks handwriting Web App with a drawn character and recognition score.', 'Web App для прописей «Две палочки» с нарисованным иероглифом и оценкой распознавания.')} widths={[240, 360, 480]} sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px" format="webp" quality={85} loading="eager" decoding="async" /></div><figcaption>{t('Finding a character, saving it, and practising handwriting in Telegram.', 'Найти иероглиф, сохранить его и потренироваться писать от руки в Telegram.')}</figcaption></figure></header><section class="chapter" id="context" data-index-section>
 
   <div class="chapter__body">
-    <h2>You recognise it. Can you write it?</h2>
+    <h2>{t('You recognise it. Can you write it?', 'Узнаёшь его. А написать сможешь?')}</h2>
     <div class="prose">
-      <p>A dictionary gives you the character, its sound, and its meaning. Reproducing it from memory takes a different kind of practice.</p>
-      <p>Printed copybooks make room for that practice, but their exercises are fixed and the work is slow to check. I wanted a learner to be able to find a character, keep it, and practise writing it in the messenger they already used.</p>
+      <p>{t('A dictionary gives you the character, its sound, and its meaning. Reproducing it from memory takes a different kind of practice.', 'Словарь даёт иероглиф, его звучание и значение. Чтобы воспроизвести его по памяти, нужна другая практика.')}</p>
+      <p>{t('Printed copybooks make room for that practice, but their exercises are fixed and the work is slow to check. I wanted a learner to be able to find a character, keep it, and practise writing it in the messenger they already used.', 'Бумажные прописи дают место для такой практики, но упражнения в них фиксированные, а проверять работу долго. Я хотел, чтобы ученик мог найти иероглиф, сохранить его и потренироваться писать прямо в мессенджере, которым уже пользуется.')}</p>
     </div>
   </div>
 </section>
@@ -33,12 +36,12 @@ import '../../../styles/case-study.css';
 <section class="chapter" id="research" data-index-section>
 
   <div class="chapter__body">
-    <h2>Keep the hand involved.</h2>
+    <h2>{t('Keep the hand involved.', 'Пусть рука тоже работает.')}</h2>
     <div class="prose">
-      <p>The starting point was a 2024 MPGU diploma by Смакова, Шаталова, and Шинкарева, called Two Sticks / Две палочки. Their work covered copybooks, memorisation methods, competing apps and bots, and an open-day masterclass. Fifteen of twenty participants expressed interest in the idea. That was an interest signal, not a usability result for the product I built.</p>
-      <p>Their research gave me several ways to help someone practise: cards for recall, character structure and mnemonics for understanding, and copywork for writing. My job was to bring those activities together in a usable product.</p>
-      <p>The team’s competitive study included Skritter, Duolingo, HelloChinese, and Telegram bots. Skritter was a reference for dedicated writing practice; the bots offered an easy way in, but focused mostly on vocabulary and commands.</p>
-      <p id="direction">I kept search and flashcards in the chat, delivered notebook sheets there, and used a Telegram Web App for handwriting. The words a learner saved would supply the practice, so each lookup could lead somewhere useful.</p>
+      <p>{t('The starting point was a 2024 MPGU diploma by Смакова, Шаталова, and Шинкарева, called Two Sticks / Две палочки. Their work covered copybooks, memorisation methods, competing apps and bots, and an open-day masterclass. Fifteen of twenty participants expressed interest in the idea. That was an interest signal, not a usability result for the product I built.', 'Отправной точкой стал диплом МПГУ 2024 года «Две палочки» (Two Sticks), который написали Смакова, Шаталова и Шинкарева. Их работа охватывала прописи, методы запоминания, конкурирующие приложения и боты, а также мастер-класс на дне открытых дверей. Пятнадцать из двадцати участников проявили интерес к идее. Это был сигнал интереса, а не результат юзабилити-тестирования продукта, который сделал я.')}</p>
+      <p>{t('Their research gave me several ways to help someone practise: cards for recall, character structure and mnemonics for understanding, and copywork for writing. My job was to bring those activities together in a usable product.', 'Их исследование дало мне несколько способов помочь с практикой: карточки для вспоминания, структуру иероглифа и мнемонику для понимания, прописи для письма. Моей задачей было собрать эти занятия в удобный продукт.')}</p>
+      <p>{t('The team’s competitive study included Skritter, Duolingo, HelloChinese, and Telegram bots. Skritter was a reference for dedicated writing practice; the bots offered an easy way in, but focused mostly on vocabulary and commands.', 'В конкурентный анализ команды вошли Skritter, Duolingo, HelloChinese и боты в Telegram. Skritter был ориентиром для отдельной практики письма; боты давали лёгкий вход, но в основном сосредотачивались на словаре и командах.')}</p>
+      <p id="direction">{t('I kept search and flashcards in the chat, delivered notebook sheets there, and used a Telegram Web App for handwriting. The words a learner saved would supply the practice, so each lookup could lead somewhere useful.', 'Поиск и карточки я оставил в чате, листы-прописи тоже присылал туда, а для письма от руки использовал Telegram Web App. Слова, которые сохраняет ученик, становились материалом для практики, чтобы каждый поиск вёл к чему-то полезному.')}</p>
     </div>
   </div>
 </section>
@@ -46,61 +49,61 @@ import '../../../styles/case-study.css';
 <section class="chapter chapter--wide" id="journey" data-index-section>
 
   <div class="chapter__body">
-    <h2>A word you save becomes a word you practise.</h2>
+    <h2>{t('A word you save becomes a word you practise.', 'Сохранённое слово становится словом для практики.')}</h2>
     <p class="wide-copy">
-      Search starts a personal collection. Flashcards, notebook sheets, and handwriting practice draw on those saved words, without asking the learner to build a separate list for each activity.
+      {t('Search starts a personal collection. Flashcards, notebook sheets, and handwriting practice draw on those saved words, without asking the learner to build a separate list for each activity.', 'Поиск начинает личную коллекцию. Карточки, листы-прописи и практика письма берут слова из неё, и ученику не нужно собирать отдельный список для каждого занятия.')}
     </p>
   </div>
 
   <ol class="journey-map">
     <li>
-      <h3>Find a character. Keep it close.</h3>
-      <p class="journey-map__decision">I kept Save on the character card, beside the Chinese, pinyin, meaning, and HSK level. A word found through search could go straight into the learner’s practice collection.</p>
-      <figure><Image src={searchScreen} alt="Two Sticks word search result with character details and a save action." widths={[240, 360, 480]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+      <h3>{t('Find a character. Keep it close.', 'Найти иероглиф. Держать его под рукой.')}</h3>
+      <p class="journey-map__decision">{t('I kept Save on the character card, beside the Chinese, pinyin, meaning, and HSK level. A word found through search could go straight into the learner’s practice collection.', 'Кнопку сохранения я оставил на карточке иероглифа, рядом с написанием, пиньинем, значением и уровнем HSK. Найденное слово могло сразу попасть в коллекцию для практики.')}</p>
+      <figure><Image src={searchScreen} alt={t('Two Sticks word search result with character details and a save action.', 'Результат поиска слова в «Двух палочках» с карточкой иероглифа и кнопкой сохранения.')} widths={[240, 360, 480]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
     <li>
-      <h3>Save five words. Then practise recall.</h3>
-      <p class="journey-map__decision">Flashcards use the learner’s saved words. I made them available once five words were saved, so the questions could offer alternatives. Before then, the empty state tells the learner how many more to add.</p>
-      <figure><Image src={flashcardScreen} alt="Two Sticks flashcard practice using the learner’s saved characters." widths={[240, 360, 480]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+      <h3>{t('Save five words. Then practise recall.', 'Сохрани пять слов. Потом тренируй память.')}</h3>
+      <p class="journey-map__decision">{t('Flashcards use the learner’s saved words. I made them available once five words were saved, so the questions could offer alternatives. Before then, the empty state tells the learner how many more to add.', 'Карточки строятся из сохранённых слов ученика. Я открывал их после пяти сохранённых слов, чтобы в вопросах были варианты ответа. До этого пустое состояние подсказывает, сколько слов ещё добавить.')}</p>
+      <figure><Image src={flashcardScreen} alt={t('Two Sticks flashcard practice using the learner’s saved characters.', 'Практика с карточками в «Двух палочках» на сохранённых иероглифах ученика.')} widths={[240, 360, 480]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
     <li class="is-sheet">
-      <h3>Look at how the character is built.</h3>
-      <p class="journey-map__decision">I brought structure, elements, similar characters, a mnemonic, and examples onto one notebook sheet, with a grid for writing. The learner could keep that sheet in the chat and return to it while practising.</p>
-      <figure><Image src={notebookFilled} alt="Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid." widths={[480, 720, 960]} sizes="(max-width: 660px) calc(100vw - 40px), 620px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+      <h3>{t('Look at how the character is built.', 'Посмотреть, как устроен иероглиф.')}</h3>
+      <p class="journey-map__decision">{t('I brought structure, elements, similar characters, a mnemonic, and examples onto one notebook sheet, with a grid for writing. The learner could keep that sheet in the chat and return to it while practising.', 'Я собрал на одном листе-прописи структуру, элементы, похожие иероглифы, мнемонику и примеры, а также сетку для письма. Ученик мог хранить этот лист в чате и возвращаться к нему во время практики.')}</p>
+      <figure><Image src={notebookFilled} alt={t('Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid.', 'Заполненный лист-пропись для 教 со структурой, порядком черт, похожими иероглифами, мнемоникой и сеткой для письма.')} widths={[480, 720, 960]} sizes="(max-width: 660px) calc(100vw - 40px), 620px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
     <li>
-      <h3>Now try writing it.</h3>
-      <p class="journey-map__decision">The handwriting app opens inside Telegram with a prompt and a canvas. The learner draws the character, checks it, and can clear it or move to the next word. The score measures recognition similarity to the target character; it does not verify or teach stroke order.</p>
-      <figure><Image src={writeScreen} alt="Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score." widths={[240, 360, 480]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
+      <h3>{t('Now try writing it.', 'Теперь попробуй написать.')}</h3>
+      <p class="journey-map__decision">{t('The handwriting app opens inside Telegram with a prompt and a canvas. The learner draws the character, checks it, and can clear it or move to the next word. The score measures recognition similarity to the target character; it does not verify or teach stroke order.', 'Приложение для прописей открывается внутри Telegram с заданием и холстом. Ученик рисует иероглиф, проверяет его и может стереть или перейти к следующему слову. Оценка показывает, насколько распознанный рисунок похож на нужный иероглиф; порядок черт она не проверяет и не учит.')}</p>
+      <figure><Image src={writeScreen} alt={t('Handwriting Web App with a drawn character, Clear, Check, Next word, and an accuracy score.', 'Web App для прописей с нарисованным иероглифом, кнопками «Очистить», «Проверить», «Следующее слово» и оценкой точности.')} widths={[240, 360, 480]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /></figure>
     </li>
   </ol>
 
   <div class="validation-board">
     <article class="validation-case">
-      <p>The prototype is no longer hosted because the bot, API, and Web App require paid infrastructure. The screens and public source code document the working version.</p>
+      <p>{t('The prototype is no longer hosted because the bot, API, and Web App require paid infrastructure. The screens and public source code document the working version.', 'Прототип больше не размещён, потому что боту, API и Web App нужна платная инфраструктура. Рабочую версию документируют экраны и открытый исходный код.')}</p>
     </article>
   </div>
 </section><section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
 
   <div class="chapter__body">
-    <h2>From a diploma idea to a working prototype.</h2>
+    <h2>{t('From a diploma idea to a working prototype.', 'От дипломной идеи к рабочему прототипу.')}</h2>
     <div class="prose">
-      <p>I designed and built the Russian-language Telegram bot, FastAPI backend, PostgreSQL word database, and Vue handwriting app. The implementation used the name Chinese Bee, which remains in the source repositories.</p>
-      <p>Alongside the practice shown above, it included facts and a character primer. Live teacher supervision, an HSK statistics dashboard, and plans for growing the audience stayed in the wider diploma brief.</p>
+      <p>{t('I designed and built the Russian-language Telegram bot, FastAPI backend, PostgreSQL word database, and Vue handwriting app. The implementation used the name Chinese Bee, which remains in the source repositories.', 'Я спроектировал и собрал русскоязычного Telegram-бота, бэкенд на FastAPI, базу слов на PostgreSQL и приложение для прописей на Vue. В реализации использовалось название Chinese Bee, оно осталось в репозиториях с кодом.')}</p>
+      <p>{t('Alongside the practice shown above, it included facts and a character primer. Live teacher supervision, an HSK statistics dashboard, and plans for growing the audience stayed in the wider diploma brief.', 'Помимо показанной выше практики, в нём были интересные факты и вводный курс о том, как устроены иероглифы. Живое сопровождение преподавателем, панель статистики HSK и планы по росту аудитории остались в более широком брифе диплома.')}</p>
     </div>
   </div>
   <div class="outcome-board">
-    <figure><Image src={notebookBlank} alt="Blank Two Sticks notebook sheet ready for character study." widths={[640, 960, 1280, 1600]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /><figcaption>A blank notebook sheet for character practice.</figcaption></figure>
-    <figure><Image src={writeScreen} alt="Dictation Web App showing handwriting and an accuracy score." widths={[240, 360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /><figcaption>Handwriting practice with a recognition score.</figcaption></figure>
+    <figure><Image src={notebookBlank} alt={t('Blank Two Sticks notebook sheet ready for character study.', 'Пустой лист-пропись «Двух палочек», готовый к изучению иероглифа.')} widths={[640, 960, 1280, 1600]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /><figcaption>{t('A blank notebook sheet for character practice.', 'Пустой лист-пропись для практики иероглифов.')}</figcaption></figure>
+    <figure><Image src={writeScreen} alt={t('Dictation Web App showing handwriting and an accuracy score.', 'Web App для прописей с рукописным иероглифом и оценкой точности.')} widths={[240, 360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" quality={85} loading="lazy" decoding="async" /><figcaption>{t('Handwriting practice with a recognition score.', 'Практика письма с оценкой распознавания.')}</figcaption></figure>
   </div>
 </section><section class="chapter reflection" id="reflection" data-index-section>
 
   <div class="chapter__body">
-    <h2>Does saving a word lead to practising it?</h2>
+    <h2>{t('Does saving a word lead to practising it?', 'Ведёт ли сохранение слова к практике?')}</h2>
     <div class="prose">
-      <p>The prototype connects lookup and practice. The next question is whether learners make that transition themselves.</p>
-      <p>I would look at whether people who save five characters begin handwriting practice, and whether they use the notebook sheets or skip them. That would help me decide where the path needs to be simpler.</p>
+      <p>{t('The prototype connects lookup and practice. The next question is whether learners make that transition themselves.', 'Прототип связывает поиск и практику. Следующий вопрос: переходят ли ученики от одного к другому сами.')}</p>
+      <p>{t('I would look at whether people who save five characters begin handwriting practice, and whether they use the notebook sheets or skip them. That would help me decide where the path needs to be simpler.', 'Я бы посмотрел, начинают ли практику письма те, кто сохранил пять иероглифов, и пользуются ли они листами-прописями или пропускают их. Это помогло бы понять, где путь нужно упростить.')}</p>
     </div>
   </div>
-</section></main><footer class="case-footer"><nav aria-label="Two Sticks project links"><a href="https://github.com/KidPudel/chinesebee_bot">Bot source ↗</a><a href="https://github.com/KidPudel/chinesebee_api">API source ↗</a><a href="https://github.com/KidPudel/chinese-bee-dictation">Dictation source ↗</a><a href={sitePath('/')}>Home</a><a href={sitePath('/case-studies/supergood/')}>SuperGood case study →</a></nav></footer>
+</section></main><footer class="case-footer"><nav aria-label={t('Two Sticks project links', 'Ссылки проекта «Две палочки»')}><a href="https://github.com/KidPudel/chinesebee_bot">{t('Bot source ↗', 'Код бота ↗')}</a><a href="https://github.com/KidPudel/chinesebee_api">{t('API source ↗', 'Код API ↗')}</a><a href="https://github.com/KidPudel/chinese-bee-dictation">{t('Dictation source ↗', 'Код прописей ↗')}</a><a href={localePath('/', locale)}>{t('Home', 'Главная')}</a><a href={localePath('/case-studies/supergood/', locale)}>{t('SuperGood case study →', 'Кейс SuperGood →')}</a></nav></footer>
 </BaseDocument>

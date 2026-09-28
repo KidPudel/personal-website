@@ -5,16 +5,18 @@ import checkout from '../../../assets/case_study_images/supergood/checkout.png';
 import dishSheetDark from '../../../assets/case_study_images/supergood/dish-sheet-dark.png';
 import dishSheetLight from '../../../assets/case_study_images/supergood/dish-sheet-light.png';
 import history from '../../../assets/case_study_images/supergood/history.png';
-import { sitePath } from '../../../config/site';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 import '../../../styles/case-study.css';
 
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
 const heroTitle = 'SuperGood';
 ---
 
 <BaseDocument
-  title="SuperGood case study | Igor Kupchinenko"
-  description="How I designed and built SuperGood’s ordering experience, from choosing a meal to ordering it again."
+  title={t('SuperGood case study | Igor Kupchinenko', 'Кейс SuperGood | Игорь Купчиненко')}
+  description={t('How I designed and built SuperGood’s ordering experience, from choosing a meal to ordering it again.', 'Как я спроектировал и собрал процесс заказа в SuperGood, от выбора блюда до повторного заказа.')}
   pageClass="supergood-case-study editorial-case-study"
   ogImage={dishSheetLight.src}
 >
@@ -24,22 +26,22 @@ const heroTitle = 'SuperGood';
     <header class="hero">
 
       <h1 class="hero-title">{heroTitle}</h1>
-      <p class="hero__line">Homemade food, without making the order feel like a gamble.</p>
+      <p class="hero__line">{t('Homemade food, without making the order feel like a gamble.', 'Домашняя еда, и заказ больше не похож на лотерею.')}</p>
       <p class="hero__intro">
-        I joined PizzaSushiWok as a mobile engineer. Its homemade-food delivery app, SuperGood, was drawing complaints about the app and whether the food was worth the price. I took on the order experience, from design to the Flutter build.
+        {t('I joined PizzaSushiWok as a mobile engineer. Its homemade-food delivery app, SuperGood, was drawing complaints about the app and whether the food was worth the price. I took on the order experience, from design to the Flutter build.', 'Я пришёл в PizzaSushiWok мобильным разработчиком. На их приложение доставки домашней еды SuperGood жаловались: и на само приложение, и на то, стоит ли еда своих денег. Я взял на себя процесс заказа, от дизайна до сборки на Flutter.')}
       </p>
 
       <dl class="facts">
-        <div><dt>Role</dt><dd>Product direction, research, UX/UI, Flutter</dd></div>
-        <div><dt>When</dt><dd>2024, at PizzaSushiWok</dd></div>
-        <div><dt>Research</dt><dd>Customer research and prototype tasks</dd></div>
-        <div><dt>Outcome</dt><dd>Shipped on Android and iOS. Later closed for financial reasons.</dd></div>
+        <div><dt>{t('Role', 'Роль')}</dt><dd>{t('Product direction, research, UX/UI, Flutter', 'Продуктовое видение, исследование, UX/UI, Flutter')}</dd></div>
+        <div><dt>{t('When', 'Когда')}</dt><dd>{t('2024, at PizzaSushiWok', '2024, в PizzaSushiWok')}</dd></div>
+        <div><dt>{t('Research', 'Исследование')}</dt><dd>{t('Customer research and prototype tasks', 'Исследование клиентов и задания на прототипе')}</dd></div>
+        <div><dt>{t('Outcome', 'Результат')}</dt><dd>{t('Shipped on Android and iOS. Later closed for financial reasons.', 'Выпущено на Android и iOS. Позже закрыто по финансовым причинам.')}</dd></div>
       </dl>
 
       <figure class="hero-phones">
         <Image
           src={dishSheetLight}
-          alt="Working SuperGood dish sheet with photo, price, nutrition, ingredients, and add-to-cart."
+          alt={t('Working SuperGood dish sheet with photo, price, nutrition, ingredients, and add-to-cart.', 'Рабочая карточка блюда SuperGood с фото, ценой, КБЖУ, составом и кнопкой добавления в корзину.')}
           widths={[320, 480, 640]}
           sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px"
           format="webp"
@@ -49,7 +51,7 @@ const heroTitle = 'SuperGood';
         />
         <Image
           src={checkout}
-          alt="Working SuperGood checkout with address, delivery time, payment, bonuses, and order button."
+          alt={t('Working SuperGood checkout with address, delivery time, payment, bonuses, and order button.', 'Рабочий экран оформления заказа SuperGood с адресом, временем доставки, оплатой, бонусами и кнопкой заказа.')}
           widths={[320, 480, 640]}
           sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px"
           format="webp"
@@ -58,25 +60,25 @@ const heroTitle = 'SuperGood';
         />
         <Image
           src={history}
-          alt="Working SuperGood order history with expandable cards and repeat-order actions."
+          alt={t('Working SuperGood order history with expandable cards and repeat-order actions.', 'Рабочая история заказов SuperGood с раскрывающимися карточками и кнопками повторного заказа.')}
           widths={[320, 480, 597]}
           sizes="(max-width: 760px) calc((100vw - 60px) / 3), 220px"
           format="webp"
           loading="eager"
           decoding="async"
         />
-        <figcaption>Dish details, checkout, and order history from the shipped app.</figcaption>
+        <figcaption>{t('Dish details, checkout, and order history from the shipped app.', 'Карточка блюда, оформление заказа и история заказов из выпущенного приложения.')}</figcaption>
       </figure>
     </header>
 
     <section class="chapter" id="context" data-index-section>
 
       <div class="chapter__body">
-        <h2>What makes this meal worth ordering?</h2>
+        <h2>{t('What makes this meal worth ordering?', 'Почему это блюдо стоит заказать?')}</h2>
         <div class="prose">
-          <p>Lunch at work. Dinner when cooking feels like too much. SuperGood competed with Кухня на районе for those everyday orders, promising homemade-style food without a long wait.</p>
-          <p>But public reviews questioned the value of the food as well as the app. I could change the ordering experience; kitchens, recipes, pricing, and courier operations were outside my role.</p>
-          <p>Before someone paid, the app needed to make the choice clear: what they were getting, what it would cost, and when it would arrive.</p>
+          <p>{t('Lunch at work. Dinner when cooking feels like too much. SuperGood competed with Кухня на районе for those everyday orders, promising homemade-style food without a long wait.', 'Обед на работе. Ужин, когда готовить нет сил. За эти будничные заказы SuperGood конкурировал с «Кухней на районе», обещая еду как домашнюю без долгого ожидания.')}</p>
+          <p>{t('But public reviews questioned the value of the food as well as the app. I could change the ordering experience; kitchens, recipes, pricing, and courier operations were outside my role.', 'Но в публичных отзывах сомневались и в том, стоит ли еда своих денег, и в самом приложении. Я мог изменить процесс заказа; кухни, рецепты, цены и работа курьеров были вне моей роли.')}</p>
+          <p>{t('Before someone paid, the app needed to make the choice clear: what they were getting, what it would cost, and when it would arrive.', 'Ещё до оплаты приложение должно было сделать выбор понятным: что человек получит, сколько это будет стоить и когда привезут.')}</p>
         </div>
       </div>
     </section>
@@ -84,12 +86,12 @@ const heroTitle = 'SuperGood';
     <section class="chapter" id="research" data-index-section>
 
       <div class="chapter__body">
-        <h2>The decision continued after choosing a dish.</h2>
+        <h2>{t('The decision continued after choosing a dish.', 'Решение продолжалось и после выбора блюда.')}</h2>
         <div class="prose">
-          <p>Customer conversations, observing people order, and prototype tasks kept bringing me back to the same concerns. A photo did not tell people enough about a dish. They checked delivery time and total before paying. And weekday orders often repeated.</p>
-          <p>I also studied nearby services. Кухня на районе offered a useful comparison for the menu and delivery promise. Самокат showed ways to handle address selection, item quantities, and the basket while browsing.</p>
-          <p>I used comparison tests and polls as well, but I do not have reliable sample sizes or win rates to report. The decisions below describe how I responded to the observations.</p>
-          <p id="direction">I was rebuilding the separate Android and iOS apps in Flutter. That let me carry the same ordering behaviour across both platforms, from the first dish to the next visit.</p>
+          <p>{t('Customer conversations, observing people order, and prototype tasks kept bringing me back to the same concerns. A photo did not tell people enough about a dish. They checked delivery time and total before paying. And weekday orders often repeated.', 'Разговоры с клиентами, наблюдение за тем, как люди заказывают, и задания на прототипе раз за разом возвращали меня к одним и тем же вопросам. Фото рассказывало о блюде недостаточно. Перед оплатой люди проверяли время доставки и сумму. А будничные заказы часто повторялись.')}</p>
+          <p>{t('I also studied nearby services. Кухня на районе offered a useful comparison for the menu and delivery promise. Самокат showed ways to handle address selection, item quantities, and the basket while browsing.', 'Я также изучил похожие сервисы. «Кухня на районе» дала полезное сравнение по меню и обещанию доставки. «Самокат» показал, как решать выбор адреса, количество товаров и корзину прямо во время просмотра.')}</p>
+          <p>{t('I used comparison tests and polls as well, but I do not have reliable sample sizes or win rates to report. The decisions below describe how I responded to the observations.', 'Я также проводил сравнительные тесты и опросы, но надёжных данных о размере выборок или о том, какой вариант выигрывал, у меня нет. Решения ниже описывают, как я отвечал на наблюдения.')}</p>
+          <p id="direction">{t('I was rebuilding the separate Android and iOS apps in Flutter. That let me carry the same ordering behaviour across both platforms, from the first dish to the next visit.', 'Я пересобирал отдельные приложения для Android и iOS на Flutter. Это позволило перенести одинаковую логику заказа на обе платформы, от первого блюда до следующего визита.')}</p>
         </div>
       </div>
     </section>
@@ -97,43 +99,43 @@ const heroTitle = 'SuperGood';
     <section class="chapter chapter--wide" id="solution" data-index-section>
 
       <div class="chapter__body">
-        <h2>From “what’s in it?” to “the same again.”</h2>
+        <h2>{t('From “what’s in it?” to “the same again.”', 'От «а что там внутри?» до «то же самое, пожалуйста».')}</h2>
         <p class="wide-copy">
-          I focused on the moments when someone needed more information, changed their order, or returned for a meal they already knew.
+          {t('I focused on the moments when someone needed more information, changed their order, or returned for a meal they already knew.', 'Я сосредоточился на моментах, когда человеку нужно больше информации, когда он меняет заказ или возвращается за уже знакомым блюдом.')}
         </p>
       </div>
 
       <div class="path-group">
         <ol class="journey-map">
           <li id="dish">
-            <h3>A photo can only tell you so much.</h3>
-            <p class="journey-map__decision">I put weight, ingredients, nutrition, and extra cooking time on the dish sheet, with the price beside Add. People could inspect what they were buying before putting it in the basket.</p>
+            <h3>{t('A photo can only tell you so much.', 'Фото рассказывает не всё.')}</h3>
+            <p class="journey-map__decision">{t('I put weight, ingredients, nutrition, and extra cooking time on the dish sheet, with the price beside Add. People could inspect what they were buying before putting it in the basket.', 'Я добавил в карточку блюда вес, состав, КБЖУ и дополнительное время приготовления, а цену поставил рядом с кнопкой добавления. Люди могли рассмотреть, что покупают, до того как положить в корзину.')}</p>
             <figure>
-              <Image src={dishSheetLight} alt="Working dish sheet with photo, weight, price, nutrition, ingredients, and add to cart." widths={[360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
+              <Image src={dishSheetLight} alt={t('Working dish sheet with photo, weight, price, nutrition, ingredients, and add to cart.', 'Рабочая карточка блюда с фото, весом, ценой, КБЖУ, составом и кнопкой добавления в корзину.')} widths={[360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
 
             </figure>
           </li>
           <li id="basket">
-            <h3>Add a dish. Keep track of the order.</h3>
-            <p class="journey-map__decision">I put quantity controls on the item and kept delivery time, item count, and total in a persistent order bar. Changing a quantity no longer required a trip away from the menu.</p>
+            <h3>{t('Add a dish. Keep track of the order.', 'Добавить блюдо. Не терять из виду заказ.')}</h3>
+            <p class="journey-map__decision">{t('I put quantity controls on the item and kept delivery time, item count, and total in a persistent order bar. Changing a quantity no longer required a trip away from the menu.', 'Я вынес управление количеством на саму позицию, а срок доставки, число позиций и сумму держал в закреплённой панели заказа. Чтобы изменить количество, больше не нужно было уходить из меню.')}</p>
             <figure>
-              <Image src={dishSheetDark} alt="Working dark dish sheet with a persistent order bar showing delivery time, count, and total." widths={[360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
+              <Image src={dishSheetDark} alt={t('Working dark dish sheet with a persistent order bar showing delivery time, count, and total.', 'Рабочая карточка блюда в тёмной теме с закреплённой панелью заказа: срок доставки, количество и сумма.')} widths={[360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
 
             </figure>
           </li>
           <li id="pay">
-            <h3>One place to check before paying.</h3>
-            <p class="journey-map__decision">At checkout, I brought address, delivery time, payment, bonuses, and total together. Each could be changed in place while keeping the order intact.</p>
+            <h3>{t('One place to check before paying.', 'Одно место, чтобы всё проверить перед оплатой.')}</h3>
+            <p class="journey-map__decision">{t('At checkout, I brought address, delivery time, payment, bonuses, and total together. Each could be changed in place while keeping the order intact.', 'На экране оформления я собрал вместе адрес, время доставки, оплату, бонусы и итог. Каждый пункт можно было изменить на месте, не теряя заказ.')}</p>
             <figure>
-              <Image src={checkout} alt="Working checkout with address, delivery time, payment, bonuses, and order button." widths={[360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
+              <Image src={checkout} alt={t('Working checkout with address, delivery time, payment, bonuses, and order button.', 'Рабочий экран оформления с адресом, временем доставки, оплатой, бонусами и кнопкой заказа.')} widths={[360, 480, 640]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
 
             </figure>
           </li>
           <li id="history">
-            <h3>You already know what you want.</h3>
-            <p class="journey-map__decision">Weekday meals often repeated. I made history a way to order again: expand an earlier order, add individual dishes, or bring back the whole basket. Favourites offered another route to familiar meals.</p>
+            <h3>{t('You already know what you want.', 'Ты уже знаешь, чего хочешь.')}</h3>
+            <p class="journey-map__decision">{t('Weekday meals often repeated. I made history a way to order again: expand an earlier order, add individual dishes, or bring back the whole basket. Favourites offered another route to familiar meals.', 'Будничные заказы часто повторялись. Я превратил историю в способ заказать снова: раскрыть прошлый заказ, добавить отдельные блюда или вернуть всю корзину. Избранное давало ещё один путь к знакомым блюдам.')}</p>
             <figure>
-              <Image src={history} alt="Working order history with expandable cards, repeat buttons, and add whole order." widths={[360, 480, 597]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
+              <Image src={history} alt={t('Working order history with expandable cards, repeat buttons, and add whole order.', 'Рабочая история заказов с раскрывающимися карточками, кнопками повтора и добавлением всего заказа.')} widths={[360, 480, 597]} sizes="(max-width: 340px) calc(100vw - 40px), 300px" format="webp" loading="lazy" decoding="async" />
 
             </figure>
           </li>
@@ -142,7 +144,7 @@ const heroTitle = 'SuperGood';
 
       <div class="validation-board">
         <article class="validation-case">
-          <p>The screens shown here survive from production. The earlier app and prototypes were not preserved, so there is no visual before-and-after comparison.</p>
+          <p>{t('The screens shown here survive from production. The earlier app and prototypes were not preserved, so there is no visual before-and-after comparison.', 'Экраны здесь сохранились из продакшена. Прежнее приложение и прототипы не сохранились, поэтому визуального сравнения «до и после» нет.')}</p>
         </article>
       </div>
     </section>
@@ -150,10 +152,10 @@ const heroTitle = 'SuperGood';
     <section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
 
       <div class="chapter__body">
-        <h2>The app shipped on Android and iOS.</h2>
+        <h2>{t('The app shipped on Android and iOS.', 'Приложение вышло на Android и iOS.')}</h2>
         <div class="prose">
-          <p>I designed and built the Flutter app, replacing the two separate applications. My work covered first run, menu and basket, payment and 3DS, maps and tracking, favourites and history, promotions and loyalty, themes, and adaptive layouts, followed by usability and reliability fixes.</p>
-          <p>SuperGood later closed because of the company’s financial situation. The redesign reached production, but I do not have permissioned conversion, retention, or repeat-order metrics to report its effect.</p>
+          <p>{t('I designed and built the Flutter app, replacing the two separate applications. My work covered first run, menu and basket, payment and 3DS, maps and tracking, favourites and history, promotions and loyalty, themes, and adaptive layouts, followed by usability and reliability fixes.', 'Я спроектировал и собрал приложение на Flutter вместо двух отдельных. Моя работа охватывала первый запуск, меню и корзину, оплату и 3DS, карты и отслеживание, избранное и историю, акции и лояльность, темы и адаптивные макеты, а затем исправления юзабилити и надёжности.')}</p>
+          <p>{t('SuperGood later closed because of the company’s financial situation. The redesign reached production, but I do not have permissioned conversion, retention, or repeat-order metrics to report its effect.', 'Позже SuperGood закрылся из-за финансового положения компании. Редизайн дошёл до продакшена, но разрешённых к публикации метрик конверсии, удержания или повторных заказов, которые показали бы его эффект, у меня нет.')}</p>
         </div>
       </div>
     </section>
@@ -161,10 +163,10 @@ const heroTitle = 'SuperGood';
     <section class="chapter reflection" id="reflection" data-index-section>
 
       <div class="chapter__body">
-        <h2>Did a clearer order lead to another one?</h2>
+        <h2>{t('Did a clearer order lead to another one?', 'Привёл ли понятный заказ к следующему?')}</h2>
         <div class="prose">
-          <p>The redesign gave people more information before paying and a shorter route back to a familiar meal. Whether those changes made them more likely to order again is the question I would want to measure.</p>
-          <p>I would start with repeat-order completion, then look at whether clearer dish details and delivery time reduced the “not worth it” complaint.</p>
+          <p>{t('The redesign gave people more information before paying and a shorter route back to a familiar meal. Whether those changes made them more likely to order again is the question I would want to measure.', 'Редизайн дал людям больше информации до оплаты и короткий путь назад к знакомому блюду. Стали ли люди из-за этого чаще заказывать снова? Это вопрос, который я хотел бы измерить.')}</p>
+          <p>{t('I would start with repeat-order completion, then look at whether clearer dish details and delivery time reduced the “not worth it” complaint.', 'Я бы начал с доли завершённых повторных заказов, а потом посмотрел бы, стало ли меньше жалоб «не стоит своих денег» благодаря понятным деталям блюда и сроку доставки.')}</p>
         </div>
       </div>
     </section>
@@ -172,10 +174,10 @@ const heroTitle = 'SuperGood';
   </main>
 
   <footer class="case-footer">
-    <nav aria-label="SuperGood project links">
-      <a href={sitePath('/')}>Home</a>
-      <a href={sitePath('/case-studies/two-sticks/')}>Two Sticks case study →</a>
-      <a href={sitePath('/case-studies/observatory/')}>Observatory case study →</a>
+    <nav aria-label={t('SuperGood project links', 'Ссылки проекта SuperGood')}>
+      <a href={localePath('/', locale)}>{t('Home', 'Главная')}</a>
+      <a href={localePath('/case-studies/two-sticks/', locale)}>{t('Two Sticks case study →', 'Кейс «Две палочки» →')}</a>
+      <a href={localePath('/case-studies/observatory/', locale)}>{t('Observatory case study →', 'Кейс Observatory →')}</a>
     </nav>
   </footer>
 </BaseDocument>
