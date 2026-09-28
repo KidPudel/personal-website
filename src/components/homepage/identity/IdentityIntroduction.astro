@@ -130,11 +130,14 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     display: inline-block;
     isolation: isolate;
     color: inherit;
-    border-bottom: 0.08em dotted currentColor;
     font-family: var(--font-special);
     font-style: normal;
     line-height: 1.05;
-    text-decoration: none;
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
   }
 
   .identity__joyful-word {

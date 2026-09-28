@@ -21,7 +21,7 @@ const cards = [
   {
     background: observatoryCard,
     name: 'Observatory',
-    pitch: t('Activity Monitor, but more.', 'Мониторинг системы, но больше.'),
+    pitch: t('Activity Monitor, but more.', 'Как Мониторинг системы, только больше.'),
     responsibility: t(
       'Concept to launch: product design, identity, and storytelling.',
       'От концепции до запуска: продуктовый дизайн, айдентика и сторителлинг.',
@@ -33,7 +33,7 @@ const cards = [
   },
   {
     background: instagramCard,
-    name: t('Instagram Saves redesign', 'Редизайн сохранённого в Instagram'),
+    name: t('Instagram Saves redesign', 'Редизайн «Сохранённого» в Instagram'),
     pitch: t('The more you save, the less you can find.', 'Чем больше сохраняешь, тем сложнее найти.'),
     responsibility: t('Research, UX/UI, and prototyping.', 'Исследование, UX/UI и прототипирование.'),
     href: localePath('/case-studies/instagram-saves-redesign/', locale),
@@ -44,8 +44,8 @@ const cards = [
   {
     background: twoSticksPortraitCard,
     name: t('Two Sticks', 'Две палочки'),
-    pitch: t('Learn Chinese, all inside one bot.', 'Учить китайский, не выходя из одного бота.'),
-    responsibility: t('Product direction, UX/UI, and engineering.', 'Продуктовое видение, UX/UI и разработка.'),
+    pitch: t('Learn Chinese, all inside one bot.', 'Учить китайский, не выходя из бота.'),
+    responsibility: t('Product direction, UX/UI, and engineering.', 'Продукт, UX/UI и разработка.'),
     href: localePath('/case-studies/two-sticks/', locale),
     area: 'chinese',
     kind: 'chinese',
@@ -54,8 +54,8 @@ const cards = [
   {
     background: supergoodCard,
     name: 'SuperGood',
-    pitch: t('Homemade food, without the guesswork.', 'Домашняя еда, без гадания на кофейной гуще.'),
-    responsibility: t('Research, product design, and Flutter build.', 'Исследование, продуктовый дизайн и сборка на Flutter.'),
+    pitch: t('Homemade food, without the guesswork.', 'Домашняя еда, и никаких сюрпризов.'),
+    responsibility: t('Research, product design, and Flutter build.', 'Исследование, продуктовый дизайн и разработка на Flutter.'),
     href: localePath('/case-studies/supergood/', locale),
     area: 'supergood',
     kind: 'supergood',
@@ -200,17 +200,12 @@ const cards = [
     column-gap: 0.22em;
     margin: 0;
     color: var(--color-ink);
-    font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
+    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
     font-size: clamp(1.55rem, 2.4vw, 2.35rem);
     font-weight: 400;
     letter-spacing: -0.035em;
     line-height: 1.1;
     text-align: left;
-  }
-
-  .showcase__title:lang(ru) {
-    letter-spacing: -0.06em;
-    word-spacing: 0.14em;
   }
 
   .showcase__click-cue {

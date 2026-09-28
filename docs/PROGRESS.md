@@ -2,12 +2,23 @@
 
 Last updated: 2026-09-28
 
+## One underline for interactive text
+
+- Every link and interactive word now shares one dotted underline defined by the `--link-line-*` tokens in `src/styles/tokens.css`: 1.5 px dots in ink at 45%, offset 0.3 em, full ink on hover and focus. It replaces about seven slightly different dotted styles on the homepage (including “joyful”, which used a dotted border) and the default solid underlines in case studies, blog, and 404. The internal selected-work prototype page is unchanged.
+- The personal-note words keep a solid underline while their panel is open.
+
+## Personal note: closing sentence
+
+- Replaced the bulleted fact list (portrait, doodles, blog behind “+” accordions) with one closing sentence in both languages. It sits on its own row below both columns as an aside after the story. Igor approved trimming the right column (about 165 to 105 words) so the “before” and “after” columns end close together. Its three dotted words open the portrait, the doodles, or the writing list beneath it, one at a time; the open word gets a solid underline.
+- Without JavaScript every panel is visible and each word links to its panel. Closed panels are hidden from focus and screen readers; reduced motion keeps only the fade.
+- Verified at 1280 px and 375 px in English and Russian with no horizontal overflow.
+
 ## Russian version and language switcher
 
 - Every page now exists in English at its current address and in Russian under `/ru/`: homepage, blog index and posts, and all four case studies. The header's `en / ру` switcher links to the same page in the other language; each language is named in its own script.
 - English pages send a first-time visitor to the Russian page when Russian comes before English in the browser's language list. A choice made with the switcher is remembered in `localStorage` and overrides the system language. Russian pages never redirect, so shared `/ru/` links and search crawlers stay put. A language redirect still counts as a fresh arrival, so the opening plays.
 - Copy is translated in place: `t('English', 'Русский')` pairs in each component and case-study page, locale-keyed objects in `src/content/homepage/`, and Russian posts in `src/content/writing/ru/` under the English file name. Untranslated posts fall back to the English text on the Russian address.
-- The Latin fonts have no Cyrillic, so Cyrillic-only companions are loaded by `unicode-range` (English pages never fetch them): Golos Text for reading, Kurale for display, Playfair Display for the Instrument Serif headings, Caveat for handwriting. Caveat and Playfair are size-adjusted to match; «радостным» uses a horizontally stretched circle with the English circle's height.
+- The Latin fonts have no Cyrillic, so Cyrillic-only companions are loaded by `unicode-range` (English pages never fetch them): Golos Text for reading, Alegreya Bold for display, Oranienbaum for the Instrument Serif headings, Caveat for handwriting. Igor chose Alegreya and Oranienbaum from a side-by-side comparison, replacing Kurale and Playfair Display. Caveat and Oranienbaum are size-adjusted to match; «радостнее» uses a horizontally stretched circle with the English circle's height.
 - Kept in English on purpose: the interactive Instagram mock (a replica of Instagram's English UI, marked `lang="en"`), the handwritten “Hello, I’m Igor.” image, product screen names in Observatory, and the internal selected-work prototype page. The Two Sticks bot demo was already Russian. The Russian copy uses informal «ты»; this is an editorial choice for Igor to confirm.
 - Verified: Astro diagnostics, the media contract, and root and `/personal-website/` builds pass; hreflang and canonical links are correct under both bases; the redirect logic was tested against eight language and saved-choice combinations; desktop and 375 px views have no horizontal overflow.
 

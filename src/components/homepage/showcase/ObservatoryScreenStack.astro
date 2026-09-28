@@ -15,7 +15,7 @@ const screens = [
   { src: resultsScreen, label: t('Saved results', 'Сохранённые результаты') },
   { src: testingScreen, label: t('Recording', 'Запись') },
   { src: setupScreen, label: t('Test setup', 'Настройка теста') },
-  { src: mainScreen, label: t('Live view', 'Живой просмотр') },
+  { src: mainScreen, label: t('Live view', 'В реальном времени') },
 ];
 ---
 
@@ -27,7 +27,7 @@ const screens = [
     class="observatory-stack__trigger"
     aria-label={t(
       'Cycle Observatory outcome screens: Live view, Test setup, Recording, Saved results, and Comparison',
-      'Листать итоговые экраны Observatory: живой просмотр, настройка теста, запись, сохранённые результаты и сравнение',
+      'Листать итоговые экраны Observatory: просмотр в реальном времени, настройка теста, запись, сохранённые результаты и сравнение',
     )}
   >
     {screens.map((screen) => (

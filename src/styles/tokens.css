@@ -98,24 +98,26 @@
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
+/* Stands in for Averia Serif Libre. Like Averia here, only the bold is
+   shipped, so it serves every weight the display role asks for. */
 @font-face {
-  font-family: 'Kurale';
-  src: url('../assets/fonts/kurale-cyrillic-400-normal.woff2') format('woff2');
+  font-family: 'Alegreya';
+  src: url('../assets/fonts/alegreya-cyrillic-700-normal.woff2') format('woff2');
   font-style: normal;
   font-weight: 400 700;
   font-display: swap;
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
-/* Stands in for Instrument Serif, which has no Cyrillic. Scaled to match its
-   condensed proportions; headings also tighten tracking under :lang(ru). */
+/* Stands in for Instrument Serif: a condensed, high-contrast serif. */
 @font-face {
-  font-family: 'Playfair Display';
-  src: url('../assets/fonts/playfair-display-cyrillic-400-normal.woff2') format('woff2');
+  font-family: 'Oranienbaum';
+  src: url('../assets/fonts/oranienbaum-cyrillic-400-normal.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  size-adjust: 86%;
+  /* Matches Instrument Serif's letter height. */
+  size-adjust: 111%;
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
@@ -140,13 +142,20 @@
     --color-focus: #7db7ff;
 
     --font-reading: 'Instrument Sans', 'Golos Text', Arial, sans-serif;
-    --font-display: 'Averia Serif Libre', 'Kurale', Georgia, serif;
-    --font-editorial: 'Crimson Text', 'Kurale', Georgia, serif;
+    --font-display: 'Averia Serif Libre', 'Alegreya', Georgia, serif;
+    --font-editorial: 'Crimson Text', 'Alegreya', Georgia, serif;
     --font-special: 'Bright Chalk', 'Delius', 'Caveat', Arial, sans-serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', 'Caveat', Arial, sans-serif;
 
     --reading-width: 58ch;
     --page-gutter: clamp(1.25rem, 14.4vw, 15rem);
+    /* One underline for every link and interactive word on the site. */
+    --link-line-style: dotted;
+    --link-line-width: 1.5px;
+    --link-line-offset: 0.3em;
+    --link-line-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+    --link-line-color-active: var(--color-ink);
+
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
     --drawn-icon-wobble-duration: 1600ms;

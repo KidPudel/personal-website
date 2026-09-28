@@ -127,14 +127,17 @@ const responses = [
   }
 
   .snoring-chart figcaption a {
-    text-decoration-style: dotted;
-    text-decoration-thickness: 0.08rem;
-    text-underline-offset: 0.24rem;
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
   }
 
   .snoring-chart figcaption a:hover,
   .snoring-chart figcaption a:focus-visible {
     color: var(--color-ink);
+    text-decoration-color: var(--link-line-color-active);
   }
 
   @media (max-width: 480px) {

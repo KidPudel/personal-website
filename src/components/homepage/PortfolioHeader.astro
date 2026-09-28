@@ -139,7 +139,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
     private syncContactSurface = (details: HTMLDetailsElement, panel: HTMLElement) => {
       if (!details.open) {
-        this.style.setProperty('--contact-surface-left', '5rem');
+        this.style.setProperty('--contact-surface-left', '1.5rem');
         this.style.setProperty('--contact-surface-bottom', '2.5rem');
         return;
       }
@@ -172,7 +172,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     font-family: var(--font-reading);
     isolation: isolate;
     --contact-surface-bottom: 2.5rem;
-    --contact-surface-left: 5rem;
+    --contact-surface-left: 1.5rem;
     transform: translateY(0);
     transition: transform 220ms var(--ease-in-out);
   }
@@ -246,10 +246,10 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   .navigation-action__label {
     text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: color-mix(in srgb, var(--color-muted) 72%, transparent);
-    text-decoration-thickness: 0.09rem;
-    text-underline-offset: 0.34rem;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
     opacity: 1;
     transform: scale(1);
     transition:
@@ -354,14 +354,15 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     color: inherit;
     font-size: 0.9rem;
     text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: color-mix(in srgb, var(--color-muted) 64%, transparent);
-    text-underline-offset: 0.28rem;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
   }
 
   .contact-disclosure__panel a:hover,
   .contact-disclosure__panel a:focus-visible {
-    text-decoration-color: var(--color-ink);
+    text-decoration-color: var(--link-line-color-active);
   }
 
   .language-switch {
@@ -392,17 +393,17 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   a.language-switch__option {
     text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: color-mix(in srgb, var(--color-muted) 56%, transparent);
-    text-decoration-thickness: 0.09rem;
-    text-underline-offset: 0.34rem;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
     transition: color 150ms ease, text-decoration-color 150ms ease;
   }
 
   a.language-switch__option:hover,
   a.language-switch__option:focus-visible {
     color: var(--color-ink);
-    text-decoration-color: var(--color-ink);
+    text-decoration-color: var(--link-line-color-active);
   }
 
   a.language-switch__option:focus-visible {

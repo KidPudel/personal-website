@@ -57,6 +57,14 @@ import { sitePath } from '../config/site';
 
   .not-found a {
     color: inherit;
-    text-underline-offset: 0.35rem;
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
+  }
+
+  .not-found a:is(:hover, :focus-visible) {
+    text-decoration-color: var(--link-line-color-active);
   }
 </style>
