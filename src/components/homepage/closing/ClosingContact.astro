@@ -1,0 +1,101 @@
+---
+import { connectLinks, publicEmail } from '../../../config/site';
+import { toLocale, translator } from '../../../i18n/locales';
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+// The header already says "Get in touch", so the heading here is for assistive tech only.
+// Email leads as the address itself; the rest follow as a quiet line.
+const [email, ...elsewhere] = connectLinks(locale);
+---
+
+<section id="contact" class="closing-contact" aria-labelledby="closing-contact-title">
+  <h2 id="closing-contact-title" class="sr-only">{t('Get in touch', 'Связаться')}</h2>
+
+  <a class="closing-contact__email" href={email.href}>{publicEmail}</a>
+
+  <ul class="closing-contact__links" role="list">
+    {elsewhere.map((link) => (
+      <li><a href={link.href}>{link.label}</a></li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .closing-contact {
+    width: min(calc(100% - 2 * var(--page-gutter)), 130rem);
+    margin-inline: auto;
+    padding: 0 0 clamp(8rem, 13vw, 12rem);
+    color: var(--color-ink);
+  }
+
+  .closing-contact__email {
+    display: inline-block;
+    max-width: 100%;
+    color: inherit;
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .closing-contact__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 clamp(1.1rem, 2.2vw, 2rem);
+    margin: 0.6rem 0 0;
+    padding: 0;
+    font-family: var(--font-reading);
+    font-size: clamp(0.9rem, 0.2vw + 0.86rem, 1rem);
+    letter-spacing: 0.025em;
+    list-style: none;
+  }
+
+  .closing-contact__links a {
+    display: inline-flex;
+    min-height: 2.75rem;
+    align-items: center;
+    color: inherit;
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .closing-contact a:hover,
+  .closing-contact a:focus-visible {
+    text-decoration-color: var(--link-line-color-active);
+  }
+
+  .closing-contact a:focus-visible {
+    border-radius: 0.08em;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (max-width: 52rem) {
+    .closing-contact {
+      width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
+    }
+
+    .closing-contact__links {
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .closing-contact a {
+      transition: none;
+    }
+  }
+</style>

@@ -19,6 +19,7 @@ Do not introduce a client application framework, global application state, a cli
 | Address | Responsibility |
 | --- | --- |
 | `/` | Personal homepage, current authored opening experience, work presentation, and personal-note constellation |
+| `/case-studies/` | Listing of all case studies, sharing copy with the homepage cards |
 | `/case-studies/instagram-saves-redesign/` | Instagram Saves redesign editorial case study |
 | `/case-studies/observatory/` | Observatory editorial case study |
 | `/case-studies/supergood/` | SuperGood editorial case study |

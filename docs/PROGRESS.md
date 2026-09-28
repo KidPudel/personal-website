@@ -2,6 +2,11 @@
 
 Last updated: 2026-09-28
 
+## Case studies listing and localized 404
+
+- Added `/case-studies/` and `/ru/case-studies/`: a two-column grid (one column on phones) of the four case studies, each with its homepage card texture, a product screen, name, pitch, year, and role. The whole card is the link. Names, pitches, roles, and years now live in `src/content/case-studies.ts`, shared with the homepage cards. Every case study footer links to the listing; the listing has no footer because the header's Home is always in reach.
+- The 404 page shows one language per visit instead of both: Russian for `/ru/` addresses, otherwise the saved choice, otherwise the system language, and English without JavaScript. The script also translates the shared header for Russian visitors.
+
 ## One underline for interactive text
 
 - Every link and interactive word now shares one dotted underline defined by the `--link-line-*` tokens in `src/styles/tokens.css`: 1.5 px dots in ink at 45%, offset 0.3 em, full ink on hover and focus. It replaces about seven slightly different dotted styles on the homepage (including “joyful”, which used a dotted border) and the default solid underlines in case studies, blog, and 404. The internal selected-work prototype page is unchanged.

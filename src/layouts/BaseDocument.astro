@@ -52,6 +52,8 @@ const alternates = translated
 // unless they chose a language with the switcher.
 const russianPath = translated && locale === defaultLocale ? localePath(pagePath, 'ru') : undefined;
 const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
+// Individual case studies get the section index; the case-studies listing does not.
+const showReadingProgress = /\/case-studies\/[^/]+\//.test(Astro.url.pathname);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 ---
@@ -151,7 +153,7 @@ const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
       alternatePath={translated ? pagePath : undefined}
     />
     <slot />
-    {Astro.url.pathname.includes("/case-studies/") && <ReadingProgress />}
+    {showReadingProgress && <ReadingProgress />}
     <script is:inline>
       const skipLink = document.querySelector('.skip-link');
       const mainContent = document.getElementById('main-content');

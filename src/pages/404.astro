@@ -1,6 +1,7 @@
 ---
-import BaseDocument from '../layouts/BaseDocument.astro';
 import { sitePath } from '../config/site';
+import { localeStorageKey } from '../i18n/locales';
+import BaseDocument from '../layouts/BaseDocument.astro';
 ---
 
 <BaseDocument
@@ -12,59 +13,84 @@ import { sitePath } from '../config/site';
   translated={false}
 >
   <main id="main-content" class="not-found">
-    <p>404</p>
-    <h1>This page wandered off.</h1>
-    <a href={sitePath('/')}>Back to Igor</a>
-    <p class="not-found__translation" lang="ru">Эта страница куда-то ушла.</p>
-    <a href={sitePath('/ru/')} lang="ru" hreflang="ru">Вернуться к Игорю</a>
+    <p class="not-found__code">404</p>
+    <h1 class="not-found__message" data-not-found-copy="en">This page wandered off.</h1>
+    <h1 class="not-found__message" lang="ru" data-not-found-copy="ru" hidden>Эта страница куда-то ушла.</h1>
   </main>
+
+  <script
+    is:inline
+    define:vars={{
+      localeStorageKey,
+      russianBase: sitePath('/ru/'),
+      russianResume: sitePath('/resume/igor-kupchinenko-product-designer-resume-ru.pdf'),
+    }}
+  >
+    // GitHub Pages serves this one file for every missing address, so the
+    // language is chosen here: a /ru/ address, then a saved choice, then the
+    // system language. Without JavaScript the page stays English.
+    let chosenLocale = null;
+    try {
+      chosenLocale = localStorage.getItem(localeStorageKey);
+    } catch {}
+    const systemLanguages = navigator.languages?.length ? navigator.languages : [navigator.language ?? ''];
+    const systemLocale = systemLanguages
+      .map((language) => language.toLowerCase().split('-')[0])
+      .find((language) => language === 'ru' || language === 'en');
+    const russian = location.pathname.startsWith(russianBase) || (chosenLocale ?? systemLocale) === 'ru';
+
+    if (russian) {
+      document.documentElement.lang = 'ru';
+      document.title = 'Страница не найдена | Игорь Купчиненко';
+      document.querySelectorAll('[data-not-found-copy]').forEach((copy) => {
+        copy.hidden = copy.getAttribute('data-not-found-copy') !== 'ru';
+      });
+
+      // The shared header is rendered in English for this page.
+      const header = document.querySelector('[data-site-header]');
+      header?.querySelector('nav')?.setAttribute('aria-label', 'Основная навигация');
+      const contactLabel = header?.querySelector('#site-contact .navigation-action__label');
+      if (contactLabel) contactLabel.textContent = 'Связаться';
+      header?.querySelectorAll('.contact-disclosure__panel a').forEach((link) => {
+        if (link.textContent === 'Email') link.textContent = 'Почта';
+        if (link.textContent === 'Résumé PDF') {
+          link.textContent = 'Резюме PDF';
+          link.setAttribute('href', russianResume);
+        }
+      });
+    }
+  </script>
 </BaseDocument>
 
 <style>
   .not-found {
-    display: grid;
+    display: flex;
     min-height: 100svh;
-    align-content: center;
-    justify-items: start;
-    gap: 1.5rem;
-    padding: clamp(1.5rem, 6vw, 7rem);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem var(--page-gutter);
     background: var(--color-field);
     color: var(--color-ink);
-  }
-
-  .not-found p,
-  .not-found h1 {
-    margin: 0;
-  }
-
-  .not-found p,
-  .not-found a {
     font-family: var(--font-reading);
+    text-align: center;
   }
 
-  .not-found h1 {
-    max-width: 12ch;
+  .not-found__code {
+    margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(3.5rem, 10vw, 8rem);
+    font-size: clamp(5rem, 16vw, 9rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .not-found__message {
+    margin: 1rem 0 0;
+    color: var(--color-copy);
+    font-size: 1.125rem;
     font-weight: 400;
-    line-height: 0.95;
+    line-height: 1.4;
   }
 
-  .not-found .not-found__translation {
-    margin-top: 1rem;
-    font-size: 1.25rem;
-  }
-
-  .not-found a {
-    color: inherit;
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
-  }
-
-  .not-found a:is(:hover, :focus-visible) {
-    text-decoration-color: var(--link-line-color-active);
-  }
 </style>

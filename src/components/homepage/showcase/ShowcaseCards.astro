@@ -4,10 +4,7 @@ import '@fontsource/instrument-serif/400.css';
 
 import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
 import clickCue from '../../../assets/art/icons/Doodles_point_click.png';
-import observatoryCard from '../../../assets/showcase-cards/card1.png';
-import supergoodCard from '../../../assets/showcase-cards/card2.png';
-import instagramCard from '../../../assets/showcase-cards/card3.png';
-import twoSticksPortraitCard from '../../../assets/showcase-cards/card4.png';
+import { caseStudies, caseStudyPath } from '../../../content/case-studies';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import InstagramPrototype from './InstagramPrototype.astro';
 import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
@@ -17,51 +14,21 @@ import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-const cards = [
-  {
-    background: observatoryCard,
-    name: 'Observatory',
-    pitch: t('Activity Monitor, but more.', 'Как Мониторинг системы, только больше.'),
-    responsibility: t(
-      'Concept to launch: product design, identity, and storytelling.',
-      'От концепции до запуска: продуктовый дизайн, айдентика и сторителлинг.',
-    ),
-    href: localePath('/case-studies/observatory/', locale),
-    area: 'observatory',
-    kind: 'observatory',
-    portrait: false,
-  },
-  {
-    background: instagramCard,
-    name: t('Instagram Saves redesign', 'Редизайн «Сохранённого» в Instagram'),
-    pitch: t('The more you save, the less you can find.', 'Чем больше сохраняешь, тем сложнее найти.'),
-    responsibility: t('Research, UX/UI, and prototyping.', 'Исследование, UX/UI и прототипирование.'),
-    href: localePath('/case-studies/instagram-saves-redesign/', locale),
-    area: 'instagram',
-    kind: 'instagram',
-    portrait: true,
-  },
-  {
-    background: twoSticksPortraitCard,
-    name: t('Two Sticks', 'Две палочки'),
-    pitch: t('Learn Chinese, all inside one bot.', 'Учить китайский, не выходя из бота.'),
-    responsibility: t('Product direction, UX/UI, and engineering.', 'Продукт, UX/UI и разработка.'),
-    href: localePath('/case-studies/two-sticks/', locale),
-    area: 'chinese',
-    kind: 'chinese',
-    portrait: true,
-  },
-  {
-    background: supergoodCard,
-    name: 'SuperGood',
-    pitch: t('Homemade food, without the guesswork.', 'Домашняя еда, и никаких сюрпризов.'),
-    responsibility: t('Research, product design, and Flutter build.', 'Исследование, продуктовый дизайн и разработка на Flutter.'),
-    href: localePath('/case-studies/supergood/', locale),
-    area: 'supergood',
-    kind: 'supergood',
-    portrait: false,
-  },
-];
+// Copy lives in src/content/case-studies.ts; this adds the homepage layout.
+const layout = {
+  observatory: { area: 'observatory', kind: 'observatory', portrait: false },
+  'instagram-saves-redesign': { area: 'instagram', kind: 'instagram', portrait: true },
+  'two-sticks': { area: 'chinese', kind: 'chinese', portrait: true },
+  supergood: { area: 'supergood', kind: 'supergood', portrait: false },
+} as const;
+const cards = caseStudies.map((study) => ({
+  background: study.background,
+  name: study.name[locale],
+  pitch: study.pitch[locale],
+  responsibility: study.responsibility[locale],
+  href: localePath(caseStudyPath(study.slug), locale),
+  ...layout[study.slug as keyof typeof layout],
+}));
 ---
 
 <showcase-cards id="work" class="showcase" data-opening-sky-fade-target>
