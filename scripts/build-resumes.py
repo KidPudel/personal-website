@@ -15,73 +15,69 @@ BASE = 'https://kidpudel.github.io/personal-website/'
 
 CONTENT = {
     'en': {
-        'name': 'IGOR KUPCHINENKO', 'role': 'PRODUCT DESIGNER',
-        'summary': 'Product designer who researches, designs and ships. Software-engineering background: I prototype in code and direct AI coding agents to turn my specifications into working products. Shipped a Flutter ordering app on iOS and Android, released a macOS app, and coded an Instagram Saves concept from eight interviews.',
-        'experience': 'RELEVANT DESIGN EXPERIENCE',
-        'supergood': ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer | Jan 2023 - Jul 2024', [
-            'Designed and built the food-ordering app, from menu and basket through payment and delivery tracking: one Flutter app replacing separate Android and iOS apps, with no design-to-code handoff.',
-            'Customer conversations and ordering tasks highlighted uncertainty about dish details, delivery time and total cost. Added fuller dish information and a persistent order summary.',
-            'Made previous orders reusable: users could add individual dishes or the whole order back to the basket. Added access through favourites and adapted layouts for different mobile screens.',
-            'Built the app theme on Material Design with custom components bound to it, including a menu whose category tabs and dish list scroll in sync, with animated transitions.',
+        'name': 'IGOR KUPCHINENKO', 'role': 'PRODUCT DESIGNER · CONSUMER APPS · RESEARCH AND INTERACTION DESIGN',
+        'portfolio_label': 'Portfolio: ', 'location': 'Moscow · office, hybrid or remote',
+        'summary': 'Product designer for consumer apps. I start with interviews and watching people use a product, then design the flows and information that show them what is happening, what comes next and what it costs. Shipped a food-ordering app on iOS and Android; since then, research-led projects built as working prototypes. A software-engineering background lets me test ideas in code, not only in Figma.',
+        'experience': 'PRODUCT DESIGN EXPERIENCE',
+        'supergood': ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer, food delivery app | Aug 2023 - Jul 2024', [
+            'Public reviews questioned both the app and whether the food was worth the price. Customer conversations, observed orders and prototype tasks showed people could not judge a dish, delivery time or total before paying.',
+            'Added weight, ingredients, nutrition and cooking time to the dish sheet, and a persistent bar with delivery time, item count and total. Brought address, time, payment, bonuses and total into one checkout, each editable in place.',
+            'Weekday orders often repeated, so I turned order history into reordering: add single dishes or a whole past order back to the basket.',
+            'Designed and built the app in Flutter, replacing separate iOS and Android apps with no handoff: menu, basket, payment and 3DS, maps and tracking, loyalty, on a design system of Material Design components. Shipped on both platforms.',
         ]),
         'projects_title': 'SELECTED PROJECTS',
         'projects': [
             ('Instagram Saves redesign', 'Independent concept, coded prototype | 2026', 'instagram-saves-redesign', [
-                'Interviewed eight people about saving and finding posts. Turned the recurring problems into collection suggestions, search and date filters, notes, pins and shared reactions.',
-                'Built the prototype in code (React): an interactive app running live on my site, plus walkthrough films in Remotion. Explored surfacing saved collections in the main feed.',
+                'Interviewed eight people about saving and finding posts. Synthesis showed the work of organising was left to their future selves: too much to file, too little to remember, too easy to leave.',
+                'Designed collection suggestions that shorten filing without removing choice, search by subject, place or note, date filters, pins, and collections as a feed for saves nobody revisits. Built as an interactive React prototype, live on my site.',
             ]),
-            ('Observatory', 'Personal project, released on GitHub | Jul 2026 - Aug 2026', 'observatory', [
-                'Five exploratory interviews shaped an app-first view of Mac performance for developers and power users: processes grouped into application totals, with detail one level below.',
-                'Designed the interface and saved-recording comparisons, wrote the specifications and directed AI coding agents through the SwiftUI build. Released 0.1.1 with identity, artwork and launch film.',
-            ]),
-            ('Two Sticks', 'Collaborative prototype | May 2024 - Jun 2024', 'two-sticks', [
-                "Turned a diploma team's pedagogical research into a Telegram flow for finding, saving and practising Chinese characters. Designed and built the bot and handwriting web app; no longer hosted.",
+            ('Observatory', 'Personal macOS app, built with AI coding agents from my specs, released on GitHub | Jul 2026 - Aug 2026', 'observatory', [
+                'Five interviews about recent performance checks defined two needs: see a whole application at once, and keep a recording to compare later. Grouped processes under their application, with detail one level below.',
+                'Reviewed the first prototype against those tasks and made three changes: cards became a scannable list with a live plot, test setup starts from the app, saved results moved into the recording flow.',
             ]),
         ],
-        'additional_title': 'ADDITIONAL EXPERIENCE',
+        'additional_title': 'OTHER EXPERIENCE',
         'additional': [
             ('Paycos', 'Software Developer, contract | Jul 2024 - Dec 2025', 'Built payment and order-processing services. Cut PDF receipt processing from 6-10 s to 650 ms by extracting text directly, keeping OCR for images.'),
-            ('22bytes', 'Mobile Game Designer / Prototype Developer | Nov 2022 - Jan 2023', 'Built playable Android prototypes in short cycles, shaping interaction flows, player feedback and scope.'),
+            ('22bytes', 'Mobile Game Designer / Prototype Developer | Apr 2023 - Aug 2023', 'Designed and built playable Android game prototypes in short cycles: interaction, player feedback, scope.'),
         ],
         'skills_title': 'SKILLS',
-        'skills': 'Design: user interviews, synthesis, flows, interaction and visual design, motion, prototyping, usability testing. Figma, Material Design.\nCode: HTML, CSS, JavaScript, React and Flutter prototypes; a SwiftUI app shipped by directing AI coding agents (Claude Code, Codex); Go, Python; Unity, Godot, raylib, OpenGL.\nPortfolio site built by me in Astro and React, including the embedded interactive Instagram prototype.',
+        'skills': 'Research: user interviews, customer development, usability testing, observation, synthesis, competitor analysis, CJM, JTBD, hypothesis framing.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, adaptive layouts, motion. Figma, Material Design, Apple HIG.\nCode: React, Flutter, HTML/CSS/JS; SwiftUI via AI coding agents (Claude Code, Codex); Go, Python.',
         'education_title': 'EDUCATION AND LANGUAGES',
-        'education': 'Bachelor of Computer & Information Science, Moscow Finance and Law Academy (MFUA) | 2019 - 2023',
+        'education': 'Diploma in Programming in Computer Systems, MFUA College | 2019 - 2023',
         'languages': 'Russian: native | English: B2 (upper-intermediate)',
     },
     'ru': {
-        'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР',
-        'summary': 'Продуктовый дизайнер: исследую, проектирую и довожу до релиза. Опыт разработки: собираю прототипы в коде и направляю AI-агентов, превращая свои спецификации в работающий продукт. Выпустил Flutter-приложение для заказа еды на iOS и Android и приложение для macOS, собрал в коде концепт сохранённых Instagram по восьми интервью.',
+        'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР · B2C · ИССЛЕДОВАНИЯ И ПРОЕКТИРОВАНИЕ ИНТЕРФЕЙСОВ',
+        'portfolio_label': 'Портфолио: ', 'location': 'Москва · офис, гибрид или удалённо',
+        'summary': 'Продуктовый дизайнер B2C-приложений. Начинаю с интервью и наблюдения за использованием, затем проектирую сценарии и подачу информации, чтобы человеку было понятно, что происходит, что дальше и сколько это стоит. Выпустил приложение заказа еды на iOS и Android, затем делал исследовательские проекты с рабочими прототипами в коде.',
         'experience': 'ОПЫТ В ПРОДУКТОВОМ ДИЗАЙНЕ',
-        'supergood': ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик | январь 2023 - июль 2024', [
-            'Спроектировал и реализовал заказ от меню до оплаты и отслеживания доставки: одно Flutter-приложение вместо отдельных iOS и Android, без передачи макетов в разработку.',
-            'Беседы с пользователями и проверки сценария заказа выявили нехватку информации о блюдах, доставке и стоимости. Добавил подробные карточки блюд и закреплённую сводку заказа.',
-            'Сделал повторный заказ из истории: можно добавить отдельные блюда или весь заказ в корзину. Добавил переход из избранного и адаптировал интерфейс под разные мобильные экраны.',
-            'Собрал тему приложения на Material Design и привязанные к ней кастомные компоненты, включая меню с синхронной прокруткой категорий и блюд и анимациями.',
+        'supergood': ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик, доставка еды | август 2023 - июль 2024', [
+            'В отзывах критиковали и приложение, и то, стоит ли еда своих денег. CustDev-интервью, наблюдение за заказом и задания на прототипе показали: до оплаты людям не хватало понимания блюда, срока доставки и суммы.',
+            'Добавил в карточку блюда вес, состав, КБЖУ и время приготовления, а в закреплённую панель срок доставки и сумму. Адрес, время, оплата, бонусы и итог собраны на одном экране оформления.',
+            'Будничные заказы часто повторялись, поэтому превратил историю в повторный заказ: можно вернуть в корзину отдельные блюда или весь прошлый заказ.',
+            'Спроектировал и собрал на Flutter одно приложение вместо двух, без передачи макетов: от меню и оплаты с 3DS до карты и лояльности, на своей дизайн-системе. Выпустил на iOS и Android.',
         ]),
         'projects_title': 'ИЗБРАННЫЕ ПРОЕКТЫ',
         'projects': [
-            ('Поиск сохранённых публикаций', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
-                'Провёл восемь интервью о том, как люди сохраняют и находят посты. Превратил повторяющиеся проблемы в подсказки коллекций, поиск, фильтры по дате, заметки, закрепление и реакции.',
-                'Собрал прототип в коде (React): интерактивное приложение прямо на моём сайте и ролики-прохождения в Remotion. Продумал возврат сохранённых коллекций в основную ленту.',
+            ('Поиск сохранённых публикаций Instagram', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
+                'Провёл восемь интервью о том, как люди сохраняют и находят посты. Общий паттерн: разбор сохранённого откладывают на «потом», и найти нужное со временем всё сложнее.',
+                'Спроектировал подсказки коллекций (сокращают выбор, но не отнимают его), поиск по теме, месту или заметке, фильтр по дате, закрепление и коллекции как ленту. Прототип на React работает на моём сайте.',
             ]),
-            ('Observatory', 'Личный проект, выпущен на GitHub | июль 2026 - август 2026', 'observatory', [
-                'Пять интервью привели к просмотру нагрузки Mac по приложениям для разработчиков и опытных пользователей: процессы сгруппированы в итог по приложению, детали уровнем ниже.',
-                'Спроектировал интерфейс и сравнение записей, написал спецификации и направлял AI-агентов в реализации на SwiftUI. Выпустил 0.1.1 с айдентикой, иллюстрацией и релизным роликом.',
-            ]),
-            ('Two Sticks', 'Командный прототип | май 2024 - июнь 2024', 'two-sticks', [
-                'На основе исследования дипломной команды МПГУ спроектировал поиск, сохранение и практику иероглифов в Telegram. Реализовал бота и веб-приложение для письма; уже не размещён.',
+            ('Observatory', 'Личный проект на macOS, разработка с AI-агентами по моим спецификациям | июль 2026 - август 2026', 'observatory', [
+                'Пять интервью о проверках производительности выявили две потребности: видеть приложение целиком и сохранять запись для сравнения. Сгруппировал процессы по приложениям.',
+                'Проверил первый прототип на тех же задачах и внёс три изменения: карточки заменил списком с живым графиком, тест начинается с выбора приложения, результаты перенёс в сценарий записи.',
             ]),
         ],
         'additional_title': 'ДРУГОЙ ОПЫТ РАБОТЫ',
         'additional': [
             ('Paycos', 'Разработчик ПО, контракт | июль 2024 - декабрь 2025', 'Разрабатывал сервисы оплаты и обработки заказов. Сократил обработку PDF-чеков с 6-10 с до 650 мс: извлекал текст напрямую, оставив OCR для изображений.'),
-            ('22bytes', 'Гейм-дизайнер / разработчик прототипов | ноябрь 2022 - январь 2023', 'Быстро собирал игровые Android-прототипы: взаимодействие, фидбек игроку, объём работы.'),
+            ('22bytes', 'Гейм-дизайнер / разработчик прототипов | апрель 2023 - август 2023', 'Быстро собирал игровые Android-прототипы: взаимодействие, фидбек игроку, объём.'),
         ],
         'skills_title': 'НАВЫКИ',
-        'skills': 'Дизайн: интервью, сценарии, UX/UI, анимация, прототипы, юзабилити-тесты. Figma, Material Design.\nКод: прототипы на HTML, CSS, JavaScript, React, Flutter; SwiftUI-продукт, собранный с AI-агентами (Claude Code, Codex); Go, Python; Unity, Godot, raylib, OpenGL.\nПортфолио-сайт собрал сам на Astro и React, включая интерактивный прототип Instagram.',
+        'skills': 'Исследования: CustDev и глубинные интервью, юзабилити-тесты, наблюдение, синтез, конкурентный анализ, CJM, JTBD, продуктовые гипотезы.\nДизайн: UX/UI, информационная архитектура, пользовательские сценарии, вайрфреймы, проектирование взаимодействия, прототипирование, дизайн-система, адаптив, моушн. Figma, Material Design, Apple HIG.\nКод: React, Flutter, HTML/CSS/JS; SwiftUI с AI-агентами (Claude Code, Codex); Go, Python.',
         'education_title': 'ОБРАЗОВАНИЕ И ЯЗЫКИ',
-        'education': 'Бакалавр компьютерных и информационных наук | МФЮА | 2019 - 2023',
+        'education': 'Колледж МФЮА, «Программирование в компьютерных системах» (СПО) | 2019 - 2023',
         'languages': 'Русский: родной | Английский: B2 (Upper-Intermediate)',
     },
 }
@@ -129,18 +125,22 @@ def build(lang):
     bullet=d.styles['List Bullet']; bullet.font.size=Pt(10.5)
     bullet.paragraph_format.left_indent=Mm(3); bullet.paragraph_format.first_line_indent=Mm(-3)
     bullet.paragraph_format.space_after=Pt(2)
+    bullet.paragraph_format.tab_stops.add_tab_stop(Mm(3))
+    ppr=bullet.element.get_or_add_pPr()
+    for num in ppr.findall(qn('w:numPr')): ppr.remove(num)
     d.core_properties.author=c['name']; d.core_properties.title=c['name']+' '+c['role']
     d.core_properties.language='ru-RU' if lang=='ru' else 'en-US'
     settings=d.settings.element; default=settings.find(qn('w:themeFontLang'))
     if default is not None: default.set(qn('w:val'), 'ru-RU' if lang=='ru' else 'en-US')
     d.add_paragraph(c['name'],'Title'); d.add_paragraph(c['role'],'Subtitle')
+    def plain(p,text): p.add_run(text).font.size=Pt(10)
     p=d.add_paragraph(); p.paragraph_format.space_after=Pt(2)
-    link(p,'i.kupchinenko@gmail.com','mailto:i.kupchinenko@gmail.com',10)
-    p.add_run('  |  ')
-    link(p,'kidpudel.github.io/personal-website',BASE,10)
+    plain(p,c['portfolio_label']); link(p,'kidpudel.github.io/personal-website',BASE,10)
+    plain(p,'  |  '); link(p,'i.kupchinenko@gmail.com','mailto:i.kupchinenko@gmail.com',10)
     p=d.add_paragraph(); p.paragraph_format.space_after=Pt(6)
+    plain(p,c['location']+'  |  ')
     link(p,'linkedin.com/in/iggydev','https://www.linkedin.com/in/iggydev',10)
-    p.add_run('  |  '); link(p,'github.com/KidPudel','https://github.com/KidPudel',10)
+    plain(p,'  |  '); link(p,'github.com/KidPudel','https://github.com/KidPudel',10)
     d.add_paragraph(c['summary'])
 
     def entry(title,context,body,slug=None):
@@ -151,7 +151,7 @@ def build(lang):
         p.paragraph_format.space_after=Pt(2)
         for r in p.runs: r.font.size=Pt(9.5)
         for s in body:
-            p=d.add_paragraph(s,'List Bullet'); p.paragraph_format.keep_together=True
+            p=d.add_paragraph('\u2022\t'+s,'List Bullet'); p.paragraph_format.keep_together=True
 
     d.add_paragraph(c['experience'],'Heading 1')
     title,ctx,bullets=c['supergood']; entry(title,ctx,bullets,'supergood')
