@@ -63,8 +63,8 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         'Сделать повседневный заказ понятным и быстрым, особенно привычный обед в будни, и пересобрать оба приложения в одно. В одиночку.',
       )}
       action={t(
-        'Read the reviews, watched people order, and tested variants with colleagues. Redesigned the menu, the dish, and reordering, then built it all in Flutter.',
-        'Разобрал отзывы, понаблюдал, как люди заказывают, проверил варианты на коллегах. Переделал меню, карточку блюда и повтор заказа, а затем собрал всё на Flutter.',
+        'Read the reviews, watched people order, and ran a comparative usability test with 10 colleagues. Redesigned the menu, the dish, and reordering, then built it all in Flutter.',
+        'Разобрал отзывы, понаблюдал, как люди заказывают, провёл сравнительное юзабилити-тестирование на 10 коллегах. Переделал меню, карточку блюда и повтор заказа, а затем собрал всё на Flutter.',
       )}
       result={t(
         'Repeating a usual order dropped from about a minute to about 5 seconds, and its ease rating rose from 3 to 6 out of 7. The store rating went from 3.1 to 3.7. One codebase replaced two.',
@@ -79,7 +79,6 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         { value: '3 → 6', label: t('ease rating for reordering, out of 7', 'оценка лёгкости повтора заказа, из 7'), basis: t('Single Ease Question, same test', 'Single Ease Question, тот же тест') },
         { value: t('3.1 → 3.7', '3,1 → 3,7'), label: t('store rating after the release', 'рейтинг в магазинах после релиза'), basis: t('Public store rating', 'Публичный рейтинг в магазинах') },
         { value: '2 → 1', label: t('codebases for iOS and Android', 'кодовые базы для iOS и Android'), basis: t('Built alone in 11 months', 'Собрал один за 11 месяцев') },
-        { value: t('≈7 months', '≈7 месяцев'), label: t('saved compared with two native apps', 'сэкономлено по сравнению с двумя нативными приложениями'), basis: t('Estimate from Google’s published Flutter data', 'Оценка по опубликованным данным Google о Flutter') },
       ]}
       columns={3}
       caption={t(
@@ -136,7 +135,7 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         <li><strong>{t('Review analysis', 'Анализ отзывов')}</strong><p>{t('Sorted public reviews by what people complained about.', 'Разобрал публичные отзывы по тому, на что жалуются.')}</p></li>
         <li><strong>{t('Contextual inquiry', 'Контекстное исследование')}</strong><p>{t('Watched people order in their own setting and noted where they hesitated.', 'Смотрел, как люди заказывают в привычной обстановке, и отмечал, где они сомневаются.')}</p></li>
         <li><strong>{t('Pattern study', 'Изучение паттернов')}</strong><p>{t('Самокат and Яндекс Лавка, apps our customers already knew.', '«Самокат» и «Яндекс Лавка», приложения, которые наши клиенты уже знали.')}</p></li>
-        <li><strong>{t('Internal A/B tests', 'Внутренние A/B-тесты')}</strong><p>{t('Compared variants with colleagues who did not work on the app.', 'Сравнивал варианты на коллегах, которые не работали над приложением.')}</p></li>
+        <li><strong>{t('Comparative usability test', 'Сравнительное юзабилити-тестирование')}</strong><p>{t('Compared the old and new flows with 10 colleagues who did not work on the app.', 'Сравнивал варианты на коллегах, которые не работали над приложением.')}</p></li>
       </ul>
 
       <p class="insight">{t(
@@ -193,32 +192,18 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
 
       <Decision
         number={5}
-        layout="stack"
         title={t('One Flutter app instead of two native ones.', 'Одно приложение на Flutter вместо двух нативных.')}
         problem={t('Two separate apps meant every change had to be built twice and could behave differently on each platform.', 'Два отдельных приложения означали, что каждое изменение нужно делать дважды, и на платформах оно могло работать по-разному.')}
         decision={t('Rebuilt both apps in Flutter from one codebase: menu, basket, payment with 3DS, maps and tracking, favourites, history, promotions, loyalty, and themes.', 'Пересобрал оба приложения на Flutter из одной кодовой базы: меню, корзина, оплата с 3DS, карты и отслеживание, избранное, история, акции, лояльность и темы.')}
         why={t('As the only engineer, one codebase meant every fix reached iOS and Android on the same day.', 'Для единственного разработчика одна кодовая база означала, что каждое исправление попадает на iOS и Android в один день.')}
         instead={t('Improving both native apps. Every change twice, by one person.', 'Доработки двух нативных приложений. Каждое изменение дважды, силами одного человека.')}
-        effect={t('11 months instead of ≈18', '11 месяцев вместо ≈18')}
-        effectLabel={t('Estimate', 'Оценка')}
+        effect={t('2 codebases → 1, built alone in 11 months', '2 кодовые базы → 1, собрано в одиночку за 11 месяцев')}
       >
-        <div class="charts">
-          <BarCompare
-            title={t('Time to ship both platforms', 'Время на обе платформы')}
-            rows={[
-              { label: t('Two native apps (estimate)', 'Два нативных приложения (оценка)'), value: 18.3, display: t('≈18 months', '≈18 месяцев') },
-              { label: t('One Flutter app (actual)', 'Одно приложение на Flutter (факт)'), value: 11, display: t('11 months', '11 месяцев'), emphasis: true },
-            ]}
-            note={t(
-              'Google reports that Flutter took about 1.2 times the work of one platform, while two native apps take 2 times. At that ratio, my 11 months equal about 18 months of native work.',
-              'По данным Google, Flutter требует примерно 1,2 объёма работы одной платформы, а два нативных приложения требуют двух. При таком соотношении мои 11 месяцев равны примерно 18 месяцам нативной разработки.',
-            )}
-          />
           <div class="pair">
             <Shot src={deliveryMap} sizes="(max-width: 760px) calc((100vw - 56px) / 2), 250px" alt={t('Address picker on a map with the delivery zone and a confirmation that the address is inside it.', 'Выбор адреса на карте с зоной доставки и подтверждением, что адрес в неё входит.')} caption={t('Delivery zone check', 'Проверка зоны доставки')} />
             <Shot src={orderTracking} sizes="(max-width: 760px) calc((100vw - 56px) / 2), 250px" alt={t('Order tracking with expected time, order stages, a route map, and courier contact.', 'Отслеживание заказа: ожидаемое время, этапы, карта маршрута и связь с курьером.')} caption={t('Order tracking', 'Отслеживание заказа')} />
           </div>
-        </div>
+
       </Decision>
     </StudySection>
 
