@@ -15,20 +15,25 @@ import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 // Copy lives in src/content/case-studies.ts; this adds the homepage layout.
+// The two wide cards sit on a diagonal: SuperGood opens the grid at top left,
+// Observatory closes it at bottom right. `position` keeps the document and
+// keyboard order the same as the visual reading order.
 const layout = {
-  observatory: { area: 'observatory', kind: 'observatory', portrait: false },
-  'instagram-saves-redesign': { area: 'instagram', kind: 'instagram', portrait: true },
-  'two-sticks': { area: 'chinese', kind: 'chinese', portrait: true },
-  supergood: { area: 'supergood', kind: 'supergood', portrait: false },
+  supergood: { area: 'supergood', kind: 'supergood', portrait: false, position: 1 },
+  'instagram-saves-redesign': { area: 'instagram', kind: 'instagram', portrait: true, position: 2 },
+  'two-sticks': { area: 'chinese', kind: 'chinese', portrait: true, position: 3 },
+  observatory: { area: 'observatory', kind: 'observatory', portrait: false, position: 4 },
 } as const;
-const cards = caseStudies.map((study) => ({
-  background: study.background,
-  name: study.name[locale],
-  pitch: study.pitch[locale],
-  responsibility: study.responsibility[locale],
-  href: localePath(caseStudyPath(study.slug), locale),
-  ...layout[study.slug as keyof typeof layout],
-}));
+const cards = caseStudies
+  .map((study) => ({
+    background: study.background,
+    name: study.name[locale],
+    pitch: study.pitch[locale],
+    responsibility: study.responsibility[locale],
+    href: localePath(caseStudyPath(study.slug), locale),
+    ...layout[study.slug as keyof typeof layout],
+  }))
+  .sort((a, b) => a.position - b.position);
 ---
 
 <showcase-cards id="work" class="showcase" data-opening-sky-fade-target>
@@ -205,8 +210,8 @@ const cards = caseStudies.map((study) => ({
   .showcase__grid {
     display: grid;
     grid-template-areas:
-      'observatory observatory instagram'
-      'chinese supergood supergood';
+      'supergood supergood instagram'
+      'chinese observatory observatory';
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
     gap: clamp(1rem, 3vw, 3.75rem);

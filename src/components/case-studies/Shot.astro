@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+type Kind = 'device' | 'screen' | 'desktop' | 'wireframe' | 'sheet';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption?: string;
+  /** device: a phone mockup with its own frame. screen: a bare phone screen. desktop: an app window. */
+  kind?: Kind;
+  sizes?: string;
+  /** high: the route's single most important image. eager: visible on arrival. */
+  priority?: 'high' | 'eager';
+}
+
+const { src, alt, caption, kind = 'device', sizes, priority } = Astro.props;
+const phone = kind === 'device' || kind === 'screen';
+const candidates = phone ? [240, 360, 480, 600] : [480, 720, 960, 1280, 1600];
+const widths = [...new Set([...candidates.filter((width) => width < src.width), Math.min(src.width, candidates.at(-1)!)])];
+const defaultSizes = phone
+  ? '(max-width: 760px) min(calc(100vw - 40px), 300px), 300px'
+  : '(max-width: 1120px) calc(100vw - 40px), 1080px';
+---
+
+<figure class:list={['shot', `shot--${kind}`]}>
+  <Image
+    src={src}
+    alt={alt}
+    widths={widths}
+    sizes={sizes ?? defaultSizes}
+    format="webp"
+    quality={85}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+    fetchpriority={priority === 'high' ? 'high' : undefined}
+  />
+  {caption && <figcaption class="shot__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .shot { margin: 0; min-width: 0; }
+  .shot img { display: block; width: 100%; height: auto; }
+  .shot--device, .shot--screen { width: min(100%, 300px); margin-inline: auto; }
+  .shot--screen img { border-radius: 24px; box-shadow: 0 0 0 1px rgb(25 20 28 / 8%), 0 18px 40px -20px rgb(25 20 28 / 25%); }
+  .shot--desktop img { border-radius: 10px; box-shadow: 0 0 0 1px rgb(17 17 15 / 8%), 0 24px 48px -28px rgb(17 17 15 / 30%); }
+  .shot--sheet img { border-radius: 6px; box-shadow: 0 0 0 1px rgb(17 17 15 / 8%); }
+  .shot__caption { margin-top: 14px; color: #656560; font-size: .9375rem; line-height: 1.5; text-align: center; }
+  .shot--desktop .shot__caption, .shot--wireframe .shot__caption, .shot--sheet .shot__caption { text-align: left; }
+</style>

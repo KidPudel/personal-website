@@ -1,0 +1,68 @@
+---
+import { toLocale, translator } from '../../i18n/locales';
+
+interface Props {
+  number: number;
+  title: string;
+  problem: string;
+  decision: string;
+  why: string;
+  /** The option I weighed and did not choose, with the reason. */
+  instead?: string;
+  effect?: string;
+  effectLabel?: string;
+  /** side: text beside the visual. stack: text above a wide visual. */
+  layout?: 'side' | 'stack';
+}
+
+const { number, title, problem, decision, why, instead, effect, effectLabel, layout = 'side' } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const analysis = [
+  { label: t('Problem', 'Проблема'), text: problem },
+  { label: t('What I did', 'Что я сделал'), text: decision },
+  { label: t('Why', 'Почему'), text: why },
+  ...(instead ? [{ label: t('Instead of', 'Вместо'), text: instead }] : []),
+];
+---
+
+<article class:list={['decision', 'breakout', `decision--${layout}`]}>
+  <div class="decision__text">
+    <p class="decision__number">{t('Decision', 'Решение')} {number}</p>
+    <h3 class="decision__title">{title}</h3>
+    <dl class="decision__analysis">
+      {analysis.map((item) => (
+        <div class="decision__row">
+          <dt class="decision__term">{item.label}</dt>
+          <dd class="decision__detail">{item.text}</dd>
+        </div>
+      ))}
+    </dl>
+    {effect && (
+      <p class="decision__effect">
+        <span class="decision__effect-label">{effectLabel ?? t('Effect', 'Эффект')}</span>
+        {effect}
+      </p>
+    )}
+  </div>
+  {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
+</article>
+
+<style>
+  .decision { display: grid; gap: 32px; margin-top: clamp(48px, 6vw, 80px); padding-top: clamp(32px, 4vw, 44px); border-top: 1px solid rgb(17 17 15 / 12%); }
+  .decision--side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; }
+  .decision--stack .decision__text { max-width: 780px; }
+  .decision__number { margin: 0 0 8px; color: #656560; font-size: var(--study-small); line-height: 1.4; }
+  .decision__title { margin: 0 0 22px; font-size: clamp(1.4rem, 2.2vw, 1.9rem); line-height: 1.25; }
+  .decision__analysis { display: grid; gap: 14px; margin: 0; }
+  .decision--stack .decision__analysis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; }
+  .decision__row { display: grid; gap: 2px; }
+  .decision__term { color: #656560; font-size: .9375rem; line-height: 1.4; }
+  .decision__detail { margin: 0; font-size: 1.0625rem; line-height: 1.55; }
+  .decision__effect { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 22px 0 0; padding: 14px 16px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); font-size: 1.0625rem; font-weight: 700; line-height: 1.45; }
+  .decision__effect-label { color: #656560; font-size: .9375rem; font-weight: 400; }
+  .decision__visual { min-width: 0; }
+  @media (max-width: 900px) {
+    .decision--side { grid-template-columns: minmax(0, 1fr); }
+    .decision--stack .decision__analysis { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  }
+</style>

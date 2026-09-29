@@ -3,10 +3,7 @@ import { getImage, Image } from 'astro:assets';
 
 import observatoryTitleTexture from '../../../assets/case_study_images/ditchered_observatory_bg.png';
 import launchFilmPoster from '../../../assets/software-showcases/observatory/launch-film.png';
-import flowConsolidation from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 7.png';
-import flowNow from '../../../assets/case_study_images/initial_prototype_screenshots_and_flows/image 6.png';
 import outcomeComparison from '../../../assets/case_study_images/outcome_screenshots/results-comparison.png';
-import outcomeMemory from '../../../assets/case_study_images/outcome_screenshots/live-plot.png';
 import outcomeNow from '../../../assets/case_study_images/outcome_screenshots/main.png';
 import outcomeProcessDetails from '../../../assets/case_study_images/outcome_screenshots/processes-of-app.png';
 import outcomeRecording from '../../../assets/case_study_images/outcome_screenshots/testing.png';
@@ -27,6 +24,14 @@ import wireframeNowList from '../../../assets/case_study_images/validation_scree
 import wireframeSavedResults from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 11.png';
 import wireframeTestComplex from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 8.png';
 import wireframeTestSetup from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 10.png';
+import BarCompare from '../../../components/case-studies/BarCompare.astro';
+import Decision from '../../../components/case-studies/Decision.astro';
+import DotStat from '../../../components/case-studies/DotStat.astro';
+import MetricGrid from '../../../components/case-studies/MetricGrid.astro';
+import Shot from '../../../components/case-studies/Shot.astro';
+import StarSummary from '../../../components/case-studies/StarSummary.astro';
+import StepCompare from '../../../components/case-studies/StepCompare.astro';
+import StudySection from '../../../components/case-studies/StudySection.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 import '../../../styles/case-study.css';
@@ -44,45 +49,57 @@ const optimizedTitleTexture = await getImage({
   format: 'webp',
   quality: 80,
 });
+const halfSizes = '(max-width: 760px) calc(100vw - 40px), 524px';
+const thirdSizes = '(max-width: 760px) calc(100vw - 40px), 350px';
 
 const sketches = [
   {
     src: sketchGrouping,
     alt: t('Early sketch comparing loose processes with processes grouped by application.', 'Ранний скетч: разрозненные процессы против процессов, сгруппированных по приложениям.'),
-    caption: t('The first shift: from a loose field of processes to application groups.', 'Первый сдвиг: от россыпи процессов к группам по приложениям.'),
+    caption: t('From a loose field of processes to app groups.', 'От россыпи процессов к группам по приложениям.'),
   },
   {
     src: sketchLevels,
     alt: t('Early sketch comparing application-level and process-level resource tables.', 'Ранний скетч: таблицы ресурсов на уровне приложения и на уровне процесса.'),
-    caption: t('Application totals first, with process detail one level below.', 'Сначала итог по приложению, детали процессов уровнем ниже.'),
+    caption: t('App totals first, process detail one level below.', 'Сначала итог по приложению, детали процессов уровнем ниже.'),
   },
   {
     src: sketchRecording,
     alt: t('Early sketch of two applications being observed over the same ten-second period.', 'Ранний скетч: два приложения под наблюдением в течение одних и тех же десяти секунд.'),
-    caption: t('A shared recording window makes the comparison legible.', 'Общее окно записи делает сравнение понятным.'),
+    caption: t('A shared recording window makes runs comparable.', 'Общее окно записи делает прогоны сравнимыми.'),
   },
   {
     src: sketchTestFlow,
     alt: t('Early sketch of selecting applications, recording each one, and reviewing the results.', 'Ранний скетч: выбор приложений, запись каждого и просмотр результатов.'),
-    caption: t('The first outline of a controlled test and its result.', 'Первый набросок контролируемого теста и его результата.'),
+    caption: t('The first outline of a test and its result.', 'Первый набросок теста и его результата.'),
   },
+];
+
+// Brave Browser as macOS lists it: the 17 processes behind one row in Observatory.
+const braveProcesses = [
+  'Brave Browser',
+  ...Array<string>(4).fill('Brave Browser Helper'),
+  ...Array<string>(12).fill('Brave Browser Helper (Renderer)'),
+];
+
+const categories = [
+  { name: t('Terminals', 'Терминалы'), apps: ['Ghostty', 'kitty', 'Alacritty'] },
+  { name: t('Code editors', 'Редакторы кода'), apps: ['Xcode', 'VS Code'] },
+  { name: t('AI apps', 'AI-приложения'), apps: ['ChatGPT', 'Claude'] },
 ];
 ---
 
 <BaseDocument
   title={t('Observatory case study | Igor Kupchinenko', 'Кейс Observatory | Игорь Купчиненко')}
   description={t(
-    'How I designed Observatory, a macOS activity monitor that groups related processes, records controlled tests, and keeps results available for comparison.',
-    'Как я проектировал Observatory, монитор активности для macOS, который группирует связанные процессы, записывает контролируемые тесты и сохраняет результаты для сравнения.',
+    'How I designed Observatory, a macOS activity monitor that shows each app as one row, records tests, and compares runs. Three colleagues have used it for two months.',
+    'Как я проектировал Observatory, монитор активности для macOS, который показывает приложение одной строкой, записывает тесты и сравнивает прогоны. Три коллеги пользуются им уже два месяца.',
   )}
   pageClass="observatory-case-study editorial-case-study"
   ogImage={outcomeNow.src}
 >
-
-
   <main id="main-content">
     <header class="hero">
-
       <h1
         class="hero-title"
         aria-label={heroTitle}
@@ -100,18 +117,12 @@ const sketches = [
         ))}
       </h1>
       <p class="hero__line">{t('Activity Monitor, but more.', 'Мониторинг системы, но больше.')}</p>
-      <p class="hero__intro">
-        {t(
-          'An application could appear as several processes. A spike could disappear before I understood it. I designed Observatory to bring those pieces together and record what happened while I worked.',
-          'Одно приложение может выглядеть как несколько процессов. Пик нагрузки может исчезнуть раньше, чем я успею в нём разобраться. Я спроектировал Observatory, чтобы собрать эти части вместе и записывать, что происходило, пока я работал.',
-        )}
-      </p>
 
       <dl class="facts">
-        <div><dt>{t('My role', 'Моя роль')}</dt><dd>{t('Product direction, research, UX/UI, identity, motion', 'Продуктовое видение, исследование, UX/UI, айдентика, моушн')}</dd></div>
-        <div><dt>{t('Research', 'Исследование')}</dt><dd>{t('5 exploratory interviews', '5 исследовательских интервью')}</dd></div>
-        <div><dt>{t('Outcome', 'Результат')}</dt><dd>{t('2026 · Working macOS prototype, release 0.1.1', '2026 · Рабочий прототип для macOS, релиз 0.1.1')}</dd></div>
+        <div><dt>{t('My role', 'Моя роль')}</dt><dd>{t('Product design, research, identity, and launch film', 'Продуктовый дизайн, исследование, айдентика и фильм к запуску')}</dd></div>
         <div><dt>{t('Build', 'Разработка')}</dt><dd>{t('AI-directed development from my specifications', 'Разработка с AI по моим спецификациям')}</dd></div>
+        <div><dt>{t('Timeline', 'Сроки')}</dt><dd>{t('2026 · macOS 14 and later · release 0.1.1', '2026 · macOS 14 и новее · релиз 0.1.1')}</dd></div>
+        <div><dt>{t('Used by', 'Кто пользуется')}</dt><dd>{t('3 colleagues, for about two months', '3 коллеги, около двух месяцев')}</dd></div>
       </dl>
 
       <figure class="hero-introduction">
@@ -141,106 +152,132 @@ const sketches = [
       </figure>
     </header>
 
-    <section class="chapter" id="problem" data-index-section>
+    <StarSummary
+      situation={t(
+        'Activity Monitor lists processes, not apps. One browser can be 17 rows, and nothing stays once the moment passes.',
+        'Мониторинг системы показывает процессы, а не приложения. Один браузер может занимать 17 строк, и ничего не остаётся, когда момент прошёл.',
+      )}
+      task={t(
+        'Let people read an app as one thing, then record a run and compare it with the next.',
+        'Дать людям видеть приложение целиком, а потом записать прогон и сравнить его со следующим.',
+      )}
+      action={t(
+        '5 interviews, 2 needs, sketches, and a prototype. Then 3 changes: a list instead of cards, the app before the mode, and results inside Tests.',
+        '5 интервью, 2 потребности, скетчи и прототип. Затем 3 изменения: список вместо карточек, сначала приложение, потом режим, и результаты внутри «Tests».',
+      )}
+      result={t(
+        'A working macOS app. 3 colleagues have used it for two months to compare versions of an app and whole categories of apps.',
+        'Рабочее приложение для macOS. 3 коллеги уже два месяца сравнивают в нём версии приложения и целые категории приложений.',
+      )}
+    />
 
-      <div class="chapter__body">
-        <h2>{t('The numbers were there. The picture was not.', 'Цифры были. Картины не было.')}</h2>
-        <div class="prose">
-          <p>
-            {t(
-              'I would open Activity Monitor during resource-intensive work and look for the application I was using. Its activity was spread across several processes. I had to find them, add their values in my head, and keep watching. By then, the numbers had changed again.',
-              'Во время ресурсоёмкой работы я открывал Мониторинг системы и искал приложение, которым пользовался. Его активность была разбросана по нескольким процессам. Нужно было найти их, сложить значения в уме и продолжать следить. К этому моменту цифры уже снова менялись.',
-            )}
-          </p>
-          <p>
-            {t(
-              'And once the task ended, there was nothing to return to. A screenshot caught one moment. It could not tell me what happened across the whole run, or how the next run differed.',
-              'А когда задача заканчивалась, возвращаться было не к чему. Скриншот ловил один момент. Он не мог рассказать, что происходило за весь прогон и чем от него отличался следующий.',
-            )}
-          </p>
+    <MetricGrid
+      metrics={[
+        { value: '17 → 1', label: t('rows to read one app’s total (Brave Browser)', 'строк, чтобы увидеть итог одного приложения (Brave Browser)'), basis: t('Measured in the live view', 'Измерено в живом просмотре') },
+        { value: t('≈60 s → ≈3 s', '≈60 с → ≈3 с'), label: t('to answer “how much memory is this app using?”', 'чтобы ответить «сколько памяти ест это приложение?»'), basis: t('Estimate: adding 17 changing values vs reading one', 'Оценка: сложить 17 меняющихся значений или прочитать одно') },
+        { value: '3 → 2', label: t('places to go, after folding History into Tests', 'раздела после объединения «History» с «Tests»'), basis: t('Counted from the prototypes', 'Посчитано по прототипам') },
+        { value: t('3 of 3', '3 из 3'), label: t('colleagues still using it after two months', 'коллеги пользуются им спустя два месяца'), basis: t('Measured', 'Факт') },
+      ]}
+      caption={t(
+        'Estimates come from walking through both apps, not from a formal study.',
+        'Оценки получены при проходе по обоим приложениям, а не в формальном исследовании.',
+      )}
+    />
+
+    <StudySection
+      part="situation"
+      title={t('The numbers were there. The picture was not.', 'Цифры были. Картины не было.')}
+      lead={t(
+        'During heavy work I would open Activity Monitor to find the app I was using. Its activity was split across many processes. I had to find them, add them up in my head, and keep watching while they changed. Once the task ended, there was nothing to return to.',
+        'Во время тяжёлой работы я открывал Мониторинг системы, чтобы найти приложение, которым пользуюсь. Его активность была разбита на много процессов. Нужно было найти их, сложить в уме и следить, пока цифры меняются. А когда задача заканчивалась, возвращаться было не к чему.',
+      )}
+    >
+      <figure class="process-split breakout">
+        <div class="process-split__side">
+          <p class="process-split__tool">{t('Activity Monitor', 'Мониторинг системы')}</p>
+          <ol class="process-split__rows" aria-hidden="true">
+            {braveProcesses.map((name) => <li>{name}</li>)}
+          </ol>
+          <p class="process-split__count">{t('17 rows to find and add up', '17 строк, которые нужно найти и сложить')}</p>
         </div>
-        <blockquote>
-          {t(
-            'How can I see what an application did during the work, then return to the same evidence later?',
-            'Как увидеть, что приложение делало во время работы, и потом вернуться к тем же данным?',
-          )}
-        </blockquote>
-      </div>
-    </section>
-
-    <section class="chapter" id="research" data-index-section>
-
-      <div class="chapter__body">
-        <h2>{t('People were looking for an application, too.', 'Люди тоже искали приложение.')}</h2>
-        <div class="prose">
-          <p>{t(
-            'I asked five people to walk me through the last time they investigated performance: what they wanted to know, where they looked, and what they could not find. These exploratory conversations suggested two needs to design for.',
-            'Я попросил пятерых человек рассказать, как они в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти. Эти исследовательские разговоры подсказали две потребности, под которые стоило проектировать.',
-          )}</p>
+        <div class="process-split__side process-split__side--after">
+          <p class="process-split__tool">Observatory</p>
+          <div class="process-split__app" aria-hidden="true">
+            <span class="process-split__name">Brave Browser</span>
+            <span class="process-split__procs">{t('17 processes', '17 процессов')}</span>
+            <strong>1.9 GiB</strong>
+          </div>
+          <p class="process-split__count">{t('1 row, already added up', '1 строка, уже сложено')}</p>
         </div>
-        <div class="research-portraits">
-          <figure><Image
-                  src={personaIndependentTroubleshooter}
-                  alt={t('Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture.', 'Нарисованный от руки портрет персоны «самостоятельный диагност»: человек в очках показывает жест «ОК».')}
-                  widths={[240, 360, 480]}
-                  sizes="180px"
-                  format="webp"
-                  loading="lazy"
-                  decoding="async"
-                /><figcaption>{t('Independent troubleshooter', 'Самостоятельный диагност')}</figcaption>
-            <p>{t(
-              'Someone checking their own Mac needed to see the whole application and catch a spike without piecing together a changing list.',
-              'Человеку, который проверяет свой Mac, нужно было видеть приложение целиком и ловить пик, не собирая картину по меняющемуся списку.',
-            )}</p>
-          </figure>
-          <figure><Image
-                  src={personaPerformanceVerifier}
-                  alt={t('Hand-drawn portrait of the performance verifier persona writing on a clipboard.', 'Нарисованный от руки портрет персоны «проверяющий производительность»: человек делает записи на планшете для бумаг.')}
-                  widths={[240, 360, 480]}
-                  sizes="180px"
-                  format="webp"
-                  loading="lazy"
-                  decoding="async"
-                /><figcaption>{t('Performance verifier', 'Проверяющий производительность')}</figcaption>
-            <p>{t(
-              'A developer comparing runs needed a recording they could reopen, with enough context to make the comparison useful.',
-              'Разработчику, который сравнивает прогоны, нужна была запись, к которой можно вернуться, с контекстом, достаточным для полезного сравнения.',
-            )}</p>
-          </figure>
-        </div>
-        <p class="research-synthesis">{t(
-          'Both started with an application or a task. That became my starting point for the interface.',
-          'Оба начинали с приложения или задачи. С этого я и начал проектировать интерфейс.',
-        )}</p>
+        <figcaption class="process-split__caption">{t(
+          'The same app in both tools. Process names as macOS lists them; the total comes from Observatory’s live view.',
+          'Одно и то же приложение в обоих инструментах. Названия процессов такие, как их показывает macOS; итог взят из живого просмотра Observatory.',
+        )}</figcaption>
+      </figure>
+
+      <p class="insight">{t(
+        'How can I see what an app did during the work, and come back to it later?',
+        'Как увидеть, что приложение делало во время работы, и вернуться к этому позже?',
+      )}</p>
+    </StudySection>
+
+    <StudySection
+      part="task"
+      title={t('Read the app. Keep the evidence.', 'Видеть приложение. Сохранять данные.')}
+      lead={t(
+        'A personal project. I owned the product, research, design, identity, and launch, and directed AI development from my specifications.',
+        'Личный проект. Я отвечал за продукт, исследование, дизайн, айдентику и запуск, а разработкой с AI руководил по своим спецификациям.',
+      )}
+    >
+      <dl class="goal breakout">
+        <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Answer “what is this app using?” at a glance, and compare one run with another.', 'Отвечать на вопрос «что использует это приложение?» с одного взгляда и сравнивать один прогон с другим.')}</dd></div>
+        <div><dt>{t('How I would know', 'Как понять, что получилось')}</dt><dd>{t('Time to read an app’s total. Whether people can compare runs without screenshots. Whether anyone keeps using it.', 'Время, чтобы увидеть итог по приложению. Могут ли люди сравнить прогоны без скриншотов. Продолжают ли им пользоваться.')}</dd></div>
+        <div><dt>{t('Baseline', 'С чем сравниваю')}</dt><dd>{t('macOS Activity Monitor, the tool people already open.', 'Мониторинг системы в macOS, инструмент, который люди уже открывают.')}</dd></div>
+      </dl>
+    </StudySection>
+
+    <StudySection
+      part="action"
+      title={t('Five interviews. Two needs. One starting point.', 'Пять интервью. Две потребности. Одна точка старта.')}
+      lead={t(
+        'I asked five people to walk me through the last time they investigated performance: what they wanted to know, where they looked, and what they could not find.',
+        'Я попросил пятерых человек рассказать, как они в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти.',
+      )}
+    >
+      <div class="research-portraits">
+        <figure>
+          <Image
+            src={personaIndependentTroubleshooter}
+            alt={t('Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture.', 'Нарисованный от руки портрет персоны «самостоятельный диагност»: человек в очках показывает жест «ОК».')}
+            widths={[240, 360, 480]}
+            sizes="180px"
+            format="webp"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>{t('Independent troubleshooter', 'Самостоятельный диагност')}</figcaption>
+          <p>{t('Checks their own Mac. Needs to see the whole app and catch a spike without piecing together a changing list.', 'Проверяет свой Mac. Нужно видеть приложение целиком и ловить пик, не собирая картину по меняющемуся списку.')}</p>
+        </figure>
+        <figure>
+          <Image
+            src={personaPerformanceVerifier}
+            alt={t('Hand-drawn portrait of the performance verifier persona writing on a clipboard.', 'Нарисованный от руки портрет персоны «проверяющий производительность»: человек делает записи на планшете для бумаг.')}
+            widths={[240, 360, 480]}
+            sizes="180px"
+            format="webp"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption>{t('Performance verifier', 'Проверяющий производительность')}</figcaption>
+          <p>{t('A developer comparing runs. Needs a recording to reopen, with enough context to make the comparison useful.', 'Разработчик, который сравнивает прогоны. Нужна запись, к которой можно вернуться, с контекстом для полезного сравнения.')}</p>
+        </figure>
       </div>
-    </section>
 
-    <section class="chapter chapter--dark" id="direction" data-index-section>
+      <p class="insight">{t(
+        'Both started with an app or a task, never with a process. So the interface starts with the app.',
+        'Оба начинали с приложения или задачи, а не с процесса. Поэтому интерфейс начинается с приложения.',
+      )}</p>
 
-      <div class="chapter__body">
-        <h2>{t('Start with the app. Keep the detail within reach.', 'Начать с приложения. Держать детали под рукой.')}</h2>
-        <div class="prose">
-          <p>{t(
-            'I grouped related processes under the application they belonged to. You could read its total first, then open the individual processes when you needed to investigate.',
-            'Я сгруппировал связанные процессы под приложением, к которому они относятся. Сначала виден общий итог, а отдельные процессы можно открыть, когда нужно разобраться.',
-          )}</p>
-          <p>{t(
-            'For work that needed a closer look, I sketched a recording flow: choose applications, set a shared duration, and keep the results. Watching the numbers would no longer be the only way to catch what happened.',
-            'Для работы, которая требовала более пристального взгляда, я набросал сценарий записи: выбрать приложения, задать общую длительность и сохранить результаты. Следить за цифрами больше не было единственным способом поймать, что произошло.',
-          )}</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="image-chapter" aria-labelledby="sketches-title">
-      <div class="image-chapter__heading">
-
-        <h2 id="sketches-title">{t('What should stay together?', 'Что должно быть вместе?')}</h2>
-        <p>{t(
-          'I explored application groups, levels of detail, and recordings made over the same time window.',
-          'Я исследовал группы приложений, уровни детализации и записи за одно и то же окно времени.',
-        )}</p>
-      </div>
       <div class="sketch-grid">
         {sketches.map((sketch) => (
           <figure>
@@ -249,150 +286,153 @@ const sketches = [
           </figure>
         ))}
       </div>
-    </section>
 
-    <section class="chapter chapter--wide" id="prototype" data-index-section>
-
-      <div class="chapter__body">
-        <h2>{t('The first version had three places to go.', 'В первой версии было три раздела.')}</h2>
-        <p class="wide-copy">
-          {t(
-            'Now was for a quick look. Tests was for recording. History was for returning to the results. Walking through that first prototype showed where these boundaries helped, and where they got in the way.',
-            '«Now» для быстрого взгляда. «Tests» для записи. «History» для возврата к результатам. Проход по первому прототипу показал, где эти границы помогали, а где мешали.',
-          )}
-        </p>
+      <h3 class="prototype-title">{t('The first prototype had three places to go.', 'В первом прототипе было три раздела.')}</h3>
+      <div class="prototype-row breakout">
+        <Shot kind="desktop" src={prototypeNow} sizes={thirdSizes} alt={t('Initial low-fidelity Now screen with application cards.', 'Первый черновой экран «Now» с карточками приложений.')} caption={t('Now: a quick look', '«Now»: быстрый взгляд')} />
+        <Shot kind="desktop" src={prototypeTest} sizes={thirdSizes} alt={t('Initial low-fidelity test setup screen.', 'Первый черновой экран настройки теста.')} caption={t('Tests: record a run', '«Tests»: записать прогон')} />
+        <Shot kind="desktop" src={prototypeHistory} sizes={thirdSizes} alt={t('Initial low-fidelity History screen with saved recordings.', 'Первый черновой экран «History» с сохранёнными записями.')} caption={t('History: return to results', '«History»: вернуться к результатам')} />
       </div>
+      <p class="note">{t(
+        'Walking through this prototype led to the changes below. They came from task walkthroughs and design critique, not a formal usability study.',
+        'Проход по этому прототипу привёл к изменениям ниже. Они появились из разбора задач и критики дизайна, а не из формального юзабилити-исследования.',
+      )}</p>
 
-      <div class="study-sequence">
-<article class="study-step"><h3>Now</h3><p>{t('Grouped application cards made the whole application visible, but not yet easy to scan.', 'Сгруппированные карточки показывали приложение целиком, но пробегать их глазами было ещё непросто.')}</p><figure><Image src={prototypeNow} alt={t('Initial low-fidelity Now screen with application cards.', 'Первый черновой экран «Now» с карточками приложений.')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>Tests</h3><p>{t('Choose applications and configure a repeatable run before recording.', 'Выбрать приложения и настроить повторяемый прогон перед записью.')}</p><figure><Image src={prototypeTest} alt={t('Initial low-fidelity test setup screen.', 'Первый черновой экран настройки теста.')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>History</h3><p>{t('Reopen recordings and compare them after the live moment has passed.', 'Открывать записи заново и сравнивать их, когда живой момент уже прошёл.')}</p><figure><Image src={prototypeHistory} alt={t('Initial low-fidelity History screen with saved recordings.', 'Первый черновой экран «History» с сохранёнными записями.')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" loading="lazy" decoding="async" /></figure></article>
-</div>
+      <Decision
+        number={1}
+        title={t('Group processes under their app.', 'Собрать процессы под их приложением.')}
+        problem={t('One app showed up as many rows, so its real cost was hidden.', 'Одно приложение занимало много строк, и его настоящая нагрузка была скрыта.')}
+        decision={t('One row per app with totals. Its processes wait one level below, opened only when needed.', 'Одна строка на приложение с итогами. Его процессы ждут уровнем ниже и открываются, только когда нужно.')}
+        why={t('Both needs started from an app. And by the Gestalt principle of common region, things that belong together should look together.', 'Обе потребности начинались с приложения. А по гештальт-принципу общей области то, что связано, должно выглядеть вместе.')}
+        instead={t('A flat process list with search, like Activity Monitor. You would still add up the rows yourself.', 'Плоского списка процессов с поиском, как в Мониторинге системы. Складывать строки всё равно пришлось бы самому.')}
+        effect={t('Brave Browser: 17 rows → 1', 'Brave Browser: 17 строк → 1')}
+        effectLabel={t('Measured', 'Измерено')}
+      >
+        <Shot kind="desktop" src={outcomeProcessDetails} sizes={halfSizes} alt={t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.')} caption={t('Totals first. Processes on demand.', 'Сначала итоги. Процессы по запросу.')} />
+      </Decision>
 
-      <div class="flow-evidence">
-        <figure><Image src={flowNow} alt={t('Early linear flow for the Now experience.', 'Ранний линейный сценарий для «Now».')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('The smallest possible path through the live view.', 'Самый короткий путь через живой просмотр.')}</figcaption></figure>
-        <figure><Image src={flowConsolidation} alt={t('Three prototype flows showing the consolidation of History into Saved Results within Tests.', 'Три сценария прототипа: «History» объединяется с «Saved Results» внутри «Tests».')} widths={[480, 720, 960]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('An early exploration of keeping recordings inside Tests.', 'Ранняя попытка хранить записи внутри «Tests».')}</figcaption></figure>
-      </div>
-    </section>
-
-    <section class="chapter" id="validation-intro" data-index-section>
-
-      <div class="chapter__body">
-        <h2>{t('Grouping helped. The cards got in the way.', 'Группировка помогла. Карточки мешали.')}</h2>
-        <p class="wide-copy">
-          {t(
-            'The first prototype brought related processes together, but made each application a large card. I could see the groups. Comparing them still took too much looking around. Reviewing the tasks and critiquing the design led to three changes. These were design iterations, not findings from a formal usability study.',
-            'Первый прототип объединял связанные процессы, но превращал каждое приложение в большую карточку. Группы были видны. Сравнивать их всё равно приходилось, долго водя глазами по экрану. Разбор задач и критика дизайна привели к трём изменениям. Это были итерации дизайна, а не выводы формального юзабилити-исследования.',
-          )}
-        </p>
-      </div>
-    </section>
-
-    <section class="validation-board" aria-labelledby="validation-title">
-      <header class="validation-board__heading">
-        <h2 id="validation-title">{t('Less to scan. Fewer places to go.', 'Меньше просматривать. Меньше переходить.')}</h2>
-      </header>
-
-      <article class="validation-case validation-case--cards">
-        <p>
-          {t(
-            'I replaced the card grid with a compact list. Applications could sit one below another, with a live plot alongside them. Grouping stayed; the space each group demanded shrank.',
-            'Я заменил сетку карточек компактным списком. Приложения идут одно под другим, а рядом живой график. Группировка осталась, но места под каждую группу стало нужно меньше.',
-          )}
-        </p>
-        <div class="validation-pair">
-          <figure><Image src={wireframeNowCards} alt={t('Wireframe of a card-based live application view.', 'Вайрфрейм живого просмотра приложений на карточках.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Card grouping', 'Группировка карточками')}</figcaption></figure>
-
-          <figure><Image src={wireframeNowList} alt={t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('List with live plot', 'Список с живым графиком')}</figcaption></figure>
+      <Decision
+        number={2}
+        layout="stack"
+        title={t('A list, not cards.', 'Список, а не карточки.')}
+        problem={t('Cards grouped the processes, but comparing apps meant eyes jumping between boxes.', 'Карточки группировали процессы, но чтобы сравнить приложения, взгляд прыгал между блоками.')}
+        decision={t('A compact list with numbers in aligned columns, and a live chart below.', 'Компактный список с цифрами в выровненных колонках и живой график под ним.')}
+        why={t('Aligned columns let you compare one metric down a column in a single glance.', 'Выровненные колонки позволяют сравнить одну метрику одним взглядом сверху вниз.')}
+        instead={t('The card grid from the first prototype: clear groups, slow comparison.', 'Сетки карточек из первого прототипа: группы понятны, сравнивать медленно.')}
+      >
+        <div class="pair pair--stack-mobile">
+          <Shot kind="wireframe" src={wireframeNowCards} sizes={halfSizes} alt={t('Wireframe of a card-based live application view.', 'Вайрфрейм живого просмотра приложений на карточках.')} caption={t('Before: a card per app', 'До: карточка на приложение')} />
+          <Shot kind="wireframe" src={wireframeNowList} sizes={halfSizes} alt={t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.')} caption={t('After: aligned list with a live chart', 'После: выровненный список с живым графиком')} />
         </div>
-      </article>
+      </Decision>
 
-      <article class="validation-case validation-case--tests">
-        <p>
-          {t(
-            'The test screen asked people to choose manual or automated testing before choosing an application. I reversed that order: start with what you want to observe, then decide how to record it. I also separated setup from the active recording.',
-            'Экран тестов просил выбрать ручное или автоматическое тестирование ещё до выбора приложения. Я поменял порядок: сначала то, за чем хочешь наблюдать, потом способ записи. А ещё отделил настройку от идущей записи.',
-          )}
-        </p>
-        <div class="validation-pair">
-          <figure><Image src={wireframeTestComplex} alt={t('Wireframe combining test setup, recent tests, and an active recording.', 'Вайрфрейм, где на одном экране настройка теста, недавние тесты и идущая запись.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Everything at once', 'Всё сразу')}</figcaption></figure>
-
-          <figure><Image src={wireframeTestSetup} alt={t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Choose, configure, start', 'Выбрать, настроить, запустить')}</figcaption></figure>
+      <Decision
+        number={3}
+        layout="stack"
+        title={t('Choose what to observe, then how.', 'Сначала что наблюдать, потом как.')}
+        problem={t('Test setup asked for manual or automated mode before you chose an app.', 'Настройка теста спрашивала ручной или автоматический режим ещё до выбора приложения.')}
+        decision={t('Pick the apps first, then the recording mode. Setup and the running recording became separate screens.', 'Сначала выбрать приложения, потом режим записи. Настройка и идущая запись стали отдельными экранами.')}
+        why={t('People think about what they want to watch, not about how the tool records it.', 'Люди думают о том, за чем хотят наблюдать, а не о том, как инструмент это записывает.')}
+      >
+        <div class="pair pair--stack-mobile">
+          <Shot kind="wireframe" src={wireframeTestComplex} sizes={halfSizes} alt={t('Wireframe combining test setup, recent tests, and an active recording.', 'Вайрфрейм, где на одном экране настройка теста, недавние тесты и идущая запись.')} caption={t('Before: everything on one screen', 'До: всё на одном экране')} />
+          <Shot kind="wireframe" src={wireframeTestSetup} sizes={halfSizes} alt={t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.')} caption={t('After: choose, configure, start', 'После: выбрать, настроить, запустить')} />
         </div>
-      </article>
+      </Decision>
 
-      <article class="validation-case validation-case--history">
-        <p>
-          {t(
-            'A recording ended in Tests, but reopening it meant going to History. I brought the results back into Tests as Saved Results. A sidebar kept the list within reach while a result was open.',
-            'Запись заканчивалась в «Tests», а чтобы открыть её снова, нужно было идти в «History». Я вернул результаты в «Tests» в виде «Saved Results». Боковая панель держала список под рукой, пока открыт результат.',
-          )}
-        </p>
-        <div class="validation-pair">
-          <figure><Image src={wireframeHistory} alt={t('Wireframe of a separate History destination.', 'Вайрфрейм отдельного раздела «History».')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('History as a destination', '«History» как отдельный раздел')}</figcaption></figure>
-
-          <figure><Image src={wireframeSavedResults} alt={t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».')} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 378px" format="webp" loading="lazy" decoding="async" /><figcaption>{t('Saved Results inside Tests', '«Saved Results» внутри «Tests»')}</figcaption></figure>
+      <Decision
+        number={4}
+        layout="stack"
+        title={t('Results live where the test ends.', 'Результаты там, где заканчивается тест.')}
+        problem={t('A test ended in Tests, but its result lived in History, a separate place.', 'Тест заканчивался в «Tests», а его результат жил в «History», отдельном разделе.')}
+        decision={t('Moved results into Tests as Saved Results, with a sidebar list while a result is open.', 'Перенёс результаты в «Tests» как «Saved Results», со списком в боковой панели, пока открыт результат.')}
+        why={t('Fewer places to go. The next step is always right after the last one.', 'Меньше разделов. Следующий шаг всегда сразу после предыдущего.')}
+        effect={t('Top-level sections: 3 → 2', 'Разделов верхнего уровня: 3 → 2')}
+        effectLabel={t('Counted from the prototypes', 'Посчитано по прототипам')}
+      >
+        <div class="pair pair--stack-mobile">
+          <Shot kind="wireframe" src={wireframeHistory} sizes={halfSizes} alt={t('Wireframe of a separate History destination.', 'Вайрфрейм отдельного раздела «History».')} caption={t('Before: History as its own section', 'До: «History» отдельным разделом')} />
+          <Shot kind="wireframe" src={wireframeSavedResults} sizes={halfSizes} alt={t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».')} caption={t('After: Saved Results inside Tests', 'После: «Saved Results» внутри «Tests»')} />
         </div>
-      </article>
-    </section>
+      </Decision>
+    </StudySection>
 
-    <section class="chapter chapter--wide chapter--outcome" id="outcome" data-index-section>
-
-      <div class="chapter__body">
-        <h2>{t('A quick look, or a recording to come back to.', 'Быстрый взгляд или запись, к которой можно вернуться.')}</h2>
-        <div class="prose prose--split">
-          <p>
-            {t(
-              'Observatory 0.1.1 runs on macOS 14 and later. For a quick check, the live view keeps sixty seconds of activity in sight. For a longer investigation, Tests records one to four applications, with optional warm-up and repeated rounds.',
-              'Observatory 0.1.1 работает на macOS 14 и новее. Для быстрой проверки живой просмотр держит перед глазами шестьдесят секунд активности. Для долгого разбора «Tests» записывает от одного до четырёх приложений, с необязательным прогревом и повторными раундами.',
-            )}
-          </p>
-          <p>
-            {t(
-              'Recordings stay on the Mac. You can reopen them and align their timelines for comparison. This is a working prototype: the core flow is available to try, with broader testing still ahead.',
-              'Записи остаются на Mac. Их можно открыть снова и выровнять таймлайны для сравнения. Это рабочий прототип: основной сценарий уже можно попробовать, а более широкое тестирование ещё впереди.',
-            )}
-          </p>
+    <StudySection
+      part="result"
+      title={t('A working app people keep using.', 'Рабочее приложение, которым продолжают пользоваться.')}
+      lead={t(
+        'Observatory 0.1.1 runs on macOS 14 and later. The live view keeps 60 seconds in sight. Tests record one to four apps, with optional warm-up and repeated rounds, and recordings stay on the Mac.',
+        'Observatory 0.1.1 работает на macOS 14 и новее. Живой просмотр держит перед глазами 60 секунд. «Tests» записывает от одного до четырёх приложений, с необязательным прогревом и повторными раундами, а записи остаются на Mac.',
+      )}
+    >
+      <div class="final-screens breakout">
+        <Shot kind="desktop" src={outcomeNow} sizes="(max-width: 1120px) calc(100vw - 40px), 1080px" alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} caption={t('Every app is one row. The live chart keeps the last 60 seconds.', 'Каждое приложение одной строкой. Живой график хранит последние 60 секунд.')} />
+        <div class="pair pair--stack-mobile">
+          <Shot kind="desktop" src={outcomeTestSetup} sizes={halfSizes} alt={t('Final Observatory controlled test setup screen.', 'Финальный экран настройки контролируемого теста в Observatory.')} caption={t('Choose apps, then the mode, then the run.', 'Выбрать приложения, затем режим, затем прогон.')} />
+          <Shot kind="desktop" src={outcomeRecording} sizes={halfSizes} alt={t('Final Observatory guided recording screen.', 'Финальный экран записи с подсказками в Observatory.')} caption={t('Manual mode guides one app at a time.', 'Ручной режим ведёт по одному приложению за раз.')} />
+          <Shot kind="desktop" src={outcomeSavedResults} sizes={halfSizes} alt={t('Final Observatory Saved Results screen.', 'Финальный экран «Saved Results» в Observatory.')} caption={t('Saved results keep their context.', 'Сохранённые результаты хранят контекст.')} />
+          <Shot kind="desktop" src={outcomeComparison} sizes={halfSizes} alt={t('Final Observatory comparison screen showing synchronized metric timelines.', 'Финальный экран сравнения в Observatory с синхронизированными таймлайнами метрик.')} caption={t('Synchronized timelines make runs comparable.', 'Синхронизированные таймлайны делают прогоны сравнимыми.')} />
         </div>
       </div>
 
-      <div class="study-sequence">
-<article class="study-step"><h3>{t('Read the whole application.', 'Видеть приложение целиком.')}</h3><p>{t('A compact application list keeps the live picture scannable.', 'Компактный список приложений позволяет быстро окинуть взглядом живую картину.')}</p><figure><Image src={outcomeNow} alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>{t('Open detail only when it matters.', 'Открывать детали, только когда они важны.')}</h3><p>{t('Process data is present, but it waits until a row is expanded.', 'Данные процессов есть, но появляются, только когда строка раскрыта.')}</p><figure><Image src={outcomeProcessDetails} alt={t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>{t('Keep the frame stable.', 'Сохранять кадр стабильным.')}</h3><p>{t('CPU, memory, energy, and disk share one chart position.', 'Процессор, память, энергия и диск делят одно место для графика.')}</p><figure><Image src={outcomeMemory} alt={t('Final Observatory memory timeline chart.', 'Финальный график памяти во времени в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>{t('Define the observation.', 'Определить наблюдение.')}</h3><p>{t('Select applications, choose a recording mode, then define the run.', 'Выбрать приложения, режим записи, затем задать прогон.')}</p><figure><Image src={outcomeTestSetup} alt={t('Final Observatory controlled test setup screen.', 'Финальный экран настройки контролируемого теста в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>{t('Guide one run at a time.', 'Вести по одному прогону.')}</h3><p>{t('Manual mode guides the person through one application at a time.', 'Ручной режим ведёт человека по одному приложению за раз.')}</p><figure><Image src={outcomeRecording} alt={t('Final Observatory guided recording screen.', 'Финальный экран записи с подсказками в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>{t('Preserve the context.', 'Сохранить контекст.')}</h3><p>{t('Saved results keep the meaning of each test after it ends.', 'Сохранённые результаты хранят смысл каждого теста и после его окончания.')}</p><figure><Image src={outcomeSavedResults} alt={t('Final Observatory Saved Results screen.', 'Финальный экран «Saved Results» в Observatory.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-<article class="study-step"><h3>{t('Make the same moment comparable.', 'Сделать один и тот же момент сравнимым.')}</h3><p>{t('Synchronized timelines align evidence across results.', 'Синхронизированные таймлайны выравнивают данные разных результатов.')}</p><figure><Image src={outcomeComparison} alt={t('Final Observatory comparison screen showing synchronized metric timelines.', 'Финальный экран сравнения в Observatory с синхронизированными таймлайнами метрик.')} widths={[480, 720, 960, 1280]} sizes="(max-width: 760px) calc(100vw - 40px), 780px" format="webp" quality={85} loading="lazy" decoding="async" /></figure></article>
-</div>
-    </section>
-
-    <section class="chapter reflection" id="reflection" data-index-section>
-
-      <div class="chapter__body">
-        <h2>{t('The task ends. The evidence stays.', 'Задача заканчивается. Данные остаются.')}</h2>
-        <div class="prose">
-          <p>
-            {t(
-              'I started by trying to read a moving list. The project became a way to return to something I had missed: an application’s activity during a particular piece of work.',
-              'Я начинал с попытки прочитать движущийся список. Проект стал способом вернуться к тому, что я пропустил: к активности приложения во время конкретной работы.',
-            )}
-          </p>
-          <p>
-            {t(
-              'Alongside the product design and research, I made the telescope artwork, identity, and launch film. I directed AI development of the application from my specifications.',
-              'Помимо продуктового дизайна и исследования, я сделал иллюстрацию с телескопом, айдентику и фильм к запуску. Разработкой приложения с помощью AI я руководил по своим спецификациям.',
-            )}
-          </p>
-          <p>
-            {t(
-              'Next, I want people who regularly troubleshoot or compare performance to use it on their own tasks. Can they identify what happened? Can they tell which recordings are useful to compare? Their answers should guide the comparison language and defaults.',
-              'Дальше я хочу, чтобы люди, которые регулярно разбираются с производительностью или сравнивают её, попробовали приложение на своих задачах. Смогут ли они понять, что произошло? Смогут ли определить, какие записи полезно сравнивать? Их ответы должны подсказать формулировки сравнения и настройки по умолчанию.',
-            )}
-          </p>
-        </div>
+      <div class="charts breakout">
+        <BarCompare
+          title={t('Time to answer “how much memory is Brave using?”', 'Время, чтобы ответить «сколько памяти ест Brave?»')}
+          rows={[
+            { label: t('Activity Monitor: find and add 17 rows', 'Мониторинг системы: найти и сложить 17 строк'), value: 60, display: t('≈60 s', '≈60 с') },
+            { label: t('Observatory: read one row', 'Observatory: прочитать одну строку'), value: 3, display: t('≈3 s', '≈3 с'), emphasis: true },
+          ]}
+          note={t('Estimate from walking through both apps. Activity Monitor also refreshes while you add.', 'Оценка по проходу через оба приложения. К тому же Мониторинг системы обновляет цифры, пока ты складываешь.')}
+        />
+        <DotStat
+          title={t('Colleagues still using it after two months', 'Коллеги, которые пользуются им спустя два месяца')}
+          rows={[{ label: t('Using it', 'Пользуются'), value: 3, total: 3, emphasis: true }]}
+          note={t('A small group of developers. Tests is the part they use most.', 'Небольшая группа разработчиков. Чаще всего они используют «Tests».')}
+        />
       </div>
-    </section>
+
+      <h3 class="result-subtitle">{t('How they use it', 'Как им пользуются')}</h3>
+      <ul class="tiles breakout" role="list">
+        <li><strong>{t('Before and after a change', 'До и после изменения')}</strong><p>{t('Record a version of an app, change it, record again, and compare.', 'Записать версию приложения, изменить, записать снова и сравнить.')}</p></li>
+        <li><strong>{t('Apps of the same kind', 'Приложения одного типа')}</strong><p>{t('Compare apps in one category, like the terminals Ghostty, kitty, and Alacritty.', 'Сравнить приложения одной категории, например терминалы Ghostty, kitty и Alacritty.')}</p></li>
+        <li><strong>{t('The whole product', 'Продукт целиком')}</strong><p>{t('I also made the telescope artwork, identity, and launch film.', 'Ещё я сделал иллюстрацию с телескопом, айдентику и фильм к запуску.')}</p></li>
+      </ul>
+    </StudySection>
+
+    <StudySection
+      part="next"
+      title={t('Group apps by what they are for.', 'Группировать приложения по назначению.')}
+      lead={t(
+        'My colleagues were already comparing apps of one kind, picking them one by one. Grouping by category applies the same principle one level up: similar things together.',
+        'Коллеги уже сравнивали приложения одного типа, выбирая их по одному. Группировка по категориям применяет тот же принцип уровнем выше: похожее вместе.',
+      )}
+    >
+      <div class="pair pair--stack-mobile breakout next-pair">
+        <figure class="category-mock">
+          <div class="category-mock__window">
+            {categories.map((category) => (
+              <div class="category-mock__group">
+                <p class="category-mock__heading"><span>{category.name}</span><span>{category.apps.length}</span></p>
+                <ul class="category-mock__apps">{category.apps.map((app) => <li>{app}</li>)}</ul>
+              </div>
+            ))}
+          </div>
+          <figcaption class="category-mock__caption">{t('Concept: one pick selects a whole category for a test.', 'Концепция: один выбор добавляет в тест всю категорию.')}</figcaption>
+        </figure>
+        <StepCompare
+          title={t('Setting up a terminal comparison', 'Настроить сравнение терминалов')}
+          rows={[
+            { label: t('Now', 'Сейчас'), steps: [t('Pick Ghostty', 'Выбрать Ghostty'), t('Pick kitty', 'Выбрать kitty'), t('Pick Alacritty', 'Выбрать Alacritty'), t('Start', 'Запустить')] },
+            { label: t('With categories', 'С категориями'), steps: [t('Pick Terminals', 'Выбрать «Терминалы»'), t('Start', 'Запустить')], emphasis: true },
+          ]}
+          note={t('Proposed, not built yet.', 'Предложение, пока не сделано.')}
+        />
+      </div>
+      <p class="note next-note">{t(
+        'After that, I want to test with people outside my team: can they tell what happened in a run, and which recordings are worth comparing?',
+        'Дальше хочу проверить на людях вне моей команды: понимают ли они, что произошло в прогоне, и какие записи стоит сравнивать?',
+      )}</p>
+    </StudySection>
   </main>
 
   <footer class="case-footer">
@@ -402,6 +442,7 @@ const sketches = [
       <a href={repositoryURL}>{t('Source ↗', 'Исходный код ↗')}</a>
       <a href={localePath('/', locale)}>{t('Home', 'Главная')}</a>
       <a href={localePath('/case-studies/', locale)}>{t('All case studies', 'Все кейсы')}</a>
+      <a href={localePath('/case-studies/instagram-saves-redesign/', locale)}>{t('Instagram Saves case study →', 'Кейс «Сохранённое» в Instagram →')}</a>
     </nav>
   </footer>
 </BaseDocument>
@@ -458,6 +499,37 @@ const sketches = [
     38%, 68% { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  @media (max-width: 760px) { .hero h1 { font-size: clamp(56px, 15vw, 61px); letter-spacing: -0.055em; } }
+  /* One app in Activity Monitor versus Observatory. */
+  .process-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-block: 32px 0; }
+  .process-split__side { display: flex; flex-direction: column; padding: 22px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
+  .process-split__tool { margin: 0 0 14px; color: #656560; font-size: .9375rem; line-height: 1.4; }
+  .process-split__rows { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; font-size: .8125rem; line-height: 1.35; }
+  .process-split__rows li { padding: 2px 8px; border-radius: 4px; background: #f1f0ec; color: #4e4b45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .process-split__app { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; background: var(--color-ink); color: var(--color-field); font-size: 1rem; line-height: 1.3; }
+  .process-split__name { font-weight: 700; }
+  .process-split__procs { color: rgb(248 248 248 / 70%); font-size: .875rem; }
+  .process-split__count { margin: auto 0 0; padding-top: 16px; font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
+  .process-split__caption { grid-column: 1 / -1; margin-top: 4px; }
+
+  .prototype-title { margin-top: 56px; }
+  .prototype-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
+  .final-screens { display: grid; gap: 32px; margin-top: 32px; }
+  .final-screens .pair { row-gap: 32px; }
+  .result-subtitle { margin-top: 48px; }
+
+  .next-pair { align-items: stretch; margin-top: 28px; }
+  .category-mock { display: flex; flex-direction: column; margin: 0; }
+  .category-mock__window { flex: 1; display: grid; gap: 14px; padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
+  .category-mock__heading { display: flex; justify-content: space-between; margin: 0 0 6px; font-size: .9375rem; font-weight: 700; line-height: 1.4; }
+  .category-mock__heading span + span { color: #656560; font-weight: 400; }
+  .category-mock__apps { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+  .category-mock__apps li { padding: 6px 10px; border-radius: 6px; background: #f1f0ec; font-size: .9375rem; line-height: 1.3; }
+  .category-mock__caption { margin-top: 12px; }
+  .next-note { margin-top: 28px; }
+
+  @media (max-width: 760px) {
+    .hero h1 { font-size: clamp(56px, 15vw, 61px); letter-spacing: -0.055em; }
+    .process-split, .prototype-row { grid-template-columns: minmax(0, 1fr); }
+  }
   @media (prefers-reduced-motion: reduce) { .hero-title__letter::after { animation: none; } }
 </style>

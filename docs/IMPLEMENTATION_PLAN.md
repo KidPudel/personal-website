@@ -1,6 +1,13 @@
 # Implementation plan
 
-Last updated: 2026-09-23
+Last updated: 2026-09-29
+
+## Completed milestone: STAR case studies with sourced metrics
+
+- Restructure all four case studies around STAR, putting visual evidence first and analysing each decision explicitly (problem, choice, reason, rejected option, effect).
+- Tie every metric to a specific design decision and label its source. Estimates must never read as measurements.
+- Build the shared blocks once in `src/components/case-studies/` and keep English and Russian copy in `t()` pairs.
+- Verify both locales at desktop and mobile widths, the media contract, and both production builds. See `docs/PROGRESS.md`.
 
 ## Completed milestone: website media and implementation audit
 

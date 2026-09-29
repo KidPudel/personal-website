@@ -1,0 +1,55 @@
+---
+import { toLocale, translator } from '../../i18n/locales';
+
+interface Row {
+  label: string;
+  value: number;
+  total: number;
+  emphasis?: boolean;
+}
+
+interface Props {
+  title: string;
+  rows: Row[];
+  note?: string;
+}
+
+const { title, rows, note } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+---
+
+<figure class="dots">
+  <figcaption class="dots__title">{title}</figcaption>
+  <dl class="dots__rows">
+    {rows.map((row) => (
+      <div class:list={['dots__row', row.emphasis && 'dots__row--emphasis']}>
+        <dt class="dots__label">{row.label}</dt>
+        <dd class="dots__measure">
+          <span class="dots__people" aria-hidden="true">
+            {Array.from({ length: row.total }, (_, index) => (
+              <span class:list={['dots__dot', index < row.value && 'dots__dot--on']}></span>
+            ))}
+          </span>
+          <span class="dots__value">{t(`${row.value} of ${row.total}`, `${row.value} из ${row.total}`)}</span>
+        </dd>
+      </div>
+    ))}
+  </dl>
+  {note && <p class="dots__note">{note}</p>}
+</figure>
+
+<style>
+  .dots { margin: 0; padding: 22px 22px 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
+  .dots__title { margin: 0 0 18px; color: var(--color-ink); font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
+  .dots__rows { display: grid; gap: 16px; margin: 0; }
+  .dots__row { display: grid; gap: 8px; }
+  .dots__label { color: #656560; font-size: .9375rem; line-height: 1.4; }
+  .dots__measure { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0; }
+  .dots__people { display: flex; flex-wrap: wrap; gap: 6px; }
+  .dots__dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 2px #bdb9b1; }
+  .dots__dot--on { background: #bdb9b1; box-shadow: none; }
+  .dots__row--emphasis .dots__dot { box-shadow: inset 0 0 0 2px var(--color-ink); }
+  .dots__row--emphasis .dots__dot--on { background: var(--color-ink); box-shadow: none; }
+  .dots__value { font-size: 1.0625rem; font-weight: 700; line-height: 1.3; }
+  .dots__note { margin: 16px 0 0; color: #656560; font-size: .9375rem; line-height: 1.5; }
+</style>

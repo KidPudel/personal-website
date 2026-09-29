@@ -1,0 +1,43 @@
+---
+interface Metric {
+  value: string;
+  label: string;
+  /** Where the number comes from: measured, estimated, or counted from the design. */
+  basis: string;
+}
+
+interface Props {
+  metrics: Metric[];
+  caption?: string;
+  /** A fixed column count on desktop, for sets that should split into even rows. */
+  columns?: number;
+}
+
+const { metrics, caption, columns } = Astro.props;
+---
+
+<figure class="metrics breakout">
+  <ul class:list={['metrics__list', columns && 'metrics__list--fixed']} style={columns ? `--columns: ${columns}` : undefined} role="list">
+    {metrics.map((metric) => (
+      <li class="metrics__item">
+        <p class="metrics__value">{metric.value}</p>
+        <p class="metrics__label">{metric.label}</p>
+        <p class="metrics__basis">{metric.basis}</p>
+      </li>
+    ))}
+  </ul>
+  {caption && <figcaption class="metrics__caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .metrics { margin-block: 20px 0; }
+  .metrics__list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+  .metrics__list--fixed { grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); }
+  .metrics__item { display: flex; flex-direction: column; padding: 22px 20px 20px; border-radius: 14px; background: var(--color-ink); color: var(--color-field); }
+  .metrics__value { margin: 0 0 10px; font-size: clamp(1.75rem, 2.6vw, 2.25rem); font-weight: 700; letter-spacing: -.03em; line-height: 1.1; text-wrap: balance; }
+  .metrics__label { margin: 0 0 16px; font-size: 1.0625rem; line-height: 1.45; }
+  .metrics__basis { margin: auto 0 0; color: rgb(248 248 248 / 68%); font-size: .9375rem; line-height: 1.45; }
+  .metrics__caption { margin-top: 14px; }
+  @media (max-width: 900px) { .metrics__list--fixed { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .metrics__list, .metrics__list--fixed { grid-template-columns: minmax(0, 1fr); gap: 12px; } }
+</style>

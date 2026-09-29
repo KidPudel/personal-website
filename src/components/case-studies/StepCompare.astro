@@ -1,0 +1,54 @@
+---
+import { toLocale, translator } from '../../i18n/locales';
+
+interface Row {
+  label: string;
+  steps: string[];
+  emphasis?: boolean;
+}
+
+interface Props {
+  title: string;
+  rows: Row[];
+  note?: string;
+}
+
+const { title, rows, note } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const russianSteps = (count: number) => {
+  const lastTwo = count % 100;
+  const last = count % 10;
+  if (last === 1 && lastTwo !== 11) return 'шаг';
+  if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return 'шага';
+  return 'шагов';
+};
+const countLabel = (count: number) => t(`${count} ${count === 1 ? 'step' : 'steps'}`, `${count} ${russianSteps(count)}`);
+---
+
+<figure class="steps">
+  <figcaption class="steps__title">{title}</figcaption>
+  {rows.map((row) => (
+    <div class:list={['steps__row', row.emphasis && 'steps__row--emphasis']}>
+      <p class="steps__label">{row.label} <span class="steps__count">{countLabel(row.steps.length)}</span></p>
+      <ol class="steps__list">
+        {row.steps.map((step) => <li class="steps__step"><span class="steps__chip">{step}</span></li>)}
+      </ol>
+    </div>
+  ))}
+  {note && <p class="steps__note">{note}</p>}
+</figure>
+
+<style>
+  .steps { margin: 0; padding: 22px 22px 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
+  .steps__title { margin: 0 0 18px; color: var(--color-ink); font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
+  .steps__row + .steps__row { margin-top: 18px; }
+  .steps__label { margin: 0 0 10px; color: #656560; font-size: .9375rem; line-height: 1.4; }
+  .steps__count { margin-left: 6px; color: var(--color-ink); font-weight: 700; }
+  .steps__list { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 0; margin: 0; padding: 0; list-style: none; }
+  .steps__step { display: inline-flex; align-items: center; }
+  .steps__step:not(:last-child)::after { content: '→'; margin-inline: 6px; color: #9a968e; }
+  .steps__chip { padding: 6px 11px; border-radius: 999px; background: #efeee9; color: #4e4b45; font-size: .9375rem; line-height: 1.3; }
+  .steps__row--emphasis .steps__chip { background: var(--color-ink); color: var(--color-field); }
+  .steps__note { margin: 16px 0 0; color: #656560; font-size: .9375rem; line-height: 1.5; }
+</style>

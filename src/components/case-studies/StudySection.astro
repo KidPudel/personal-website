@@ -1,0 +1,44 @@
+---
+import { toLocale, translator } from '../../i18n/locales';
+
+type Part = 'situation' | 'task' | 'action' | 'result' | 'reflection' | 'next';
+
+interface Props {
+  part: Part;
+  title: string;
+  lead?: string;
+  id?: string;
+}
+
+const { part, title, lead, id = part } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+// Every case study follows STAR, then closes with what I learned or would do next.
+const labels: Record<Part, string> = {
+  situation: t('Situation', 'Ситуация'),
+  task: t('Task', 'Задача'),
+  action: t('Action', 'Действия'),
+  result: t('Result', 'Результат'),
+  reflection: t('Reflection', 'Выводы'),
+  next: t('Next', 'Дальше'),
+};
+const label = labels[part];
+const isStar = part === 'situation' || part === 'task' || part === 'action' || part === 'result';
+---
+
+<section class="study-section" id={id} data-index-section>
+  <p class="study-section__eyebrow">
+    {isStar && <span class="study-section__letter" aria-hidden="true">{label.charAt(0)}</span>}
+    {label}
+  </p>
+  <h2 class="study-section__title">{title}</h2>
+  {lead && <p class="study-section__lead">{lead}</p>}
+  <slot />
+</section>
+
+<style>
+  .study-section { padding-block: clamp(48px, 7vw, 88px) 0; }
+  .study-section__eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; color: #656560; font-size: var(--study-small); line-height: 1.4; }
+  .study-section__letter { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--color-ink); color: var(--color-field); font-size: .875rem; font-weight: 700; line-height: 1; }
+  .study-section__title { margin-bottom: 20px; }
+  .study-section__lead { max-width: 40em; }
+</style>

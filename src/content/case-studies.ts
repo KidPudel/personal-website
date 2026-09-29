@@ -26,8 +26,22 @@ export interface CaseStudy {
 }
 
 // One source for the homepage showcase and the case-studies index. The order
-// is the order both lists show.
+// ranks the studies, strongest first, and is the order the index shows. The
+// homepage places the cards by its own layout (see ShowcaseCards.astro).
 export const caseStudies: readonly CaseStudy[] = [
+  {
+    slug: 'supergood',
+    name: { en: 'SuperGood', ru: 'SuperGood' },
+    pitch: { en: 'Homemade food, without the guesswork.', ru: 'Домашняя еда, и никаких сюрпризов.' },
+    responsibility: {
+      en: 'Research, product design, and Flutter build.',
+      ru: 'Исследование, продуктовый дизайн и разработка на Flutter.',
+    },
+    year: '2024',
+    background: supergoodCard,
+    cover: supergoodCover,
+    coverFormat: 'phone',
+  },
   {
     slug: 'observatory',
     name: { en: 'Observatory', ru: 'Observatory' },
@@ -59,19 +73,6 @@ export const caseStudies: readonly CaseStudy[] = [
     year: '2024',
     background: twoSticksCard,
     cover: twoSticksCover,
-    coverFormat: 'phone',
-  },
-  {
-    slug: 'supergood',
-    name: { en: 'SuperGood', ru: 'SuperGood' },
-    pitch: { en: 'Homemade food, without the guesswork.', ru: 'Домашняя еда, и никаких сюрпризов.' },
-    responsibility: {
-      en: 'Research, product design, and Flutter build.',
-      ru: 'Исследование, продуктовый дизайн и разработка на Flutter.',
-    },
-    year: '2024',
-    background: supergoodCard,
-    cover: supergoodCover,
     coverFormat: 'phone',
   },
 ];

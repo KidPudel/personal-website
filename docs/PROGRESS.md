@@ -1,6 +1,25 @@
 # Progress
 
-Last updated: 2026-09-28
+Last updated: 2026-09-29
+
+## SuperGood leads the work
+
+- `src/content/case-studies.ts` now ranks the studies: SuperGood, Observatory, Instagram Saves, Two Sticks. The case-studies listing shows that order. Case-study footers already chain in the same order.
+- The homepage bento keeps its diagonal of two wide cards, swapped at Igor's request: SuperGood opens at top left and Observatory closes at bottom right, with Instagram and Two Sticks in the portrait slots. A `position` field in `ShowcaseCards.astro` keeps document and keyboard order in visual reading order (SuperGood, Instagram, Two Sticks, Observatory), which is also the phone order.
+- Verified the bento at 1440 px, the listing at 1280 px, and the phone order at 375 px with no overflow.
+
+## Case studies rebuilt around STAR and metrics
+
+- All four case studies now share one structure: a STAR summary (Situation, Task, Action, Result), a row of headline metrics, then Situation, Task, Action, Result, and a closing Reflection or Next section. Action holds the research and numbered decisions. Each decision states the problem, what Igor did, why, the option he rejected, and the effect, beside its visual.
+- Shared blocks live in `src/components/case-studies/`: `StudySection`, `StarSummary`, `MetricGrid`, `Decision`, `BarCompare`, `DotStat`, `StepCompare`, and `Shot`. `.breakout` in `src/styles/case-study.css` widens a block to 1080 px while text keeps the 780 px column. Instagram now uses the shared editorial styles and keeps its films and zoomable wireframes.
+- Every number on the page names its source: measured, estimated, or counted from the designs. The facts come from Igor (2026-09-29):
+  - SuperGood: in an internal test, repeating a usual order went from about 60 s to about 5 s, and 2 of 10 to 10 of 10 rebuilt it correctly (10 colleagues outside the app team, confirmed by Igor). In the same test, the ease rating (Single Ease Question, 1 to 7) went from 3 to 6. The public store rating rose from 3.1 to 3.7 after the release. The team read the new reviews: food complaints continued, and the praise was for the app. He built it alone in 11 months. The "≈18 months native" estimate uses Google Pay's published ratio (Flutter about 1.2× one platform, two native apps 2×). The ≈70/30 split of review complaints is an approximation of Igor's "most were about food for the price". The pinned category bar is inferred from the menu screen and Igor's note that categories used to shift.
+  - Observatory: three colleagues have used it for about two months, mostly Tests, to compare versions of an app and apps of one kind (Ghostty, kitty, Alacritty). Brave Browser at 17 processes is measured. The 60 s versus 3 s reading time is an estimate.
+  - Instagram: 6 of 8 interviewees named finding a saved post as their main problem, which now drives the priority order. The 90 s versus 10 s search time is an estimate. "2 taps and a name → 1 tap" is counted from the designs.
+  - Two Sticks: a few students used it. They liked having everything in one place and missed pronunciation practice.
+- Closing sections: SuperGood owns the stakeholder lesson (Igor argued with opinions, not evidence). Observatory proposes category grouping. Two Sticks proposes a voice-message pronunciation drill. Instagram proposes a five-person task test on real libraries. Only SuperGood shows an ease rating; the other case studies collected none.
+- Unchanged: Observatory's wordmark animation and launch film.
+- Verified: Astro diagnostics, the media contract, and both production builds pass, with one high-priority image per route. English and Russian show no horizontal overflow at 1280 px and 375 px.
 
 ## Case studies listing and localized 404
 
