@@ -241,6 +241,42 @@ const stories = [
     font-size: clamp(0.35rem, 1.1vw, 0.76rem);
   }
 
+  /* Fingertip cursor over the phone screen (desktop only; shown by InstagramPrototypeApp.jsx). */
+  .instagram-prototype :global(.instagram-prototype__touch) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: calc(46px * var(--prototype-scale, 0.45));
+    min-width: 1.1rem;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border: 1.5px solid rgb(255 255 255 / 0.9);
+    border-radius: 50%;
+    background: rgb(40 40 48 / 0.28);
+    box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 0.22);
+    opacity: 0;
+    pointer-events: none;
+    scale: 0.6;
+    transition: opacity 120ms ease, scale 120ms ease;
+    z-index: 3;
+  }
+
+  .instagram-prototype :global(.instagram-prototype__touch.is-visible) {
+    opacity: 1;
+    scale: 1;
+  }
+
+  .instagram-prototype :global(.instagram-prototype__touch.is-pressed) {
+    background: rgb(40 40 48 / 0.45);
+    scale: 0.8;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .instagram-prototype :global(.instagram-prototype__touch) {
+      transition: opacity 120ms ease;
+    }
+  }
+
   @media (max-width: 44rem) {
     .instagram-prototype {
       top: 15%;

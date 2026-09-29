@@ -10,7 +10,8 @@
 button, input, textarea { font: inherit; }
 button { color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:active { transform: scale(.97); }
-.app-shell { position: absolute; top: 50%; left: 50%; width: 430px; height: 884px; display: grid; place-content: center; transform: translate(-50%, -50%) scale(var(--prototype-scale, .3)); transform-origin: center; }
+/* zoom (not transform: scale) keeps the phone's scroll areas native, so touch scrolling works in iOS Safari. */
+.app-shell { width: 430px; height: 884px; display: grid; place-content: center; zoom: var(--prototype-scale, .3); }
 .showcase { display: contents; }
 .prototype { position: relative; width: 390px; height: 844px; }
 .prototype::before, .prototype::after { position: absolute; content: ''; pointer-events: none; }
@@ -26,6 +27,7 @@ button:active { transform: scale(.97); }
 .mode-switch svg { width: 14px; height: 14px; }
 .screen { height: 100%; background: #fff; }
 .scroll-screen { overflow-y: auto; padding-bottom: 90px; scrollbar-width: none; }
+.scroll-screen, .feed-screen, .post-view, .sheet, .detail { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
 .scroll-screen::-webkit-scrollbar, .feed-screen::-webkit-scrollbar { display: none; }
 .avatar { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
@@ -368,6 +370,7 @@ button:active { transform: scale(.97); }
 :root[data-mode-direction="backward"]::view-transition-new(prototype-phone) { animation: mode-enter-left 260ms cubic-bezier(.77, 0, .175, 1) both; }
 
 @media (hover:hover) and (pointer:fine) {
+  .phone, .phone * { cursor: none !important; }
   .icon-button:hover, .tabs button:hover, .bottom-nav button:hover { background-color: #f1f1f1; }
   .collection-card:hover .collection-cover, .save-tile:hover img { opacity: .88; }
 }

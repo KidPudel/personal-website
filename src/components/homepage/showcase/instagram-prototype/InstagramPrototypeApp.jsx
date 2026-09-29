@@ -429,8 +429,11 @@ function App(){
   </div></div></div></div>;
 }
 
+const finePointer=()=>window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 export default function InstagramPrototypeIsland(){
   const hostRef=useRef(null);
+  const touchRef=useRef(null);
   const [shadow,setShadow]=useState(null);
 
   useEffect(()=>{
@@ -440,7 +443,7 @@ export default function InstagramPrototypeIsland(){
     const root=host.shadowRoot||host.attachShadow({mode:'open'});
     const syncScale=()=>{
       const scale=Math.min(host.clientWidth/430,host.clientHeight/884);
-      host.style.setProperty('--prototype-scale',String(Math.max(scale,.01)));
+      host.parentElement.style.setProperty('--prototype-scale',String(Math.max(scale,.01)));
     };
     const resize=new ResizeObserver(syncScale);
     resize.observe(host);
@@ -449,7 +452,38 @@ export default function InstagramPrototypeIsland(){
     return()=>resize.disconnect();
   },[]);
 
-  return <div ref={hostRef} style={{position:'absolute',inset:0}}>
-    {shadow&&createPortal(<><style>{prototypeStyles}</style><App/></>,shadow)}
+  // On desktop, the mouse becomes a fingertip circle while it is over the phone screen.
+  useEffect(()=>{
+    const host=hostRef.current, touch=touchRef.current;
+    if(!host||!touch||!shadow)return;
+    const hide=()=>touch.classList.remove('is-visible','is-pressed');
+    const move=event=>{
+      if(event.pointerType!=='mouse'||!finePointer())return hide();
+      const phone=shadow.querySelector('.phone');
+      const area=host.parentElement.getBoundingClientRect(), screen=phone?.getBoundingClientRect();
+      const inside=screen&&event.clientX>=screen.left&&event.clientX<=screen.right&&event.clientY>=screen.top&&event.clientY<=screen.bottom;
+      if(!inside)return hide();
+      touch.style.translate=`${event.clientX-area.left}px ${event.clientY-area.top}px`;
+      touch.classList.add('is-visible');
+    };
+    const press=event=>{move(event);if(event.pointerType==='mouse'&&touch.classList.contains('is-visible'))touch.classList.add('is-pressed')};
+    const release=()=>touch.classList.remove('is-pressed');
+    host.addEventListener('pointermove',move);
+    host.addEventListener('pointerdown',press);
+    host.addEventListener('pointerleave',hide);
+    window.addEventListener('pointerup',release);
+    return()=>{
+      host.removeEventListener('pointermove',move);
+      host.removeEventListener('pointerdown',press);
+      host.removeEventListener('pointerleave',hide);
+      window.removeEventListener('pointerup',release);
+    };
+  },[shadow]);
+
+  return <div className="instagram-prototype__stage" style={{position:'absolute',inset:0}}>
+    <div ref={hostRef} style={{position:'absolute',inset:0,display:'grid',placeItems:'center'}}>
+      {shadow&&createPortal(<><style>{prototypeStyles}</style><App/></>,shadow)}
+    </div>
+    <span ref={touchRef} className="instagram-prototype__touch" aria-hidden="true"/>
   </div>;
 }
