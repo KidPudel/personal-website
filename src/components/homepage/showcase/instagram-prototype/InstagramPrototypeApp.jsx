@@ -431,9 +431,27 @@ function App(){
 
 const finePointer=()=>window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
+// The scroller under a touch that can still move along the drag, searched from the touched element up to the host.
+const scrollerFor=(event,host,dx,dy)=>{
+  const vertical=Math.abs(dy)>=Math.abs(dx), delta=vertical?dy:dx;
+  for(const el of event.composedPath()){
+    if(el===host)break;
+    if(!(el instanceof Element))continue;
+    if(el.matches('input[type="range"]'))return null;
+    const style=getComputedStyle(el), overflow=vertical?style.overflowY:style.overflowX;
+    if(overflow!=='auto'&&overflow!=='scroll')continue;
+    const position=vertical?el.scrollTop:el.scrollLeft;
+    const limit=vertical?el.scrollHeight-el.clientHeight:el.scrollWidth-el.clientWidth;
+    if(limit<=1)continue;
+    if(delta<0?position<limit-1:position>1)return {el,vertical};
+  }
+  return null;
+};
+
 export default function InstagramPrototypeIsland(){
   const hostRef=useRef(null);
   const touchRef=useRef(null);
+  const scaleRef=useRef(1);
   const [shadow,setShadow]=useState(null);
 
   useEffect(()=>{
@@ -443,6 +461,7 @@ export default function InstagramPrototypeIsland(){
     const root=host.shadowRoot||host.attachShadow({mode:'open'});
     const syncScale=()=>{
       const scale=Math.min(host.clientWidth/430,host.clientHeight/884);
+      scaleRef.current=Math.max(scale,.01);
       host.parentElement.style.setProperty('--prototype-scale',String(Math.max(scale,.01)));
     };
     const resize=new ResizeObserver(syncScale);
@@ -477,6 +496,71 @@ export default function InstagramPrototypeIsland(){
       host.removeEventListener('pointerdown',press);
       host.removeEventListener('pointerleave',hide);
       window.removeEventListener('pointerup',release);
+    };
+  },[shadow]);
+
+  // iOS Safari does not reliably touch-scroll overflow areas inside the scaled phone, so touch
+  // drags scroll them here, with momentum. A drag the phone cannot absorb still scrolls the page.
+  useEffect(()=>{
+    const host=hostRef.current;
+    if(!host||!shadow)return;
+    let start=null, gesture=null, glide=0;
+    const stopGlide=()=>{cancelAnimationFrame(glide);glide=0};
+    const scrollBy=(target,distance)=>{
+      if(target.vertical)target.el.scrollTop+=distance;
+      else target.el.scrollLeft+=distance;
+    };
+    const onStart=event=>{
+      stopGlide();
+      gesture=null;
+      start=event.touches.length===1?{x:event.touches[0].clientX,y:event.touches[0].clientY}:null;
+    };
+    const onMove=event=>{
+      if(!start||event.touches.length!==1)return;
+      const touch=event.touches[0], now=performance.now();
+      if(!gesture){
+        const dx=touch.clientX-start.x, dy=touch.clientY-start.y;
+        if(Math.hypot(dx,dy)<4)return;
+        const target=scrollerFor(event,host,dx,dy);
+        if(!target||!event.cancelable){start=null;return}
+        gesture={...target,last:target.vertical?touch.clientY:touch.clientX,time:now,velocity:0};
+      }
+      event.preventDefault();
+      const position=gesture.vertical?touch.clientY:touch.clientX;
+      const distance=(gesture.last-position)/scaleRef.current;
+      scrollBy(gesture,distance);
+      const elapsed=Math.max(now-gesture.time,1);
+      gesture.velocity=gesture.velocity*.2+(distance/elapsed)*.8;
+      gesture.last=position;
+      gesture.time=now;
+    };
+    const onEnd=()=>{
+      const current=gesture;
+      start=null;
+      gesture=null;
+      if(!current||performance.now()-current.time>80||Math.abs(current.velocity)<.05)return;
+      let velocity=current.velocity, previous=performance.now();
+      const step=now=>{
+        const elapsed=Math.min(now-previous,32);
+        previous=now;
+        const before=current.vertical?current.el.scrollTop:current.el.scrollLeft;
+        scrollBy(current,velocity*elapsed);
+        const after=current.vertical?current.el.scrollTop:current.el.scrollLeft;
+        velocity*=Math.pow(.995,elapsed);
+        glide=before!==after&&Math.abs(velocity)>.02?requestAnimationFrame(step):0;
+      };
+      glide=requestAnimationFrame(step);
+    };
+    host.addEventListener('touchstart',onStart,{passive:true});
+    host.addEventListener('touchmove',onMove,{passive:false});
+    host.addEventListener('touchend',onEnd);
+    host.addEventListener('touchcancel',onEnd);
+    return()=>{
+      stopGlide();
+      host.removeEventListener('touchstart',onStart);
+      host.removeEventListener('touchmove',onMove);
+      host.removeEventListener('touchend',onEnd);
+      host.removeEventListener('touchcancel',onEnd);
     };
   },[shadow]);
 
