@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-29
 
+## Resume revision: STAR results and sourced metrics
+
+- Both resumes follow Olesya's and Masha Chubina's advice: every entry reads as context, action, result. SuperGood now leads its summary and its entry with Igor's confirmed results: reordering took 5 s instead of 60 s, success rose from 2 to 10 of 10, ease from 3 to 6 of 7 (comparative usability test, 10 colleagues), and the store rating rose from 3.1 to 3.7. It also states the "business bridge": Igor was the sole designer and engineer and worked directly with the business.
+- Observatory adds its real use (three developer colleagues, two months) and the 17 rows to 1 grouping. Instagram adds the 6-of-8 finding that set search first. Two Sticks is added as the education-domain project. The research skills name the methods actually used; "A/B test" and unconfirmed claims (the review split, the pinned category bar) are left out.
+- The Russian resume now links to the `/ru/` portfolio and case studies. Other experience and education are one line each, so both PDFs stay on one page with eight working links.
+- Rebuilt with `scripts/build-resumes.py`, which now writes the published file names and accepts an output folder for previews, then rendered with `soffice --headless --convert-to pdf`.
+
 ## SuperGood leads the work
 
 - `src/content/case-studies.ts` now ranks the studies: SuperGood, Observatory, Instagram Saves, Two Sticks. The case-studies listing shows that order. Case-study footers already chain in the same order.
