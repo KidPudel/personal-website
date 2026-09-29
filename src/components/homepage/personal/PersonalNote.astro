@@ -243,7 +243,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   /* Wide screens: the sentence keeps the left column and the panels share one
      stage cell in the right column. The stage always reserves the tallest
      panel, so switching or closing never moves the contact block below. */
-  @media (width > 52rem) {
+  @media (width > 75rem) {
     .personal-note__closing-block[data-enhanced] {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 35rem));
@@ -278,6 +278,19 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
       grid-column: 1 / -1;
       margin-bottom: calc(-1 * clamp(2rem, 4vw, 4rem));
       pointer-events: none;
+    }
+  }
+
+  /* Tablets: two columns would be too narrow to read comfortably, so the story
+     runs as one column across the full frame. */
+  @media (max-width: 75rem) {
+    .personal-note__columns {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.25lh;
+    }
+
+    .personal-note__closing-block {
+      margin-top: 1.25lh;
     }
   }
 

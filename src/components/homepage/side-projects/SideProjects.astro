@@ -421,23 +421,35 @@ const cards = {
     transform: rotate(-1.4deg);
   }
 
+  /* Open button: a glass disc set clear of the card's corner curve, with the
+     hand-drawn arrow at full strength and optically centered. */
   .other-showcase__project-link {
     position: absolute;
     z-index: 6;
-    top: clamp(0.65rem, 1.2vw, 1rem);
-    right: clamp(0.65rem, 1.2vw, 1rem);
+    top: clamp(0.9rem, 1.7vw, 1.4rem);
+    right: clamp(0.9rem, 1.7vw, 1.4rem);
     display: grid;
-    width: clamp(2.2rem, 3.2vw, 2.8rem);
+    width: clamp(2.5rem, 3.1vw, 2.9rem);
     aspect-ratio: 1;
     place-items: center;
     overflow: hidden;
-    border: 1px solid rgb(17 17 15 / 0.1);
+    border: 1px solid rgb(255 255 255 / 0.7);
     border-radius: 999px;
-    background: rgb(248 248 248 / 0.92);
-    box-shadow: 0 0.15rem 0.55rem rgb(17 17 15 / 0.1);
+    /* More opaque than the work cards: most previews here are dark. */
+    background: rgb(255 255 255 / 0.86);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 0 0 0.5px rgb(17 17 15 / 0.08),
+      0 0.35rem 1rem rgb(17 17 15 / 0.12),
+      0 1px 2px rgb(17 17 15 / 0.06);
     color: inherit;
     text-decoration: none;
-    transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+    transition:
+      transform 180ms var(--ease-out),
+      box-shadow 180ms var(--ease-out);
+    -webkit-backdrop-filter: blur(12px) saturate(1.6);
+    backdrop-filter: blur(12px) saturate(1.6);
+    -webkit-tap-highlight-color: transparent;
   }
 
   .other-showcase__project-link:focus-visible {
@@ -450,18 +462,27 @@ const cards = {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    opacity: 0.62;
-    transform: translateY(-0.14rem) scale(2.65);
+    filter: drop-shadow(0.3px 0 0 #11110f);
+    transform: translate(0.8%, -4.9%) scale(2.05);
+    transition: transform 220ms var(--ease-out);
   }
 
   .other-showcase__project-link:active {
-    transform: scale(0.96);
+    transform: scale(0.94);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .other-showcase__project-link:hover {
-      box-shadow: 0 0.25rem 0.8rem rgb(17 17 15 / 0.16);
-      transform: scale(1.04);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.9),
+        0 0 0 0.5px rgb(17 17 15 / 0.1),
+        0 0.55rem 1.4rem rgb(17 17 15 / 0.16),
+        0 1px 2px rgb(17 17 15 / 0.06);
+      transform: scale(1.05);
+    }
+
+    .other-showcase__project-link:hover :global(.other-showcase__project-link-icon) {
+      transform: translate(5%, -9%) scale(2.05);
     }
   }
 
@@ -493,10 +514,6 @@ const cards = {
     .other-showcase__card--buns {
       aspect-ratio: 2 / 1;
     }
-
-    .other-showcase__project-link {
-      width: 2.75rem;
-    }
   }
 
   @media (max-width: 44rem) {
@@ -507,7 +524,8 @@ const cards = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .other-showcase__project-link {
+    .other-showcase__project-link,
+    .other-showcase__project-link :global(.other-showcase__project-link-icon) {
       transition-duration: 0ms;
     }
   }

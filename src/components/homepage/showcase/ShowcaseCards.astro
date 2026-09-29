@@ -8,7 +8,6 @@ import { caseStudies, caseStudyPath } from '../../../content/case-studies';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import InstagramPrototype from './InstagramPrototype.astro';
 import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
-import ShowcaseInfo from './ShowcaseInfo.astro';
 import SupergoodScreenStack from './SupergoodScreenStack.astro';
 import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
 
@@ -28,8 +27,6 @@ const cards = caseStudies
   .map((study) => ({
     background: study.background,
     name: study.name[locale],
-    pitch: study.pitch[locale],
-    responsibility: study.responsibility[locale],
     href: localePath(caseStudyPath(study.slug), locale),
     ...layout[study.slug as keyof typeof layout],
   }))
@@ -72,8 +69,8 @@ const cards = caseStudies
           alt=""
           widths={card.portrait ? [360, 480, 720] : [480, 720, 960, 1280, 1600]}
           sizes={card.portrait
-            ? '(max-width: 44rem) calc(100vw - 2rem), 28vw'
-            : '(max-width: 44rem) calc(100vw - 2rem), 62vw'}
+            ? '(max-width: 44rem) calc(100vw - 2rem), (max-width: 75rem) 45vw, 28vw'
+            : '(max-width: 44rem) calc(100vw - 2rem), (max-width: 75rem) 90vw, 62vw'}
           loading="lazy"
           decoding="async"
           format="webp"
@@ -83,7 +80,6 @@ const cards = caseStudies
         {card.kind === 'instagram' && <InstagramPrototype />}
         {card.kind === 'chinese' && <TwoSticksScreenStack />}
         {card.kind === 'supergood' && <SupergoodScreenStack />}
-        <ShowcaseInfo pitch={card.pitch} responsibility={card.responsibility} />
         <a
           class="showcase__project-link"
           href={card.href}
@@ -265,23 +261,34 @@ const cards = caseStudies
     grid-area: supergood;
   }
 
+  /* Open button: a glass disc set clear of the card's corner curve, with the
+     hand-drawn arrow at full strength and optically centered. */
   :global(.showcase__project-link) {
     position: absolute;
-    z-index: 4;
-    top: clamp(0.65rem, 1.2vw, 1rem);
-    right: clamp(0.65rem, 1.2vw, 1rem);
+    z-index: 6;
+    top: clamp(0.9rem, 1.7vw, 1.4rem);
+    right: clamp(0.9rem, 1.7vw, 1.4rem);
     display: grid;
-    width: clamp(2.2rem, 3.2vw, 2.8rem);
+    width: clamp(2.5rem, 3.1vw, 2.9rem);
     aspect-ratio: 1;
     place-items: center;
-    border: 1px solid rgb(17 17 15 / 0.1);
-    border-radius: 999px;
-    background: rgb(248 248 248 / 0.92);
-    box-shadow: 0 0.15rem 0.55rem rgb(17 17 15 / 0.1);
-    color: inherit;
     overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.7);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.66);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.9),
+      0 0 0 0.5px rgb(17 17 15 / 0.08),
+      0 0.35rem 1rem rgb(17 17 15 / 0.12),
+      0 1px 2px rgb(17 17 15 / 0.06);
+    color: inherit;
     text-decoration: none;
-    transition: transform 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+    transition:
+      transform 180ms var(--ease-out),
+      box-shadow 180ms var(--ease-out);
+    -webkit-backdrop-filter: blur(12px) saturate(1.6);
+    backdrop-filter: blur(12px) saturate(1.6);
+    -webkit-tap-highlight-color: transparent;
   }
 
   :global(.showcase__project-link:focus-visible) {
@@ -294,18 +301,50 @@ const cards = caseStudies
     width: 100%;
     height: 100%;
     object-fit: contain;
-    opacity: 0.62;
-    transform: translateY(-0.14rem) scale(2.65);
+    filter: drop-shadow(0.3px 0 0 #11110f);
+    transform: translate(0.8%, -4.9%) scale(2.05);
+    transition: transform 220ms var(--ease-out);
   }
 
   :global(.showcase__project-link:active) {
-    transform: scale(0.96);
+    transform: scale(0.94);
   }
 
   @media (hover: hover) and (pointer: fine) {
     :global(.showcase__project-link:hover) {
-      box-shadow: 0 0.25rem 0.8rem rgb(17 17 15 / 0.16);
-      transform: scale(1.04);
+      box-shadow:
+        inset 0 1px 0 rgb(255 255 255 / 0.9),
+        0 0 0 0.5px rgb(17 17 15 / 0.1),
+        0 0.55rem 1.4rem rgb(17 17 15 / 0.16),
+        0 1px 2px rgb(17 17 15 / 0.06);
+      transform: scale(1.05);
+    }
+
+    :global(.showcase__project-link:hover .showcase__project-link-icon) {
+      transform: translate(5%, -9%) scale(2.05);
+    }
+  }
+
+  /* Tablets: the portrait cards would be too thin in three columns, so the
+     wide cards take a full row each and the portrait pair shares the middle. */
+  @media (44rem < width <= 75rem) {
+    .showcase__grid {
+      grid-template-areas:
+        'supergood supergood'
+        'instagram chinese'
+        'observatory observatory';
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: none;
+      aspect-ratio: auto;
+    }
+
+    .showcase__card {
+      height: auto;
+      aspect-ratio: 16 / 10;
+    }
+
+    .showcase__card--portrait {
+      aspect-ratio: 3 / 4;
     }
   }
 
@@ -362,14 +401,11 @@ const cards = caseStudies
       height: auto;
       aspect-ratio: 4 / 3;
     }
-
-    :global(.showcase__project-link) {
-      width: 2.75rem;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.showcase__project-link) {
+    :global(.showcase__project-link),
+    :global(.showcase__project-link .showcase__project-link-icon) {
       transition-duration: 0ms;
     }
   }

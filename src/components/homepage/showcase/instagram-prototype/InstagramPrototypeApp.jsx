@@ -565,7 +565,7 @@ export default function InstagramPrototypeIsland(){
   },[shadow]);
 
   return <div className="instagram-prototype__stage" style={{position:'absolute',inset:0}}>
-    <div ref={hostRef} style={{position:'absolute',inset:0,display:'grid',placeItems:'center'}}>
+    <div ref={hostRef} style={{position:'absolute',inset:0,display:'grid',placeItems:'center',isolation:'isolate'}}>
       {shadow&&createPortal(<><style>{prototypeStyles}</style><App/></>,shadow)}
     </div>
     <span ref={touchRef} className="instagram-prototype__touch" aria-hidden="true"/>

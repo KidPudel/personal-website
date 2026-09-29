@@ -241,6 +241,11 @@ const stories = [
     font-size: clamp(0.35rem, 1.1vw, 0.76rem);
   }
 
+  /* The static phone is only a placeholder until the live prototype has loaded. */
+  .instagram-prototype:has(.instagram-prototype__stage) .instagram-prototype__device {
+    visibility: hidden;
+  }
+
   /* Fingertip cursor over the phone screen (desktop only; shown by InstagramPrototypeApp.jsx). */
   .instagram-prototype :global(.instagram-prototype__touch) {
     position: absolute;
