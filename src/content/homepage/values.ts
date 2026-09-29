@@ -40,7 +40,7 @@ export const valuesPremise = 'Three things important to me.';
 export type PersonalReveal = 'portrait' | 'doodles' | 'blog';
 
 // The note closes with one sentence. Text parts are plain; `reveal` parts are
-// the interactive words that open their content below the sentence.
+// the interactive words that open their content beside or below the sentence.
 type ClosingPart = string | { reveal: PersonalReveal; text: string };
 
 export const personalNote = {

@@ -1,0 +1,66 @@
+---
+import type { Doodle } from '../../content/doodles';
+
+interface Props {
+  doodle: Doodle;
+  class?: string;
+}
+
+const { doodle, class: className } = Astro.props;
+const { image, box } = doodle;
+const [left, top, right, bottom] = box;
+const boxWidth = right - left;
+const boxHeight = bottom - top;
+
+// Crops the shared 512px canvas to the drawing, so every doodle fills its
+// square the same way regardless of how large it was drawn.
+const style = [
+  `--doodle-ratio: ${(boxWidth / boxHeight).toFixed(4)}`,
+  `--doodle-scale: ${((image.width / boxWidth) * 100).toFixed(3)}%`,
+  `--doodle-left: ${((-left / boxWidth) * 100).toFixed(3)}%`,
+  `--doodle-top: ${((-top / boxHeight) * 100).toFixed(3)}%`,
+].join('; ');
+---
+
+<span class:list={['doodle-art', className]} style={style} aria-hidden="true">
+  <span class="doodle-art__crop">
+    <img
+      src={image.src}
+      width={image.width}
+      height={image.height}
+      alt=""
+      loading="lazy"
+      decoding="async"
+      draggable="false"
+    />
+  </span>
+</span>
+
+<style>
+  .doodle-art {
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1;
+    place-items: center;
+  }
+
+  .doodle-art__crop {
+    position: relative;
+    display: block;
+    width: calc(min(1, var(--doodle-ratio)) * 100%);
+    aspect-ratio: var(--doodle-ratio);
+    overflow: hidden;
+  }
+
+  .doodle-art__crop img {
+    position: absolute;
+    top: var(--doodle-top);
+    left: var(--doodle-left);
+    display: block;
+    width: var(--doodle-scale);
+    max-width: none;
+    height: auto;
+    filter: grayscale(1);
+    user-select: none;
+  }
+</style>
