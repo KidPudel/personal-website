@@ -23,7 +23,7 @@ export const identity: Record<Locale, Identity> = {
       continuation: ' even beyond the moment they use them.',
     },
     purpose: {
-      before: 'This is my professional attempt to make the world a',
+      before: 'My work is my attempt to make the world a',
       continuation: ' little more ',
       word: 'joyful',
       after: '.',
@@ -45,7 +45,7 @@ export const identity: Record<Locale, Identity> = {
       continuation: ' даже когда ими уже не пользуются.',
     },
     purpose: {
-      before: 'Своей работой я пытаюсь сделать мир',
+      before: 'Своей работой я пытаюсь сделать жизнь',
       continuation: ' чуть ',
       word: 'радостнее',
       after: '.',
