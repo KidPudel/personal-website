@@ -15,7 +15,7 @@ const t = translator(locale);
 const switchLabels = { en: 'en', ru: 'ру' } as const;
 ---
 
-<portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--case-study": showHome }]} data-site-header>
+<portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--with-home": showHome }]} data-site-header>
   <nav class="site-navigation" aria-label={t('Primary navigation', 'Основная навигация')}>
     {showHome && <a class="navigation-action drawn-icon-trigger" href={localePath('/', locale)}>
       <span class="navigation-action__label">{t('Home', 'Главная')}</span>
@@ -25,7 +25,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       <span class="language-switch" role="group" aria-label={t('Language', 'Язык')}>
         {locales.map((option, index) => (
           <>
-            {index > 0 && <span class="language-switch__divider" aria-hidden="true">/</span>}
+            {index > 0 && <span class="language-switch__divider" aria-hidden="true"></span>}
             {option === locale ? (
               <span class="language-switch__option" lang={option} aria-current="true">
                 <span aria-hidden="true">{switchLabels[option]}</span>
@@ -61,6 +61,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     </details>
   </nav>
 </portfolio-navigation>
+{showHome && <div class="portfolio-navigation-spacer" aria-hidden="true" data-site-header-spacer></div>}
 
 <script>
   class PortfolioNavigation extends HTMLElement {
@@ -124,17 +125,21 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       this.compactObserver?.disconnect();
       this.removeAttribute('data-compact');
 
+      // The homepage compacts once the introduction leaves; other pages
+      // compact once the header's own reserved space has scrolled away.
       const introduction = document.querySelector<HTMLElement>('#intro');
-      if (!introduction || !('IntersectionObserver' in window)) return;
+      const spacer = document.querySelector<HTMLElement>('[data-site-header-spacer]');
+      const target = introduction ?? spacer;
+      if (!target || !('IntersectionObserver' in window)) return;
 
       this.compactObserver = new IntersectionObserver(
         ([entry]) => {
           if (!entry) return;
           this.toggleAttribute('data-compact', !entry.isIntersecting);
         },
-        { rootMargin: '-20% 0px 0px 0px' },
+        { rootMargin: introduction ? '-20% 0px 0px 0px' : '0px' },
       );
-      this.compactObserver.observe(introduction);
+      this.compactObserver.observe(target);
     };
 
     private syncContactSurface = (details: HTMLDetailsElement, panel: HTMLElement) => {
@@ -167,7 +172,9 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     top: 0;
     right: 0;
     display: block;
-    padding: clamp(1.25rem, 6vw, 5rem) var(--page-gutter) 1.3rem 1.8rem;
+    --navigation-top: clamp(1.25rem, 6vw, 5rem);
+    --navigation-bottom: 1.3rem;
+    padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom) 1.8rem;
     color: var(--color-ink);
     font-family: var(--font-reading);
     isolation: isolate;
@@ -208,15 +215,32 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       left 180ms var(--ease-out);
   }
 
-  .portfolio-navigation--case-study {
-    position: relative;
-    width: 100%;
-    padding: 24px max(24px, var(--page-gutter)) 20px;
+  /* Inner pages: the same bar and blur, stretched across so Home sits on the left. */
+  .portfolio-navigation--with-home {
+    left: 0;
+    padding-left: var(--page-inset);
   }
-  .portfolio-navigation--case-study::before { display: none; }
-  .portfolio-navigation--case-study .site-navigation { justify-content: space-between; font-size: 18px; }
-  .portfolio-navigation--case-study .language-switch { margin-left: auto; }
-  .portfolio-navigation--case-study .contact-disclosure__panel { background: var(--color-field); border-radius: 8px; }
+
+  .portfolio-navigation--with-home::before {
+    left: 0;
+    mask-image: linear-gradient(to top, transparent 0, black 42%, black 100%);
+    -webkit-mask-image: linear-gradient(to top, transparent 0, black 42%, black 100%);
+  }
+
+  .portfolio-navigation--with-home .language-switch {
+    margin-left: auto;
+  }
+
+  /* Reserves the bar's height so page content starts below it. */
+  .portfolio-navigation-spacer {
+    --navigation-top: clamp(1.25rem, 6vw, 5rem);
+    --navigation-bottom: 1.3rem;
+    height: calc(var(--navigation-top) + 2.75rem + var(--navigation-bottom));
+  }
+
+  :global(html:has(.portfolio-navigation--with-home)) {
+    scroll-padding-top: 6rem;
+  }
 
   .site-navigation {
     display: flex;
@@ -365,21 +389,28 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     text-decoration-color: var(--link-line-color-active);
   }
 
+  /* Quiet by design: a setting, not an action, so it sits a step below
+     "Get in touch". The current language is simply in ink. */
   .language-switch {
     display: inline-flex;
     align-items: center;
-    gap: 0.3rem;
-    color: var(--color-muted);
+    gap: 0.15rem;
+    color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+    font-size: 0.86em;
+    letter-spacing: 0.02em;
     line-height: 1.15;
   }
 
   .language-switch__divider {
-    opacity: 0.6;
+    width: 1px;
+    height: 0.8em;
+    background: currentColor;
+    opacity: 0.35;
   }
 
   .language-switch__option {
     display: inline-flex;
-    min-width: 2rem;
+    min-width: 2.2rem;
     min-height: 2.75rem;
     align-items: center;
     justify-content: center;
@@ -418,6 +449,14 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   @media (max-width: 38rem) {
     .portfolio-navigation {
       padding: 0.45rem 0.7rem 1rem 1.2rem;
+    }
+
+    .portfolio-navigation--with-home {
+      padding-left: 0.7rem;
+    }
+
+    .portfolio-navigation-spacer {
+      height: calc(0.45rem + 2.75rem + 1rem);
     }
 
     .portfolio-navigation[data-compact] {

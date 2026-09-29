@@ -391,17 +391,42 @@ const optimizedFrames = await Promise.all(
   :global(.js) .balloon-return {
     opacity: 0;
     pointer-events: none;
-    transform: translate3d(0, 0.75rem, 0) scale(0.96);
+    transform: translate3d(0, 1.5rem, 0) scale(0.96);
     transition:
       opacity 180ms linear,
       transform 180ms var(--ease-out);
   }
 
+  /* Arriving is slower than leaving, so the balloon drifts up into place. */
   :global(.js) .balloon-return[data-visible],
   :global(.js) .balloon-return[data-running] {
     opacity: 1;
     pointer-events: auto;
     transform: translate3d(0, 0, 0) scale(1);
+    transition:
+      opacity 320ms linear,
+      transform 900ms var(--ease-out);
+  }
+
+  /* The art floats gently while it waits. It animates the art, not the
+     trigger, so the return flight keeps the trigger's transform to itself. */
+  :global(.js) .balloon-return__art {
+    animation: balloon-float 2.8s ease-in-out infinite alternate;
+    animation-play-state: paused;
+  }
+
+  :global(.js) .balloon-return[data-visible]:not([data-running]) .balloon-return__art {
+    animation-play-state: running;
+  }
+
+  @keyframes balloon-float {
+    from {
+      transform: translate3d(0, 0.2rem, 0);
+    }
+
+    to {
+      transform: translate3d(0, -0.2rem, 0);
+    }
   }
 
   :global(.js) .balloon-return[data-running] {
@@ -427,9 +452,15 @@ const optimizedFrames = await Promise.all(
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .balloon-return {
+    :global(.js) .balloon-return,
+    :global(.js) .balloon-return[data-visible],
+    :global(.js) .balloon-return[data-running] {
       transform: none;
       transition: opacity 180ms linear;
+    }
+
+    :global(.js) .balloon-return__art {
+      animation: none;
     }
   }
 </style>

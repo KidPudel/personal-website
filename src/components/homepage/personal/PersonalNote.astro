@@ -81,7 +81,8 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 
 <script>
   // Without this script every panel stays visible and each word is a plain
-  // link to its panel. With it, the words open one panel at a time.
+  // link to its panel. With it, the words open one panel at a time: below the
+  // sentence on narrow screens, in a stage beside it on wide ones.
   class PersonalNoteReveals extends HTMLElement {
     private abort?: AbortController;
 
@@ -139,7 +140,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   .personal-note__title,
   .personal-note__columns,
   .personal-note__closing-block {
-    width: min(calc(100% - 2 * var(--page-gutter)), 130rem);
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
     margin-inline: auto;
   }
 
@@ -229,6 +230,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     transition:
       grid-template-rows 240ms var(--ease-out),
       opacity 180ms var(--ease-out),
+      transform 240ms var(--ease-out),
       visibility 240ms;
   }
 
@@ -273,6 +275,39 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     filter: grayscale(1);
   }
 
+  /* Wide screens: the sentence keeps the left column and the panels share one
+     stage cell in the right column. The stage always reserves the tallest
+     panel, so switching or closing never moves the contact block below. */
+  @media (width > 52rem) {
+    .personal-note__closing-block[data-enhanced] {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 35rem));
+      column-gap: clamp(2.5rem, 5vw, 7rem);
+      align-items: start;
+    }
+
+    .personal-note__closing-block[data-enhanced] .personal-note__closing {
+      grid-area: 1 / 1;
+    }
+
+    .personal-note__closing-block[data-enhanced] .personal-note__panel {
+      grid-area: 1 / 2;
+    }
+
+    .personal-note__closing-block[data-enhanced] .personal-note__panel-content {
+      padding-top: 0;
+    }
+
+    .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) {
+      grid-template-rows: 1fr;
+      transform: translateY(0.5rem);
+    }
+
+    .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) .personal-note__panel-inner {
+      overflow: visible;
+    }
+  }
+
   @media (max-width: 52rem) {
     .personal-note__title,
     .personal-note__columns,
@@ -302,6 +337,10 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
       transition:
         opacity 160ms ease,
         visibility 160ms;
+    }
+
+    .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) {
+      transform: none;
     }
   }
 </style>
