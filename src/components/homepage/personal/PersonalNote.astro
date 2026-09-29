@@ -115,7 +115,8 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   .personal-note {
     display: block;
     width: 100%;
-    padding: 0 0 clamp(5.5rem, 9vw, 9rem);
+    /* Matches the pause between the other homepage sections. */
+    padding: 0 0 clamp(7rem, 12.5vw, 12rem);
   }
 
   .personal-note__title,
@@ -241,8 +242,9 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   }
 
   /* Wide screens: the sentence keeps the left column and the panels share one
-     stage cell in the right column. The stage always reserves the tallest
-     panel, so switching or closing never moves the contact block below. */
+     stage cell in the right column. Closed panels take no space, so the
+     closed note ends at the sentence; opening one moves the contact block
+     down, which follows from the visitor's own click. */
   @media (width > 75rem) {
     .personal-note__closing-block[data-enhanced] {
       display: grid;
@@ -264,12 +266,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     }
 
     .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) {
-      grid-template-rows: 1fr;
       transform: translateY(0.5rem);
-    }
-
-    .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) .personal-note__panel-inner {
-      overflow: visible;
     }
 
     /* The doodles spread over both columns and the space below, around the

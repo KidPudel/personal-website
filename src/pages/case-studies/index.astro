@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
+import '@fontsource/instrument-serif/400.css';
 
+import WorkCaption from '../../components/homepage/showcase/WorkCaption.astro';
 import { caseStudies, caseStudyPath } from '../../content/case-studies';
 import { localePath, toLocale, translator } from '../../i18n/locales';
 import BaseDocument from '../../layouts/BaseDocument.astro';
@@ -20,7 +22,7 @@ const t = translator(locale);
   ogImage={caseStudies[0].cover.src}
 >
   <main id="main-content" class="case-index">
-    <h1>{t('Case studies', 'Кейсы')}</h1>
+    <h1 class="case-index__title">{t('case studies', 'кейсы')}</h1>
 
     <ol class="case-index__list">
       {caseStudies.map((study, index) => {
@@ -54,15 +56,15 @@ const t = translator(locale);
                 fetchpriority={index === 0 ? 'high' : undefined}
               />
             </div>
-            <div class="case-index__text">
-              <h2>
-                <a class="case-index__link" href={localePath(caseStudyPath(study.slug), locale)}>
-                  {study.name[locale]}
-                </a>
-              </h2>
-              <p class="case-index__pitch">{study.pitch[locale]}</p>
-              <p class="case-index__meta">{study.year} · {study.responsibility[locale]}</p>
-            </div>
+            <WorkCaption
+              class="case-index__caption"
+              heading
+              href={localePath(caseStudyPath(study.slug), locale)}
+              name={study.name[locale]}
+              pitch={study.pitch[locale]}
+              tag={study.tag[locale]}
+              year={study.year}
+            />
           </li>
         );
       })}
@@ -71,25 +73,34 @@ const t = translator(locale);
 </BaseDocument>
 
 <style>
+  /* The listing uses the homepage's frame, section title, panels, and
+     captions, so a visitor moving between the two sees one system. */
   .case-index {
-    width: min(1080px, calc(100% - 48px)) !important;
-    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(5rem, 9vw, 8rem);
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)) !important;
+    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6.5rem);
   }
 
-  .case-index h1 {
-    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  .case-index .case-index__title {
+    margin: 0 0 clamp(1.5rem, 2.5vw, 2.5rem);
+    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
   }
 
   .case-index__list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 3vw, 2.5rem);
+    column-gap: clamp(1rem, 3vw, 3.75rem);
     padding: 0;
     margin: 0;
     list-style: none;
   }
 
+  /* The whole card opens the case study: the caption's link covers it. */
   .case-index__item {
+    --work-caption-hit-radius: clamp(0.8rem, 1.4vw, 1.35rem);
     position: relative;
     min-width: 0;
   }
@@ -100,8 +111,20 @@ const t = translator(locale);
     aspect-ratio: 4 / 3;
     place-items: center;
     overflow: hidden;
-    border-radius: 18px;
+    border-radius: clamp(0.8rem, 1.4vw, 1.35rem);
     background: #eceae6;
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+  }
+
+  .case-index__frame::after {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: inherit;
+    content: '';
+    pointer-events: none;
   }
 
   .case-index__frame :global(img) {
@@ -134,64 +157,27 @@ const t = translator(locale);
     border-radius: 8px;
   }
 
-  .case-index__text {
-    padding-top: 1.25rem;
-  }
-
-  .case-index h2 {
-    margin: 0 0 0.4rem;
-    font-size: clamp(1.25rem, 1.6vw, 1.5rem);
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-  }
-
-  /* The title link covers the whole card, so the frame is clickable too. */
-  .case-index__link::after {
-    position: absolute;
-    inset: 0;
-    border-radius: 18px;
-    content: '';
-  }
-
-  .case-index__link:focus-visible {
-    outline: none;
-  }
-
-  .case-index__link:focus-visible::after {
-    outline: var(--focus-width) solid var(--color-focus);
-    outline-offset: var(--focus-offset);
-  }
-
-  .case-index .case-index__pitch {
-    margin: 0 0 0.35rem;
-    font-size: var(--study-small);
-    line-height: 1.5;
-  }
-
-  .case-index .case-index__meta {
-    margin: 0;
-    color: var(--color-muted);
-    font-size: 0.95rem;
-    line-height: 1.5;
+  .case-index__caption {
+    padding: clamp(0.8rem, 1.1vw, 1rem) 0 clamp(2.75rem, 5vw, 4.75rem);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .case-index__item:hover :global(.case-index__cover) {
       transform: translateY(-4px);
     }
-
-    .case-index__item:hover .case-index__link {
-      text-decoration-color: var(--link-line-color-active);
-    }
   }
 
-  @media (max-width: 760px) {
-    .case-index {
-      width: calc(100% - 40px) !important;
-    }
-
+  @media (max-width: 44rem) {
     .case-index__list {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .case-index__frame {
+      border-radius: 0.8rem;
+    }
+
+    .case-index__caption {
+      padding: 0.75rem 0 2.5rem;
     }
   }
 

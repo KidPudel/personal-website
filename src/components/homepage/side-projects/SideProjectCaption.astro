@@ -1,0 +1,61 @@
+---
+interface Props {
+  name: string;
+  href: string;
+}
+
+const { name, href } = Astro.props;
+// Where the link leads, so a visitor knows before leaving the site.
+const host = new URL(href).hostname;
+const destination = host.endsWith('itch.io') ? 'itch.io' : host === 'github.com' ? 'GitHub' : host === 'x.com' ? 'X' : host;
+---
+
+<a class="side-project-caption" href={href}>
+  <span class="side-project-caption__name">{name}</span>
+  <span class="side-project-caption__destination">{destination}</span>
+</a>
+
+<style>
+  /* Same caption as the work above: one face and size, set apart by color. */
+  .side-project-caption {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: clamp(0.8rem, 1.1vw, 1rem);
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: clamp(0.95rem, 0.15vw + 0.9rem, 1.02rem);
+    letter-spacing: 0.015em;
+    line-height: 1.4;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .side-project-caption__name {
+    min-width: 0;
+    color: var(--color-ink);
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .side-project-caption__destination {
+    flex: none;
+  }
+
+  .side-project-caption:focus-visible {
+    border-radius: 0.2rem;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .side-project-caption:hover .side-project-caption__name {
+      text-decoration-color: var(--link-line-color-active);
+    }
+  }
+</style>

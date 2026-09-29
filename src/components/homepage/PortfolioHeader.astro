@@ -144,7 +144,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
     private syncContactSurface = (details: HTMLDetailsElement, panel: HTMLElement) => {
       if (!details.open) {
-        this.style.setProperty('--contact-surface-left', '1.5rem');
         this.style.setProperty('--contact-surface-bottom', '2.5rem');
         return;
       }
@@ -152,10 +151,8 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       const headerBounds = this.getBoundingClientRect();
       const panelBounds = panel.getBoundingClientRect();
       const rootFontSize = Number.parseFloat(getComputedStyle(document.documentElement).fontSize);
-      const leftExtension = Math.max(0, headerBounds.left - panelBounds.left + rootFontSize * 6);
       const bottomExtension = Math.max(0, panelBounds.bottom - headerBounds.bottom + rootFontSize * 2.5);
 
-      this.style.setProperty('--contact-surface-left', `${leftExtension}px`);
       this.style.setProperty('--contact-surface-bottom', `${bottomExtension}px`);
     };
   }
@@ -166,20 +163,23 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 </script>
 
 <style>
+  /* Spans the full width so its blur is an even band, not a patch. The band
+     itself lets clicks through; only the controls take them. */
   .portfolio-navigation {
     position: fixed;
     z-index: 200;
     top: 0;
     right: 0;
+    left: 0;
     display: block;
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
     --navigation-bottom: 1.3rem;
-    padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom) 1.8rem;
+    padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom);
+    pointer-events: none;
     color: var(--color-ink);
     font-family: var(--font-reading);
     isolation: isolate;
     --contact-surface-bottom: 2.5rem;
-    --contact-surface-left: 1.5rem;
     transform: translateY(0);
     transition: transform 220ms var(--ease-in-out);
   }
@@ -190,42 +190,56 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   .portfolio-navigation:has(.contact-disclosure[open]) {
     --contact-surface-bottom: 6rem;
-    --contact-surface-left: 18rem;
   }
 
-  .portfolio-navigation::before {
+  /* A progressive blur: a light, tinted layer runs the full depth of the band
+     and a heavier one sits only near the top edge, so content under the
+     controls is calm enough to read them and fades back in below. */
+  .portfolio-navigation::before,
+  .portfolio-navigation::after {
     position: absolute;
     z-index: -1;
-    inset: 0 0 calc(-1 * var(--contact-surface-bottom)) calc(-1 * var(--contact-surface-left));
-    background: color-mix(in srgb, var(--color-field) 18%, transparent);
-    backdrop-filter: blur(14px) saturate(1.08);
-    -webkit-backdrop-filter: blur(14px) saturate(1.08);
+    inset: 0 0 calc(-1 * var(--contact-surface-bottom));
     content: '';
-    mask-image:
-      linear-gradient(to left, black 0, black 84%, transparent 100%),
-      linear-gradient(to top, transparent 0, black 42%, black 100%);
-    mask-composite: intersect;
-    -webkit-mask-image:
-      linear-gradient(to left, black 0, black 84%, transparent 100%),
-      linear-gradient(to top, transparent 0, black 42%, black 100%);
-    -webkit-mask-composite: source-in;
     pointer-events: none;
     transition:
       bottom 180ms var(--ease-out),
-      left 180ms var(--ease-out);
+      opacity 220ms var(--ease-out);
   }
 
-  /* Inner pages: the same bar and blur, stretched across so Home sits on the left. */
-  .portfolio-navigation--with-home {
-    left: 0;
-    padding-left: var(--page-inset);
+  .portfolio-navigation::before {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-field) 64%, transparent) 0,
+      color-mix(in srgb, var(--color-field) 36%, transparent) 55%,
+      transparent 100%
+    );
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
   }
 
-  .portfolio-navigation--with-home::before {
-    left: 0;
-    mask-image: linear-gradient(to top, transparent 0, black 42%, black 100%);
-    -webkit-mask-image: linear-gradient(to top, transparent 0, black 42%, black 100%);
+  .portfolio-navigation::after {
+    backdrop-filter: blur(16px) saturate(1.05);
+    -webkit-backdrop-filter: blur(16px) saturate(1.05);
+    mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
   }
+
+  /* Over the homepage sky the controls need no backing, so the band only
+     appears once the page scrolls past the introduction or the contact
+     links open. */
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::before,
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after {
+    opacity: 0;
+  }
+
+  .site-navigation > * {
+    pointer-events: auto;
+  }
+
+  /* Inner pages: Home sits on the left. */
 
   .portfolio-navigation--with-home .language-switch {
     margin-left: auto;
@@ -390,12 +404,13 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   }
 
   /* Quiet by design: a setting, not an action, so it sits a step below
-     "Get in touch". The current language is simply in ink. */
+     "Get in touch". The current language is simply in ink. The muted grey
+     still clears 4.5:1 on the page field. */
   .language-switch {
     display: inline-flex;
     align-items: center;
     gap: 0.15rem;
-    color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+    color: var(--color-muted);
     font-size: 0.86em;
     letter-spacing: 0.02em;
     line-height: 1.15;
@@ -448,11 +463,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   @media (max-width: 38rem) {
     .portfolio-navigation {
-      padding: 0.45rem 0.7rem 1rem 1.2rem;
-    }
-
-    .portfolio-navigation--with-home {
-      padding-left: 0.7rem;
+      padding: 0.45rem 0.7rem 1rem;
     }
 
     .portfolio-navigation-spacer {
@@ -465,7 +476,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
     .portfolio-navigation:has(.contact-disclosure[open]) {
       --contact-surface-bottom: 9rem;
-      --contact-surface-left: 6rem;
     }
 
     .site-navigation {
@@ -495,7 +505,8 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       transition: none;
     }
 
-    .portfolio-navigation::before {
+    .portfolio-navigation::before,
+    .portfolio-navigation::after {
       transition: none;
     }
 

@@ -17,6 +17,8 @@ export interface CaseStudy {
   name: Localized;
   pitch: Localized;
   responsibility: Localized;
+  /** The domain and kind of product, shown beside the pitch on the homepage. */
+  tag: Localized;
   year: string;
   /** Soft texture shared with the homepage showcase card. */
   background: ImageMetadata;
@@ -37,6 +39,7 @@ export const caseStudies: readonly CaseStudy[] = [
       en: 'Research, product design, and Flutter build.',
       ru: 'Исследование, продуктовый дизайн и разработка на Flutter.',
     },
+    tag: { en: 'Food delivery app', ru: 'Доставка еды' },
     year: '2024',
     background: supergoodCard,
     cover: supergoodCover,
@@ -50,6 +53,7 @@ export const caseStudies: readonly CaseStudy[] = [
       en: 'Concept to launch: product design, identity, and storytelling.',
       ru: 'От концепции до запуска: продуктовый дизайн, айдентика и сторителлинг.',
     },
+    tag: { en: 'Developer tool', ru: 'Инструмент для разработчиков' },
     year: '2026',
     background: observatoryCard,
     cover: observatoryCover,
@@ -60,6 +64,7 @@ export const caseStudies: readonly CaseStudy[] = [
     name: { en: 'Instagram Saves redesign', ru: 'Редизайн «Сохранённого» в Instagram' },
     pitch: { en: 'The more you save, the less you can find.', ru: 'Чем больше сохраняешь, тем сложнее найти.' },
     responsibility: { en: 'Research, UX/UI, and prototyping.', ru: 'Исследование, UX/UI и прототипирование.' },
+    tag: { en: 'Social app concept', ru: 'Концепт соцсети' },
     year: '2026',
     background: instagramCard,
     cover: instagramCover,
@@ -70,6 +75,7 @@ export const caseStudies: readonly CaseStudy[] = [
     name: { en: 'Two Sticks', ru: 'Две палочки' },
     pitch: { en: 'Learn Chinese, all inside one bot.', ru: 'Учить китайский, не выходя из бота.' },
     responsibility: { en: 'Product direction, UX/UI, and engineering.', ru: 'Продукт, UX/UI и разработка.' },
+    tag: { en: 'Language learning', ru: 'Изучение языков' },
     year: '2024',
     background: twoSticksCard,
     cover: twoSticksCover,

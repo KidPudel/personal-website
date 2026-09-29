@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import '@fontsource/instrument-serif/400.css';
 
-import entranceIcon from '../../../assets/art/icons/Doodles_entrance.png';
 import discoursesPoster from '../../../assets/games/discourses/discourses-poster.webp';
 import discoursesVideo from '../../../assets/games/discourses/discourses-teaser.mp4';
 import snakePoster from '../../../assets/games/snake/poster.jpg';
@@ -11,13 +10,13 @@ import bunPoster from '../../../assets/games/thelastofbuns/showcase-poster.webp'
 import bunVideo from '../../../assets/games/thelastofbuns/showcase.mp4';
 import ticTacToeImage from '../../../assets/games/tic-tac-toe/gameplay.png';
 import FarmField from './FarmField.astro';
+import SideProjectCaption from './SideProjectCaption.astro';
 import SantaFlight from './SantaFlight.astro';
 import WeightedSwitchExperiment from './WeightedSwitchExperiment.astro';
 import { toLocale, translator } from '../../../i18n/locales';
 
 const t = translator(toLocale(Astro.currentLocale));
 const videoFallback = t('Your browser does not support embedded video.', 'Браузер не поддерживает встроенное видео.');
-const openLabel = (name: string) => t(`Open ${name}`, `Открыть «${name}»`);
 const cards = {
   santa: {
     name: 'Secret Santa Foundation',
@@ -40,7 +39,7 @@ const cards = {
     href: 'https://github.com/KidPudel/TicTacToe',
   },
   switch: {
-    name: t('X experiment', 'Эксперимент с переключателем'),
+    name: t('Switch experiment', 'Эксперимент с переключателем'),
     href: 'https://x.com/kidpudel/status/2089804412319358998',
   },
   farm: {
@@ -58,201 +57,103 @@ const cards = {
   </h2>
 
   <div class="other-showcase__grid">
-    <article class="other-showcase__card other-showcase__card--santa">
-      <SantaFlight />
-      <a
-        class="other-showcase__project-link"
-        href={cards.santa.href}
-        aria-label={openLabel(cards.santa.name)}
-        title={openLabel(cards.santa.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
-    </article>
-
-    <article class="other-showcase__card other-showcase__card--discourses">
-      <div class="project-preview">
-        <video
-          src={discoursesVideo}
-          poster={discoursesPoster.src}
-          width="960"
-          height="540"
-          preload="none"
-          playsinline
-          muted
-          loop
-        >
-          {videoFallback}
-        </video>
+    <article class="other-showcase__item other-showcase__item--santa">
+      <div class="other-showcase__card other-showcase__card--santa">
+        <SantaFlight />
       </div>
-      <a
-        class="other-showcase__project-link"
-        href={cards.discourses.href}
-        aria-label={openLabel(cards.discourses.name)}
-        title={openLabel(cards.discourses.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
+      <SideProjectCaption name={cards.santa.name} href={cards.santa.href} />
     </article>
 
-    <article class="other-showcase__card other-showcase__card--tic-tac-toe">
-      <div class="other-showcase__tic-tac-toe">
-        <Image
-          src={ticTacToeImage}
-          alt={t('Tic-Tac-Toe game board', 'Игровое поле крестиков-ноликов')}
-          widths={[360, 560, 687]}
-          sizes="(max-width: 44rem) 72vw, 23vw"
-          loading="lazy"
-          decoding="async"
-          format="webp"
-          quality={82}
-        />
+    <article class="other-showcase__item other-showcase__item--discourses">
+      <div class="other-showcase__card other-showcase__card--discourses">
+        <div class="project-preview">
+          <video
+            src={discoursesVideo}
+            poster={discoursesPoster.src}
+            width="960"
+            height="540"
+            preload="none"
+            playsinline
+            muted
+            loop
+          >
+            {videoFallback}
+          </video>
+        </div>
       </div>
-      <a
-        class="other-showcase__project-link"
-        href={cards.ticTacToe.href}
-        aria-label={openLabel(cards.ticTacToe.name)}
-        title={openLabel(cards.ticTacToe.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
+      <SideProjectCaption name={cards.discourses.name} href={cards.discourses.href} />
     </article>
 
-    <article class="other-showcase__card other-showcase__card--buns">
-      <div class="project-preview">
-        <video
-          src={bunVideo}
-          poster={bunPoster.src}
-          width="800"
-          height="450"
-          preload="none"
-          playsinline
-          muted
-          loop
-        >
-          {videoFallback}
-        </video>
+    <article class="other-showcase__item other-showcase__item--tic-tac-toe">
+      <div class="other-showcase__card other-showcase__card--tic-tac-toe">
+        <div class="other-showcase__tic-tac-toe">
+          <Image
+            src={ticTacToeImage}
+            alt={t('Tic-Tac-Toe game board', 'Игровое поле крестиков-ноликов')}
+            widths={[360, 560, 687]}
+            sizes="(max-width: 44rem) 72vw, 23vw"
+            loading="lazy"
+            decoding="async"
+            format="webp"
+            quality={82}
+          />
+        </div>
       </div>
-      <a
-        class="other-showcase__project-link"
-        href={cards.buns.href}
-        aria-label={openLabel(cards.buns.name)}
-        title={openLabel(cards.buns.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
+      <SideProjectCaption name={cards.ticTacToe.name} href={cards.ticTacToe.href} />
     </article>
 
-    <article class="other-showcase__card other-showcase__card--snake">
-      <div class="project-preview">
-        <video
-          src={snakeVideo}
-          poster={snakePoster.src}
-          width="1150"
-          height="720"
-          preload="none"
-          playsinline
-          muted
-          loop
-        >
-          {videoFallback}
-        </video>
+    <article class="other-showcase__item other-showcase__item--buns">
+      <div class="other-showcase__card other-showcase__card--buns">
+        <div class="project-preview">
+          <video
+            src={bunVideo}
+            poster={bunPoster.src}
+            width="800"
+            height="450"
+            preload="none"
+            playsinline
+            muted
+            loop
+          >
+            {videoFallback}
+          </video>
+        </div>
       </div>
-      <a
-        class="other-showcase__project-link"
-        href={cards.snake.href}
-        aria-label={openLabel(cards.snake.name)}
-        title={openLabel(cards.snake.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
+      <SideProjectCaption name={cards.buns.name} href={cards.buns.href} />
     </article>
 
-    <article class="other-showcase__card other-showcase__card--switch">
-      <WeightedSwitchExperiment />
-      <a
-        class="other-showcase__project-link"
-        href={cards.switch.href}
-        aria-label={openLabel(cards.switch.name)}
-        title={openLabel(cards.switch.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
+    <article class="other-showcase__item other-showcase__item--snake">
+      <div class="other-showcase__card other-showcase__card--snake">
+        <div class="project-preview">
+          <video
+            src={snakeVideo}
+            poster={snakePoster.src}
+            width="1150"
+            height="720"
+            preload="none"
+            playsinline
+            muted
+            loop
+          >
+            {videoFallback}
+          </video>
+        </div>
+      </div>
+      <SideProjectCaption name={cards.snake.name} href={cards.snake.href} />
     </article>
 
-    <article class="other-showcase__card other-showcase__card--farm">
-      <FarmField />
-      <a
-        class="other-showcase__project-link"
-        href={cards.farm.href}
-        aria-label={openLabel(cards.farm.name)}
-        title={openLabel(cards.farm.name)}
-      >
-        <Image
-          class="other-showcase__project-link-icon"
-          src={entranceIcon}
-          alt=""
-          widths={[160, 240, 320]}
-          sizes="(max-width: 44rem) 7.3rem, 7.5rem"
-          loading="lazy"
-          decoding="async"
-          format="png"
-        />
-      </a>
+    <article class="other-showcase__item other-showcase__item--switch">
+      <div class="other-showcase__card other-showcase__card--switch">
+        <WeightedSwitchExperiment />
+      </div>
+      <SideProjectCaption name={cards.switch.name} href={cards.switch.href} />
+    </article>
+
+    <article class="other-showcase__item other-showcase__item--farm">
+      <div class="other-showcase__card other-showcase__card--farm">
+        <FarmField />
+      </div>
+      <SideProjectCaption name={cards.farm.name} href={cards.farm.href} />
     </article>
   </div>
 </section>
@@ -338,6 +239,10 @@ const cards = {
     gap: clamp(1rem, 3vw, 3.75rem);
   }
 
+  .other-showcase__item {
+    min-width: 0;
+  }
+
   .other-showcase__card {
     position: relative;
     min-width: 0;
@@ -358,34 +263,43 @@ const cards = {
     pointer-events: none;
   }
 
-  .other-showcase__card--santa {
+  .other-showcase__item--santa {
     grid-area: santa;
   }
 
-  .other-showcase__card--discourses {
+  .other-showcase__item--discourses {
     grid-area: discourses;
   }
 
-  .other-showcase__card--tic-tac-toe {
+  .other-showcase__item--tic-tac-toe {
     grid-area: tic;
+  }
+
+  .other-showcase__card--tic-tac-toe {
     background: #dedbd4;
   }
 
-  .other-showcase__card--buns {
+  .other-showcase__item--buns {
     grid-area: buns;
   }
 
-  .other-showcase__card--snake {
+  .other-showcase__item--snake {
     grid-area: snake;
   }
 
-  .other-showcase__card--switch {
+  .other-showcase__item--switch {
     grid-area: switch;
+  }
+
+  .other-showcase__card--switch {
     background: #fff;
   }
 
-  .other-showcase__card--farm {
+  .other-showcase__item--farm {
     grid-area: farm;
+  }
+
+  .other-showcase__card--farm {
     aspect-ratio: 16 / 9;
     background: #425d5f;
   }
@@ -421,71 +335,6 @@ const cards = {
     transform: rotate(-1.4deg);
   }
 
-  /* Open button: a glass disc set clear of the card's corner curve, with the
-     hand-drawn arrow at full strength and optically centered. */
-  .other-showcase__project-link {
-    position: absolute;
-    z-index: 6;
-    top: clamp(0.9rem, 1.7vw, 1.4rem);
-    right: clamp(0.9rem, 1.7vw, 1.4rem);
-    display: grid;
-    width: clamp(2.5rem, 3.1vw, 2.9rem);
-    aspect-ratio: 1;
-    place-items: center;
-    overflow: hidden;
-    border: 1px solid rgb(255 255 255 / 0.7);
-    border-radius: 999px;
-    /* More opaque than the work cards: most previews here are dark. */
-    background: rgb(255 255 255 / 0.86);
-    box-shadow:
-      inset 0 1px 0 rgb(255 255 255 / 0.9),
-      0 0 0 0.5px rgb(17 17 15 / 0.08),
-      0 0.35rem 1rem rgb(17 17 15 / 0.12),
-      0 1px 2px rgb(17 17 15 / 0.06);
-    color: inherit;
-    text-decoration: none;
-    transition:
-      transform 180ms var(--ease-out),
-      box-shadow 180ms var(--ease-out);
-    -webkit-backdrop-filter: blur(12px) saturate(1.6);
-    backdrop-filter: blur(12px) saturate(1.6);
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .other-showcase__project-link:focus-visible {
-    outline: var(--focus-width) solid var(--color-focus);
-    outline-offset: 0.2rem;
-  }
-
-  .other-showcase__project-link :global(.other-showcase__project-link-icon) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0.3px 0 0 #11110f);
-    transform: translate(0.8%, -4.9%) scale(2.05);
-    transition: transform 220ms var(--ease-out);
-  }
-
-  .other-showcase__project-link:active {
-    transform: scale(0.94);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .other-showcase__project-link:hover {
-      box-shadow:
-        inset 0 1px 0 rgb(255 255 255 / 0.9),
-        0 0 0 0.5px rgb(17 17 15 / 0.1),
-        0 0.55rem 1.4rem rgb(17 17 15 / 0.16),
-        0 1px 2px rgb(17 17 15 / 0.06);
-      transform: scale(1.05);
-    }
-
-    .other-showcase__project-link:hover :global(.other-showcase__project-link-icon) {
-      transform: translate(5%, -9%) scale(2.05);
-    }
-  }
-
   @media (max-width: 60rem) {
     .other-showcase {
       padding-bottom: clamp(7rem, 24vw, 9rem);
@@ -506,13 +355,23 @@ const cards = {
         'buns'
         'tic';
       grid-template-columns: minmax(0, 1fr);
-      gap: 1rem;
+      gap: 1.75rem;
     }
 
     .other-showcase__card--santa,
     .other-showcase__card--discourses,
     .other-showcase__card--buns {
       aspect-ratio: 2 / 1;
+    }
+
+    /* One column: the square Snake and Tic-Tac-Toe panels would each take
+       most of a phone screen. Snake's recording is 16:10, so nothing is lost. */
+    .other-showcase__card--snake {
+      aspect-ratio: 16 / 10;
+    }
+
+    .other-showcase__card--tic-tac-toe {
+      aspect-ratio: 4 / 3;
     }
   }
 
@@ -523,10 +382,4 @@ const cards = {
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .other-showcase__project-link,
-    .other-showcase__project-link :global(.other-showcase__project-link-icon) {
-      transition-duration: 0ms;
-    }
-  }
 </style>

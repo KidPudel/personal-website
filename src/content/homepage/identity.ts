@@ -6,7 +6,7 @@ interface Identity {
   research: string;
   experience: { before: string; word: string; after: string; continuation: string };
   purpose: { before: string; continuation: string; word: string; after: string; href: string };
-  practice: { first: string; second: string };
+  practice: string;
 }
 
 const purposeHref = 'https://www.youtube.com/watch?v=A_u2WFTfbcg';
@@ -29,10 +29,7 @@ export const identity: Record<Locale, Identity> = {
       after: '.',
       href: purposeHref,
     },
-    practice: {
-      first: 'I use my software-engineering background and AI to explore ideas directly in code.',
-      second: ' Game design deepens how I think about interaction, motivation, and psychology.',
-    },
+    practice: 'I use my software-engineering background and AI to explore ideas directly in code.',
   },
   ru: {
     hello: 'Привет, я Игорь.',
@@ -51,9 +48,6 @@ export const identity: Record<Locale, Identity> = {
       after: '.',
       href: purposeHref,
     },
-    practice: {
-      first: 'Опыт разработчика и AI помогают мне пробовать идеи прямо в коде.',
-      second: ' А геймдизайн помогает глубже понимать взаимодействие, мотивацию и психологию.',
-    },
+    practice: 'Опыт разработчика и AI помогают мне пробовать идеи прямо в коде.',
   },
 };

@@ -14,18 +14,18 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
   <section id="intro" class="identity" aria-labelledby="intro-title" tabindex="-1">
     <div class="identity__copy" data-identity-copy>
       <div class="identity__intro">
-        <p class="identity__hello">
-          <HelloAnimation text={identity.hello} />
+        <h1 id="intro-title" class="identity__hello">
+          <HelloAnimation text={identity.hello} />{' '}
           <span class="identity__role">{identity.role}</span>
-        </p>
-        <h1 id="intro-title" class="identity__summary">
-          <span class="identity__passage">{identity.research}</span>
-          <span class="identity__passage">
+        </h1>
+        <div class="identity__summary">
+          <p class="identity__passage">{identity.research}</p>
+          <p class="identity__passage">
             {identity.experience.before}<PlayfulWord word={identity.experience.word} />{identity.experience.after}<br
               class="identity__figma-break"
             />{identity.experience.continuation}
-          </span>
-          <span class="identity__passage identity__passage--purpose">
+          </p>
+          <p class="identity__passage identity__passage--purpose">
             {identity.purpose.before}<br class="identity__figma-break" />{identity.purpose.continuation}<a
               class="identity__joyful-link"
               href={identity.purpose.href}
@@ -38,11 +38,9 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
                 loading="lazy"
                 decoding="async"
               /></a>{identity.purpose.after}
-          </span>
-          <span class="identity__passage">
-            {identity.practice.first}{identity.practice.second}
-          </span>
-        </h1>
+          </p>
+          <p class="identity__passage">{identity.practice}</p>
+        </div>
       </div>
     </div>
   </section>
@@ -90,6 +88,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     color: var(--color-ink);
     font-family: var(--font-editorial);
     font-size: clamp(1rem, 0.5vw + 0.9rem, 1.25rem);
+    font-weight: 400;
     letter-spacing: 0.025em;
   }
 
@@ -114,7 +113,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
   }
 
   .identity__passage {
-    display: block;
+    margin: 0;
   }
 
   .identity__passage + .identity__passage {
@@ -145,6 +144,9 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     z-index: 1;
   }
 
+  /* The drawn loop sits in the upper part of its image, so -42% centers the
+     stroke on the word's letters. It is a little flatter than the source so its top
+     stroke stays below the line above. */
   .identity__joyful-circle {
     position: absolute;
     z-index: 0;
@@ -152,11 +154,11 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     left: -34%;
     display: block;
     width: 185%;
-    height: auto;
+    height: 1.95em;
     max-width: none;
     opacity: 1;
     pointer-events: none;
-    transform: translateY(-50%);
+    transform: translateY(-42%);
   }
 
   /* The Russian word is much longer. Keep the English circle's height and
@@ -164,7 +166,6 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
   .identity__joyful-link:lang(ru) .identity__joyful-circle {
     left: -0.83em;
     width: calc(100% + 2.1em);
-    height: 2.26em;
   }
 
   .identity__joyful-link:focus-visible {

@@ -1,0 +1,95 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+import { toLocale, translator } from '../../../i18n/locales';
+
+interface Props extends HTMLAttributes<'div'> {
+  href: string;
+  name: string;
+  pitch: string;
+  tag: string;
+  year: string;
+  /** Render the pitch as an h2, for pages where each caption heads an item. */
+  heading?: boolean;
+}
+
+const { href, name, pitch, tag, year, heading = false, class: className, ...rest } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const Text = heading ? 'h2' : 'p';
+---
+
+<!-- One caption for the homepage work and the case-studies listing: one face
+     and size, set apart only by color. The pitch (the case-study link) is in
+     ink on the left; the kind of product and the year are grey on the right.
+     When both don't fit beside each other the grey line drops under the
+     pitch. The link's hit area covers the nearest positioned ancestor, so
+     the parent decides how much of the card is clickable. -->
+<div class:list={['work-caption', className]} {...rest}>
+  <Text class="work-caption__text">
+    <a class="work-caption__link" href={href}>
+      {pitch}<span class="sr-only">{t(` ${name} case study`, ` Кейс ${name}`)}</span>
+    </a>
+  </Text>
+  <span class="work-caption__meta">{tag} · {year}</span>
+</div>
+
+<style>
+  .work-caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.1rem 1.25rem;
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: clamp(0.95rem, 0.15vw + 0.9rem, 1.02rem);
+    letter-spacing: 0.015em;
+    line-height: 1.4;
+  }
+
+  .work-caption__text {
+    flex: 1 1 18rem;
+    min-width: 0;
+    margin: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    text-wrap: pretty;
+  }
+
+  .work-caption__link {
+    color: var(--color-ink);
+    text-decoration-line: underline;
+    text-decoration-style: var(--link-line-style);
+    text-decoration-color: var(--link-line-color);
+    text-decoration-thickness: var(--link-line-width);
+    text-underline-offset: var(--link-line-offset);
+    transition: text-decoration-color 150ms ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .work-caption__link::after {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--work-caption-hit-radius, 0.3rem);
+    content: '';
+  }
+
+  .work-caption__link:focus-visible {
+    outline: none;
+  }
+
+  .work-caption__link:focus-visible::after {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  .work-caption__meta {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .work-caption__link:hover {
+      text-decoration-color: var(--link-line-color-active);
+    }
+  }
+</style>
