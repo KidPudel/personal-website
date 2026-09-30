@@ -16,6 +16,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 ---
 
 <portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--with-home": showHome }]} data-site-header>
+  <span class="portfolio-navigation__status-blur" aria-hidden="true"></span>
   <nav class="site-navigation" aria-label={t('Primary navigation', 'Основная навигация')}>
     {showHome && <a class="navigation-action drawn-icon-trigger" href={localePath('/', locale)}>
       <span class="navigation-action__label">{t('Home', 'Главная')}</span>
@@ -169,8 +170,8 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
      visible, full-width fixed element touches the top of the viewport. The
      box itself is hidden and only its band and controls are shown, so Safari
      keeps the page visible, softly blurred, behind the clock instead.
-     On iOS the box starts beneath the status bar, like the opening sky, so
-     the band continues behind the clock; the padding keeps the controls put. */
+     On iOS the box starts beneath the status bar so the status blur below
+     can sit there; the padding keeps the controls put. */
   .portfolio-navigation {
     position: fixed;
     z-index: 200;
@@ -209,9 +210,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   .portfolio-navigation::after {
     position: absolute;
     z-index: -1;
-    /* The gradient stops below skip the part beneath the status bar, so the
-       band inside the viewport is unchanged. */
-    inset: 0 0 calc(-1 * var(--contact-surface-bottom));
+    inset: var(--browser-bleed-top) 0 calc(-1 * var(--contact-surface-bottom));
     content: '';
     pointer-events: none;
     visibility: visible;
@@ -223,38 +222,55 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   .portfolio-navigation::before {
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-field) 64%, transparent) var(--browser-bleed-top),
-      color-mix(in srgb, var(--color-field) 36%, transparent) calc(55% + 0.45 * var(--browser-bleed-top)),
+      color-mix(in srgb, var(--color-field) 64%, transparent) 0,
+      color-mix(in srgb, var(--color-field) 36%, transparent) 55%,
       transparent 100%
     );
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    mask-image: linear-gradient(to bottom, black 0, black calc(50% + 0.5 * var(--browser-bleed-top)), transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0, black calc(50% + 0.5 * var(--browser-bleed-top)), transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
   }
 
   .portfolio-navigation::after {
     backdrop-filter: blur(16px) saturate(1.05);
     -webkit-backdrop-filter: blur(16px) saturate(1.05);
-    mask-image: linear-gradient(
-      to bottom,
-      black 0,
-      black calc(35% + 0.65 * var(--browser-bleed-top)),
-      transparent calc(75% + 0.25 * var(--browser-bleed-top))
-    );
-    -webkit-mask-image: linear-gradient(
-      to bottom,
-      black 0,
-      black calc(35% + 0.65 * var(--browser-bleed-top)),
-      transparent calc(75% + 0.25 * var(--browser-bleed-top))
-    );
+    mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
+  }
+
+  /* The band does not show beneath the iPhone status bar, while the page and
+     the opening sky's video do. This strip continues the band's top edge
+     there (its tint over its heaviest blur) using only a flat tint and a
+     backdrop blur, with no gradient or mask. */
+  .portfolio-navigation__status-blur {
+    display: none;
+  }
+
+  @supports (-webkit-touch-callout: none) {
+    .portfolio-navigation__status-blur {
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      right: 0;
+      left: 0;
+      display: block;
+      height: var(--browser-bleed-top);
+      background-color: color-mix(in srgb, var(--color-field) 64%, transparent);
+      backdrop-filter: blur(16px) saturate(1.05);
+      -webkit-backdrop-filter: blur(16px) saturate(1.05);
+      pointer-events: none;
+      visibility: visible;
+      transition: opacity 220ms var(--ease-out);
+    }
   }
 
   /* Over the homepage sky the controls need no backing, so the band only
      appears once the page scrolls past the introduction or the contact
      links open. */
   .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::before,
-  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after {
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after,
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open])) .portfolio-navigation__status-blur {
     opacity: 0;
   }
 

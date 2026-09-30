@@ -1,0 +1,140 @@
+---
+import BaseDocument from '../../layouts/BaseDocument.astro';
+
+// Each column is a fixed element built a different way, reaching from above
+// the viewport into it. On an iPhone, scrolled a little, a screenshot shows
+// which of them Safari draws beneath the status bar.
+const columns = [
+  { id: 'flat', label: '1 flat tint' },
+  { id: 'gradient', label: '2 gradient' },
+  { id: 'blur', label: '3 blur + flat tint' },
+  { id: 'masked', label: '4 blur + gradient + mask' },
+  { id: 'nested', label: '5 inside hidden, moved box' },
+  { id: 'image', label: '6 image' },
+];
+const swatch =
+  'data:image/svg+xml,' +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8"><rect width="8" height="8" fill="#ffffff" fill-opacity="0.7"/></svg>',
+  );
+---
+
+<BaseDocument
+  title="Status bar test"
+  description="Which fixed elements Safari draws beneath the iPhone status bar."
+  pageClass="composition-document status-bar-test"
+  robots="noindex, nofollow"
+  translated={false}
+>
+  <main id="main-content" class="stripes">
+    <p class="note">Scroll down a little, then take a screenshot.</p>
+  </main>
+
+  {columns.map((column, index) => (
+    column.id === 'nested' ? (
+      <div class="column-host" style={`--index: ${index}`} aria-hidden="true">
+        <div class="column column--nested"><span>{column.label}</span></div>
+      </div>
+    ) : (
+      <div class={`column column--${column.id}`} style={`--index: ${index}`} aria-hidden="true">
+        {column.id === 'image' && <img src={swatch} alt="" width="8" height="8" loading="eager" decoding="async" />}
+        <span>{column.label}</span>
+      </div>
+    )
+  ))}
+</BaseDocument>
+
+<style>
+  .stripes {
+    min-height: 400vh;
+    padding: 12rem 1rem 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      #e3342f 0 1.5rem,
+      #3490dc 1.5rem 3rem,
+      #ffed4a 3rem 4.5rem,
+      #38c172 4.5rem 6rem
+    );
+  }
+
+  .note {
+    margin: 0;
+    padding: 0.5rem;
+    background: white;
+    font-size: 1.1rem;
+  }
+
+  .column,
+  .column-host {
+    position: fixed;
+    z-index: 300;
+    top: -5rem;
+    left: calc(2vw + var(--index) * 16vw);
+    width: 14vw;
+    height: 14rem;
+    pointer-events: none;
+  }
+
+  .column span {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0.2rem;
+    background: black;
+    color: white;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    visibility: visible;
+  }
+
+  .column--flat {
+    background-color: rgb(255 255 255 / 0.7);
+  }
+
+  .column--gradient {
+    background: linear-gradient(rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.7));
+  }
+
+  .column--blur {
+    background-color: rgb(255 255 255 / 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .column--masked {
+    background: linear-gradient(rgb(255 255 255 / 0.4), rgb(255 255 255 / 0.4));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    mask-image: linear-gradient(black, black);
+    -webkit-mask-image: linear-gradient(black, black);
+  }
+
+  .column-host {
+    visibility: hidden;
+    transform: translateY(0);
+    isolation: isolate;
+  }
+
+  .column--nested {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    background-color: rgb(255 255 255 / 0.4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    visibility: visible;
+  }
+
+  .column--image {
+    overflow: clip;
+  }
+
+  .column--image img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+</style>
