@@ -164,11 +164,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
 <style>
   /* Spans the full width so its blur is an even band, not a patch. The band
-     itself lets clicks through; only the controls take them.
-     Safari 26 on iPhone fills the status bar with a solid color whenever a
-     visible, full-width fixed element touches the top of the viewport. The
-     box itself is hidden and only its band and controls are shown, so Safari
-     keeps the page visible, softly blurred, behind the clock instead. */
+     itself lets clicks through; only the controls take them. */
   .portfolio-navigation {
     position: fixed;
     z-index: 200;
@@ -176,7 +172,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     right: 0;
     left: 0;
     display: block;
-    visibility: hidden;
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
     --navigation-bottom: 1.3rem;
     padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom);
@@ -207,7 +202,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     inset: 0 0 calc(-1 * var(--contact-surface-bottom));
     content: '';
     pointer-events: none;
-    visibility: visible;
     transition:
       bottom 180ms var(--ease-out),
       opacity 220ms var(--ease-out);
@@ -231,22 +225,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     -webkit-backdrop-filter: blur(16px) saturate(1.05);
     mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
-  }
-
-  /* On iPhone the page stays visible behind the clock, just above the band,
-     and Safari draws nothing fixed there. Both layers fade in over their
-     first 2rem, so the band emerges below the clock instead of starting at
-     full strength in a hard line. */
-  @supports (-webkit-touch-callout: none) {
-    .portfolio-navigation::before {
-      mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 50%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 50%, transparent 100%);
-    }
-
-    .portfolio-navigation::after {
-      mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 35%, transparent 75%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 35%, transparent 75%);
-    }
   }
 
   /* Over the homepage sky the controls need no backing, so the band only
@@ -278,14 +256,10 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     scroll-padding-top: 6rem;
   }
 
-  /* Positioned so its own layer paints it, leaving the header box with
-     nothing visible of its own (see the note on .portfolio-navigation). */
   .site-navigation {
-    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    visibility: visible;
     gap: clamp(0.9rem, 2.4vw, 1.8rem);
     font-size: clamp(0.88rem, 0.25vw + 0.83rem, 1rem);
     letter-spacing: 0.005em;
