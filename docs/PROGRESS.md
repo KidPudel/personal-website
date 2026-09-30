@@ -2,6 +2,10 @@
 
 Last updated: 2026-09-30
 
+## Sky beneath the content
+
+- The opening sky now sits just above the homepage's field and beneath its content (`z-index: -1` inside `.homepage`'s stacking context) instead of over everything, so it tints the page background but no longer the cards, screenshots, or text. The opening greeting keeps its own layer above the sky, and the document is hidden until the reveal, so the opening itself is unchanged. Verified at 1440 px with the kept sky after the reveal.
+
 ## iPhone status bar and toolbar
 
 - The header is back to its original version at Igor's request (2026-09-30), so Safari 26 fills the status bar with its default solid color, sampled from the header (WebKit `LocalFrameView::fixedContainerEdges`: a visible fixed element spanning at least 90% of the width at the top of the viewport). Tried and rejected on his iPhone: hiding the header box so Safari shows the page behind the clock (it works, but the header's blur band then ends in a hard line under the clock) and fading the band in over its first 2rem (worse overall). Safari draws no fixed element beneath the status bar, so the band itself cannot continue there; a test page with six differently built fixed columns confirmed it.

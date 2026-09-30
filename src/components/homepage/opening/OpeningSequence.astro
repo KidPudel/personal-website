@@ -87,9 +87,12 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
     pointer-events: none;
   }
 
+  /* The sky sits just above the homepage's field and beneath its content,
+     so it tints the page without tinting the cards and text; the greeting
+     keeps its own layer above it. */
   :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
     inset: 0 0 auto;
-    z-index: 100;
+    z-index: -1;
     height: calc(100vh + var(--browser-bleed-bottom));
     height: calc(100lvh + var(--browser-bleed-bottom));
     overflow: hidden;
@@ -124,7 +127,7 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
   :global(.js.opening-bypassed) .opening-sequence[data-persist-sky] .opening-sequence__sky {
     position: fixed;
     inset: 0 0 auto;
-    z-index: 100;
+    z-index: -1;
     height: calc(100vh + var(--browser-bleed-bottom));
     height: calc(100lvh + var(--browser-bleed-bottom));
     display: block;
