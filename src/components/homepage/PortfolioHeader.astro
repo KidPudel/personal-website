@@ -192,9 +192,10 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     --contact-surface-bottom: 6rem;
   }
 
-  /* A progressive blur: a light, tinted layer runs the full depth of the band
-     and a heavier one sits only near the top edge, so content under the
-     controls is calm enough to read them and fades back in below. */
+  /* A progressive blur: a lighter blur with a faint tint runs the full depth
+     of the band and a heavier one covers its upper part, so content under
+     the controls is calm enough to read them and fades back in below. The
+     tint stays faint so the band reads as blur rather than a white wash. */
   .portfolio-navigation::before,
   .portfolio-navigation::after {
     position: absolute;
@@ -210,21 +211,19 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   .portfolio-navigation::before {
     background: linear-gradient(
       to bottom,
-      color-mix(in srgb, var(--color-field) 64%, transparent) 0,
-      color-mix(in srgb, var(--color-field) 36%, transparent) 55%,
+      color-mix(in srgb, var(--color-field) 28%, transparent) 0,
+      color-mix(in srgb, var(--color-field) 12%, transparent) 55%,
       transparent 100%
     );
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
   }
 
   .portfolio-navigation::after {
-    backdrop-filter: blur(16px) saturate(1.05);
-    -webkit-backdrop-filter: blur(16px) saturate(1.05);
-    mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
-    -webkit-mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
+    backdrop-filter: blur(24px) saturate(1.05);
+    mask-image: linear-gradient(to bottom, black 0, black 45%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0, black 45%, transparent 90%);
   }
 
   /* Over the homepage sky the controls need no backing, so the band only
@@ -406,11 +405,13 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   /* Quiet by design: a setting, not an action, so it sits a step below
      "Get in touch". The current language is simply in ink. The muted grey
      still clears 4.5:1 on the page field. */
+  /* Both languages are in ink; the one to switch to is marked only by the
+     dotted link underline, like every other link. */
   .language-switch {
     display: inline-flex;
     align-items: center;
     gap: 0.15rem;
-    color: var(--color-muted);
+    color: var(--color-ink);
     font-size: 0.86em;
     letter-spacing: 0.02em;
     line-height: 1.15;
@@ -431,10 +432,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     justify-content: center;
     color: inherit;
     touch-action: manipulation;
-  }
-
-  .language-switch__option[aria-current] {
-    color: var(--color-ink);
   }
 
   a.language-switch__option {

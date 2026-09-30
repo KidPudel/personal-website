@@ -2,6 +2,12 @@
 
 Last updated: 2026-09-30
 
+## Header blur on desktop
+
+- The header band never blurred in Chrome, Brave, or Firefox: the source listed `backdrop-filter` before `-webkit-backdrop-filter`, and Lightning CSS kept only the prefixed one, which those browsers ignore. The header now declares only `backdrop-filter`; the build's browser targets need no prefix. Only Safari had been blurring.
+- The band now reads as blur rather than a white wash: the tint drops from 64%/36% to 28%/12% of the field, the light blur goes from 5 to 8 px, and the heavy blur from 16 to 24 px, reaching further down (solid to 45%, gone by 90%). Compared at 1440 px over the side projects and a case study.
+- Both languages in the switch are in ink; the one to switch to keeps the dotted link underline, like every other link. Bold for the current language was considered and left out: it would make the least important control the heaviest word in the header.
+
 ## Sky beneath the content
 
 - The opening sky now sits just above the homepage's field and beneath its content (`z-index: -1` inside `.homepage`'s stacking context) instead of over everything, so it tints the page background but no longer the cards, screenshots, or text. The opening greeting keeps its own layer above the sky, and the document is hidden until the reveal, so the opening itself is unchanged. Verified at 1440 px with the kept sky after the reveal.
@@ -21,7 +27,7 @@ Last updated: 2026-09-30
 - The header spans the full width with a progressive blur: a light tinted layer through the band and a heavier one near the top, so content fades evenly under the controls instead of under a patch. Over the homepage sky it appears only after the introduction or while the contact links are open. The band lets clicks through; only the controls take them. Inner pages use the same band.
 - The personal note no longer reserves space for closed panels on wide screens; opening one moves the contact block down. Its bottom padding now matches the pause between the other sections (about 180 px at 1440 px, up from 130 px).
 - `/case-studies/` now matches the homepage: the same frame width (aligned with the header), the Instrument Serif section title ("case studies"), the homepage panel radius and shadow, and the same caption. `WorkCaption.astro` is that one caption for both pages; the whole listing card opens its case study. The role now lives only on each case study page.
-- The inactive language in the header switch uses the full muted grey (about 4.9:1) instead of 80% opacity (about 3.4:1).
+- The inactive language in the header switch uses the full muted grey (about 4.9:1) instead of 80% opacity (about 3.4:1). Superseded 2026-09-30: both languages are in ink, the one to switch to marked by the link underline.
 - Hero: the `h1` is now "Hello, I'm Igor. Product designer."; the statements are paragraphs. The repeated game-design sentence is removed from the hero in both languages (the About section keeps it). The "joyful" circle is centered on the word's stroke and slightly flatter, so it no longer crosses the line above.
 - Verified at 1440, 1024, and 375 px in English and Russian with no horizontal overflow, the personal panels open and closed, and a case-study page's header. Astro diagnostics, the media contract, and both production builds pass.
 
