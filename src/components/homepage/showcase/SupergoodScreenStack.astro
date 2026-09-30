@@ -1,4 +1,6 @@
 ---
+import type { ComponentProps } from 'astro/types';
+
 import basketScreen from '../../../assets/case_study_images/supergood/basket.png';
 import checkoutScreen from '../../../assets/case_study_images/supergood/checkout.png';
 import historyScreen from '../../../assets/case_study_images/supergood/history.png';
@@ -9,14 +11,17 @@ import { toLocale, translator } from '../../../i18n/locales';
 import MobileScreenStack from './MobileScreenStack.astro';
 
 const t = translator(toLocale(Astro.currentLocale));
+// Order follows the ordering journey. `device` is the phone's opaque bounding
+// box inside each mockup (x, y, width, height in source pixels), so every
+// device renders at the same height and sits exactly on the fan's axis.
 const screens = [
-  { src: historyScreen, label: t('History', 'История'), trim: { top: 0, bottom: 28, left: 0 } },
-  { src: mapScreen, label: t('Map', 'Карта'), trim: { top: 0, bottom: 0, left: 20 } },
-  { src: trackingScreen, label: t('Tracking', 'Отслеживание'), trim: { top: 0, bottom: 0, left: 25 } },
-  { src: checkoutScreen, label: t('Checkout', 'Оформление'), trim: { top: 0, bottom: 1, left: 22 } },
-  { src: basketScreen, label: t('Basket', 'Корзина'), trim: { top: 11, bottom: 10, left: 44 } },
-  { src: menuScreen, label: t('Menu', 'Меню'), trim: { top: 9, bottom: 18, left: 46 } },
-];
+  { src: menuScreen, label: t('Menu', 'Меню'), device: [50, 12, 499, 1032] },
+  { src: basketScreen, label: t('Basket', 'Корзина'), device: [47, 13, 506, 1038] },
+  { src: checkoutScreen, label: t('Checkout', 'Оформление'), device: [25, 5, 549, 1055] },
+  { src: trackingScreen, label: t('Tracking', 'Отслеживание'), device: [28, 11, 542, 1062] },
+  { src: mapScreen, label: t('Map', 'Карта'), device: [25, 11, 546, 1070] },
+  { src: historyScreen, label: t('History', 'История'), device: [47, 11, 502, 1022] },
+] satisfies ComponentProps<typeof MobileScreenStack>['screens'];
 ---
 
 <MobileScreenStack
@@ -25,5 +30,4 @@ const screens = [
     'Cycle SuperGood screens: Menu, Basket, Checkout, Tracking, Map, and History',
     'Листать экраны SuperGood: меню, корзина, оформление, отслеживание, карта и история',
   )}
-  targetVisibleRatio={0.975}
 />

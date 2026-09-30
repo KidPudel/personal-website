@@ -47,7 +47,7 @@ CONTENT = {
                 'Shipped the learner loop before the teacher tools in the brief. Students valued having one place instead of three tools and missed pronunciation practice, the next step.',
             ]),
             ('Instagram Saves redesign', 'Independent concept, coded prototype | 2026', 'instagram-saves-redesign', [
-                'Six of eight interviewees could not find saved posts, so I put search inside Saved instead of asking people to file more, the work they already skip.',
+                'Six of nine interviewees could not find saved posts, so I put search inside Saved instead of asking people to file more, the work they already skip.',
                 'Collection suggestions turn a new collection from two taps and a name into one tap, with the full list kept for wrong guesses. React prototype, live on my site.',
             ]),
         ],
@@ -92,7 +92,7 @@ CONTENT = {
                 'Сначала выпустил цикл ученика, а инструменты преподавателя из брифа отложил. Студентам понравилось одно место вместо трёх инструментов, не хватало практики произношения, это следующий шаг.',
             ]),
             ('Поиск сохранённых публикаций Instagram', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
-                'Шесть из восьми собеседников не могли найти сохранённое, поэтому я встроил поиск в «Сохранённое», а не заставлял людей больше сортировать: эту работу они и так пропускают.',
+                'Шесть из девяти собеседников не могли найти сохранённое, поэтому я встроил поиск в «Сохранённое», а не заставлял людей больше сортировать: эту работу они и так пропускают.',
                 'Подсказки коллекций превращают создание новой коллекции из двух касаний и ввода названия в одно касание, а полный список остаётся на случай ошибки. Прототип на React работает на моём сайте.',
             ]),
         ],

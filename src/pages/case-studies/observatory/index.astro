@@ -162,8 +162,8 @@ const categories = [
         'Дать людям видеть приложение целиком, а потом записать прогон и сравнить его со следующим.',
       )}
       action={t(
-        '5 interviews, 2 needs, sketches, and a prototype. Then 3 changes: a list instead of cards, the app before the mode, and results inside Tests.',
-        '5 интервью, 2 потребности, скетчи и прототип. Затем 3 изменения: список вместо карточек, сначала приложение, потом режим, и результаты внутри «Tests».',
+        '5 interviews to check it was worth building, 2 jobs, sketches, and a prototype. Then 3 changes: a list instead of cards, the app before the mode, and results inside Tests.',
+        '5 интервью, чтобы проверить, стоит ли это делать, 2 задачи, скетчи и прототип. Затем 3 изменения: список вместо карточек, сначала приложение, потом режим, и результаты внутри «Tests».',
       )}
       result={t(
         'A working macOS app. 3 colleagues have used it for two months to compare versions of an app and whole categories of apps.',
@@ -216,8 +216,8 @@ const categories = [
       </figure>
 
       <p class="insight">{t(
-        'How can I see what an app did during the work, and come back to it later?',
-        'Как увидеть, что приложение делало во время работы, и вернуться к этому позже?',
+        'The job: when I do heavy work, I want to see what an app is using and keep a record, so I can come back to it and compare.',
+        'Задача: когда я делаю тяжёлую работу, я хочу видеть, что использует приложение, и сохранять запись, чтобы вернуться к ней и сравнить.',
       )}</p>
     </StudySection>
 
@@ -238,10 +238,10 @@ const categories = [
 
     <StudySection
       part="action"
-      title={t('Five interviews. Two needs. One starting point.', 'Пять интервью. Две потребности. Одна точка старта.')}
+      title={t('Five interviews. Two jobs. One starting point.', 'Пять интервью. Две задачи. Одна точка старта.')}
       lead={t(
-        'I asked five people to walk me through the last time they investigated performance: what they wanted to know, where they looked, and what they could not find.',
-        'Я попросил пятерых человек рассказать, как они в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти.',
+        'Before building anything, I wanted to know if this was only my problem. I ran customer development interviews in the jobs-to-be-done style: five people walked me through the last time they investigated performance, what they wanted to know, where they looked, and what they could not find. Their answers showed it was worth building.',
+        'Прежде чем что-то делать, я хотел понять, только ли у меня эта проблема. Я провёл CustDev-интервью в стиле Jobs to be Done: пять человек рассказали, как в последний раз разбирались с производительностью, что хотели узнать, куда смотрели и чего не смогли найти. Их ответы показали, что это стоит делать.',
       )}
     >
       <div class="research-portraits">
@@ -256,7 +256,8 @@ const categories = [
             decoding="async"
           />
           <figcaption>{t('Independent troubleshooter', 'Самостоятельный диагност')}</figcaption>
-          <p>{t('Checks their own Mac. Needs to see the whole app and catch a spike without piecing together a changing list.', 'Проверяет свой Mac. Нужно видеть приложение целиком и ловить пик, не собирая картину по меняющемуся списку.')}</p>
+          <p>{t('Checks their own Mac.', 'Проверяет свой Mac.')}</p>
+          <p><strong>{t('Job:', 'Задача:')}</strong> {t('When I check what my Mac is doing, I want to see the whole app and catch a spike, so I do not piece it together from a changing list.', 'Когда я смотрю, что происходит с Mac, я хочу видеть приложение целиком и ловить пик, чтобы не собирать картину по меняющемуся списку.')}</p>
         </figure>
         <figure>
           <Image
@@ -269,7 +270,8 @@ const categories = [
             decoding="async"
           />
           <figcaption>{t('Performance verifier', 'Проверяющий производительность')}</figcaption>
-          <p>{t('A developer comparing runs. Needs a recording to reopen, with enough context to make the comparison useful.', 'Разработчик, который сравнивает прогоны. Нужна запись, к которой можно вернуться, с контекстом для полезного сравнения.')}</p>
+          <p>{t('A developer comparing runs.', 'Разработчик, который сравнивает прогоны.')}</p>
+          <p><strong>{t('Job:', 'Задача:')}</strong> {t('When I change my app, I want recordings of before and after with enough context, so the comparison means something.', 'Когда я меняю приложение, я хочу записи до и после с контекстом, чтобы сравнение было осмысленным.')}</p>
         </figure>
       </div>
 
@@ -303,7 +305,7 @@ const categories = [
         title={t('Group processes under their app.', 'Собрать процессы под их приложением.')}
         problem={t('One app showed up as many rows, so its real cost was hidden.', 'Одно приложение занимало много строк, и его настоящая нагрузка была скрыта.')}
         decision={t('One row per app with totals. Its processes wait one level below, opened only when needed.', 'Одна строка на приложение с итогами. Его процессы ждут уровнем ниже и открываются, только когда нужно.')}
-        why={t('Both needs started from an app. And by the Gestalt principle of common region, things that belong together should look together.', 'Обе потребности начинались с приложения. А по гештальт-принципу общей области то, что связано, должно выглядеть вместе.')}
+        why={t('Both jobs started from an app. And by the Gestalt principle of common region, things that belong together should look together.', 'Обе задачи начинались с приложения. А по гештальт-принципу общей области то, что связано, должно выглядеть вместе.')}
         instead={t('A flat process list with search, like Activity Monitor. You would still add up the rows yourself.', 'Плоского списка процессов с поиском, как в Мониторинге системы. Складывать строки всё равно пришлось бы самому.')}
         effect={t('Brave Browser: 17 rows → 1', 'Brave Browser: 17 строк → 1')}
         effectLabel={t('Measured', 'Измерено')}
@@ -346,7 +348,7 @@ const categories = [
         title={t('Results live where the test ends.', 'Результаты там, где заканчивается тест.')}
         problem={t('A test ended in Tests, but its result lived in History, a separate place.', 'Тест заканчивался в «Tests», а его результат жил в «History», отдельном разделе.')}
         decision={t('Moved results into Tests as Saved Results, with a sidebar list while a result is open.', 'Перенёс результаты в «Tests» как «Saved Results», со списком в боковой панели, пока открыт результат.')}
-        why={t('Fewer places to go. The next step is always right after the last one.', 'Меньше разделов. Следующий шаг всегда сразу после предыдущего.')}
+        why={t('The information architecture should follow the task: fewer places to go, and the next step always right after the last one.', 'Информационная архитектура должна следовать задаче: меньше разделов, и следующий шаг всегда сразу после предыдущего.')}
         effect={t('Top-level sections: 3 → 2', 'Разделов верхнего уровня: 3 → 2')}
         effectLabel={t('Counted from the prototypes', 'Посчитано по прототипам')}
       >

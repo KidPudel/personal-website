@@ -134,8 +134,8 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
       <ul class="tiles breakout" role="list">
         <li><strong>{t('Review analysis', 'Анализ отзывов')}</strong><p>{t('Sorted about 150 App Store and Google Play reviews by what people complained about.', 'Разобрал около 150 отзывов в App Store и Google Play по тому, на что жалуются.')}</p></li>
         <li><strong>{t('Contextual inquiry', 'Контекстное исследование')}</strong><p>{t('Watched and interviewed 10 people ordering at work, in an office and a call center, and noted where they hesitated.', 'Смотрел, как заказывают 10 человек на работе, в офисе и колл-центре, расспрашивал их и отмечал, где они сомневаются.')}</p></li>
-        <li><strong>{t('Pattern study', 'Изучение паттернов')}</strong><p>{t('Самокат and Яндекс Лавка, apps our customers already knew.', '«Самокат» и «Яндекс Лавка», приложения, которые наши клиенты уже знали.')}</p></li>
-        <li><strong>{t('Comparative usability test', 'Сравнительное юзабилити-тестирование')}</strong><p>{t('Compared the old and new flows with 10 colleagues who did not work on the app.', 'Сравнивал варианты на коллегах, которые не работали над приложением.')}</p></li>
+        <li><strong>{t('Competitor and pattern study', 'Конкуренты и паттерны')}</strong><p>{t('Кухня на районе for how to present the menu. Самокат and Яндекс Лавка for usability patterns our customers already knew.', '«Кухня на районе» для подачи меню. «Самокат» и «Яндекс Лавка» для юзабилити-паттернов, которые наши клиенты уже знали.')}</p></li>
+        <li><strong>{t('Comparative usability test', 'Сравнительное юзабилити-тестирование')}</strong><p>{t('Compared the old app with prototypes, then with the built app, in person with 10 colleagues who did not work on it.', 'Сравнивал старое приложение с прототипами, а потом с готовым приложением, вживую на 10 коллегах, которые не работали над ним.')}</p></li>
       </ul>
 
       <p class="insight">{t(
@@ -143,13 +143,13 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         'Будничные заказы повторяются. На интервью люди уже знали, чего хотят, но приложение каждый раз заставляло искать заново.',
       )}</p>
 
-      <h3 class="subtitle">{t('Jobs to be done', 'Jobs to be done')}</h3>
+      <h3 class="subtitle">{t('Job stories', 'Job stories')}</h3>
       <dl class="goal breakout">
-        <div><dt>{t('Repeat the usual lunch', 'Повторить привычный обед')}</dt><dd>{t('When it is lunchtime at work, I want my usual order again without searching for it, so I can order in seconds.', 'Когда на работе время обеда, я хочу снова заказать привычное, не выискивая его, чтобы заказ занимал секунды.')}</dd></div>
-        <div><dt>{t('Know before paying', 'Знать всё до оплаты')}</dt><dd>{t('While I choose dishes, I want to see the delivery time and the total, so I know when the food arrives and what it costs.', 'Пока я выбираю блюда, я хочу видеть время доставки и сумму, чтобы понимать, когда привезут и сколько это стоит.')}</dd></div>
-        <div><dt>{t('Judge the value', 'Оценить, стоит ли')}</dt><dd>{t('When I look at a dish, I want to see what is on the plate, so I can tell if it is worth the price.', 'Когда я смотрю на блюдо, я хочу видеть, что будет на тарелке, чтобы понять, стоит ли оно своих денег.')}</dd></div>
+        <div><dt>{t('Repeat the usual lunch', 'Повторить привычный обед')}</dt><dd>{t('When it is lunchtime at work, I want my usual meal again with no effort, so ordering takes seconds.', 'Когда на работе время обеда, я хочу без усилий снова получить привычную еду, чтобы заказ занимал секунды.')}</dd></div>
+        <div><dt>{t('Know before paying', 'Знать всё до оплаты')}</dt><dd>{t('When I am deciding whether to order, I want to be sure when the food arrives and what it costs, so nothing surprises me after I pay.', 'Когда я решаю, заказывать ли, я хочу точно знать, когда привезут и сколько это будет стоить, чтобы после оплаты не было сюрпризов.')}</dd></div>
+        <div><dt>{t('Judge the value', 'Оценить, стоит ли')}</dt><dd>{t('When I pick a dish, I want to be confident it is worth the price, so I do not feel I overpaid.', 'Когда я выбираю блюдо, я хочу быть уверен, что оно стоит своих денег, чтобы не чувствовать, что переплатил.')}</dd></div>
       </dl>
-      <p class="note">{t('From the interviews and the reviews. Each job leads to one of the first three decisions below.', 'По интервью и отзывам. Каждая задача привела к одному из первых трёх решений ниже.')}</p>
+      <p class="note">{t('From the interviews and the reviews. Each story leads to one of the first three decisions below.', 'По интервью и отзывам. Каждая история привела к одному из первых трёх решений ниже.')}</p>
 
       <Decision
         number={1}
@@ -182,6 +182,8 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         problem={t('A photo did not tell people enough to judge whether a dish was worth its price.', 'По фото было не понять, стоит ли блюдо своих денег.')}
         decision={t('Weight, ingredients, nutrition, and extra cooking time on the dish sheet, with the price right beside Add.', 'Вес, состав, КБЖУ и дополнительное время приготовления в карточке блюда, а цена прямо рядом с кнопкой добавления.')}
         why={t('I could not change the price, but I could make the value visible before paying.', 'Цену я изменить не мог, но мог показать ценность ещё до оплаты.')}
+        effect={t('The new dish sheet did better than the old one', 'Новая карточка блюда показала себя лучше старой')}
+        effectLabel={t('In-person A/B test', 'A/B-тест вживую')}
       >
         <Shot src={dishSheetDark} alt={t('Dark dish sheet with weight, nutrition, ingredients, price, and the pinned order bar.', 'Тёмная карточка блюда с весом, КБЖУ, составом, ценой и закреплённой панелью заказа.')} caption={t('Everything needed to judge the dish, before it goes in the basket.', 'Всё, чтобы оценить блюдо, ещё до корзины.')} />
       </Decision>
@@ -202,7 +204,7 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         number={5}
         title={t('One Flutter app instead of two native ones.', 'Одно приложение на Flutter вместо двух нативных.')}
         problem={t('Two separate apps meant every change had to be built twice and could behave differently on each platform.', 'Два отдельных приложения означали, что каждое изменение нужно делать дважды, и на платформах оно могло работать по-разному.')}
-        decision={t('Rebuilt both apps in Flutter from one codebase: menu, basket, payment with 3DS, maps and tracking, favourites, history, promotions, loyalty, and themes.', 'Пересобрал оба приложения на Flutter из одной кодовой базы: меню, корзина, оплата с 3DS, карты и отслеживание, избранное, история, акции, лояльность и темы.')}
+        decision={t('Rebuilt both apps in Flutter from one codebase: menu, basket, payment with 3DS, maps and tracking, favourites, history, promotions, loyalty, and light and dark themes on a design system I built.', 'Пересобрал оба приложения на Flutter из одной кодовой базы: меню, корзина, оплата с 3DS, карты и отслеживание, избранное, история, акции, лояльность, светлая и тёмная темы на дизайн-системе, которую я собрал.')}
         why={t('As the only engineer, one codebase meant every fix reached iOS and Android on the same day.', 'Для единственного разработчика одна кодовая база означала, что каждое исправление попадает на iOS и Android в один день.')}
         instead={t('Improving both native apps. Every change twice, by one person.', 'Доработки двух нативных приложений. Каждое изменение дважды, силами одного человека.')}
         effect={t('2 codebases → 1, built alone in 11 months', '2 кодовые базы → 1, собрано в одиночку за 11 месяцев')}
@@ -264,7 +266,7 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
             { label: t('Before the redesign', 'До редизайна'), value: 3.1, display: t('3.1', '3,1') },
             { label: t('After the release', 'После релиза'), value: 3.7, display: t('3.7', '3,7'), emphasis: true },
           ]}
-          note={t('The bars start at zero, so the gap is shown at its true size.', 'Шкала начинается с нуля, поэтому разница показана в реальном масштабе.')}
+          note={t('Before and after the release, so the redesign is not the only possible cause. The bars start at zero, so the gap is shown at its true size.', 'Сравнение до и после релиза, поэтому редизайн не единственная возможная причина. Шкала начинается с нуля, поэтому разница показана в реальном масштабе.')}
         />
       </div>
 

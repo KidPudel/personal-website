@@ -5,57 +5,47 @@ import { Image } from 'astro:assets';
 interface Screen {
   src: ImageMetadata;
   label: string;
-  trim?: {
-    top: number;
-    bottom: number;
-    left: number;
-  };
+  /** The phone's opaque bounds inside the mockup: x, y, width, height. */
+  device: [number, number, number, number];
 }
 
 interface Props {
   screens: Screen[];
   ariaLabel: string;
-  targetVisibleRatio?: number;
 }
 
-const { screens, ariaLabel, targetVisibleRatio = 1 } = Astro.props;
+const { screens, ariaLabel } = Astro.props;
 
-const getScreenStyle = (screen: Screen) => {
-  const trim = screen.trim ?? { top: 0, bottom: 0, left: 0 };
-  const visibleRatio = 1 - (trim.top + trim.bottom) / screen.src.height;
-  const scale = targetVisibleRatio / visibleRatio;
-  const bottomShift = scale * (trim.bottom / screen.src.height) * 100;
-  const leftShift = scale * (trim.left / screen.src.width) * 100;
-  const visibleTop = (1 - targetVisibleRatio) * 100;
+// Circular distance from the active screen (index 0), so the fan is symmetric:
+// with six screens the offsets are 0, 1, 2, 3, -2, -1 and 3 waits out of view.
+const offsetOf = (index: number) => (index > screens.length / 2 ? index - screens.length : index);
 
-  return [
-    `--screen-ratio: ${screen.src.width} / ${screen.src.height}`,
-    `--screen-scale: ${scale}`,
-    `--screen-bottom-shift: ${bottomShift}%`,
-    `--screen-left-shift: ${leftShift}%`,
-    `--screen-visible-top: ${visibleTop}%`,
+// The box is the device itself; the image is scaled and shifted inside it so
+// transparent padding in the mockup never moves a phone off the axis.
+const getScreenStyle = ({ src, device: [x, y, width, height] }: Screen) =>
+  [
+    `--device-ratio: ${width} / ${height}`,
+    `--image-width: ${(src.width / width) * 100}%`,
+    `--image-height: ${(src.height / height) * 100}%`,
+    `--image-left: ${(-x / width) * 100}%`,
+    `--image-top: ${(-y / height) * 100}%`,
   ].join('; ');
-};
 ---
 
 <mobile-screen-stack class="mobile-stack">
-  <button
-    type="button"
-    class="mobile-stack__trigger"
-    aria-label={ariaLabel}
-    data-screen-count={screens.length}
-  >
-    {screens.map((screen) => (
+  <button type="button" class="mobile-stack__trigger" aria-label={ariaLabel}>
+    {screens.map((screen, index) => (
       <span
         class="mobile-stack__screen"
         data-foley-hover="tick"
+        data-offset={offsetOf(index)}
         style={getScreenStyle(screen)}
       >
         <Image
           src={screen.src}
           alt=""
-          widths={[240, 360, 480]}
-          sizes="(max-width: 44rem) 24vw, 13vw"
+          widths={[240, 360, 480, 600]}
+          sizes="(max-width: 44rem) 36vw, (max-width: 75rem) 26vw, 20vw"
           loading="lazy"
           decoding="async"
           format="webp"
@@ -71,101 +61,56 @@ const getScreenStyle = (screen: Screen) => {
 
   class MobileScreenStack extends HTMLElement {
     private abort?: AbortController;
-    private animations = new Set<Animation>();
-    private cycling = false;
-    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private active = 0;
 
     connectedCallback() {
       this.abort?.abort();
       this.abort = new AbortController();
       const trigger = this.querySelector<HTMLButtonElement>('.mobile-stack__trigger');
-      trigger?.addEventListener('click', this.cycle, { signal: this.abort.signal });
+      trigger?.addEventListener('click', this.select, { signal: this.abort.signal });
     }
 
     disconnectedCallback() {
       this.abort?.abort();
-      this.animations.forEach((animation) => animation.cancel());
-      this.animations.clear();
-      this.cycling = false;
     }
 
-    private play(
-      element: HTMLElement,
-      keyframes: Keyframe[],
-      options: KeyframeAnimationOptions,
-    ) {
-      const animation = element.animate(keyframes, options);
-      this.animations.add(animation);
-      animation.finished.then(
-        () => this.animations.delete(animation),
-        () => this.animations.delete(animation),
-      );
-      return animation;
-    }
-
-    private cycle = async (event: MouseEvent) => {
-      if (this.cycling) return;
-
-      const trigger = this.querySelector<HTMLButtonElement>('.mobile-stack__trigger');
+    // The front phone advances the journey; a side phone swings to the front.
+    private select = (event: MouseEvent) => {
       const screens = Array.from(this.querySelectorAll<HTMLElement>('.mobile-stack__screen'));
-      const front = screens.at(-1);
-      if (!trigger || !front) return;
-
       const clicked = event.target instanceof Element
         ? event.target.closest<HTMLElement>('.mobile-stack__screen')
         : null;
-      const nextFront = clicked && clicked !== front ? clicked : screens.at(-2);
-      if (!nextFront) return;
+      const clickedOffset = Number(clicked?.dataset.offset ?? 0);
+      const step = clicked && clickedOffset !== 0 ? clickedOffset : 1;
+      const count = screens.length;
 
-      this.cycling = true;
-      this.setAttribute('data-cycling', '');
-      play('swoosh', { pan: panFor(nextFront) });
+      this.active = (this.active + step + count) % count;
+      play('swoosh', { pan: panFor(screens[this.active]) });
 
-      if (this.reducedMotion.matches) {
-        this.rotateToFront(trigger, nextFront);
-        this.cycling = false;
-        this.removeAttribute('data-cycling');
-        return;
-      }
+      screens.forEach((screen, index) => {
+        const current = Number(screen.dataset.offset);
+        let next = (index - this.active + count) % count;
+        if (next > count / 2) next -= count;
 
-      const easing = 'cubic-bezier(0.23, 1, 0.32, 1)';
-      const exit = this.play(
-        front,
-        [
-          { opacity: 1, transform: getComputedStyle(front).transform },
-          { opacity: 0, transform: 'translate3d(0.875rem, 0, 0)' },
-        ],
-        { duration: 180, easing, fill: 'forwards' },
-      );
+        const hidden = Math.abs(next) > 2;
+        if (hidden) {
+          // Leave toward the side the phone was already travelling to.
+          const travelled = current - step;
+          next = Math.sign(travelled || current || 1) * 3;
+        } else if (Math.abs(current) > 2 && Math.sign(current) !== Math.sign(next)) {
+          // Re-enter from the near edge instead of sweeping across the front.
+          this.snap(screen, String(-current));
+        }
 
-      try {
-        await exit.finished;
-        this.rotateToFront(trigger, nextFront);
-        exit.cancel();
-
-        const enter = this.play(
-          nextFront,
-          [
-            { opacity: 0, transform: 'translate3d(-0.375rem, 0, 0)' },
-            { opacity: 1, transform: 'translate3d(0, 0, 0)' },
-          ],
-          { duration: 180, easing },
-        );
-        await enter.finished;
-      } catch {
-        // A disconnected component cancels its in-flight handoff.
-      } finally {
-        this.cycling = false;
-        this.removeAttribute('data-cycling');
-      }
+        screen.dataset.offset = String(next);
+      });
     };
 
-    private rotateToFront(trigger: HTMLButtonElement, target: HTMLElement) {
-      while (trigger.lastElementChild !== target) {
-        const front = trigger.lastElementChild;
-        if (!front) return;
-        trigger.prepend(front);
-      }
+    private snap(screen: HTMLElement, offset: string) {
+      screen.style.transition = 'none';
+      screen.dataset.offset = offset;
+      void screen.offsetWidth;
+      screen.style.transition = '';
     }
   }
 
@@ -205,103 +150,84 @@ const getScreenStyle = (screen: Screen) => {
     outline-offset: calc(-1 * var(--focus-width));
   }
 
+  /* Phones fan around a shared pivot below the card, like cards held in a
+     hand: each sits on the same arc and shrinks around its own base. */
   .mobile-stack__screen {
+    --turn: 0deg;
+    --size: 1;
+
     position: absolute;
-    bottom: 5%;
+    bottom: 7%;
+    left: 50%;
     display: block;
-    height: 78%;
-    aspect-ratio: var(--screen-ratio);
-    filter: drop-shadow(0 0.75rem 0.9rem rgb(17 17 15 / 0.22));
-    transform: translate3d(0, 0, 0);
-    transition: transform 180ms var(--ease-out);
+    height: 82%;
+    aspect-ratio: var(--device-ratio);
+    filter: drop-shadow(0 0.75rem 1rem rgb(17 17 15 / 0.24));
+    transform:
+      translateX(-50%)
+      translateY(140%) rotate(var(--turn)) translateY(-140%)
+      scale(var(--size));
+    transform-origin: 50% 100%;
+    transition:
+      transform 620ms var(--ease-out),
+      translate 240ms var(--ease-out),
+      opacity 320ms var(--ease-out);
   }
 
   .mobile-stack__screen :global(img) {
+    position: absolute;
+    top: var(--image-top);
+    left: var(--image-left);
     display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transform: translate3d(
-      calc(-1 * var(--screen-left-shift)),
-      var(--screen-bottom-shift),
-      0
-    ) scale(var(--screen-scale));
-    transform-origin: bottom center;
+    width: var(--image-width);
+    max-width: none;
+    height: var(--image-height);
   }
 
-  .mobile-stack__screen:nth-last-child(1) {
-    z-index: 6;
-    left: 5%;
-  }
-
-  .mobile-stack__screen:nth-last-child(2) {
-    z-index: 5;
-    left: 18%;
-  }
-
-  .mobile-stack__screen:nth-last-child(3) {
+  .mobile-stack__screen[data-offset='0'] {
     z-index: 4;
-    left: 31%;
   }
 
-  .mobile-stack__screen:nth-last-child(4) {
+  .mobile-stack__screen[data-offset='1'],
+  .mobile-stack__screen[data-offset='-1'] {
     z-index: 3;
-    left: 44%;
   }
 
-  .mobile-stack__screen:nth-last-child(5) {
+  .mobile-stack__screen[data-offset='2'],
+  .mobile-stack__screen[data-offset='-2'] {
     z-index: 2;
-    left: 57%;
   }
 
-  .mobile-stack__screen:nth-last-child(6) {
+  .mobile-stack__screen[data-offset='3'],
+  .mobile-stack__screen[data-offset='-3'] {
     z-index: 1;
-    left: 70%;
+    opacity: 0;
+    pointer-events: none;
   }
+
+  .mobile-stack__screen[data-offset='1'] { --turn: 11deg; --size: 0.88; }
+  .mobile-stack__screen[data-offset='-1'] { --turn: -11deg; --size: 0.88; }
+  .mobile-stack__screen[data-offset='2'] { --turn: 21deg; --size: 0.76; }
+  .mobile-stack__screen[data-offset='-2'] { --turn: -21deg; --size: 0.76; }
+  .mobile-stack__screen[data-offset='3'] { --turn: 31deg; --size: 0.66; }
+  .mobile-stack__screen[data-offset='-3'] { --turn: -31deg; --size: 0.66; }
 
   @media (max-width: 44rem) {
     .mobile-stack__screen {
-      height: 72%;
-    }
-
-    .mobile-stack__screen:nth-last-child(1) {
-      left: 3%;
-    }
-
-    .mobile-stack__screen:nth-last-child(2) {
-      left: 16.8%;
-    }
-
-    .mobile-stack__screen:nth-last-child(3) {
-      left: 30.6%;
-    }
-
-    .mobile-stack__screen:nth-last-child(4) {
-      left: 44.4%;
-    }
-
-    .mobile-stack__screen:nth-last-child(5) {
-      left: 58.2%;
-    }
-
-    .mobile-stack__screen:nth-last-child(6) {
-      left: 72%;
+      bottom: 8%;
+      height: 78%;
     }
   }
 
   @media (hover: hover) and (pointer: fine) {
-    .mobile-stack__trigger:has(.mobile-stack__screen:hover) .mobile-stack__screen {
-      transform: translate3d(0, 0.375rem, 0);
-    }
-
-    .mobile-stack__trigger:has(.mobile-stack__screen:hover) .mobile-stack__screen:hover {
-      transform: translate3d(0, -0.875rem, 0);
+    .mobile-stack__screen:hover {
+      translate: 0 -3%;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .mobile-stack__screen {
-      transform: none !important;
+      translate: none !important;
       transition: none;
     }
   }

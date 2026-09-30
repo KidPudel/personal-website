@@ -41,13 +41,33 @@ const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 const heroSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 280px';
 const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
+
+const participants = [
+  { profile: t('Casual recipe saver', 'Сохраняет рецепты между делом'), need: t('Save without thinking, find by meaning later.', 'Сохранять не задумываясь, находить потом по смыслу.'), finding: true },
+  { profile: t('Creator with a reference library', 'Автор контента с библиотекой референсов'), need: t('Keep the reason, not only the post.', 'Хранить причину, а не только пост.'), finding: true },
+  { profile: t('Travel planner', 'Планирует путешествия'), need: t('Get the place out of the video.', 'Достать из видео само место.'), finding: false },
+  { profile: t('Shares a collection with a partner', 'Ведёт общую коллекцию с партнёром'), need: t('Go from collecting to deciding together.', 'Перейти от собирания к совместному решению.'), finding: false },
+  { profile: t('Saving for years', 'Сохраняет годами'), need: t('Stay usable with thousands of saves.', 'Оставаться удобным, когда сохранений тысячи.'), finding: true },
+  { profile: t('Heavy Reels viewer who never files', 'Много смотрит рилсы и не сортирует'), need: t('Find from a vague memory, without filing.', 'Находить по смутному воспоминанию, без сортировки.'), finding: true },
+  { profile: t('Mostly stopped using Saved', 'Почти перестал пользоваться «Сохранённым»'), need: t('Help letting go, not only keeping.', 'Помогать отпускать, а не только хранить.'), finding: false },
+  { profile: t('Overwhelmed by manual search', 'Теряется при ручном поиске'), need: t('Anchors to search by: when it was saved and what the picture shows.', 'Опоры для поиска: когда сохранено и что на картинке.'), finding: true },
+  { profile: t('Returns to the same references', 'Возвращается к одним и тем же референсам'), need: t('Keep repeat references close, and a shared folder worth trusting.', 'Держать частые референсы под рукой и доверять общей папке.'), finding: true },
+];
+
+const journey = [
+  { name: t('Save', 'Сохранить'), does: t('Tap Save and keep scrolling.', 'Нажать «Сохранить» и листать дальше.'), breaks: t('Picking a collection interrupts the scroll, so many saves go unfiled.', 'Выбор коллекции прерывает просмотр, поэтому многие сохранения остаются неразобранными.'), fix: t('Decision 3: suggested collection', 'Решение 3: подсказка коллекции') },
+  { name: t('Organise', 'Разобрать'), does: t('Make more collections, or plan a weekly clean-up.', 'Завести больше коллекций или разбирать раз в неделю.'), breaks: t('Too many collections, no clear place for a post. One weekly review lasted two weeks.', 'Коллекций слишком много, непонятно, куда положить пост. Еженедельный разбор продержался две недели.'), fix: t('Decision 3: fewer choices to make', 'Решение 3: меньше выбора') },
+  { name: t('Remember', 'Вспомнить'), does: t('Recall what the post showed and roughly when.', 'Вспомнить, что было в посте и примерно когда.'), breaks: t('Memory works by subject and time. Saved works by folder.', 'Память работает по теме и времени. «Сохранённое» по папкам.'), fix: t('Decisions 1 and 2: search and a date range', 'Решения 1 и 2: поиск и диапазон дат') },
+  { name: t('Find', 'Найти'), does: t('Scroll the grid, open a post, go back.', 'Листать сетку, открыть пост, вернуться.'), breaks: t('Posts look alike and the place gets lost. After a minute or two, people give up and look for something new.', 'Посты похожи, место в ленте теряется. Через минуту-другую люди сдаются и ищут что-то новое.'), fix: t('Decision 1: search inside Saved', 'Решение 1: поиск в «Сохранённом»') },
+  { name: t('Use', 'Использовать'), does: t('Copy it to Notes, Notion, Maps, or a chat to act on it.', 'Перенести в Заметки, Notion, Карты или чат, чтобы что-то сделать.'), breaks: t('The reason and the next step live outside Instagram.', 'Причина и следующий шаг живут вне Instagram.'), fix: t('Decisions 4 and 5: notes, pins, reactions, a collection feed', 'Решения 4 и 5: заметки, закрепление, реакции, лента коллекции') },
+];
 ---
 
 <BaseDocument
   title={t('Instagram Saves, worth coming back to | Igor Kupchinenko', 'Сохранённое в Instagram, к которому хочется вернуться | Игорь Купчиненко')}
   description={t(
-    'A redesign concept for Instagram Saves. Eight interviews showed that finding a saved post was the main problem for six people, so search came first, then lighter filing, notes, and pins.',
-    'Концепт редизайна «Сохранённого» в Instagram. Восемь интервью показали, что для шести человек главная проблема в том, чтобы найти сохранённый пост, поэтому первым стал поиск, а за ним более лёгкая сортировка, заметки и закрепление.',
+    'A redesign concept for Instagram Saves. Nine interviews showed that finding a saved post was the main problem for six people, so search came first, then lighter filing, notes, and pins.',
+    'Концепт редизайна «Сохранённого» в Instagram. Девять интервью показали, что для шести человек главная проблема в том, чтобы найти сохранённый пост, поэтому первым стал поиск, а за ним более лёгкая сортировка, заметки и закрепление.',
   )}
   pageClass="instagram-case-study editorial-case-study"
   ogImage={savedNew.src}
@@ -60,7 +80,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <dl class="facts">
         <div><dt>{t('Role', 'Роль')}</dt><dd>{t('Research, UX/UI, and prototyping', 'Исследование, UX/UI и прототипирование')}</dd></div>
         <div><dt>{t('Type', 'Тип')}</dt><dd>{t('Self-initiated redesign concept, 2026', 'Самостоятельный концепт редизайна, 2026')}</dd></div>
-        <div><dt>{t('Research', 'Исследование')}</dt><dd>{t('8 interviews', '8 интервью')}</dd></div>
+        <div><dt>{t('Research', 'Исследование')}</dt><dd>{t('9 interviews', '9 интервью')}</dd></div>
         <div><dt>{t('Output', 'Итог')}</dt><dd>{t('Interactive mobile prototype', 'Интерактивный мобильный прототип')}</dd></div>
       </dl>
 
@@ -80,8 +100,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         'Сделать сохранённое снова находимым и не заставлять людей больше сортировать.',
       )}
       action={t(
-        '8 interviews. 6 people named the same problem, so search came first. Then lighter filing, notes, and pins.',
-        '8 интервью. 6 человек назвали одну и ту же проблему, поэтому первым стал поиск. Потом более лёгкая сортировка, заметки и закрепление.',
+        '9 interviews. 6 people named the same problem, so search came first. Then lighter filing, notes, and pins.',
+        '9 интервью. 6 человек назвали одну и ту же проблему, поэтому первым стал поиск. Потом более лёгкая сортировка, заметки и закрепление.',
       )}
       result={t(
         'A prototype where a half-remembered post takes one search instead of a long scroll, and a new collection takes one tap instead of typing a name.',
@@ -91,7 +111,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 
     <MetricGrid
       metrics={[
-        { value: t('6 of 8', '6 из 8'), label: t('named finding a saved post as their main problem', 'назвали поиск сохранённого главной проблемой'), basis: t('Interviews', 'Интервью') },
+        { value: t('6 of 9', '6 из 9'), label: t('named finding a saved post as their main problem', 'назвали поиск сохранённого главной проблемой'), basis: t('Interviews', 'Интервью') },
         { value: t('≈90 s → ≈10 s', '≈90 с → ≈10 с'), label: t('to find a half-remembered post', 'чтобы найти полузабытый пост'), basis: t('Estimate: scrolling 76 saves vs one search', 'Оценка: листать 76 сохранений или один поиск') },
         { value: t('2 taps + a name → 1 tap', '2 касания + название → 1 касание'), label: t('to save into a new collection', 'чтобы сохранить в новую коллекцию'), basis: t('Counted from the designs', 'Посчитано по макетам') },
       ]}
@@ -137,33 +157,87 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       </dl>
     </StudySection>
 
-    <StudySection part="action" title={t('Eight interviews. One problem kept coming back.', 'Восемь интервью. Одна проблема возвращалась снова и снова.')}>
+    <StudySection
+      part="action"
+      title={t('Nine interviews. One problem kept coming back.', 'Девять интервью. Одна проблема возвращалась снова и снова.')}
+      lead={t(
+        'I asked nine people the same questions: why they started saving, how they save and find things now, what they tried before, and what they use instead.',
+        'Я задал девяти людям одни и те же вопросы: почему они начали сохранять, как сохраняют и ищут сейчас, что пробовали раньше и чем пользуются вместо этого.',
+      )}
+    >
       <div class="research-board breakout">
         <DotStat
           title={t('Named finding a specific save as their main problem', 'Назвали главной проблемой поиск конкретного сохранённого')}
-          rows={[{ label: t('People interviewed', 'Участники интервью'), value: 6, total: 8, emphasis: true }]}
+          rows={[{ label: t('People interviewed', 'Участники интервью'), value: 6, total: 9, emphasis: true }]}
           note={t('By far the most common thread.', 'Самая частая тема, с большим отрывом.')}
         />
         <ul class="tiles research-board__also" role="list">
-          <li><strong>{t('Filing takes effort', 'Сортировка требует сил')}</strong><p>{t('So everything lands in All Saves.', 'Поэтому всё оказывается во «Всех сохранённых».')}</p></li>
-          <li><strong>{t('Why did I save this?', 'Зачем я это сохранил?')}</strong><p>{t('A collection says where, not why.', 'Коллекция говорит где, но не зачем.')}</p></li>
-          <li><strong>{t('Shared collections lose the talk', 'Общие коллекции теряют разговор')}</strong><p>{t('A couple kept posts together, but the conversation stayed in DMs.', 'Пара собирала посты вместе, а обсуждение оставалось в переписке.')}</p></li>
-          <li><strong>{t('Saving replaced doing', 'Сохранение заменило действие')}</strong><p>{t('One person stopped saving: collecting had become a substitute for acting.', 'Один человек перестал сохранять: собирать стало заменой тому, чтобы делать.')}</p></li>
+          <li><strong>{t('Important things leave Instagram', 'Важное уходит из Instagram')}</strong><p>{t('7 of 9 moved anything that mattered into Notes, Notion, Maps, screenshots, or messages.', '7 из 9 переносили всё важное в Заметки, Notion, Карты, скриншоты или сообщения.')}</p></li>
+          <li><strong>{t('Filing feels like homework', 'Сортировка как домашнее задание')}</strong><p>{t('5 of 9 tried more collections, and it stopped working: too many, too slow, or no clear place for a post.', '5 из 9 пробовали завести больше коллекций, и это переставало работать: их слишком много, сохранять долго или непонятно, куда положить пост.')}</p></li>
+          <li><strong>{t('Why did I save this?', 'Зачем я это сохранил?')}</strong><p>{t('A collection keeps the post, not the reason. A creator pasted links into Notion just to write the reason down.', 'Коллекция хранит пост, но не причину. Автор контента вставлял ссылки в Notion, только чтобы записать зачем.')}</p></li>
+          <li><strong>{t('Shared collections give no feedback', 'Общие коллекции молчат')}</strong><p>{t('The 2 people who used them did not trust them: no sign the other person saw a post, and no way to say “let’s do this”.', 'Двое, кто ими пользовался, им не доверяли: не видно, заметил ли пост другой человек, и нельзя сказать «давай сделаем это».')}</p></li>
         </ul>
       </div>
 
+      <h3 class="subtitle">{t('Nine people, nine needs', 'Девять человек, девять потребностей')}</h3>
+      <div class="people breakout">
+        {[true, false].map((finding) => (
+          <section class="people__group">
+            <h4 class="people__label">{finding
+              ? t('Main problem: finding a save', 'Главная проблема: найти сохранённое')
+              : t('Other main problems', 'Другие главные проблемы')}
+              <span>{participants.filter((person) => person.finding === finding).length}</span></h4>
+            <ul role="list">
+              {participants.filter((person) => person.finding === finding).map((person) => (
+                <li class="people__row"><strong>{person.profile}</strong><span>{person.need}</span></li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+      <p class="note">{t('Needs are my synthesis of each interview, not quotes.', 'Потребности это мой вывод из каждого интервью, а не цитаты.')}</p>
+
       <div class="notebooks breakout">
         <StudyImage src={doodlesOne} kind="spread" alt={t("First notebook spread of Igor's interview doodles and handwritten observations about saving and finding posts.", 'Первый разворот блокнота с рисунками Игоря с интервью и рукописными наблюдениями о том, как сохраняют и ищут публикации.')} caption={t('My interview notes, drawn as well as written.', 'Мои заметки с интервью, не только записанные, но и нарисованные.')} />
-        <StudyImage src={doodlesTwo} kind="spread" alt={t('Second notebook spread with sketched people and notes about revisiting, organizing, and remembering saves.', 'Второй разворот блокнота с набросками людей и заметками о том, как возвращаются к сохранённому, упорядочивают его и вспоминают.')} caption={t('Eight people set the direction. They do not speak for every Instagram user.', 'Восемь человек задали направление. Они не говорят за всех пользователей Instagram.')} />
+        <StudyImage src={doodlesTwo} kind="spread" alt={t('Second notebook spread with sketched people and notes about revisiting, organizing, and remembering saves.', 'Второй разворот блокнота с набросками людей и заметками о том, как возвращаются к сохранённому, упорядочивают его и вспоминают.')} caption={t('Nine people set the direction. They do not speak for every Instagram user.', 'Девять человек задали направление. Они не говорят за всех пользователей Instagram.')} />
       </div>
+
+      <h3 class="subtitle">{t('Where the journey breaks', 'Где ломается путь')}</h3>
+      <div class="journey breakout">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{t('Stage', 'Этап')}</th>
+            <th scope="col">{t('What people do', 'Что делают люди')}</th>
+            <th scope="col">{t('What breaks', 'Что ломается')}</th>
+            <th scope="col">{t('What fixes it', 'Что это чинит')}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {journey.map((stage, index) => (
+            <tr>
+              <th scope="row">{index + 1}. {stage.name}</th>
+              <td data-label={t('What people do', 'Что делают люди')}>{stage.does}</td>
+              <td data-label={t('What breaks', 'Что ломается')}>{stage.breaks}</td>
+              <td data-label={t('What fixes it', 'Что это чинит')}>{stage.fix}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      </div>
+      <p class="note">{t('A customer journey map built from all nine interviews.', 'Карта пути пользователя, собранная по всем девяти интервью.')}</p>
 
       <h3 class="subtitle">{t('What to build first', 'Что делать в первую очередь')}</h3>
       <ol class="priority breakout" role="list">
-        <li class="priority__item priority__item--first"><span class="priority__tag">{t('First', 'Сначала')}</span><strong>{t('Search and a date filter', 'Поиск и фильтр по дате')}</strong><p>{t('For the 6 of 8 who could not find a save.', 'Для 6 из 8, кто не мог найти сохранённое.')}</p></li>
+        <li class="priority__item priority__item--first"><span class="priority__tag">{t('First', 'Сначала')}</span><strong>{t('Search and a date filter', 'Поиск и фильтр по дате')}</strong><p>{t('For the 6 of 9 who could not find a save.', 'Для 6 из 9, кто не мог найти сохранённое.')}</p></li>
         <li class="priority__item"><span class="priority__tag">{t('Next', 'Затем')}</span><strong>{t('Collection suggestions', 'Подсказки коллекций')}</strong><p>{t('Filed saves are easier to find later.', 'Разложенное проще найти потом.')}</p></li>
         <li class="priority__item"><span class="priority__tag">{t('Then', 'Потом')}</span><strong>{t('Notes and pins', 'Заметки и закрепление')}</strong><p>{t('Remember why, and find by your own words.', 'Помнить зачем и искать своими словами.')}</p></li>
         <li class="priority__item"><span class="priority__tag">{t('To test', 'Проверить')}</span><strong>{t('Shared reactions and a collection feed', 'Общие реакции и лента из коллекции')}</strong><p>{t('Worth trying, not yet proven.', 'Стоит попробовать, но пока не доказано.')}</p></li>
       </ol>
+      <p class="note">{t(
+        'Heard, but left for later: pulling places out of travel videos, a plan-and-decide flow for couples, bulk tools and export for years of saves, and help letting go of saves. Each came from one person. Search served six.',
+        'Услышал, но отложил: доставать места из видео о путешествиях, сценарий «спланировать и решить» для пар, массовые действия и экспорт для многолетних сохранений и помощь в том, чтобы отпускать сохранённое. Каждое из этого было у одного человека. Поиск нужен шестерым.',
+      )}</p>
 
       <h3 class="subtitle">{t('Wireframes before pixels', 'Вайрфреймы до пикселей')}</h3>
       <div class="wireframes">
@@ -174,9 +248,9 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={1}
         title={t('Search inside Saved.', 'Поиск прямо в «Сохранённом».')}
-        problem={t('People remember a subject, a place, or a note. Not a folder.', 'Люди помнят тему, место или заметку. Но не папку.')}
+        problem={t('People remember what a post showed, not who posted it or where they filed it. “There’s no way to search for ‘pasta with lemon’ inside my saves.”', 'Люди помнят, что было в посте, но не кто его выложил и куда он сохранён. «В сохранённом никак не найти „пасту с лимоном“».')}
         decision={t('Search across titles, your notes, and AI descriptions of each post, right inside Saved.', 'Поиск по названиям, твоим заметкам и AI-описаниям постов прямо в «Сохранённом».')}
-        why={t('It works on the saves people already have. Nobody has to file anything first.', 'Он работает с тем, что уже сохранено. Никому не нужно сначала всё раскладывать.')}
+        why={t('It works on the saves people already have. One person said they would not use a redesign that made them organise everything by hand. Another wanted to search by what the picture shows, which the descriptions allow.', 'Он работает с тем, что уже сохранено. Один человек сказал, что не станет пользоваться редизайном, если придётся всё раскладывать вручную. Другой участник хотел искать по тому, что изображено, и описания это позволяют.')}
         instead={t('Pushing people to organise better. That is work up front, exactly the work people skip.', 'Попыток заставить людей лучше сортировать. Это работа заранее, ровно та, которую люди пропускают.')}
         effect={t('≈90 s of scrolling → ≈10 s with a search', '≈90 с листания → ≈10 с с поиском')}
         effectLabel={t('Estimate', 'Оценка')}
@@ -191,7 +265,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={2}
         title={t('Remembering when is enough.', 'Достаточно помнить когда.')}
-        problem={t('Sometimes people only remember roughly when they saved something.', 'Иногда человек помнит только, примерно когда он что-то сохранил.')}
+        problem={t('A long-time saver knew roughly when they saved a post but could not jump to a month or year. Another wanted time as an anchor for searching.', 'Человек, который сохраняет годами, примерно помнил, когда сохранил пост, но не мог перейти к месяцу или году. Другой участник хотел опираться на время при поиске.')}
         decision={t('Oldest-first sorting and a saved-date range next to search. The active range stays visible above the results.', 'Сортировка от старых к новым и диапазон дат сохранения рядом с поиском. Выбранный диапазон остаётся на виду над результатами.')}
         why={t('With years of saves, even a rough time window cuts the pile down.', 'Когда сохранения копятся годами, даже примерный промежуток сильно сокращает кучу.')}
       >
@@ -204,7 +278,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={3}
         title={t('Suggest the collection. Keep the choice.', 'Подсказать коллекцию. Оставить выбор.')}
-        problem={t('Filing means finding a collection or naming a new one, mid-scroll. So people skip it.', 'Сортировка означает найти коллекцию или придумать название новой прямо посреди ленты. Поэтому её пропускают.')}
+        problem={t('Filing means finding a collection or naming a new one, mid-scroll. “I don’t want to interrupt what I’m doing.” People with many collections found saving itself slow.', 'Сортировка означает найти коллекцию или придумать название новой прямо посреди ленты. «Не хочу прерывать то, чем занят». У тех, у кого много коллекций, медленным стало само сохранение.')}
         decision={t('Two suggestions above the full list: the best-matching collection, and a new one with a name already filled in.', 'Две подсказки над полным списком: самая подходящая коллекция и новая, уже с названием.')}
         why={t('Reduce the decision without taking it away. The full list stays for when a suggestion is wrong.', 'Облегчить решение, не отнимая его. Полный список остаётся на случай, если подсказка ошиблась.')}
         effect={t('New collection: 2 taps and a name → 1 tap', 'Новая коллекция: 2 касания и название → 1 касание')}
@@ -219,7 +293,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={4}
         title={t('Remember why you saved it.', 'Помнить, зачем сохранил.')}
-        problem={t('A collection says where a post belongs, not why it mattered.', 'Коллекция говорит, куда относится пост, но не почему он был важен.')}
+        problem={t('A collection says where a post belongs, not why it mattered. One person kept reaching for the same references, and two did not trust shared collections without any feedback.', 'Коллекция говорит, куда относится пост, но не почему он был важен. Один человек снова и снова возвращался к одним и тем же референсам, а двое не доверяли общим коллекциям без обратной связи.')}
         decision={t('Short notes on a save, searchable later. Pins for references you return to often. Reactions for shared collections.', 'Короткие заметки к сохранённому, по которым потом можно искать. Закрепление для частых референсов. Реакции для общих коллекций.')}
         why={t('A note becomes one more way back, in your own words.', 'Заметка становится ещё одним путём обратно, твоими словами.')}
         effect={t('Shared notes need a clear “who can see this” state before testing.', 'Общим заметкам нужно явно показать, кто их видит, до тестирования.')}
@@ -234,10 +308,10 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={5}
         title={t('Bring a collection into the feed.', 'Вернуть коллекцию в ленту.')}
-        problem={t('One person stopped saving altogether: collecting had replaced doing.', 'Один человек совсем перестал сохранять: собирать стало заменой тому, чтобы делать.')}
+        problem={t('One person stopped using Saved: it had become a backlog of things never read, made, or bought. Saving had replaced doing.', 'Один человек перестал пользоваться «Сохранённым»: оно превратилось в список непрочитанного, несделанного и некупленного. Сохранение заменило действие.')}
         decision={t('Collections in the feed selector next to Following and Favorites, so a Design collection can become a daily feed.', 'Коллекции в переключателе ленты рядом с «Подписками» и «Избранным», чтобы коллекция «Design» могла стать ежедневной лентой.')}
         why={t('Saves get a place in everyday browsing instead of a folder nobody opens.', 'Сохранённое получает место в повседневном просмотре вместо папки, которую никто не открывает.')}
-        effect={t('It might become just more scrolling. Needs testing.', 'Может стать просто ещё одним листанием. Нужно проверить.')}
+        effect={t('It might become just more scrolling, and it does not help people let go of saves. Needs testing.', 'Может стать просто ещё одним листанием, и оно не помогает отпускать сохранённое. Нужно проверить.')}
         effectLabel={t('Open question', 'Открытый вопрос')}
       >
         <Shot kind="screen" src={feed} alt={t('Instagram feed menu expanded to show Following, Favorites, and Collections with Design, Travel, Art, and Health choices.', 'Раскрытое меню ленты Instagram: «Following», «Favorites» и «Collections» с вариантами Design, Travel, Art и Health.')} caption={t('A collection in the main feed selector.', 'Коллекция в главном переключателе ленты.')} />
@@ -249,7 +323,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       title={t('From scrolling to searching.', 'От листания к поиску.')}
       lead={t(
         'When I showed the prototype, people reacted warmly: “this is a massive improvement”, “really convenient”. Those are early reactions, not evidence, so the numbers below are estimates from the flows.',
-        'Когда я показывал прототип, люди реагировали тепло (перевод с английского): «это огромное улучшение», «очень удобно». Это первые реакции, а не доказательства, поэтому цифры ниже это оценки по сценариям.',
+        'Когда я показывал прототип, люди реагировали тепло: «это огромное улучшение», «очень удобно». Это первые реакции, а не доказательства, поэтому цифры ниже это оценки по сценариям.',
       )}
     >
       <div class="films breakout">
@@ -321,6 +395,24 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 
   .research-board { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 16px; align-items: start; margin-top: 8px; }
   .research-board .research-board__also { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 0; }
+  .people, .journey { margin-top: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
+  .people { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .people__group + .people__group { border-top: 1px solid rgb(17 17 15 / 10%); }
+  .people__label { display: flex; gap: 10px; align-items: baseline; margin: 0; padding: 18px 20px 6px; color: #656560; font-size: .9375rem; font-weight: 400; line-height: 1.4; }
+  .people__label span { color: var(--color-ink); font-weight: 700; }
+  .people ul { margin: 0; padding: 0 0 8px; list-style: none; }
+  .people__row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 4px 24px; padding: 10px 20px; font-size: 1rem; line-height: 1.5; }
+  .people__row span { color: var(--color-copy); }
+
+  .journey { overflow: hidden; }
+  .journey table { width: 100%; border-collapse: collapse; font-size: 1rem; line-height: 1.5; text-align: left; }
+  .journey th, .journey td { padding: 14px 20px; vertical-align: top; }
+  .journey thead th { color: #656560; font-size: .9375rem; font-weight: 400; }
+  .journey tbody tr { border-top: 1px solid rgb(17 17 15 / 10%); }
+  .journey tbody th { white-space: nowrap; }
+  .journey td { color: var(--color-copy); }
+  .journey td:last-child { color: var(--color-ink); font-weight: 600; }
+
   .notebooks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 36px; }
   .subtitle { margin-top: 56px; }
 
@@ -339,6 +431,14 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 
   @media (max-width: 900px) {
     .research-board, .priority { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .people__row { grid-template-columns: minmax(0, 1fr); }
+    .journey thead { display: none; }
+    .journey table, .journey tbody, .journey tr, .journey th, .journey td { display: block; }
+    .journey tbody tr { padding: 16px 20px; }
+    .journey tbody tr:first-child { border-top: 0; }
+    .journey th, .journey td { padding: 0; }
+    .journey td { margin-top: 8px; }
+    .journey td::before { content: attr(data-label); display: block; color: #656560; font-size: .875rem; font-weight: 400; }
     .research-board { grid-template-columns: minmax(0, 1fr); }
   }
   @media (max-width: 760px) {
