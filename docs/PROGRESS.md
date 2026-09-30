@@ -13,6 +13,13 @@ Last updated: 2026-09-29
 - Hero: the `h1` is now "Hello, I'm Igor. Product designer."; the statements are paragraphs. The repeated game-design sentence is removed from the hero in both languages (the About section keeps it). The "joyful" circle is centered on the word's stroke and slightly flatter, so it no longer crosses the line above.
 - Verified at 1440, 1024, and 375 px in English and Russian with no horizontal overflow, the personal panels open and closed, and a case-study page's header. Astro diagnostics, the media contract, and both production builds pass.
 
+## Resume master: results first, decisions with reasons
+
+- The resume in `scripts/build-resumes.py` is now the master that tailored versions tweak. Bullets lead with the result, then what Igor did and why. Projects are ordered by real use (Observatory, Two Sticks, then the Instagram concept), and each carries the decisions and reasons from its case study.
+- 22bytes moved into design experience as Game Designer: nested core loops and unlock chains across 7 small games, strategy shaped through constraints, and Igor's playtest numbers (2 to 5 minute sessions, day-1 retention 27-30%, day-7 4-10%, 2 of 7 greenlit).
+- Header: "Junior" level, research kept, Telegram added, city only. The Russian version drops LinkedIn, which is blocked in Russia. The internship target goes into cover letters and hh.ru settings, not the master. No photo in the PDFs; the photo belongs on hh.ru and the portfolio.
+- One typeface (Arial) throughout. Entries never split across pages; both PDFs run about 1.2 pages, with all design work on page 1.
+
 ## Resume revision: STAR results and sourced metrics
 
 - Both resumes follow Olesya's and Masha Chubina's advice: every entry reads as context, action, result. SuperGood now leads its summary and its entry with Igor's confirmed results: reordering took 5 s instead of 60 s, success rose from 2 to 10 of 10, ease from 3 to 6 of 7 (comparative usability test, 10 colleagues), and the store rating rose from 3.1 to 3.7. It also states the "business bridge": Igor was the sole designer and engineer and worked directly with the business.

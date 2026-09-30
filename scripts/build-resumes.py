@@ -17,73 +17,91 @@ BASE = 'https://kidpudel.github.io/personal-website/'
 
 CONTENT = {
     'en': {
-        'name': 'IGOR KUPCHINENKO', 'role': 'PRODUCT DESIGNER · CONSUMER APPS · RESEARCH AND INTERACTION DESIGN',
-        'portfolio_label': 'Portfolio: ', 'location': 'Moscow · office, hybrid or remote',
-        'summary': 'Product designer for consumer apps with a software-engineering background. I start with interviews and observation, then design flows that make time, cost and the next step clear. At SuperGood I redesigned ordering and rebuilt the app alone: repeating a usual order fell from about a minute to 5 seconds, and the store rating rose from 3.1 to 3.7.',
-        'experience': 'PRODUCT DESIGN EXPERIENCE',
-        'supergood': ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer, sole designer and engineer, food delivery | Aug 2023 - Jul 2024', [
-            'Reviews doubted the app and whether the food was worth its price. I owned ordering end to end, working directly with the business. Review analysis and observation showed hidden time and total, people losing their place in the menu, and usual orders rebuilt dish by dish.',
-            'Added a pinned bar with delivery time, item count and total, weight, ingredients and nutrition on every dish, and reordering from history: one tap brings back a past order or a single dish.',
-            'Rebuilt separate iOS and Android apps as one Flutter app in 11 months, with no handoff: menu, basket, payment with 3DS, maps and tracking, loyalty.',
-            'Comparative usability test with 10 colleagues: reordering took 5 s instead of 60 s, success rose from 2 to 10 of 10, ease from 3 to 6 of 7. The store rating rose from 3.1 to 3.7; new reviews praised the app.',
-        ]),
+        'name': 'IGOR KUPCHINENKO', 'role': 'JUNIOR PRODUCT DESIGNER · CONSUMER APPS · RESEARCH AND INTERACTION DESIGN',
+        'portfolio_label': 'Portfolio: ', 'location': 'Moscow', 'linkedin': True,
+        'summary': 'Product designer for consumer apps, with backgrounds in software engineering and game design. I start with interviews and observation, then design flows that make time, cost and the next step clear. At SuperGood I redesigned ordering and rebuilt the app alone: reordering a usual meal fell from about a minute to 5 seconds, and the store rating rose from 3.1 to 3.7.',
+        'experience': 'DESIGN EXPERIENCE',
+        'experience_entries': [
+            ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer, food delivery app | Aug 2023 - Jul 2024', 'supergood', [
+                'As the only designer and engineer, owned ordering end to end and worked directly with the business. Public reviews doubted both the app and whether the food was worth its price.',
+                'Cut reordering a usual meal from 60 s to 5 s with one-tap repeats from order history, after review analysis and observation showed people rebuilding orders dish by dish. In a comparative usability test with 10 colleagues, success rose from 2 to 10 of 10 and ease from 3 to 6 of 7.',
+                'Made time and cost visible before paying: a pinned bar with delivery time, item count and total, plus weight, ingredients and nutrition on every dish, so nobody has to leave the menu to check.',
+                'Rebuilt separate iOS and Android apps as one Flutter app in 11 months, with no handoff: menu, basket, payment with 3DS, maps and tracking, loyalty. The store rating rose from 3.1 to 3.7, and new reviews praised the app.',
+            ]),
+            ('22bytes', 'Game Designer / Prototype Developer, casual and hyper-casual mobile games | Apr 2023 - Aug 2023', None, [
+                'Designed core loops for 7 small games (puzzles, light strategy, short RPGs): fast nested loops inside longer ones, and chains that unlock step by step.',
+                'Shaped strategy through constraints: obstacles and limits that make players choose between approaches.',
+                'Playtested every build: 2 to 5 minute sessions, day-1 retention of 27-30% and day-7 of 4-10%. 2 of 7 prototypes were greenlit.',
+            ]),
+        ],
         'projects_title': 'SELECTED PROJECTS',
         'projects': [
             ('Observatory', 'Personal macOS app, built with AI coding agents from my specs, released on GitHub | Jul - Aug 2026', 'observatory', [
-                'Five interviews defined two needs: see a whole app at once, and record runs to compare. Grouped processes by app, so Brave Browser reads as one row instead of 17.',
-                'Iterated the prototype into a scannable list with app-first tests. Three developer colleagues have used it for two months to compare app versions.',
-            ]),
-            ('Instagram Saves redesign', 'Independent concept, coded prototype | 2026', 'instagram-saves-redesign', [
-                'Eight interviews: six said finding a saved post was their main problem, so search came first.',
-                'Designed AI search by subject, place or note, and suggestions that make saving to a new collection one tap. Interactive React prototype, live on my site.',
+                'Grouped processes under their app, so Brave Browser reads as 1 row instead of 17. All five interviews started from an app, never from a process.',
+                'Cut top-level sections from 3 to 2 by moving results to where a test ends, and started test setup from the app instead of the recording mode.',
+                'Three developer colleagues have used it for two months to compare app versions and apps of one kind, such as the terminals Ghostty, kitty and Alacritty.',
             ]),
             ('Two Sticks', 'Telegram product for learning Chinese, built on a university diploma’s research | 2024', 'two-sticks', [
-                'One chat for search, flashcards and handwriting instead of three tools; designed and built the bot, API and Web App. Students missed pronunciation practice, the next step.',
+                'Zero installs: chose Telegram over a standalone app because learners already live there, with handwriting as a Telegram Web App. Designed and built the bot, API and Web App.',
+                'One saved list feeds flashcards, notebook sheets and handwriting. Flashcards unlock at five words, so every quiz has real wrong answers.',
+                'Shipped the learner loop before the teacher tools in the brief. Students valued having one place instead of three tools and missed pronunciation practice, the next step.',
+            ]),
+            ('Instagram Saves redesign', 'Independent concept, coded prototype | 2026', 'instagram-saves-redesign', [
+                'Six of eight interviewees could not find saved posts, so I put search inside Saved instead of asking people to file more, the work they already skip.',
+                'Collection suggestions turn a new collection from two taps and a name into one tap, with the full list kept for wrong guesses. React prototype, live on my site.',
             ]),
         ],
         'additional_title': 'OTHER EXPERIENCE',
         'additional': [
             ('Paycos', 'Software Developer, contract | Jul 2024 - Dec 2025', 'Built payment and order-processing services. Cut PDF receipt processing from 6-10 s to 650 ms by extracting text directly, keeping OCR for images.'),
-            ('22bytes', 'Mobile Game Designer / Prototype Developer | Apr 2023 - Aug 2023', 'Designed and built playable Android game prototypes in short cycles: interaction, player feedback, scope.'),
         ],
         'skills_title': 'SKILLS',
-        'skills': 'Research: user interviews, customer development, contextual inquiry, comparative usability testing, review analysis, synthesis, competitor analysis, CJM, JTBD.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, adaptive layouts, motion. Figma, Material Design, Apple HIG.\nAI: designing AI-assisted features (suggestions, semantic search, error states); building with AI coding agents (Claude Code, Codex).\nCode: React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
+        'skills': 'Research: user interviews, customer development, contextual inquiry, comparative usability testing, review analysis, playtesting, synthesis, competitor analysis, CJM, JTBD.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, game loops and progression, motion. Figma, Material Design, Apple HIG.\nAI and code: AI-assisted features (suggestions, semantic search); building with AI coding agents (Claude Code, Codex). React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
         'education_title': 'EDUCATION AND LANGUAGES',
         'education': 'Programming in Computer Systems, MFUA College | 2019 - 2023',
         'languages': 'Russian native, English B2',
     },
     'ru': {
-        'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР · B2C · ИССЛЕДОВАНИЯ И ПРОЕКТИРОВАНИЕ ИНТЕРФЕЙСОВ',
-        'portfolio_label': 'Портфолио: ', 'location': 'Москва · офис, гибрид или удалённо',
-        'summary': 'Продуктовый дизайнер B2C-приложений с опытом разработки. Начинаю с интервью и наблюдения, затем проектирую сценарии, в которых понятны сроки, цена и следующий шаг. В SuperGood переделал заказ и в одиночку пересобрал приложение: повтор привычного заказа сократился примерно с минуты до 5 секунд, рейтинг в магазинах вырос с 3,1 до 3,7.',
-        'experience': 'ОПЫТ В ПРОДУКТОВОМ ДИЗАЙНЕ',
-        'supergood': ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик, один в команде, доставка еды | август 2023 - июль 2024', [
-            'В отзывах сомневались и в приложении, и в цене еды. Отвечая за заказ целиком и работая напрямую с бизнесом, разобрал отзывы и понаблюдал за заказом: срок и сумма были не видны, в меню терялись, привычный заказ собирали по одному блюду.',
-            'Добавил закреплённую панель со сроком, числом позиций и суммой, вес, состав и КБЖУ в карточку блюда и повтор из истории: одно касание возвращает прошлый заказ или отдельное блюдо.',
-            'Пересобрал отдельные приложения для iOS и Android в одно на Flutter за 11 месяцев, без передачи макетов: меню, корзина, оплата с 3DS, карты и отслеживание, лояльность.',
-            'Сравнительный юзабилити-тест на 10 коллегах: повтор заказа за 5 с вместо 60 с, успешность с 2 до 10 из 10, лёгкость с 3 до 6 из 7. Рейтинг вырос с 3,1 до 3,7, отзывы хвалили приложение.',
-        ]),
+        'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР (JUNIOR) · B2C · ИССЛЕДОВАНИЯ И ИНТЕРФЕЙСЫ',
+        'portfolio_label': 'Портфолио: ', 'location': 'Москва', 'linkedin': False,
+        'summary': 'Продуктовый дизайнер B2C-приложений с опытом в разработке и гейм-дизайне. Начинаю с интервью и наблюдения, затем проектирую сценарии, в которых понятны сроки, цена и следующий шаг. В SuperGood переделал заказ и в одиночку пересобрал приложение: повтор привычного заказа сократился примерно с минуты до 5 секунд, рейтинг в магазинах вырос с 3,1 до 3,7.',
+        'experience': 'ОПЫТ В ДИЗАЙНЕ',
+        'experience_entries': [
+            ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик, приложение доставки еды | август 2023 - июль 2024', 'supergood', [
+                'Единственный дизайнер и разработчик: отвечал за заказ целиком и работал напрямую с бизнесом. В отзывах сомневались и в приложении, и в том, стоит ли еда своих денег.',
+                'Сократил повтор привычного заказа с 60 с до 5 с повтором в одно касание из истории, после того как анализ отзывов и наблюдение показали, что люди собирают заказ по одному блюду. В сравнительном юзабилити-тесте на 10 коллегах успешность выросла с 2 до 10 из 10, оценка лёгкости с 3 до 6 из 7.',
+                'Сделал сроки и цену видимыми до оплаты: закреплённая панель со временем доставки, числом позиций и суммой, а в карточке блюда вес, состав и КБЖУ, чтобы не приходилось уходить из меню ради проверки.',
+                'Пересобрал отдельные приложения для iOS и Android в одно на Flutter за 11 месяцев, без передачи макетов: меню, корзина, оплата с 3DS, карты и отслеживание, лояльность. Рейтинг в магазинах вырос с 3,1 до 3,7, новые отзывы хвалили приложение.',
+            ]),
+            ('22bytes', 'Гейм-дизайнер / разработчик прототипов, казуальные мобильные игры | апрель 2023 - август 2023', None, [
+                'Спроектировал игровые циклы для 7 небольших игр (головоломки, лёгкие стратегии, короткие RPG): быстрые вложенные циклы внутри длинных и цепочки, которые открываются шаг за шагом.',
+                'Формировал стратегию через ограничения: препятствия и лимиты, которые заставляют игрока выбирать между подходами.',
+                'Плейтестил каждую сборку: сессии по 2-5 минут, удержание 1-го дня 27-30%, 7-го дня 4-10%. В работу взяли 2 прототипа из 7.',
+            ]),
+        ],
         'projects_title': 'ИЗБРАННЫЕ ПРОЕКТЫ',
         'projects': [
             ('Observatory', 'Личный проект на macOS, собран с AI-агентами по моим спецификациям, релиз на GitHub | июль - август 2026', 'observatory', [
-                'Пять интервью выявили две потребности: видеть приложение целиком и записывать прогоны для сравнения. Сгруппировал процессы: Brave Browser занимает одну строку вместо 17.',
-                'Доработал прототип: список вместо карточек, тест начинается с выбора приложения. Три коллеги-разработчика два месяца сравнивают в нём версии приложений.',
-            ]),
-            ('Поиск сохранённых публикаций Instagram', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
-                'Восемь интервью: для шести главной проблемой был поиск сохранённого, поэтому начал с поиска.',
-                'Спроектировал AI-поиск по теме, месту или заметке и подсказки, с которыми сохранение в новую коллекцию занимает одно касание. Прототип на React работает на моём сайте.',
+                'Сгруппировал процессы по приложениям: Brave Browser занимает 1 строку вместо 17. Все пять интервью начинались с приложения, а не с процесса.',
+                'Сократил разделы верхнего уровня с 3 до 2, перенеся результаты туда, где заканчивается тест, а настройку теста начал с выбора приложения, а не режима записи.',
+                'Три коллеги-разработчика два месяца сравнивают в нём версии приложений и приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
             ]),
             ('Две палочки', 'Продукт в Telegram для изучения китайского по исследованию дипломной работы | 2024', 'two-sticks', [
-                'Один чат для поиска, карточек и письма от руки вместо трёх инструментов; спроектировал и собрал бота, API и Web App. Студентам не хватало практики произношения, это следующий шаг.',
+                'Ноль установок: выбрал Telegram вместо отдельного приложения, потому что ученики и так в нём, а письмо от руки сделал через Telegram Web App. Спроектировал и собрал бота, API и Web App.',
+                'Один список сохранённого питает карточки, листы-прописи и письмо. Карточки открываются после пяти слов, чтобы в каждом тесте были настоящие неправильные ответы.',
+                'Сначала выпустил цикл ученика, а инструменты преподавателя из брифа отложил. Студентам понравилось одно место вместо трёх инструментов, не хватало практики произношения, это следующий шаг.',
+            ]),
+            ('Поиск сохранённых публикаций Instagram', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
+                'Шесть из восьми собеседников не могли найти сохранённое, поэтому я встроил поиск в «Сохранённое», а не заставлял людей больше сортировать: эту работу они и так пропускают.',
+                'Подсказки коллекций превращают создание новой коллекции из двух касаний и ввода названия в одно касание, а полный список остаётся на случай ошибки. Прототип на React работает на моём сайте.',
             ]),
         ],
         'additional_title': 'ДРУГОЙ ОПЫТ РАБОТЫ',
         'additional': [
             ('Paycos', 'Разработчик ПО, контракт | июль 2024 - декабрь 2025', 'Разрабатывал сервисы оплаты и обработки заказов. Сократил обработку PDF-чеков с 6-10 с до 650 мс: извлекал текст напрямую, оставив OCR для изображений.'),
-            ('22bytes', 'Гейм-дизайнер / разработчик прототипов | апрель 2023 - август 2023', 'Быстро собирал игровые Android-прототипы: взаимодействие, фидбек игроку, объём.'),
         ],
         'skills_title': 'НАВЫКИ',
-        'skills': 'Исследования: CustDev и глубинные интервью, контекстное исследование, сравнительное юзабилити-тестирование, анализ отзывов, синтез, конкурентный анализ, CJM, JTBD.\nДизайн: UX/UI, информационная архитектура, сценарии, вайрфреймы, прототипирование, дизайн-система, адаптив, моушн. Figma, Material Design, Apple HIG.\nAI: проектирование AI-функций (подсказки, семантический поиск, ошибки), разработка с AI-агентами (Claude Code, Codex).\nКод: React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
+        'skills': 'Исследования: CustDev и глубинные интервью, контекстное исследование, сравнительное юзабилити-тестирование, анализ отзывов, плейтесты, синтез, конкурентный анализ, CJM, JTBD.\nДизайн: UX/UI, информационная архитектура, сценарии, вайрфреймы, прототипирование, дизайн-система, игровые циклы и прогрессия, моушн. Figma, Material Design, Apple HIG.\nAI и код: AI-функции (подсказки, семантический поиск), разработка с AI-агентами (Claude Code, Codex). React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
         'education_title': 'ОБРАЗОВАНИЕ И ЯЗЫКИ',
         'education': 'МФЮА, «Программирование в компьютерных системах» | 2019 - 2023',
         'languages': 'английский B2',
@@ -121,9 +139,13 @@ def build(lang, out_dir):
             border.getparent().remove(border)
     for name in ['Title','Subtitle','Heading 1','Heading 2','List Bullet']:
         s=d.styles[name]; s.font.name='Arial'; s.font.color.rgb=RGBColor(0,0,0)
+        fonts=s.element.get_or_add_rPr().get_or_add_rFonts()
+        for attr in ['asciiTheme','hAnsiTheme','eastAsiaTheme','cstheme']:
+            fonts.attrib.pop(qn('w:'+attr),None)
+        for attr in ['ascii','hAnsi','cs','eastAsia']: fonts.set(qn('w:'+attr),'Arial')
     d.styles['Title'].font.size=Pt(23); d.styles['Title'].font.bold=True
     d.styles['Title'].paragraph_format.space_after=Pt(1)
-    d.styles['Subtitle'].font.size=Pt(11); d.styles['Subtitle'].font.bold=True
+    d.styles['Subtitle'].font.size=Pt(10); d.styles['Subtitle'].font.bold=True
     d.styles['Subtitle'].font.italic=False
     d.styles['Subtitle'].paragraph_format.space_after=Pt(5)
     h=d.styles['Heading 1']; h.font.size=Pt(10.5); h.font.bold=True
@@ -147,10 +169,12 @@ def build(lang, out_dir):
     p=d.add_paragraph(); p.paragraph_format.space_after=Pt(2)
     plain(p,c['portfolio_label']); link(p,'kidpudel.github.io/personal-website',site,10)
     plain(p,'  |  '); link(p,'i.kupchinenko@gmail.com','mailto:i.kupchinenko@gmail.com',10)
+    plain(p,'  |  Telegram '); link(p,'@iggy_sleepy','https://t.me/iggy_sleepy',10)
     p=d.add_paragraph(); p.paragraph_format.space_after=Pt(6)
     plain(p,c['location']+'  |  ')
-    link(p,'linkedin.com/in/iggydev','https://www.linkedin.com/in/iggydev',10)
-    plain(p,'  |  '); link(p,'github.com/KidPudel','https://github.com/KidPudel',10)
+    if c['linkedin']:
+        link(p,'linkedin.com/in/iggydev','https://www.linkedin.com/in/iggydev',10); plain(p,'  |  ')
+    link(p,'github.com/KidPudel','https://github.com/KidPudel',10)
     d.add_paragraph(c['summary'])
 
     def entry(title,context,body,slug=None):
@@ -160,11 +184,13 @@ def build(lang, out_dir):
         p=d.add_paragraph(context); p.paragraph_format.keep_with_next=True
         p.paragraph_format.space_after=Pt(2)
         for r in p.runs: r.font.size=Pt(9.5)
-        for s in body:
+        for i,s in enumerate(body):
             p=d.add_paragraph('\u2022\t'+s,'List Bullet'); p.paragraph_format.keep_together=True
+            # An entry never splits across pages.
+            p.paragraph_format.keep_with_next=i<len(body)-1
 
     d.add_paragraph(c['experience'],'Heading 1')
-    title,ctx,bullets=c['supergood']; entry(title,ctx,bullets,'supergood')
+    for title,ctx,slug,bullets in c['experience_entries']: entry(title,ctx,bullets,slug)
     d.add_paragraph(c['projects_title'],'Heading 1')
     for title,ctx,slug,bullets in c['projects']: entry(title,ctx,bullets,slug)
     d.add_paragraph(c['additional_title'],'Heading 1')

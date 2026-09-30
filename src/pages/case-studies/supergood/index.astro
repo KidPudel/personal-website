@@ -63,8 +63,8 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         'Сделать повседневный заказ понятным и быстрым, особенно привычный обед в будни, и пересобрать оба приложения в одно. В одиночку.',
       )}
       action={t(
-        'Read the reviews, watched people order, and ran a comparative usability test with 10 colleagues. Redesigned the menu, the dish, and reordering, then built it all in Flutter.',
-        'Разобрал отзывы, понаблюдал, как люди заказывают, провёл сравнительное юзабилити-тестирование на 10 коллегах. Переделал меню, карточку блюда и повтор заказа, а затем собрал всё на Flutter.',
+        'Read about 150 store reviews, watched and interviewed 10 people ordering at work, and ran a comparative usability test with 10 colleagues. Redesigned the menu, the dish, and reordering, then built it all in Flutter.',
+        'Разобрал около 150 отзывов в магазинах приложений, понаблюдал, как заказывают 10 человек на работе, и поговорил с ними, провёл сравнительное юзабилити-тестирование на 10 коллегах. Переделал меню, карточку блюда и повтор заказа, а затем собрал всё на Flutter.',
       )}
       result={t(
         'Repeating a usual order dropped from about a minute to about 5 seconds, and its ease rating rose from 3 to 6 out of 7. The store rating went from 3.1 to 3.7. One codebase replaced two.',
@@ -105,7 +105,7 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
           <div class="split__key"><dt>≈70%</dt><dd>{t('Food quality for the price. Kitchens and prices were outside my role.', 'Качество еды за эти деньги. Кухни и цены были вне моей роли.')}</dd></div>
           <div class="split__key split__key--mine"><dt>≈30%</dt><dd>{t('The app. This part was mine.', 'Приложение. Эта часть была моей.')}</dd></div>
         </dl>
-        <p class="split__note">{t('A rough split from reading the store reviews.', 'Примерное соотношение по отзывам в магазинах приложений.')}</p>
+        <p class="split__note">{t('A rough split from about 150 App Store and Google Play reviews.', 'Примерное соотношение по 150 отзывам в App Store и Google Play.')}</p>
       </figure>
 
       <ul class="tiles breakout" role="list">
@@ -132,22 +132,30 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
 
     <StudySection part="action" title={t('Watch people order. Remove the friction.', 'Посмотреть, как люди заказывают. Убрать трение.')}>
       <ul class="tiles breakout" role="list">
-        <li><strong>{t('Review analysis', 'Анализ отзывов')}</strong><p>{t('Sorted public reviews by what people complained about.', 'Разобрал публичные отзывы по тому, на что жалуются.')}</p></li>
-        <li><strong>{t('Contextual inquiry', 'Контекстное исследование')}</strong><p>{t('Watched people order in their own setting and noted where they hesitated.', 'Смотрел, как люди заказывают в привычной обстановке, и отмечал, где они сомневаются.')}</p></li>
+        <li><strong>{t('Review analysis', 'Анализ отзывов')}</strong><p>{t('Sorted about 150 App Store and Google Play reviews by what people complained about.', 'Разобрал около 150 отзывов в App Store и Google Play по тому, на что жалуются.')}</p></li>
+        <li><strong>{t('Contextual inquiry', 'Контекстное исследование')}</strong><p>{t('Watched and interviewed 10 people ordering at work, in an office and a call center, and noted where they hesitated.', 'Смотрел, как заказывают 10 человек на работе, в офисе и колл-центре, расспрашивал их и отмечал, где они сомневаются.')}</p></li>
         <li><strong>{t('Pattern study', 'Изучение паттернов')}</strong><p>{t('Самокат and Яндекс Лавка, apps our customers already knew.', '«Самокат» и «Яндекс Лавка», приложения, которые наши клиенты уже знали.')}</p></li>
         <li><strong>{t('Comparative usability test', 'Сравнительное юзабилити-тестирование')}</strong><p>{t('Compared the old and new flows with 10 colleagues who did not work on the app.', 'Сравнивал варианты на коллегах, которые не работали над приложением.')}</p></li>
       </ul>
 
       <p class="insight">{t(
-        'Weekday orders repeat. People already knew what they wanted, but the app made them find it again every time.',
-        'Будничные заказы повторяются. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать заново.',
+        'Weekday orders repeat. In the interviews, people already knew what they wanted, but the app made them find it again every time.',
+        'Будничные заказы повторяются. На интервью люди уже знали, чего хотят, но приложение каждый раз заставляло искать заново.',
       )}</p>
+
+      <h3 class="subtitle">{t('Jobs to be done', 'Jobs to be done')}</h3>
+      <dl class="goal breakout">
+        <div><dt>{t('Repeat the usual lunch', 'Повторить привычный обед')}</dt><dd>{t('When it is lunchtime at work, I want my usual order again without searching for it, so I can order in seconds.', 'Когда на работе время обеда, я хочу снова заказать привычное, не выискивая его, чтобы заказ занимал секунды.')}</dd></div>
+        <div><dt>{t('Know before paying', 'Знать всё до оплаты')}</dt><dd>{t('While I choose dishes, I want to see the delivery time and the total, so I know when the food arrives and what it costs.', 'Пока я выбираю блюда, я хочу видеть время доставки и сумму, чтобы понимать, когда привезут и сколько это стоит.')}</dd></div>
+        <div><dt>{t('Judge the value', 'Оценить, стоит ли')}</dt><dd>{t('When I look at a dish, I want to see what is on the plate, so I can tell if it is worth the price.', 'Когда я смотрю на блюдо, я хочу видеть, что будет на тарелке, чтобы понять, стоит ли оно своих денег.')}</dd></div>
+      </dl>
+      <p class="note">{t('From the interviews and the reviews. Each job leads to one of the first three decisions below.', 'По интервью и отзывам. Каждая задача привела к одному из первых трёх решений ниже.')}</p>
 
       <Decision
         number={1}
         title={t('Order the usual in one tap.', 'Привычный заказ в одно касание.')}
         problem={t('Rebuilding a usual lunch meant finding each dish again in a menu that kept shifting.', 'Чтобы собрать привычный обед, нужно было заново искать каждое блюдо в меню, которое постоянно сдвигалось.')}
-        decision={t('Turned order history into a way to order: open a past order, see every dish, repeat one dish or add the whole order. History is searchable.', 'Превратил историю заказов в способ заказать: открыть прошлый заказ, увидеть каждое блюдо, повторить одно или добавить весь заказ. По истории можно искать.')}
+        decision={t('Turned order history into a way to order: open a past order, see every dish, repeat one dish or add the whole order. History is searchable. If a price has changed since, a notice says so, and sold-out dishes show grayed out in the basket.', 'Превратил историю заказов в способ заказать: открыть прошлый заказ, увидеть каждое блюдо, повторить одно или добавить весь заказ. По истории можно искать. Если цена с тех пор изменилась, приложение об этом сообщает, а закончившиеся блюда в корзине показаны серыми.')}
         why={t('The fastest menu is the one you already chose from.', 'Самое быстрое меню то, из которого ты уже выбирал.')}
         instead={t('Favourites alone. Good for one dish, but a usual lunch is several dishes together.', 'Только избранного. Оно хорошо для одного блюда, а привычный обед состоит из нескольких.')}
         effect={t('≈60 s → ≈5 s, 2 of 10 → 10 of 10 correct orders, ease 3 → 6 out of 7', '≈60 с → ≈5 с, 2 из 10 → 10 из 10 правильных заказов, лёгкость 3 → 6 из 7')}
@@ -260,7 +268,7 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
         />
       </div>
 
-      <h3 class="result-subtitle">{t('What later reviews praised', 'Что хвалили в отзывах после выхода')}</h3>
+      <h3 class="subtitle">{t('What later reviews praised', 'Что хвалили в отзывах после выхода')}</h3>
       <ul class="tiles breakout" role="list">
         <li><strong>{t('A fresher look', 'Свежее')}</strong><p>{t('It looked better without feeling like a different app.', 'Выглядит лучше, но не как другое приложение.')}</p></li>
         <li><strong>{t('Nothing to learn', 'Не нужно учиться')}</strong><p>{t('New parts were familiar from Самокат and Яндекс Лавка, or obvious at first glance.', 'Новое было знакомо по «Самокату» и «Яндекс Лавке» или понятно с первого взгляда.')}</p></li>
@@ -310,6 +318,6 @@ const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
   .split__key dt { font-size: 1.0625rem; font-weight: 700; line-height: 1.5; }
   .split__key dd { margin: 0; color: var(--color-copy); font-size: 1rem; line-height: 1.5; }
   .split__note { margin: 16px 0 0; color: #656560; font-size: .9375rem; line-height: 1.5; }
-  .result-subtitle { margin-top: 48px; }
+  .subtitle { margin-top: 48px; }
   @media (max-width: 560px) { .split__legend { grid-template-columns: minmax(0, 1fr); } }
 </style>
