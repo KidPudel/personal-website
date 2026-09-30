@@ -12,11 +12,11 @@ const [email, ...elsewhere] = connectLinks(locale);
 <footer id="contact" class="closing-contact" aria-labelledby="closing-contact-title">
   <h2 id="closing-contact-title" class="sr-only">{t('Get in touch', 'Связаться')}</h2>
 
-  <a class="closing-contact__email" href={email.href}>{publicEmail}</a>
+  <a class="closing-contact__email" href={email.href}><span class="link-line">{publicEmail}</span></a>
 
   <ul class="closing-contact__links" role="list">
     {elsewhere.map((link) => (
-      <li><a href={link.href}>{link.label}</a></li>
+      <li><a href={link.href}><span class="link-line">{link.label}</span></a></li>
     ))}
   </ul>
 </footer>
@@ -41,9 +41,10 @@ const [email, ...elsewhere] = connectLinks(locale);
     letter-spacing: -0.02em;
     line-height: 1.15;
     overflow-wrap: anywhere;
-    /* The display face sits its line closer, and rises less, than body text. */
-    --link-line-offset: 0.2em;
-    --link-line-offset-hidden: 0.36em;
+    text-decoration: none;
+    /* This face's box already ends well below its descenders. */
+    --link-line-gap: 0em;
+    --link-line-raise: 0.03em;
   }
 
   .closing-contact__links {
@@ -63,18 +64,7 @@ const [email, ...elsewhere] = connectLinks(locale);
     min-height: 2.75rem;
     align-items: center;
     color: inherit;
-  }
-
-  .closing-contact a {
-    text-decoration: underline var(--link-line-width) transparent;
-    text-underline-offset: var(--link-line-offset-hidden);
-    transition: var(--link-line-transition);
-  }
-
-  .closing-contact a:hover,
-  .closing-contact a:focus-visible {
-    text-decoration-color: var(--link-line-color-active);
-    text-underline-offset: var(--link-line-offset);
+    text-decoration: none;
   }
 
   .closing-contact a:focus-visible {
@@ -103,12 +93,6 @@ const [email, ...elsewhere] = connectLinks(locale);
       display: grid;
       grid-template-columns: repeat(3, max-content);
       column-gap: clamp(1.6rem, 8vw, 2.25rem);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .closing-contact a {
-      transition: none;
     }
   }
 </style>

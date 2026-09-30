@@ -266,9 +266,9 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <a href="https://github.com/KidPudel/chinesebee_bot">{t('Bot source ↗', 'Код бота ↗')}</a>
       <a href="https://github.com/KidPudel/chinesebee_api">{t('API source ↗', 'Код API ↗')}</a>
       <a href="https://github.com/KidPudel/chinese-bee-dictation">{t('Dictation source ↗', 'Код прописей ↗')}</a>
-      <a href={localePath('/', locale)}>{t('Home', 'Главная')}</a>
-      <a href={localePath('/case-studies/', locale)}>{t('All case studies', 'Все кейсы')}</a>
-      <a href={localePath('/case-studies/supergood/', locale)}>{t('SuperGood case study →', 'Кейс SuperGood →')}</a>
+      <a href={localePath('/', locale)}><span class="link-line">{t('Home', 'Главная')}</span></a>
+      <a href={localePath('/case-studies/', locale)}><span class="link-line">{t('All case studies', 'Все кейсы')}</span></a>
+      <a href={localePath('/case-studies/supergood/', locale)}><span class="link-line">{t('SuperGood case study →', 'Кейс SuperGood →')}</span></a>
     </nav>
   </footer>
 </BaseDocument>

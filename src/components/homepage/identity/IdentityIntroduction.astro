@@ -29,7 +29,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
             {identity.purpose.before}<br class="identity__figma-break" />{identity.purpose.continuation}<a
               class="identity__joyful-link"
               href={identity.purpose.href}
-            ><span class="identity__joyful-word">{identity.purpose.word}</span><Image
+            ><span class="identity__joyful-word link-line">{identity.purpose.word}</span><Image
                 class="identity__joyful-circle"
                 src={joyfulCircle}
                 alt=""
@@ -134,22 +134,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     font-family: var(--font-special);
     font-style: normal;
     line-height: 1.05;
-    /* The drawn circle already marks the word, so the line waits for hover. */
-    text-decoration: underline var(--link-line-width) transparent;
-    text-underline-offset: var(--link-line-offset-hidden);
-    transition: var(--link-line-transition);
-  }
-
-  .identity__joyful-link:focus-visible {
-    text-decoration-color: var(--link-line-color-active);
-    text-underline-offset: var(--link-line-offset);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .identity__joyful-link:hover {
-      text-decoration-color: var(--link-line-color-active);
-      text-underline-offset: var(--link-line-offset);
-    }
+    text-decoration: none;
   }
 
   .identity__joyful-word {

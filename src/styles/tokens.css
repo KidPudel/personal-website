@@ -161,20 +161,19 @@
     /* Where the header's controls start. The homepage introduction starts a
        fixed step below them. */
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
-    /* One underline for every link and interactive word on the site.
-       Standalone links (navigation, captions, footers) show no line until
-       hover or keyboard focus, when it fades in and rises from
-       --link-line-offset-hidden into place. Words inside sentences keep the
-       faint --link-line-color at rest, so they can be found without hovering,
-       and it darkens on hover. */
+    /* One line for every link and interactive word on the site (.link-line
+       in foundations.css). None shows at rest: a link is in ink, and where
+       it sits in grey text the color alone sets it apart. On hover or
+       keyboard focus the line is drawn in from the left, and on leave it is
+       taken back toward the right. --link-line-gap keeps it just clear of
+       the descenders, since a drawn line can't skip them. The faint
+       --link-line-color is only for places that can't hover or color a
+       link apart: captions on touch screens and links in running ink text. */
     --link-line-width: 1px;
-    --link-line-offset: 0.26em;
-    --link-line-offset-hidden: 0.5em;
+    --link-line-gap: 0.08em;
     --link-line-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
-    --link-line-color-active: var(--color-ink);
-    --link-line-transition:
-      text-decoration-color 240ms ease,
-      text-underline-offset 320ms var(--ease-out);
+    --link-line-draw: 440ms cubic-bezier(0.45, 0, 0.2, 1);
+    --link-line-undraw: 280ms cubic-bezier(0.4, 0, 0.6, 1);
 
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
@@ -191,11 +190,11 @@
     }
   }
 
-  /* The line still fades in, but in place: it moves to its offset while
-     still transparent. */
+  /* The line appears and goes at once instead of being drawn. */
   @media (prefers-reduced-motion: reduce) {
     :root {
-      --link-line-transition: text-decoration-color 240ms ease;
+      --link-line-draw: 0s;
+      --link-line-undraw: 0s;
     }
   }
 

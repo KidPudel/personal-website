@@ -26,7 +26,7 @@ const Text = heading ? 'h2' : 'p';
      the parent decides how much of the card is clickable. -->
 <div class:list={['work-caption', className]} {...rest}>
   <Text class="work-caption__text">
-    <a class="work-caption__link" href={href}>
+    <a class="work-caption__link link-line" href={href}>
       {pitch}<span class="sr-only">{t(` ${name} case study`, ` Кейс ${name}`)}</span>
     </a>
   </Text>
@@ -57,23 +57,16 @@ const Text = heading ? 'h2' : 'p';
 
   .work-caption__link {
     color: var(--color-ink);
-    text-decoration: underline var(--link-line-width) transparent;
-    text-underline-offset: var(--link-line-offset-hidden);
-    transition: var(--link-line-transition);
+    text-decoration: none;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  .work-caption__link:focus-visible {
-    text-decoration-color: var(--link-line-color-active);
-    text-underline-offset: var(--link-line-offset);
   }
 
   /* Touch screens can't hover, and the caption is the only way into the
      case study, so it keeps a faint line there to read as a link. */
   @media (hover: none) {
     .work-caption__link {
-      text-decoration-color: var(--link-line-color);
-      text-underline-offset: var(--link-line-offset);
+      background-image: linear-gradient(var(--link-line-color), var(--link-line-color));
+      background-size: 100% var(--link-line-width);
     }
   }
 
@@ -96,12 +89,5 @@ const Text = heading ? 'h2' : 'p';
   .work-caption__meta {
     flex: none;
     font-variant-numeric: tabular-nums;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .work-caption__link:hover {
-      text-decoration-color: var(--link-line-color-active);
-      text-underline-offset: var(--link-line-offset);
-    }
   }
 </style>

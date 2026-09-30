@@ -42,6 +42,37 @@
   .skip-link:focus {
     transform: translateY(0);
   }
+
+  /* The link line (see tokens.css). It goes on the inline element holding a
+     link's text, or on the link itself when that is inline, so it follows
+     the text across line breaks: drawn along the first line, then the next.
+     The padding lowers the painted strip below the descenders without
+     moving the text; --link-line-raise lifts it for faces whose box runs
+     deep below them. */
+  .link-line {
+    padding-bottom: var(--link-line-gap);
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 100% calc(100% - var(--link-line-raise, 0em));
+    background-size: 0% var(--link-line-width);
+    transition: background-size var(--link-line-undraw);
+  }
+
+  :is(a, button):focus-visible .link-line,
+  .link-line:is(a, button):focus-visible {
+    background-position-x: 0;
+    background-size: 100% var(--link-line-width);
+    transition: background-size var(--link-line-draw);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    :is(a, button):hover .link-line,
+    .link-line:is(a, button):hover {
+      background-position-x: 0;
+      background-size: 100% var(--link-line-width);
+      transition: background-size var(--link-line-draw);
+    }
+  }
 }
 
 @layer utilities {

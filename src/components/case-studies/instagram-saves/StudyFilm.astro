@@ -23,10 +23,10 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
     aria-label={title} aria-describedby={`${id}-caption`}>
     <source src={small} type="video/mp4" media="(max-resolution: 1.5dppx)" />
     <source src={large} type="video/mp4" />
-    <a href={large}>{t('Watch', 'Смотреть:')} {title}</a>
+    <a href={large}><span class="link-line">{t('Watch', 'Смотреть:')} {title}</span></a>
   </video>
-  <button type="button" hidden aria-label={`${labels.play}: ${title}`} data-labels={JSON.stringify(labels)}>{labels.play}</button>
-  <noscript><a href={large}>{t('Watch', 'Смотреть:')} {title}</a></noscript>
+  <button type="button" hidden aria-label={`${labels.play}: ${title}`} data-labels={JSON.stringify(labels)}><span class="link-line">{labels.play}</span></button>
+  <noscript><a href={large}><span class="link-line">{t('Watch', 'Смотреть:')} {title}</span></a></noscript>
   <figcaption id={`${id}-caption`}>
     <span>{description}</span>
   </figcaption>
@@ -50,7 +50,7 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
       const labels = { play: 'Play', pause: 'Pause', ...JSON.parse(button.dataset.labels ?? '{}') };
       const syncLabel = () => {
         const label = video.paused ? labels.play : labels.pause;
-        button.textContent = label;
+        (button.querySelector('.link-line') ?? button).textContent = label;
         button.setAttribute('aria-label', `${label}: ${video.getAttribute('aria-label')}`);
       };
       const sync = () => {
@@ -81,12 +81,11 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
 </script>
 <style>
   study-film { display: block; }
-  button { display: block; min-height: 44px; padding: 8px 0; margin-left: auto; border: 0; background: none; color: #605a62; font: inherit; font-size: var(--study-small); cursor: pointer; text-decoration: underline var(--link-line-width) transparent; text-underline-offset: var(--link-line-offset-hidden); transition: var(--link-line-transition); }
-  :is(button, a):is(:hover, :focus-visible) { text-decoration-color: var(--link-line-color-active); text-underline-offset: var(--link-line-offset); }
+  button { display: block; min-height: 44px; padding: 8px 0; margin-left: auto; border: 0; background: none; color: #605a62; font: inherit; font-size: var(--study-small); cursor: pointer; }
   button[hidden] { display: none; }
 
   .study-film { margin: 0; min-width: 0; }
   video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: contain; border-radius: 6px; background: white;  }
   figcaption { margin-top: 14px; color: #605a62; font-size: var(--study-small, .9375rem); line-height: 1.6; }
-  a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--study-body, 1.0625rem); color: inherit; text-decoration: underline var(--link-line-width) transparent; text-underline-offset: var(--link-line-offset-hidden); transition: var(--link-line-transition); }
+  a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--study-body, 1.0625rem); color: inherit; text-decoration: none; }
 </style>

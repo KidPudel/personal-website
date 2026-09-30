@@ -29,7 +29,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
           part
         ) : (
           <a
-            class="personal-note__trigger"
+            class="personal-note__trigger link-line"
             href={`#${panelId(part.reveal)}`}
             aria-controls={panelId(part.reveal)}
             data-reveal-trigger
@@ -172,26 +172,28 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     line-height: 1.3;
   }
 
+  /* Like the work captions: the words that open something are in ink and
+     the rest of the sentence is grey, so they stand out without a line
+     (3.7:1 against the grey, which itself clears 4.5:1 on the field). */
   .personal-note__closing {
     max-width: 35rem;
     margin: 0;
+    color: var(--color-muted);
   }
 
   .personal-note__trigger {
-    color: inherit;
-    /* Words inside a sentence: a faint line at rest so they can be found. */
-    text-decoration: underline var(--link-line-width) var(--link-line-color);
-    text-underline-offset: var(--link-line-offset);
+    color: var(--color-ink);
+    text-decoration: none;
     cursor: pointer;
     touch-action: manipulation;
-    transition: var(--link-line-transition);
     -webkit-tap-highlight-color: transparent;
   }
 
-  .personal-note__trigger:hover,
-  .personal-note__trigger:focus-visible,
+  /* The open word keeps its line drawn. */
   .personal-note__trigger[aria-expanded='true'] {
-    text-decoration-color: var(--link-line-color-active);
+    background-position-x: 0;
+    background-size: 100% var(--link-line-width);
+    transition: background-size var(--link-line-draw);
   }
 
   .personal-note__trigger:focus-visible {
