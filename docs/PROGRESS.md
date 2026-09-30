@@ -1,6 +1,14 @@
 # Progress
 
-Last updated: 2026-09-29
+Last updated: 2026-09-30
+
+## iPhone status bar and toolbar
+
+- Safari 26 on iPhone draws the page beneath the status bar and the bottom toolbar but lays fixed elements out only between them. It fills the status bar with a solid color when a visible fixed element spanning at least 90% of the width touches the top of the viewport (WebKit `LocalFrameView::fixedContainerEdges`). The full-width header triggered that fill, which cut the page off under the clock.
+- The header box is now `visibility: hidden`; only its blur band and navigation are shown, so the page looks the same and Safari leaves the page visible, softly blurred, behind the clock. The earlier iPhone-only theme-color and background syncing is reverted: it only changed the color of the solid band.
+- On iOS (`@supports (-webkit-touch-callout: none)`), `--browser-bleed-top` and `--browser-bleed-bottom` in `tokens.css` extend the opening sky and the header band beneath both bars, so the sky no longer ends in a hard line at the clock or above the toolbar. The band's gradient stops are offset so the part inside the viewport is unchanged. Elsewhere both values are 0.
+- Verified in Chromium: before and after are pixel-identical at 1440 and 390 px on the homepage (top and scrolled), a case study, and the Russian homepage, including with the iOS offsets forced on. The header's controls, contact panel, and accessibility tree are unchanged. Astro diagnostics, the media contract, and the production build pass.
+- **Still unverified on an iPhone:** the soft blur behind the clock and the sky under both bars. The top pull's rainbow still begins below the status bar.
 
 ## Homepage clarity pass
 
