@@ -11,6 +11,17 @@ html.homepage-document body {
   touch-action: pan-y;
 }
 
+/* Only the native iPhone browser backing changes color. The page retains its
+   authored sky, header blur, and rainbow composition. */
+html.homepage-document.iphone-browser,
+html.homepage-document.iphone-browser body {
+  background: var(--elastic-browser-color, var(--opening-browser-color, var(--color-field)));
+}
+
+html.homepage-document.iphone-browser.js:not(.opening-bypassed) {
+  --opening-browser-color: color-mix(in srgb, var(--color-opening-sky) 50%, var(--color-field));
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.homepage-document,
   html.homepage-document body {

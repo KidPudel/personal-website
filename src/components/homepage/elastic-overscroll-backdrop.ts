@@ -1,4 +1,5 @@
 import { clamp, smooth } from '../../lib/motion';
+import { syncBrowserThemeColor } from '../../lib/browser-theme';
 import { sampleEssenceColor, sampleEssenceNoise } from './opening/pigment-field';
 
 type Placement = 'top' | 'bottom';
@@ -129,6 +130,14 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
     if (!documentSurface || layers.size !== 2) return;
 
+    const root = document.documentElement;
+    const fieldColor = getComputedStyle(documentSurface.parentElement!).backgroundColor;
+    const resetBrowserColor = () => {
+      root.style.removeProperty('--elastic-browser-color');
+      syncBrowserThemeColor();
+    };
+    this.abort.signal.addEventListener('abort', resetBrowserColor, { once: true });
+
     let activePlacement: Placement | undefined;
     let pull = 0;
     let target = 0;
@@ -189,6 +198,24 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         : '';
 
       document.documentElement.toggleAttribute('data-elastic-edge', visualPull > 0);
+      root.toggleAttribute('data-elastic-top', activePlacement === 'top' && visualPull > 0);
+
+      if (root.classList.contains('iphone-browser') && activePlacement === 'top' && visualPull > 0) {
+        // Older Safari supports one solid status-bar tint. Continue the blue
+        // end of the rainbow into that backing, then restore the sky on release.
+        const base = (root.style.getPropertyValue('--opening-browser-color') || fieldColor)
+          .match(/[\d.]+/g)?.map(Number);
+        if (base && base.length >= 3) {
+          const strength = smooth(clamp(visualPull / 48)) * 0.7;
+          const color = sampleEssenceColor(0.27).map((channel, index) =>
+            Math.round(base[index] + (channel - base[index]) * strength),
+          );
+          root.style.setProperty('--elastic-browser-color', `rgb(${color.join(', ')})`);
+          syncBrowserThemeColor();
+        }
+      } else if (root.style.getPropertyValue('--elastic-browser-color')) {
+        resetBrowserColor();
+      }
     };
 
     const requestRender = () => {
@@ -549,6 +576,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
     delete this.dataset.enhanced;
     document.documentElement.removeAttribute('data-elastic-edge');
+    document.documentElement.removeAttribute('data-elastic-top');
     document.documentElement.removeAttribute('data-refreshing');
   }
 }

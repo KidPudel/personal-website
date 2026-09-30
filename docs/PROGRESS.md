@@ -1,6 +1,15 @@
 # Progress
 
-Last updated: 2026-09-29
+Last updated: 2026-09-30
+
+## iPhone browser edges
+
+- Scope is limited to the iPhone top and bottom browser areas. Desktop and other mobile browsers keep their existing viewport and styling. The sky, rainbow, and header's authored blur gradients are unchanged.
+- iPhone documents opt into `viewport-fit=cover`; content and fixed controls respect safe-area insets. The native solid tint follows the existing sky fade and the rainbow's blue end during a top pull, restoring on release.
+- On iPhone, decorative real elements render the same header blur as the original pseudo-elements, so WebKit can identify the backdrop filters when sampling fixed browser edges. A pixel comparison of the header over the SuperGood page found no changed channels. Other browsers retain the original pseudo-elements.
+- Verified touch pull/release, tint restoration, contact controls, reduced motion, portrait and landscape safe-area placement, English/Russian routes, and desktop rendering. Native inspection is limited to the installed offline iOS 17 simulator.
+- Astro diagnostics report no errors, warnings, or hints. The media contract and root and deployment-path production builds pass.
+- **Still unverified:** content and blur visibly continuing behind the clock/notch while scrolling, as in Igor's reference. The iOS 17 simulator continues to show a solid status area. The newer Safari native extension must be checked on an appropriate iPhone/Safari version; a matching tint or a successful page screenshot is not evidence that this requirement is complete.
 
 ## Homepage clarity pass
 

@@ -135,6 +135,8 @@
 @layer tokens {
   :root {
     --color-field: #F8F8F8;
+    /* Average tone of the opening sky poster, also used for browser chrome. */
+    --color-opening-sky: #5b71a9;
     --color-ink: #11110f;
     --color-muted: #716d65;
     --color-copy: #4e4b45;

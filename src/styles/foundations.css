@@ -18,6 +18,12 @@
     background: var(--color-field);
   }
 
+  .iphone-browser body {
+    /* Extend only the iPhone backing; keep the document inside its safe area. */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+      env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
   :focus-visible {
     outline: var(--focus-width) solid var(--color-focus);
     outline-offset: var(--focus-offset);
@@ -37,6 +43,12 @@
     background: var(--color-field);
     color: var(--color-ink);
     transform: translateY(calc(-100% - 1rem));
+  }
+
+  .iphone-browser .skip-link {
+    top: calc(0.75rem + env(safe-area-inset-top));
+    left: calc(0.75rem + env(safe-area-inset-left));
+    transform: translateY(calc(-100% - env(safe-area-inset-top) - 1rem));
   }
 
   .skip-link:focus {

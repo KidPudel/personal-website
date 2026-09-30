@@ -16,6 +16,8 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 ---
 
 <portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--with-home": showHome }]} data-site-header>
+  <span class="portfolio-navigation__surface" aria-hidden="true"></span>
+  <span class="portfolio-navigation__blur" aria-hidden="true"></span>
   <nav class="site-navigation" aria-label={t('Primary navigation', 'Основная навигация')}>
     {showHome && <a class="navigation-action drawn-icon-trigger" href={localePath('/', locale)}>
       <span class="navigation-action__label">{t('Home', 'Главная')}</span>
@@ -188,6 +190,14 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     transform: translateY(clamp(-2.25rem, -3vw, -1rem));
   }
 
+  :global(.iphone-browser) .portfolio-navigation {
+    padding:
+      calc(var(--navigation-top) + env(safe-area-inset-top))
+      calc(var(--page-inset) + env(safe-area-inset-right))
+      var(--navigation-bottom)
+      calc(var(--page-inset) + env(safe-area-inset-left));
+  }
+
   .portfolio-navigation:has(.contact-disclosure[open]) {
     --contact-surface-bottom: 6rem;
   }
@@ -196,7 +206,9 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
      and a heavier one sits only near the top edge, so content under the
      controls is calm enough to read them and fades back in below. */
   .portfolio-navigation::before,
-  .portfolio-navigation::after {
+  .portfolio-navigation::after,
+  .portfolio-navigation__surface,
+  .portfolio-navigation__blur {
     position: absolute;
     z-index: -1;
     inset: 0 0 calc(-1 * var(--contact-surface-bottom));
@@ -207,7 +219,25 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       opacity 220ms var(--ease-out);
   }
 
-  .portfolio-navigation::before {
+  /* Safari samples real backdrop elements when extending a fixed header into
+     its native browser edge. Keep the authored appearance of both layers. */
+  .portfolio-navigation__surface,
+  .portfolio-navigation__blur {
+    display: none;
+  }
+
+  :global(.iphone-browser) .portfolio-navigation__surface,
+  :global(.iphone-browser) .portfolio-navigation__blur {
+    display: block;
+  }
+
+  :global(.iphone-browser) .portfolio-navigation::before,
+  :global(.iphone-browser) .portfolio-navigation::after {
+    display: none;
+  }
+
+  .portfolio-navigation::before,
+  .portfolio-navigation__surface {
     background: linear-gradient(
       to bottom,
       color-mix(in srgb, var(--color-field) 64%, transparent) 0,
@@ -220,7 +250,8 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
   }
 
-  .portfolio-navigation::after {
+  .portfolio-navigation::after,
+  .portfolio-navigation__blur {
     backdrop-filter: blur(16px) saturate(1.05);
     -webkit-backdrop-filter: blur(16px) saturate(1.05);
     mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
@@ -231,7 +262,9 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
      appears once the page scrolls past the introduction or the contact
      links open. */
   .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::before,
-  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after {
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after,
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open])) .portfolio-navigation__surface,
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open])) .portfolio-navigation__blur {
     opacity: 0;
   }
 
@@ -464,6 +497,14 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   @media (max-width: 38rem) {
     .portfolio-navigation {
       padding: 0.45rem 0.7rem 1rem;
+    }
+
+    :global(.iphone-browser) .portfolio-navigation {
+      padding:
+        calc(0.45rem + env(safe-area-inset-top))
+        calc(0.7rem + env(safe-area-inset-right))
+        1rem
+        calc(0.7rem + env(safe-area-inset-left));
     }
 
     .portfolio-navigation-spacer {

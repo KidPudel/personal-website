@@ -1,6 +1,15 @@
 # Implementation plan
 
-Last updated: 2026-09-29
+Last updated: 2026-09-30
+
+## iPhone browser edges
+
+Status: safe-area and fallback tint implemented; native transparent/blurred scrolling edge verification pending.
+
+- Restrict changes to iPhone browser edges and preserve the authored website visuals.
+- Keep content and controls within safe areas while matching older Safari's solid backing to the sky fade and rainbow pull.
+- Render the existing header blur through real backdrop elements on iPhone without changing its appearance.
+- Verify that content remains visible behind the clock/notch while scrolling in a Safari version that supports the reference behavior. Do not mark this complete based on fallback tint checks. See `docs/PROGRESS.md`.
 
 ## Completed milestone: STAR case studies with sourced metrics
 

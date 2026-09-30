@@ -1,4 +1,5 @@
 import { openingMotion } from './opening-motion';
+import { syncBrowserThemeColor } from '../../../lib/browser-theme';
 
 class OpeningSequence extends HTMLElement {
   private abort?: AbortController;
@@ -7,6 +8,7 @@ class OpeningSequence extends HTMLElement {
   private handoffTimer = 0;
   private hintTimer = 0;
   private scrollFrame = 0;
+  private browserColorFrame = 0;
   private skyVideo?: HTMLVideoElement;
 
   connectedCallback() {
@@ -69,6 +71,39 @@ class OpeningSequence extends HTMLElement {
     let completed = false;
     let persistSky = false;
 
+    const root = document.documentElement;
+    // Match Safari's solid browser backing to the video composited over the
+    // field, without sampling frames.
+    const skyTone = getComputedStyle(root).getPropertyValue('--color-opening-sky').trim().slice(1);
+    const skyColor = [0, 2, 4].map((offset) => Number.parseInt(skyTone.slice(offset, offset + 2), 16));
+    const fieldColor = getComputedStyle(this).backgroundColor.match(/[\d.]+/g)?.map(Number);
+    const syncBrowserColor = (opacity: number) => {
+      if (!root.classList.contains('iphone-browser')) return;
+      if (!skyColor || !fieldColor || skyColor.length < 3 || fieldColor.length < 3) return;
+      const color = `rgb(${skyColor.map((channel, index) =>
+        Math.round(channel * opacity + fieldColor[index] * (1 - opacity)),
+      ).join(', ')})`;
+      root.style.setProperty('--opening-browser-color', color);
+      syncBrowserThemeColor();
+    };
+    const resetBrowserColor = () => {
+      window.cancelAnimationFrame(this.browserColorFrame);
+      this.browserColorFrame = 0;
+      root.style.removeProperty('--opening-browser-color');
+      syncBrowserThemeColor();
+    };
+    this.abort.signal.addEventListener('abort', resetBrowserColor, { once: true });
+
+    const syncAnimatedBrowserColor = () => {
+      if (!root.classList.contains('iphone-browser')) return;
+      window.cancelAnimationFrame(this.browserColorFrame);
+      this.browserColorFrame = 0;
+      syncBrowserColor(Number.parseFloat(getComputedStyle(sky).opacity));
+      if (sky.getAnimations().some((animation) => animation.playState === 'running')) {
+        this.browserColorFrame = window.requestAnimationFrame(syncAnimatedBrowserColor);
+      }
+    };
+
     const syncPersistentSky = () => {
       this.scrollFrame = 0;
       if (!persistSky) return;
@@ -77,6 +112,7 @@ class OpeningSequence extends HTMLElement {
       const progress = Math.min(Math.max(window.scrollY / fadeDistance, 0), 1);
       const opacity = openingMotion.skyOpacityAtIntro * (1 - progress);
       sky.style.opacity = `${opacity}`;
+      syncBrowserColor(opacity);
       setSkyPlayback(opacity > 0 && document.visibilityState === 'visible');
     };
 
@@ -89,6 +125,7 @@ class OpeningSequence extends HTMLElement {
       persistSky = false;
       this.removeAttribute('data-persist-sky');
       sky.style.removeProperty('opacity');
+      resetBrowserColor();
       setSkyPlayback(false);
     };
 
@@ -110,6 +147,7 @@ class OpeningSequence extends HTMLElement {
       if (persistSky) {
         syncPersistentSky();
       } else {
+        resetBrowserColor();
         setSkyPlayback(false);
       }
     };
@@ -180,6 +218,7 @@ class OpeningSequence extends HTMLElement {
         easing: openingMotion.easeOut,
       });
       this.animations.add(animation);
+      if (element === sky) syncAnimatedBrowserColor();
       animation.finished.then(
         () => this.animations.delete(animation),
         () => this.animations.delete(animation),
@@ -195,6 +234,7 @@ class OpeningSequence extends HTMLElement {
     }
 
     this.setAttribute('data-opening-live', '');
+    syncBrowserColor(openingMotion.skyOpacityAtStart);
     documentSurface.inert = true;
     documentSurface.setAttribute('aria-hidden', 'true');
     header.inert = true;
@@ -280,6 +320,7 @@ class OpeningSequence extends HTMLElement {
           fill: 'forwards',
         },
       );
+      syncAnimatedBrowserColor();
       const documentReveal = documentSurface.animate(
         [
           { opacity: 0 },
