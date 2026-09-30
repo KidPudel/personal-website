@@ -34,6 +34,8 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
+| Link hover mark (the stop-motion marker swipe) | `.link-mark` and its frames in `src/styles/foundations.css`; timing and the faint rest mark in `src/styles/tokens.css` |
+| The "joyful" hover (pigment letters that hop, wobbling circle) | `src/components/homepage/identity/IdentityIntroduction.astro` |
 | Russian translation of any copy | The `t('English', 'Русский')` pair next to the English text, or the `ru` entry in `src/content/homepage/`; Russian posts in `src/content/writing/ru/` |
 | Language switcher and default-language redirect | `src/components/homepage/PortfolioHeader.astro`, `src/layouts/BaseDocument.astro` |
 

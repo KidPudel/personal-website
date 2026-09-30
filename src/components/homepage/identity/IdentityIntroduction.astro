@@ -4,10 +4,15 @@ import { Image } from 'astro:assets';
 import joyfulCircle from '../../../assets/art/elements/circled.png';
 import { identity as identityCopy } from '../../../content/homepage/identity';
 import { toLocale } from '../../../i18n/locales';
+import { essenceChannel } from '../opening/pigment-field';
 import HelloAnimation from './HelloAnimation.astro';
 import PlayfulWord from './PlayfulWord.astro';
 
 const identity = identityCopy[toLocale(Astro.currentLocale)];
+// The pigments of the "products" word and the page edge, in order, without
+// the near-white one. The letters of "joyful" take them in turn on hover.
+const joyfulPigments = [0, 1, 3, 4, 5, 6].map((index) => `rgb(${essenceChannel(index)})`);
+const joyfulLetters = [...identity.purpose.word];
 ---
 
 <identity-introduction class="identity-shell">
@@ -29,7 +34,12 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
             {identity.purpose.before}<br class="identity__figma-break" />{identity.purpose.continuation}<a
               class="identity__joyful-link"
               href={identity.purpose.href}
-            ><span class="identity__joyful-word link-mark">{identity.purpose.word}</span><Image
+            ><span class="sr-only">{identity.purpose.word}</span><span class="identity__joyful-word" aria-hidden="true">{joyfulLetters.map((letter, index) => (
+                <span
+                  class="identity__joyful-letter"
+                  style={`--letter: ${index}; --pigment: ${joyfulPigments[index % joyfulPigments.length]}`}
+                >{letter}</span>
+              ))}</span><Image
                 class="identity__joyful-circle"
                 src={joyfulCircle}
                 alt=""
@@ -140,8 +150,52 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
   .identity__joyful-word {
     position: relative;
     z-index: 1;
-    /* The handwriting face sits deeper in its box, so the swipe rides higher. */
-    --link-mark-lift: 0.08em;
+    white-space: nowrap;
+  }
+
+  .identity__joyful-letter {
+    display: inline-block;
+    transform-origin: 50% 80%;
+  }
+
+  /* "joyful" has its own hover instead of the link swipe: its letters take
+     the pigments one by one and hop in turn, frame by frame at the hello
+     animation's 82 ms, while the pen circle wobbles like the drawn icons in
+     the header. With reduced motion only the colors change (motion.css). */
+  .identity__joyful-link:focus-visible .identity__joyful-letter {
+    color: var(--pigment);
+    animation: joyful-hop 1400ms step-end calc(var(--letter) * 82ms) infinite;
+  }
+
+  .identity__joyful-link:focus-visible .identity__joyful-circle {
+    animation: joyful-wobble 820ms step-end infinite;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .identity__joyful-link:hover .identity__joyful-letter {
+      color: var(--pigment);
+      animation: joyful-hop 1400ms step-end calc(var(--letter) * 82ms) infinite;
+    }
+
+    .identity__joyful-link:hover .identity__joyful-circle {
+      animation: joyful-wobble 820ms step-end infinite;
+    }
+  }
+
+  /* Frames of 82 ms: up, higher, landing, then a rest until the next hop. */
+  @keyframes joyful-hop {
+    0% { transform: translateY(0) rotate(0); }
+    5.86% { transform: translateY(-0.12em) rotate(-5deg); }
+    11.71% { transform: translateY(-0.24em) rotate(4deg); }
+    17.57% { transform: translateY(-0.08em) rotate(-2deg); }
+    23.43%, 100% { transform: translateY(0) rotate(0); }
+  }
+
+  @keyframes joyful-wobble {
+    0%, 100% { transform: translateY(-42%) rotate(-2deg) translate(-0.02em, -0.02em); }
+    25% { transform: translateY(-42%) rotate(1.5deg) translate(0.03em, 0); }
+    50% { transform: translateY(-42%) rotate(-1deg) translate(0, 0.02em); }
+    75% { transform: translateY(-42%) rotate(2deg) translate(-0.02em, -0.03em); }
   }
 
   /* The drawn loop sits in the upper part of its image, so -42% centers the
