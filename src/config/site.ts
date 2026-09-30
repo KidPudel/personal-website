@@ -2,6 +2,7 @@ export const publicEmail = 'i.kupchinenko@gmail.com';
 
 export const publicLinks = {
   email: `mailto:${publicEmail}`,
+  telegram: 'https://t.me/iggy_sleepy',
   github: 'https://github.com/KidPudel',
   itch: 'https://kidpudel.itch.io/',
   linkedin: 'https://www.linkedin.com/in/iggydev/',
@@ -18,6 +19,7 @@ export const sitePath = (path: string) => {
 export const connectLinks = (locale: 'en' | 'ru') =>
   [
     { label: locale === 'ru' ? 'Почта' : 'Email', href: publicLinks.email },
+    { label: 'Telegram', href: publicLinks.telegram },
     { label: 'LinkedIn', href: publicLinks.linkedin },
     { label: 'X', href: publicLinks.x },
     { label: 'itch.io', href: publicLinks.itch },

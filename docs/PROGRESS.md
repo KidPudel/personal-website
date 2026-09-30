@@ -2,6 +2,14 @@
 
 Last updated: 2026-09-30
 
+## Contact at the end of the page, with Telegram
+
+- The homepage contact is now the page's footer (`<footer>`, outside `main`) and sits at the bottom: the personal note's pause stays above it, and only 2.5 to 3.5rem remain below instead of 8 to 12rem. On narrow screens it ends just above the fixed balloon, which hangs in the corner beneath it.
+- Telegram (@iggy_sleepy) joins the contact links, after Email, in the header panel and the closing row (`src/config/site.ts`).
+- Phones: the closing links sit in two rows of three columns, and the header panel breaks its seven links four and three, right-aligned, so no link is left alone on a line. While the panel is open the header band stays solid to just below the links, so text underneath no longer shows through them.
+- A richer version (visible heading, dotted rule, email and Telegram both in the display face, a copy button) was tried and dropped at Igor's request as too busy.
+- Verified at 1440, 1024, 390, 375 and 320 px in English and Russian with no horizontal overflow; Astro diagnostics, the media contract, and the production build pass.
+
 ## Header blur on desktop
 
 - The header band never blurred in Chrome, Brave, or Firefox: the source listed `backdrop-filter` before `-webkit-backdrop-filter`, and Lightning CSS kept only the prefixed one, which those browsers ignore. The header now declares only `backdrop-filter`; the build's browser targets need no prefix. Only Safari had been blurring.

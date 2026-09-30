@@ -27,6 +27,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |
 | Blog posts (local or linked out) | `src/content/writing/`; list in `src/components/blog/WritingList.astro`, pages in `src/pages/blog/` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
+| Contact addresses and links (header panel and page footer) | `src/config/site.ts`; footer layout in `src/components/homepage/closing/ClosingContact.astro` |
 | Case study names, pitches, roles, product tags, years (homepage cards and `/case-studies/`) | `src/content/case-studies.ts` |
 | Work caption (pitch, tag, year) on the homepage and `/case-studies/` | `src/components/homepage/showcase/WorkCaption.astro` |
 | Case-study structure: STAR summary, metric tiles, decision blocks, charts | `src/components/case-studies/`; copy lives in each page under `src/pages/case-studies/` |

@@ -9,7 +9,7 @@ const t = translator(locale);
 const [email, ...elsewhere] = connectLinks(locale);
 ---
 
-<section id="contact" class="closing-contact" aria-labelledby="closing-contact-title">
+<footer id="contact" class="closing-contact" aria-labelledby="closing-contact-title">
   <h2 id="closing-contact-title" class="sr-only">{t('Get in touch', 'Связаться')}</h2>
 
   <a class="closing-contact__email" href={email.href}>{publicEmail}</a>
@@ -19,13 +19,15 @@ const [email, ...elsewhere] = connectLinks(locale);
       <li><a href={link.href}>{link.label}</a></li>
     ))}
   </ul>
-</section>
+</footer>
 
 <style>
   .closing-contact {
     width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
     margin-inline: auto;
-    padding: 0 0 clamp(8rem, 13vw, 12rem);
+    /* The last thing on the page: the pause above it comes from the personal
+       note, and it ends close to the bottom edge. */
+    padding: 0 0 clamp(2.5rem, 4vw, 3.5rem);
     color: var(--color-ink);
   }
 
@@ -84,12 +86,25 @@ const [email, ...elsewhere] = connectLinks(locale);
   }
 
   @media (max-width: 52rem) {
+    /* On narrow screens the fixed balloon is inside the frame, so the
+       footer ends just above it. */
     .closing-contact {
       width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
+      padding-bottom: calc(clamp(5.4rem, 7.8vw, 7rem) + max(0.35rem, env(safe-area-inset-bottom)) + 0.5rem);
     }
 
     .closing-contact__links {
       font-size: 0.95rem;
+    }
+  }
+
+  /* On phones the row can't fit on one line, so the links sit in two even
+     rows of columns rather than leaving one word alone on the second. */
+  @media (max-width: 30rem) {
+    .closing-contact__links {
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      column-gap: clamp(1.6rem, 8vw, 2.25rem);
     }
   }
 
