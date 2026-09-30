@@ -88,10 +88,10 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
   }
 
   :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
-    inset: calc(-1 * var(--browser-bleed-top)) 0 auto;
+    inset: 0 0 auto;
     z-index: 100;
-    height: calc(100vh + var(--browser-bleed-top) + var(--browser-bleed-bottom));
-    height: calc(100lvh + var(--browser-bleed-top) + var(--browser-bleed-bottom));
+    height: calc(100vh + var(--browser-bleed-bottom));
+    height: calc(100lvh + var(--browser-bleed-bottom));
     overflow: hidden;
     overflow: clip;
     opacity: 0.5;
@@ -123,10 +123,10 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
 
   :global(.js.opening-bypassed) .opening-sequence[data-persist-sky] .opening-sequence__sky {
     position: fixed;
-    inset: calc(-1 * var(--browser-bleed-top)) 0 auto;
+    inset: 0 0 auto;
     z-index: 100;
-    height: calc(100vh + var(--browser-bleed-top) + var(--browser-bleed-bottom));
-    height: calc(100lvh + var(--browser-bleed-top) + var(--browser-bleed-bottom));
+    height: calc(100vh + var(--browser-bleed-bottom));
+    height: calc(100lvh + var(--browser-bleed-bottom));
     display: block;
     overflow: hidden;
     overflow: clip;

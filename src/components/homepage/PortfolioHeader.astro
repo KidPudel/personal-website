@@ -233,6 +233,22 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
   }
 
+  /* On iPhone the page stays visible behind the clock, just above the band,
+     and Safari draws nothing fixed there. Both layers fade in over their
+     first 2rem, so the band emerges below the clock instead of starting at
+     full strength in a hard line. */
+  @supports (-webkit-touch-callout: none) {
+    .portfolio-navigation::before {
+      mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 50%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 50%, transparent 100%);
+    }
+
+    .portfolio-navigation::after {
+      mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 35%, transparent 75%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 2rem, black 35%, transparent 75%);
+    }
+  }
+
   /* Over the homepage sky the controls need no backing, so the band only
      appears once the page scrolls past the introduction or the contact
      links open. */

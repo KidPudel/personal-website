@@ -170,8 +170,7 @@
     --drawn-icon-wobble-duration: 1600ms;
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
-    /* How far fixed backdrops reach past the top and bottom of the viewport. */
-    --browser-bleed-top: 0px;
+    /* How far fixed backdrops reach past the bottom of the viewport. */
     --browser-bleed-bottom: 0px;
   }
 
@@ -181,12 +180,11 @@
     }
   }
 
-  /* iOS browsers draw the page beneath the status bar and the toolbar, but
-     lay fixed elements out only between them. Fixed backdrops reach under
-     both bars so the sky and header blur continue behind the clock. */
+  /* iOS browsers draw the page beneath the toolbar but lay fixed elements
+     out above it, so fixed backdrops reach under it. Beneath the status bar
+     Safari draws no fixed element at all, only the scrolling page. */
   @supports (-webkit-touch-callout: none) {
     :root {
-      --browser-bleed-top: 5rem;
       --browser-bleed-bottom: 8rem;
     }
   }
