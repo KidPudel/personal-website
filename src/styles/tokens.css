@@ -140,6 +140,11 @@
     --color-copy: #4e4b45;
     --color-accent: #e35673;
     --color-focus: #7db7ff;
+    /* What the homepage shows along the top of the viewport: the opening sky
+       at full opacity, and the rainbow of a full top pull. They carry that
+       edge into the strip Safari paints above the page (composition.css). */
+    --color-sky-edge: #7784b5;
+    --color-pull-edge: #6093ce;
 
     --font-reading: 'Instrument Sans', 'Golos Text', Arial, sans-serif;
     --font-display: 'Averia Serif Libre', 'Alegreya', Georgia, serif;

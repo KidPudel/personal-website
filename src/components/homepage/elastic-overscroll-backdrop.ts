@@ -189,6 +189,14 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         : '';
 
       document.documentElement.toggleAttribute('data-elastic-edge', visualPull > 0);
+
+      // The strip Safari shows above the top of the page takes on the
+      // rainbow's top color as a top pull opens (see composition.css).
+      const topPull = activePlacement === 'top' ? smooth(clamp(visualPull / 40)) : 0;
+      const topPullValue = topPull.toFixed(2);
+      if (document.documentElement.style.getPropertyValue('--page-top-pull') !== topPullValue) {
+        document.documentElement.style.setProperty('--page-top-pull', topPullValue);
+      }
     };
 
     const requestRender = () => {
@@ -548,6 +556,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     if (documentSurface) documentSurface.style.transform = '';
 
     delete this.dataset.enhanced;
+    document.documentElement.style.removeProperty('--page-top-pull');
     document.documentElement.removeAttribute('data-elastic-edge');
     document.documentElement.removeAttribute('data-refreshing');
   }

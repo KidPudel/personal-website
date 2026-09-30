@@ -70,6 +70,15 @@
     transform-origin: center bottom;
   }
 
+  /* On iOS a top pull turns the strip Safari paints above the page to
+     --color-pull-edge (see composition.css). The backing starts in that blue
+     so the rainbow meets the strip without a pale line between them. */
+  @supports (-webkit-touch-callout: none) {
+    [data-placement='top'] .elastic-overscroll-backdrop__backing {
+      background: linear-gradient(to bottom, var(--color-pull-edge), var(--color-field) 40%);
+    }
+  }
+
   .elastic-overscroll-backdrop__glow {
     position: absolute;
     right: 0;

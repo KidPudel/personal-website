@@ -11,6 +11,30 @@ html.homepage-document body {
   touch-action: pan-y;
 }
 
+/* Above the top of the page, beneath the status bar, Safari on iOS paints
+   nothing but the root background color. The opening controller and the
+   elastic edge set --page-top-sky (the sky's opacity) and --page-top-pull
+   (a top pull's strength), so the strip continues the sky, or the rainbow,
+   at the page's top edge. Body keeps the field, so the page itself is
+   unchanged. */
+@supports (-webkit-touch-callout: none) {
+  html.homepage-document.js:not(.opening-bypassed) {
+    --page-top-sky: 0.5;
+  }
+
+  html.homepage-document {
+    background-color: color-mix(
+      in srgb,
+      var(--color-pull-edge) calc(var(--page-top-pull, 0) * 100%),
+      color-mix(
+        in srgb,
+        var(--color-sky-edge) calc(var(--page-top-sky, 0) * 100%),
+        var(--color-field)
+      )
+    );
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html.homepage-document,
   html.homepage-document body {

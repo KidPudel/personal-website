@@ -7,6 +7,7 @@ class OpeningSequence extends HTMLElement {
   private handoffTimer = 0;
   private hintTimer = 0;
   private scrollFrame = 0;
+  private pageTopFrame = 0;
   private skyVideo?: HTMLVideoElement;
 
   connectedCallback() {
@@ -69,6 +70,27 @@ class OpeningSequence extends HTMLElement {
     let completed = false;
     let persistSky = false;
 
+    // Hands the sky's current opacity to the strip Safari shows above the top
+    // of the page (see composition.css), following it through animations.
+    // The strip is only in view within a status bar's height of the top, so
+    // further down it rests on the field and the root background stops
+    // repainting while the sky fades.
+    const root = document.documentElement;
+    const syncPageTop = () => {
+      window.cancelAnimationFrame(this.pageTopFrame);
+      this.pageTopFrame = 0;
+      const style = getComputedStyle(sky);
+      const visible = style.display !== 'none' && window.scrollY < 120;
+      const opacity = visible ? Number.parseFloat(style.opacity) || 0 : 0;
+      const value = opacity.toFixed(2);
+      if (root.style.getPropertyValue('--page-top-sky') !== value) {
+        root.style.setProperty('--page-top-sky', value);
+      }
+      if (sky.getAnimations().some((animation) => animation.playState === 'running')) {
+        this.pageTopFrame = window.requestAnimationFrame(syncPageTop);
+      }
+    };
+
     const syncPersistentSky = () => {
       this.scrollFrame = 0;
       if (!persistSky) return;
@@ -77,6 +99,7 @@ class OpeningSequence extends HTMLElement {
       const progress = Math.min(Math.max(window.scrollY / fadeDistance, 0), 1);
       const opacity = openingMotion.skyOpacityAtIntro * (1 - progress);
       sky.style.opacity = `${opacity}`;
+      syncPageTop();
       setSkyPlayback(opacity > 0 && document.visibilityState === 'visible');
     };
 
@@ -89,6 +112,7 @@ class OpeningSequence extends HTMLElement {
       persistSky = false;
       this.removeAttribute('data-persist-sky');
       sky.style.removeProperty('opacity');
+      syncPageTop();
       setSkyPlayback(false);
     };
 
@@ -110,6 +134,7 @@ class OpeningSequence extends HTMLElement {
       if (persistSky) {
         syncPersistentSky();
       } else {
+        syncPageTop();
         setSkyPlayback(false);
       }
     };
@@ -184,6 +209,7 @@ class OpeningSequence extends HTMLElement {
         () => this.animations.delete(animation),
         () => this.animations.delete(animation),
       );
+      if (element === sky) syncPageTop();
     };
 
     if (bypassOpening()) {
@@ -320,6 +346,7 @@ class OpeningSequence extends HTMLElement {
       [greetingMove, skyFade, documentReveal, headerReveal, finalGreetingReveal].forEach(
         (animation) => this.animations.add(animation),
       );
+      syncPageTop();
       this.hintTimer = window.setTimeout(() => {
         this.hintTimer = 0;
         documentSurface
@@ -369,6 +396,9 @@ class OpeningSequence extends HTMLElement {
     this.abort?.abort();
     window.cancelAnimationFrame(this.scrollFrame);
     this.scrollFrame = 0;
+    window.cancelAnimationFrame(this.pageTopFrame);
+    this.pageTopFrame = 0;
+    document.documentElement.style.removeProperty('--page-top-sky');
     window.clearTimeout(this.greetingTimer);
     this.greetingTimer = 0;
     window.clearTimeout(this.handoffTimer);

@@ -168,18 +168,23 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
      Safari 26 on iPhone fills the status bar with a solid color whenever a
      visible, full-width fixed element touches the top of the viewport. The
      box itself is hidden and only its band and controls are shown, so Safari
-     keeps the page visible, softly blurred, behind the clock instead. */
+     keeps the page visible, softly blurred, behind the clock instead.
+     On iOS the box starts beneath the status bar, like the opening sky, so
+     the band continues behind the clock; the padding keeps the controls put. */
   .portfolio-navigation {
     position: fixed;
     z-index: 200;
-    top: 0;
+    top: calc(-1 * var(--browser-bleed-top));
     right: 0;
     left: 0;
     display: block;
     visibility: hidden;
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
     --navigation-bottom: 1.3rem;
-    padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom);
+    padding:
+      calc(var(--navigation-top) + var(--browser-bleed-top))
+      var(--page-inset)
+      var(--navigation-bottom);
     pointer-events: none;
     color: var(--color-ink);
     font-family: var(--font-reading);
@@ -204,9 +209,9 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   .portfolio-navigation::after {
     position: absolute;
     z-index: -1;
-    /* On iOS the band starts beneath the status bar; the gradient stops
-       below are offset so the part inside the viewport is unchanged. */
-    inset: calc(-1 * var(--browser-bleed-top)) 0 calc(-1 * var(--contact-surface-bottom));
+    /* The gradient stops below skip the part beneath the status bar, so the
+       band inside the viewport is unchanged. */
+    inset: 0 0 calc(-1 * var(--contact-surface-bottom));
     content: '';
     pointer-events: none;
     visibility: visible;
@@ -485,7 +490,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   @media (max-width: 38rem) {
     .portfolio-navigation {
-      padding: 0.45rem 0.7rem 1rem;
+      padding: calc(0.45rem + var(--browser-bleed-top)) 0.7rem 1rem;
     }
 
     .portfolio-navigation-spacer {
