@@ -295,18 +295,13 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* No line: on hover and focus the drawn icon takes the label's place. */
   .navigation-action__label {
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
     opacity: 1;
     transform: scale(1);
     transition:
       opacity 150ms linear,
-      transform 180ms var(--ease-out),
-      text-decoration-color 150ms ease;
+      transform 180ms var(--ease-out);
   }
 
   .navigation-action__art {
@@ -408,23 +403,21 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     align-items: center;
     color: inherit;
     font-size: 0.9rem;
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
+    text-decoration: underline var(--link-line-width) transparent;
+    text-underline-offset: var(--link-line-offset-hidden);
+    transition: var(--link-line-transition);
   }
 
   .contact-disclosure__panel a:hover,
   .contact-disclosure__panel a:focus-visible {
     text-decoration-color: var(--link-line-color-active);
+    text-underline-offset: var(--link-line-offset);
   }
 
   /* Quiet by design: a setting, not an action, so it sits a step below
-     "Get in touch". The current language is simply in ink. The muted grey
+     "Get in touch". The current language is in ink; the one to switch to is
+     grey and, like every other link, gains its line on hover. The muted grey
      still clears 4.5:1 on the page field. */
-  /* Both languages are in ink; the one to switch to is marked only by the
-     dotted link underline, like every other link. */
   .language-switch {
     display: inline-flex;
     align-items: center;
@@ -453,18 +446,17 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   }
 
   a.language-switch__option {
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
-    transition: color 150ms ease, text-decoration-color 150ms ease;
+    color: var(--color-muted);
+    text-decoration: underline var(--link-line-width) transparent;
+    text-underline-offset: var(--link-line-offset-hidden);
+    transition: color 150ms ease, var(--link-line-transition);
   }
 
   a.language-switch__option:hover,
   a.language-switch__option:focus-visible {
     color: var(--color-ink);
     text-decoration-color: var(--link-line-color-active);
+    text-underline-offset: var(--link-line-offset);
   }
 
   a.language-switch__option:focus-visible {

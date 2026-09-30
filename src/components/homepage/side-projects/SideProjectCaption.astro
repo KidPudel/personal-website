@@ -35,12 +35,9 @@ const destination = host.endsWith('itch.io') ? 'itch.io' : host === 'github.com'
   .side-project-caption__name {
     min-width: 0;
     color: var(--color-ink);
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
-    transition: text-decoration-color 150ms ease;
+    text-decoration: underline var(--link-line-width) transparent;
+    text-underline-offset: var(--link-line-offset-hidden);
+    transition: var(--link-line-transition);
   }
 
   .side-project-caption__destination {
@@ -53,9 +50,23 @@ const destination = host.endsWith('itch.io') ? 'itch.io' : host === 'github.com'
     outline-offset: var(--focus-offset);
   }
 
+  .side-project-caption:focus-visible .side-project-caption__name {
+    text-decoration-color: var(--link-line-color-active);
+    text-underline-offset: var(--link-line-offset);
+  }
+
+  /* Touch screens can't hover, so the name keeps a faint line there. */
+  @media (hover: none) {
+    .side-project-caption__name {
+      text-decoration-color: var(--link-line-color);
+      text-underline-offset: var(--link-line-offset);
+    }
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .side-project-caption:hover .side-project-caption__name {
       text-decoration-color: var(--link-line-color-active);
+      text-underline-offset: var(--link-line-offset);
     }
   }
 </style>

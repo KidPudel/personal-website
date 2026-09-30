@@ -63,16 +63,15 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
     padding-block: 0.65rem;
     margin-block: -0.3rem;
     color: var(--color-ink);
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
+    text-decoration: underline var(--link-line-width) transparent;
+    text-underline-offset: var(--link-line-offset-hidden);
+    transition: var(--link-line-transition);
   }
 
   .writing-list__link:hover,
   .writing-list__link:focus-visible {
     text-decoration-color: var(--link-line-color-active);
+    text-underline-offset: var(--link-line-offset);
   }
 
   .writing-list__link:focus-visible {

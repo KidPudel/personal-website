@@ -179,24 +179,18 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 
   .personal-note__trigger {
     color: inherit;
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
+    /* Words inside a sentence: a faint line at rest so they can be found. */
+    text-decoration: underline var(--link-line-width) var(--link-line-color);
     text-underline-offset: var(--link-line-offset);
     cursor: pointer;
     touch-action: manipulation;
-    transition: text-decoration-color 150ms ease;
+    transition: var(--link-line-transition);
     -webkit-tap-highlight-color: transparent;
   }
 
   .personal-note__trigger:hover,
-  .personal-note__trigger:focus-visible {
-    text-decoration-color: var(--link-line-color-active);
-  }
-
+  .personal-note__trigger:focus-visible,
   .personal-note__trigger[aria-expanded='true'] {
-    text-decoration-style: solid;
     text-decoration-color: var(--link-line-color-active);
   }
 

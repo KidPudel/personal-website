@@ -161,12 +161,20 @@
     /* Where the header's controls start. The homepage introduction starts a
        fixed step below them. */
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
-    /* One underline for every link and interactive word on the site. */
-    --link-line-style: dotted;
-    --link-line-width: 1.5px;
-    --link-line-offset: 0.3em;
-    --link-line-color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+    /* One underline for every link and interactive word on the site.
+       Standalone links (navigation, captions, footers) show no line until
+       hover or keyboard focus, when it fades in and rises from
+       --link-line-offset-hidden into place. Words inside sentences keep the
+       faint --link-line-color at rest, so they can be found without hovering,
+       and it darkens on hover. */
+    --link-line-width: 1px;
+    --link-line-offset: 0.26em;
+    --link-line-offset-hidden: 0.5em;
+    --link-line-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
     --link-line-color-active: var(--color-ink);
+    --link-line-transition:
+      text-decoration-color 240ms ease,
+      text-underline-offset 320ms var(--ease-out);
 
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
@@ -180,6 +188,14 @@
   @media (max-width: 52rem) {
     :root {
       --page-gutter: clamp(1.15rem, 5.2vw, 1.4rem);
+    }
+  }
+
+  /* The line still fades in, but in place: it moves to its offset while
+     still transparent. */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --link-line-transition: text-decoration-color 240ms ease;
     }
   }
 

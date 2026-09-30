@@ -2,6 +2,17 @@
 
 Last updated: 2026-09-30
 
+## Links without the dotted underline
+
+- The dotted underline is gone, at Igor's request, as dated. The `--link-line-*` tokens now define a 1 px solid line with two behaviors:
+  - Standalone links (header contact panel, language switch, work and side-project captions, footer contact, writing list, case-study footer and film links) show no line at rest. On hover or keyboard focus it fades in and rises from 0.5 em to 0.26 em below the text (with reduced motion, it only fades).
+  - Words inside sentences (the personal note's three words, the blog chart's source link, any link in case-study or blog prose) keep a faint line at 30% ink, since nobody hovers random words and phones can't hover. It turns full ink on hover and while a personal-note word is open. Bold was considered and left out: it reads as emphasis, not as something that opens.
+- On touch screens the work and side-project captions keep the faint line, because the caption is the only way from the homepage into a case study.
+- "Get in touch" and "Home" have no line at all: their drawn icon replaces the label on hover. "joyful" keeps its drawn circle and gains the line only on hover.
+- The language to switch to is now grey (ink on hover) instead of ink with a line, since the line was its only marker.
+- A line drawn left to right on hover was tried first: it crossed descenders and landed at the bottom of flex links instead of under their text.
+- Verified with a link audit of every route on desktop and a touch phone, and hover screenshots of each kind; Astro diagnostics, the media contract, and the production build pass.
+
 ## Desktop introduction spacing
 
 - The introduction now starts a fixed 2rem below the header's row (`--navigation-top`, now a shared token) instead of 18vh down. The gap from the header links to the handwriting is 49 px at every desktop size; it used to range from 25 px (1280×720) to 69 px (1728×1000).

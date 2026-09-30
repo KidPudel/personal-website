@@ -12,8 +12,10 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .editorial-case-study figure { margin: 36px 0; min-width: 0; }
 .editorial-case-study img { display: block; max-width: 100%; height: auto; }
 .editorial-case-study figcaption { margin-top: 16px; color: #656560; font-size: var(--study-small); line-height: 1.6; }
-.editorial-case-study a { color: inherit; text-decoration-line: underline; text-decoration-style: var(--link-line-style); text-decoration-color: var(--link-line-color); text-decoration-thickness: var(--link-line-width); text-underline-offset: var(--link-line-offset); }
-.editorial-case-study a:is(:hover, :focus-visible) { text-decoration-color: var(--link-line-color-active); }
+/* Links inside sentences keep a faint line; standalone ones (the footer, the film) show it only on hover and focus. */
+.editorial-case-study a { color: inherit; text-decoration: underline var(--link-line-width) var(--link-line-color); text-underline-offset: var(--link-line-offset); transition: var(--link-line-transition); }
+.editorial-case-study :is(.case-footer, .hero-introduction) a { text-decoration-color: transparent; text-underline-offset: var(--link-line-offset-hidden); }
+.editorial-case-study a:is(:hover, :focus-visible) { text-decoration-color: var(--link-line-color-active); text-underline-offset: var(--link-line-offset); }
 .editorial-case-study [id] { scroll-margin-top: 40px; }
 .editorial-case-study .hero { padding: 48px 0 50px; }
 .editorial-case-study .hero__line { color: #656560; }

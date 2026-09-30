@@ -41,12 +41,9 @@ const [email, ...elsewhere] = connectLinks(locale);
     letter-spacing: -0.02em;
     line-height: 1.15;
     overflow-wrap: anywhere;
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: 0.2em;
-    transition: text-decoration-color 150ms ease;
+    /* The display face sits its line closer, and rises less, than body text. */
+    --link-line-offset: 0.2em;
+    --link-line-offset-hidden: 0.36em;
   }
 
   .closing-contact__links {
@@ -66,17 +63,18 @@ const [email, ...elsewhere] = connectLinks(locale);
     min-height: 2.75rem;
     align-items: center;
     color: inherit;
-    text-decoration-line: underline;
-    text-decoration-style: var(--link-line-style);
-    text-decoration-color: var(--link-line-color);
-    text-decoration-thickness: var(--link-line-width);
-    text-underline-offset: var(--link-line-offset);
-    transition: text-decoration-color 150ms ease;
+  }
+
+  .closing-contact a {
+    text-decoration: underline var(--link-line-width) transparent;
+    text-underline-offset: var(--link-line-offset-hidden);
+    transition: var(--link-line-transition);
   }
 
   .closing-contact a:hover,
   .closing-contact a:focus-visible {
     text-decoration-color: var(--link-line-color-active);
+    text-underline-offset: var(--link-line-offset);
   }
 
   .closing-contact a:focus-visible {
