@@ -19,6 +19,7 @@ Last updated: 2026-09-29
 - 22bytes moved into design experience as Game Designer: nested core loops and unlock chains across 7 small games, strategy shaped through constraints, and Igor's playtest numbers (2 to 5 minute sessions, day-1 retention 27-30%, day-7 4-10%, 2 of 7 greenlit).
 - Header: "Junior" level, research kept, Telegram added, city only. The Russian version drops LinkedIn, which is blocked in Russia. The internship target goes into cover letters and hh.ru settings, not the master. No photo in the PDFs; the photo belongs on hh.ru and the portfolio.
 - One typeface (Arial) throughout. Entries never split across pages; both PDFs run about 1.2 pages, with all design work on page 1.
+- Synced with the revised case studies (2026-09-30): SuperGood cites about 150 reviews, contextual inquiry with 10 people ordering at work, price and sold-out notices on reorder, and Igor's own design system with light and dark themes. Observatory's interviews are customer-development interviews run to test the problem. Instagram now has 9 interviews, a journey map, and the 6, 7 and 5 of 9 findings. Skills name job stories (JTBD) and customer journey maps, which the case studies now evidence.
 
 ## Resume revision: STAR results and sourced metrics
 

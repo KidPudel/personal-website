@@ -23,10 +23,10 @@ CONTENT = {
         'experience': 'DESIGN EXPERIENCE',
         'experience_entries': [
             ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer, food delivery app | Aug 2023 - Jul 2024', 'supergood', [
-                'As the only designer and engineer, owned ordering end to end and worked directly with the business. Public reviews doubted both the app and whether the food was worth its price.',
-                'Cut reordering a usual meal from 60 s to 5 s with one-tap repeats from order history, after review analysis and observation showed people rebuilding orders dish by dish. In a comparative usability test with 10 colleagues, success rose from 2 to 10 of 10 and ease from 3 to 6 of 7.',
+                'As the only designer and engineer, owned ordering end to end and worked directly with the business. Reviews doubted the app and the food’s value, so I analysed about 150 of them and watched and interviewed 10 people ordering at work to see where they hesitated.',
+                'Cut reordering a usual meal from 60 s to 5 s with one-tap repeats from order history, with notices for changed prices and sold-out dishes. In a comparative usability test with 10 colleagues, success rose from 2 to 10 of 10 and ease from 3 to 6 of 7.',
                 'Made time and cost visible before paying: a pinned bar with delivery time, item count and total, plus weight, ingredients and nutrition on every dish, so nobody has to leave the menu to check.',
-                'Rebuilt separate iOS and Android apps as one Flutter app in 11 months, with no handoff: menu, basket, payment with 3DS, maps and tracking, loyalty. The store rating rose from 3.1 to 3.7, and new reviews praised the app.',
+                'Rebuilt separate iOS and Android apps as one Flutter app in 11 months, with no handoff, on a design system I built with light and dark themes: menu, basket, 3DS payment, maps, tracking, loyalty. The store rating rose from 3.1 to 3.7, and new reviews praised the app.',
             ]),
             ('22bytes', 'Game Designer / Prototype Developer, casual and hyper-casual mobile games | Apr 2023 - Aug 2023', None, [
                 'Designed core loops for 7 small games (puzzles, light strategy, short RPGs): fast nested loops inside longer ones, and chains that unlock step by step.',
@@ -37,7 +37,7 @@ CONTENT = {
         'projects_title': 'SELECTED PROJECTS',
         'projects': [
             ('Observatory', 'Personal macOS app, built with AI coding agents from my specs, released on GitHub | Jul - Aug 2026', 'observatory', [
-                'Grouped processes under their app, so Brave Browser reads as 1 row instead of 17. All five interviews started from an app, never from a process.',
+                'Five customer-development interviews showed the problem was worth solving. All started from an app, never a process, so I grouped processes by app: Brave Browser reads as 1 row, not 17.',
                 'Cut top-level sections from 3 to 2 by moving results to where a test ends, and started test setup from the app instead of the recording mode.',
                 'Three developer colleagues have used it for two months to compare app versions and apps of one kind, such as the terminals Ghostty, kitty and Alacritty.',
             ]),
@@ -47,7 +47,7 @@ CONTENT = {
                 'Shipped the learner loop before the teacher tools in the brief. Students valued having one place instead of three tools and missed pronunciation practice, the next step.',
             ]),
             ('Instagram Saves redesign', 'Independent concept, coded prototype | 2026', 'instagram-saves-redesign', [
-                'Six of nine interviewees could not find saved posts, so I put search inside Saved instead of asking people to file more, the work they already skip.',
+                'Nine interviews and a journey map: six people could not find saved posts, seven moved anything important to Notes, Notion or Maps, and five had given up on filing. So search inside Saved came first, ahead of more organising.',
                 'Collection suggestions turn a new collection from two taps and a name into one tap, with the full list kept for wrong guesses. React prototype, live on my site.',
             ]),
         ],
@@ -56,7 +56,7 @@ CONTENT = {
             ('Paycos', 'Software Developer, contract | Jul 2024 - Dec 2025', 'Built payment and order-processing services. Cut PDF receipt processing from 6-10 s to 650 ms by extracting text directly, keeping OCR for images.'),
         ],
         'skills_title': 'SKILLS',
-        'skills': 'Research: user interviews, customer development, contextual inquiry, comparative usability testing, review analysis, playtesting, synthesis, competitor analysis, CJM, JTBD.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, game loops and progression, motion. Figma, Material Design, Apple HIG.\nAI and code: AI-assisted features (suggestions, semantic search); building with AI coding agents (Claude Code, Codex). React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
+        'skills': 'Research: user interviews, customer development, contextual inquiry, comparative usability testing, review analysis, playtesting, job stories (JTBD), customer journey maps, competitor analysis, synthesis.\nDesign: UX/UI, information architecture, user flows, wireframes, interaction design, prototyping, design systems, game loops and progression, motion. Figma, Material Design, Apple HIG.\nAI and code: AI-assisted features (suggestions, semantic search); building with AI coding agents (Claude Code, Codex). React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
         'education_title': 'EDUCATION AND LANGUAGES',
         'education': 'Programming in Computer Systems, MFUA College | 2019 - 2023',
         'languages': 'Russian native, English B2',
@@ -68,10 +68,10 @@ CONTENT = {
         'experience': 'ОПЫТ В ДИЗАЙНЕ',
         'experience_entries': [
             ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик, приложение доставки еды | август 2023 - июль 2024', 'supergood', [
-                'Единственный дизайнер и разработчик: отвечал за заказ целиком и работал напрямую с бизнесом. В отзывах сомневались и в приложении, и в том, стоит ли еда своих денег.',
-                'Сократил повтор привычного заказа с 60 с до 5 с повтором в одно касание из истории, после того как анализ отзывов и наблюдение показали, что люди собирают заказ по одному блюду. В сравнительном юзабилити-тесте на 10 коллегах успешность выросла с 2 до 10 из 10, оценка лёгкости с 3 до 6 из 7.',
-                'Сделал сроки и цену видимыми до оплаты: закреплённая панель со временем доставки, числом позиций и суммой, а в карточке блюда вес, состав и КБЖУ, чтобы не приходилось уходить из меню ради проверки.',
-                'Пересобрал отдельные приложения для iOS и Android в одно на Flutter за 11 месяцев, без передачи макетов: меню, корзина, оплата с 3DS, карты и отслеживание, лояльность. Рейтинг в магазинах вырос с 3,1 до 3,7, новые отзывы хвалили приложение.',
+                'Единственный дизайнер и разработчик: отвечал за заказ целиком и работал напрямую с бизнесом. В отзывах сомневались и в приложении, и в цене еды: разобрал около 150 отзывов, понаблюдал и поговорил с 10 людьми, заказывавшими на работе.',
+                'Сократил повтор привычного заказа с 60 с до 5 с повтором в одно касание из истории, с уведомлениями об изменившейся цене и закончившихся блюдах. В сравнительном юзабилити-тесте на 10 коллегах успешность выросла с 2 до 10 из 10, оценка лёгкости с 3 до 6 из 7.',
+                'Сделал сроки и цену видимыми до оплаты: закреплённая панель со временем доставки, числом позиций и суммой, а в карточке блюда вес, состав и КБЖУ, чтобы не уходить из меню ради проверки.',
+                'Пересобрал отдельные приложения для iOS и Android в одно на Flutter за 11 месяцев, без передачи макетов, на своей дизайн-системе со светлой и тёмной темами: меню, корзина, оплата с 3DS, карты, отслеживание, лояльность. Рейтинг вырос с 3,1 до 3,7, новые отзывы хвалили приложение.',
             ]),
             ('22bytes', 'Гейм-дизайнер / разработчик прототипов, казуальные мобильные игры | апрель 2023 - август 2023', None, [
                 'Спроектировал игровые циклы для 7 небольших игр (головоломки, лёгкие стратегии, короткие RPG): быстрые вложенные циклы внутри длинных и цепочки, которые открываются шаг за шагом.',
@@ -82,17 +82,17 @@ CONTENT = {
         'projects_title': 'ИЗБРАННЫЕ ПРОЕКТЫ',
         'projects': [
             ('Observatory', 'Личный проект на macOS, собран с AI-агентами по моим спецификациям, релиз на GitHub | июль - август 2026', 'observatory', [
-                'Сгруппировал процессы по приложениям: Brave Browser занимает 1 строку вместо 17. Все пять интервью начинались с приложения, а не с процесса.',
+                'Пять CustDev-интервью подтвердили, что проблема стоит решения. Все начинались с приложения, а не с процесса, поэтому процессы сгруппированы по приложениям: Brave Browser занимает 1 строку вместо 17.',
                 'Сократил разделы верхнего уровня с 3 до 2, перенеся результаты туда, где заканчивается тест, а настройку теста начал с выбора приложения, а не режима записи.',
                 'Три коллеги-разработчика два месяца сравнивают в нём версии приложений и приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
             ]),
             ('Две палочки', 'Продукт в Telegram для изучения китайского по исследованию дипломной работы | 2024', 'two-sticks', [
                 'Ноль установок: выбрал Telegram вместо отдельного приложения, потому что ученики и так в нём, а письмо от руки сделал через Telegram Web App. Спроектировал и собрал бота, API и Web App.',
                 'Один список сохранённого питает карточки, листы-прописи и письмо. Карточки открываются после пяти слов, чтобы в каждом тесте были настоящие неправильные ответы.',
-                'Сначала выпустил цикл ученика, а инструменты преподавателя из брифа отложил. Студентам понравилось одно место вместо трёх инструментов, не хватало практики произношения, это следующий шаг.',
+                'Сначала выпустил цикл ученика, а инструменты преподавателя из брифа отложил. Студентам понравилось одно место вместо трёх инструментов; не хватило практики произношения.',
             ]),
             ('Поиск сохранённых публикаций Instagram', 'Самостоятельный концепт, прототип в коде | 2026', 'instagram-saves-redesign', [
-                'Шесть из девяти собеседников не могли найти сохранённое, поэтому я встроил поиск в «Сохранённое», а не заставлял людей больше сортировать: эту работу они и так пропускают.',
+                'Девять интервью и карта пути пользователя: шестеро не могли найти сохранённое, семеро уносили всё важное в Заметки, Notion или Карты, пятеро бросили сортировать. Поэтому первым сделал поиск в «Сохранённом», а не больше сортировки.',
                 'Подсказки коллекций превращают создание новой коллекции из двух касаний и ввода названия в одно касание, а полный список остаётся на случай ошибки. Прототип на React работает на моём сайте.',
             ]),
         ],
@@ -101,7 +101,7 @@ CONTENT = {
             ('Paycos', 'Разработчик ПО, контракт | июль 2024 - декабрь 2025', 'Разрабатывал сервисы оплаты и обработки заказов. Сократил обработку PDF-чеков с 6-10 с до 650 мс: извлекал текст напрямую, оставив OCR для изображений.'),
         ],
         'skills_title': 'НАВЫКИ',
-        'skills': 'Исследования: CustDev и глубинные интервью, контекстное исследование, сравнительное юзабилити-тестирование, анализ отзывов, плейтесты, синтез, конкурентный анализ, CJM, JTBD.\nДизайн: UX/UI, информационная архитектура, сценарии, вайрфреймы, прототипирование, дизайн-система, игровые циклы и прогрессия, моушн. Figma, Material Design, Apple HIG.\nAI и код: AI-функции (подсказки, семантический поиск), разработка с AI-агентами (Claude Code, Codex). React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
+        'skills': 'Исследования: CustDev и глубинные интервью, контекстное исследование, сравнительное юзабилити-тестирование, анализ отзывов, плейтесты, job stories (JTBD), CJM, конкурентный анализ, синтез.\nДизайн: UX/UI, информационная архитектура, сценарии, вайрфреймы, прототипирование, дизайн-система, игровые циклы и прогрессия, моушн. Figma, Material Design, Apple HIG.\nAI и код: AI-функции (подсказки, семантический поиск), разработка с AI-агентами (Claude Code, Codex). React, Flutter, HTML/CSS/JS, SwiftUI; Go, Python.',
         'education_title': 'ОБРАЗОВАНИЕ И ЯЗЫКИ',
         'education': 'МФЮА, «Программирование в компьютерных системах» | 2019 - 2023',
         'languages': 'английский B2',
