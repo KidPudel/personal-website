@@ -1,4 +1,5 @@
 import { openingMotion } from './opening-motion';
+import { syncPageTopColor } from '../../../lib/page-top-color';
 
 class OpeningSequence extends HTMLElement {
   private abort?: AbortController;
@@ -85,6 +86,7 @@ class OpeningSequence extends HTMLElement {
       const value = opacity.toFixed(2);
       if (root.style.getPropertyValue('--page-top-sky') !== value) {
         root.style.setProperty('--page-top-sky', value);
+        syncPageTopColor();
       }
       if (sky.getAnimations().some((animation) => animation.playState === 'running')) {
         this.pageTopFrame = window.requestAnimationFrame(syncPageTop);
@@ -221,6 +223,7 @@ class OpeningSequence extends HTMLElement {
     }
 
     this.setAttribute('data-opening-live', '');
+    syncPageTopColor();
     documentSurface.inert = true;
     documentSurface.setAttribute('aria-hidden', 'true');
     header.inert = true;
@@ -399,6 +402,7 @@ class OpeningSequence extends HTMLElement {
     window.cancelAnimationFrame(this.pageTopFrame);
     this.pageTopFrame = 0;
     document.documentElement.style.removeProperty('--page-top-sky');
+    syncPageTopColor();
     window.clearTimeout(this.greetingTimer);
     this.greetingTimer = 0;
     window.clearTimeout(this.handoffTimer);

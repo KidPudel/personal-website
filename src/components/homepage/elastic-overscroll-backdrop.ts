@@ -1,5 +1,6 @@
 import { clamp, smooth } from '../../lib/motion';
 import { sampleEssenceColor, sampleEssenceNoise } from './opening/pigment-field';
+import { syncPageTopColor } from '../../lib/page-top-color';
 
 type Placement = 'top' | 'bottom';
 
@@ -196,6 +197,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       const topPullValue = topPull.toFixed(2);
       if (document.documentElement.style.getPropertyValue('--page-top-pull') !== topPullValue) {
         document.documentElement.style.setProperty('--page-top-pull', topPullValue);
+        syncPageTopColor();
       }
     };
 
@@ -557,6 +559,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
     delete this.dataset.enhanced;
     document.documentElement.style.removeProperty('--page-top-pull');
+    syncPageTopColor();
     document.documentElement.removeAttribute('data-elastic-edge');
     document.documentElement.removeAttribute('data-refreshing');
   }

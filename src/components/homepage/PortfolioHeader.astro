@@ -16,7 +16,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 ---
 
 <portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--with-home": showHome }]} data-site-header>
-  <span class="portfolio-navigation__status-blur" aria-hidden="true"></span>
   <nav class="site-navigation" aria-label={t('Primary navigation', 'Основная навигация')}>
     {showHome && <a class="navigation-action drawn-icon-trigger" href={localePath('/', locale)}>
       <span class="navigation-action__label">{t('Home', 'Главная')}</span>
@@ -169,23 +168,18 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
      Safari 26 on iPhone fills the status bar with a solid color whenever a
      visible, full-width fixed element touches the top of the viewport. The
      box itself is hidden and only its band and controls are shown, so Safari
-     keeps the page visible, softly blurred, behind the clock instead.
-     On iOS the box starts beneath the status bar so the status blur below
-     can sit there; the padding keeps the controls put. */
+     keeps the page visible, softly blurred, behind the clock instead. */
   .portfolio-navigation {
     position: fixed;
     z-index: 200;
-    top: calc(-1 * var(--browser-bleed-top));
+    top: 0;
     right: 0;
     left: 0;
     display: block;
     visibility: hidden;
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
     --navigation-bottom: 1.3rem;
-    padding:
-      calc(var(--navigation-top) + var(--browser-bleed-top))
-      var(--page-inset)
-      var(--navigation-bottom);
+    padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom);
     pointer-events: none;
     color: var(--color-ink);
     font-family: var(--font-reading);
@@ -210,7 +204,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
   .portfolio-navigation::after {
     position: absolute;
     z-index: -1;
-    inset: var(--browser-bleed-top) 0 calc(-1 * var(--contact-surface-bottom));
+    inset: 0 0 calc(-1 * var(--contact-surface-bottom));
     content: '';
     pointer-events: none;
     visibility: visible;
@@ -239,38 +233,11 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 35%, transparent 75%);
   }
 
-  /* The band does not show beneath the iPhone status bar, while the page and
-     the opening sky's video do. This strip continues the band's top edge
-     there (its tint over its heaviest blur) using only a flat tint and a
-     backdrop blur, with no gradient or mask. */
-  .portfolio-navigation__status-blur {
-    display: none;
-  }
-
-  @supports (-webkit-touch-callout: none) {
-    .portfolio-navigation__status-blur {
-      position: absolute;
-      z-index: -1;
-      top: 0;
-      right: 0;
-      left: 0;
-      display: block;
-      height: var(--browser-bleed-top);
-      background-color: color-mix(in srgb, var(--color-field) 64%, transparent);
-      backdrop-filter: blur(16px) saturate(1.05);
-      -webkit-backdrop-filter: blur(16px) saturate(1.05);
-      pointer-events: none;
-      visibility: visible;
-      transition: opacity 220ms var(--ease-out);
-    }
-  }
-
   /* Over the homepage sky the controls need no backing, so the band only
      appears once the page scrolls past the introduction or the contact
      links open. */
   .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::before,
-  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after,
-  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open])) .portfolio-navigation__status-blur {
+  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after {
     opacity: 0;
   }
 
@@ -506,7 +473,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   @media (max-width: 38rem) {
     .portfolio-navigation {
-      padding: calc(0.45rem + var(--browser-bleed-top)) 0.7rem 1rem;
+      padding: 0.45rem 0.7rem 1rem;
     }
 
     .portfolio-navigation-spacer {
