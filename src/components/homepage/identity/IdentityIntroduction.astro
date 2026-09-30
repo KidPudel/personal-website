@@ -62,7 +62,9 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     justify-content: start;
     align-content: start;
     align-items: start;
-    padding: clamp(7rem, 18vh, 11rem) var(--page-inset) 0.75rem;
+    /* A fixed step below the header's row (its offset and 2.75rem controls),
+       so the gap under the header is the same at every screen height. */
+    padding: calc(var(--navigation-top) + 2.75rem + 2rem) var(--page-inset) 0.75rem;
     overflow: visible;
     text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
@@ -223,17 +225,17 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
   }
 
   @media (max-height: 48rem) and (min-width: 52.01rem) {
-    .identity {
-      gap: 2.5rem;
-      padding-top: clamp(7rem, 18vh, 11rem);
-    }
-
     .identity__role {
       font-size: clamp(2.2rem, 3.2vw, 3.15rem);
     }
 
+    /* The title stays about one and a half times as far from the statements
+       as they are from each other, as on taller screens. The measure matches
+       theirs in characters (35rem at 1.16rem), so lines break in the same
+       places instead of leaving "code." alone on the last line. */
     .identity__summary {
-      margin-top: 1.875rem;
+      max-width: 30em;
+      margin-top: 2.5rem;
       font-size: 0.95rem;
     }
   }

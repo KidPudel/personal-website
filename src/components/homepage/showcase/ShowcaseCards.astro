@@ -143,7 +143,11 @@ const cards = caseStudies
   .showcase {
     display: block;
     width: 100%;
-    padding: clamp(6rem, 11vw, 10rem) 0 clamp(3.5rem, 7vw, 6.5rem);
+    /* Tighter than the gaps between the later sections: those sit between
+       full-width cards, while this one sits under the introduction's narrow
+       text and would join the sky beside it into one empty area. It stays
+       over twice the introduction's own largest gap. */
+    padding: clamp(6rem, 7vw, 7rem) 0 clamp(3.5rem, 7vw, 6.5rem);
   }
 
   .showcase__heading,

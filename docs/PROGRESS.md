@@ -2,6 +2,13 @@
 
 Last updated: 2026-09-30
 
+## Desktop introduction spacing
+
+- The introduction now starts a fixed 2rem below the header's row (`--navigation-top`, now a shared token) instead of 18vh down. The gap from the header links to the handwriting is 49 px at every desktop size; it used to range from 25 px (1280×720) to 69 px (1728×1000).
+- The gap from the introduction to "my work" is 104 to 121 px instead of 150 to 169 px. The later section gaps (about 170 to 190 px) stay as they are: they sit between full-width cards, while this one sits under narrow text and joined the empty sky beside it. It stays over twice the introduction's own largest gap (50 px), so "my work" still reads as a new section. At 1728×1000 about 211 px of the work cards show in the first screen (was 143 px); at 1440×900, 138 px (was 74 px).
+- Screens up to 48rem tall: the title now sits 38 px above the statements, which are 25 px apart (it was 28 px, too close to read as separate). The statements keep the taller screens' line length in characters, so "code." no longer sits alone on the last line.
+- Phones and tablets (up to 52rem) are pixel-identical at 320 to 832 px in English and Russian. The opening still lands on the handwriting; inner pages' header offset is unchanged. Astro diagnostics, the media contract, and the production build pass.
+
 ## Contact at the end of the page, with Telegram
 
 - The homepage contact is now the page's footer (`<footer>`, outside `main`) and sits at the bottom: the personal note's pause stays above it, and only 2.5 to 3.5rem remain below instead of 8 to 12rem. On narrow screens it ends just above the fixed balloon, which hangs in the corner beneath it.

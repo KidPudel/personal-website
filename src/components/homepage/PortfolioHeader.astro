@@ -177,7 +177,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
     right: 0;
     left: 0;
     display: block;
-    --navigation-top: clamp(1.25rem, 6vw, 5rem);
     --navigation-bottom: 1.3rem;
     padding: var(--navigation-top) var(--page-inset) var(--navigation-bottom);
     pointer-events: none;
@@ -262,7 +261,6 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
 
   /* Reserves the bar's height so page content starts below it. */
   .portfolio-navigation-spacer {
-    --navigation-top: clamp(1.25rem, 6vw, 5rem);
     --navigation-bottom: 1.3rem;
     height: calc(var(--navigation-top) + 2.75rem + var(--navigation-bottom));
   }

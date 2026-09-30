@@ -158,6 +158,9 @@
        --page-inset as padding so they line up with that frame. */
     --page-frame: 130rem;
     --page-inset: max(var(--page-gutter), calc((100% - var(--page-frame)) / 2));
+    /* Where the header's controls start. The homepage introduction starts a
+       fixed step below them. */
+    --navigation-top: clamp(1.25rem, 6vw, 5rem);
     /* One underline for every link and interactive word on the site. */
     --link-line-style: dotted;
     --link-line-width: 1.5px;
