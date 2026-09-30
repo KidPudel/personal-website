@@ -12,10 +12,10 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .editorial-case-study figure { margin: 36px 0; min-width: 0; }
 .editorial-case-study img { display: block; max-width: 100%; height: auto; }
 .editorial-case-study figcaption { margin-top: 16px; color: #656560; font-size: var(--study-small); line-height: 1.6; }
-/* Links carry the drawn line (.link-line). A link in running ink text can't be set apart by color, so it also keeps the faint line at rest, with the ink line drawn over it on hover. None exists yet; this covers future writing. */
+/* Links carry the marker swipe (.link-mark). A link in running ink text can't be set apart by color, so it also keeps the faint mark at rest and the swipe is drawn over it on hover. None exists yet; this covers future writing. */
 .editorial-case-study a { color: inherit; text-decoration: none; }
-.editorial-case-study :is(p, li, blockquote) a:not([class]) { padding-bottom: var(--link-line-gap); background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0% var(--link-line-width), linear-gradient(var(--link-line-color), var(--link-line-color)) no-repeat 0 100% / 100% var(--link-line-width); transition: background-size var(--link-line-undraw); }
-.editorial-case-study :is(p, li, blockquote) a:not([class]):is(:hover, :focus-visible) { background-position: 0 100%, 0 100%; background-size: 100% var(--link-line-width), 100% var(--link-line-width); transition: background-size var(--link-line-draw); }
+.editorial-case-study :is(p, li, blockquote) a:not([class]) { background: var(--link-mark-rest) no-repeat 0 calc(100% - 0.02em) / 100% 0.62em; }
+.editorial-case-study :is(p, li, blockquote) a:not([class]):is(:hover, :focus-visible) { animation: link-mark-draw var(--link-mark-draw) step-end forwards; }
 .editorial-case-study [id] { scroll-margin-top: 40px; }
 .editorial-case-study .hero { padding: 48px 0 50px; }
 .editorial-case-study .hero__line { color: #656560; }

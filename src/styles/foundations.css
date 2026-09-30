@@ -43,35 +43,33 @@
     transform: translateY(0);
   }
 
-  /* The link line (see tokens.css). It goes on the inline element holding a
+  /* The link mark (see tokens.css). It goes on the inline element holding a
      link's text, or on the link itself when that is inline, so it follows
-     the text across line breaks: drawn along the first line, then the next.
-     The padding lowers the painted strip below the descenders without
-     moving the text; --link-line-raise lifts it for faces whose box runs
-     deep below them. */
-  .link-line {
-    padding-bottom: var(--link-line-gap);
-    background-image: linear-gradient(currentColor, currentColor);
+     the text across line breaks. It paints behind the lower part of the
+     letters; --link-mark-lift raises it for faces whose box runs deeper. The
+     frames stretch to the text's width; each is redrawn, as in stop-motion. */
+  .link-mark {
     background-repeat: no-repeat;
-    background-position: 100% calc(100% - var(--link-line-raise, 0em));
-    background-size: 0% var(--link-line-width);
-    transition: background-size var(--link-line-undraw);
+    background-position: 0 calc(100% - var(--link-mark-lift, 0.02em));
+    background-size: 100% 0.62em;
   }
 
-  :is(a, button):focus-visible .link-line,
-  .link-line:is(a, button):focus-visible {
-    background-position-x: 0;
-    background-size: 100% var(--link-line-width);
-    transition: background-size var(--link-line-draw);
+  :is(a, button):focus-visible .link-mark,
+  .link-mark:is(a, button):focus-visible {
+    animation: link-mark-draw var(--link-mark-draw) step-end forwards;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    :is(a, button):hover .link-line,
-    .link-line:is(a, button):hover {
-      background-position-x: 0;
-      background-size: 100% var(--link-line-width);
-      transition: background-size var(--link-line-draw);
+    :is(a, button):hover .link-mark,
+    .link-mark:is(a, button):hover {
+      animation: link-mark-draw var(--link-mark-draw) step-end forwards;
     }
+  }
+
+  @keyframes link-mark-draw {
+    0% { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 16' preserveAspectRatio='none'%3E%3CclipPath id='c'%3E%3Crect width='136.0' height='16'/%3E%3C/clipPath%3E%3Cpath clip-path='url(%23c)' d='M1.0 3.38L11.0 3.04L20.9 2.68L30.8 2.47L40.8 2.50L50.8 2.70L60.7 2.87L70.6 2.81L80.6 2.45L90.5 1.88L100.5 1.30L110.5 0.91L120.4 0.84L130.3 1.02L140.3 1.25L150.3 1.36L160.2 1.22L170.2 0.90L180.1 0.59L190.0 0.49L200.0 0.70L210.0 1.17L219.9 1.70L229.8 2.08L239.8 2.18L249.8 2.02L259.7 1.78L269.7 1.66L279.6 1.77L289.6 2.10L299.5 2.44L309.4 2.60L319.4 2.45L329.3 2.00L339.3 1.44L349.3 0.98L359.2 0.78L369.2 0.83L379.1 0.98L389.1 1.03L399.0 0.83L399.0 14.25L389.1 14.36L379.1 14.30L369.2 14.13L359.2 13.98L349.3 13.94L339.3 14.06L329.3 14.29L319.4 14.56L309.4 14.73L299.5 14.74L289.6 14.55L279.6 14.23L269.7 13.89L259.7 13.64L249.8 13.55L239.8 13.62L229.8 13.78L219.9 13.90L210.0 13.91L200.0 13.75L190.0 13.46L180.1 13.15L170.2 12.92L160.2 12.87L150.3 13.02L140.3 13.30L130.3 13.60L120.4 13.82L110.5 13.89L100.5 13.81L90.5 13.66L80.6 13.57L70.6 13.61L60.7 13.83L50.8 14.19L40.8 14.58L30.8 14.90L20.9 15.04L11.0 14.99L1.0 14.82Z' fill='%238c93ee' fill-opacity='0.34'/%3E%3C/svg%3E"); }
+    33.33% { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 16' preserveAspectRatio='none'%3E%3CclipPath id='c'%3E%3Crect width='280.0' height='16'/%3E%3C/clipPath%3E%3Cpath clip-path='url(%23c)' d='M1.0 2.54L11.0 2.34L20.9 2.39L30.8 2.55L40.8 2.63L50.8 2.46L60.7 2.02L70.6 1.43L80.6 0.93L90.5 0.69L100.5 0.77L110.5 1.06L120.4 1.35L130.3 1.45L140.3 1.31L150.3 1.04L160.2 0.84L170.2 0.88L180.1 1.22L190.0 1.75L200.0 2.26L210.0 2.53L219.9 2.50L229.8 2.25L239.8 1.96L249.8 1.84L259.7 1.96L269.7 2.24L279.6 2.48L289.6 2.48L299.5 2.16L309.4 1.60L319.4 1.02L329.3 0.62L339.3 0.51L349.3 0.63L359.2 0.81L369.2 0.83L379.1 0.61L389.1 0.20L399.0 -0.19L399.0 13.34L389.1 13.41L379.1 13.33L369.2 13.18L359.2 13.06L349.3 13.09L339.3 13.30L329.3 13.65L319.4 14.05L309.4 14.38L299.5 14.54L289.6 14.52L279.6 14.37L269.7 14.19L259.7 14.10L249.8 14.15L239.8 14.35L229.8 14.60L219.9 14.81L210.0 14.86L200.0 14.72L190.0 14.42L180.1 14.06L170.2 13.77L160.2 13.63L150.3 13.66L140.3 13.80L130.3 13.95L120.4 14.01L110.5 13.90L100.5 13.66L90.5 13.35L80.6 13.09L70.6 13.00L60.7 13.10L50.8 13.36L40.8 13.68L30.8 13.94L20.9 14.07L11.0 14.04L1.0 13.91Z' fill='%238c93ee' fill-opacity='0.34'/%3E%3C/svg%3E"); }
+    66.67%, 100% { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 16' preserveAspectRatio='none'%3E%3Cpath d='M1.0 2.91L11.0 3.20L20.9 3.17L30.8 2.91L40.8 2.60L50.8 2.45L60.7 2.54L70.6 2.79L80.6 3.02L90.5 3.02L100.5 2.71L110.5 2.16L120.4 1.56L130.3 1.15L140.3 1.03L150.3 1.15L160.2 1.33L170.2 1.39L180.1 1.20L190.0 0.82L200.0 0.44L210.0 0.26L219.9 0.40L229.8 0.81L239.8 1.32L249.8 1.71L259.7 1.82L269.7 1.69L279.6 1.48L289.6 1.39L299.5 1.54L309.4 1.92L319.4 2.34L329.3 2.58L339.3 2.51L349.3 2.14L359.2 1.63L369.2 1.20L379.1 1.01L389.1 1.06L399.0 1.21L399.0 14.67L389.1 14.64L379.1 14.43L369.2 14.12L359.2 13.81L349.3 13.62L339.3 13.60L329.3 13.71L319.4 13.87L309.4 13.96L299.5 13.90L289.6 13.68L279.6 13.35L269.7 13.02L259.7 12.82L249.8 12.80L239.8 12.96L229.8 13.23L219.9 13.48L210.0 13.63L200.0 13.62L190.0 13.49L180.1 13.32L170.2 13.25L160.2 13.34L150.3 13.60L140.3 13.99L130.3 14.38L120.4 14.66L110.5 14.76L100.5 14.69L90.5 14.52L80.6 14.38L70.6 14.36L60.7 14.49L50.8 14.73L40.8 15.00L30.8 15.17L20.9 15.16L11.0 14.96L1.0 14.64Z' fill='%238c93ee' fill-opacity='0.34'/%3E%3C/svg%3E"); }
   }
 }
 

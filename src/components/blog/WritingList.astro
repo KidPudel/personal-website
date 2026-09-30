@@ -28,7 +28,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
         href={data.externalUrl ?? localePath(`/blog/${slug}/`, locale)}
         hreflang={data.externalLanguage}
       >
-        <span class="writing-list__title link-line">{data.title}</span>
+        <span class="writing-list__title link-mark">{data.title}</span>
         {data.externalLabel && (
           <span class="writing-list__external">
             {' '}{t('on', 'на')} {data.externalLabel}{data.externalLanguage && data.externalLanguage !== locale && t(', in Russian', ', на английском')} ↗

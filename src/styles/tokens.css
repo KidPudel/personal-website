@@ -161,19 +161,17 @@
     /* Where the header's controls start. The homepage introduction starts a
        fixed step below them. */
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
-    /* One line for every link and interactive word on the site (.link-line
-       in foundations.css). None shows at rest: a link is in ink, and where
-       it sits in grey text the color alone sets it apart. On hover or
-       keyboard focus the line is drawn in from the left, and on leave it is
-       taken back toward the right. --link-line-gap keeps it just clear of
-       the descenders, since a drawn line can't skip them. The faint
-       --link-line-color is only for places that can't hover or color a
-       link apart: captions on touch screens and links in running ink text. */
-    --link-line-width: 1px;
-    --link-line-gap: 0.08em;
-    --link-line-color: color-mix(in srgb, var(--color-ink) 30%, transparent);
-    --link-line-draw: 440ms cubic-bezier(0.45, 0, 0.2, 1);
-    --link-line-undraw: 280ms cubic-bezier(0.4, 0, 0.6, 1);
+    /* One mark for every link and interactive word on the site (.link-mark
+       in foundations.css): a marker swipe in the lavender of the pen circle
+       around "joyful". None shows at rest: a link is in ink, and where it
+       sits in grey text the color alone sets it apart. On hover or keyboard
+       focus the swipe is drawn behind the words in three hand-drawn frames
+       at 82 ms, the frame rate of the hello animation, and it goes at once
+       when the cursor leaves. The faint --link-mark-rest is only for places
+       that can't hover or color a link apart: captions on touch screens and
+       links in running ink text. */
+    --link-mark-draw: 246ms;
+    --link-mark-rest: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 16' preserveAspectRatio='none'%3E%3Cpath d='M1.0 2.91L11.0 3.20L20.9 3.17L30.8 2.91L40.8 2.60L50.8 2.45L60.7 2.54L70.6 2.79L80.6 3.02L90.5 3.02L100.5 2.71L110.5 2.16L120.4 1.56L130.3 1.15L140.3 1.03L150.3 1.15L160.2 1.33L170.2 1.39L180.1 1.20L190.0 0.82L200.0 0.44L210.0 0.26L219.9 0.40L229.8 0.81L239.8 1.32L249.8 1.71L259.7 1.82L269.7 1.69L279.6 1.48L289.6 1.39L299.5 1.54L309.4 1.92L319.4 2.34L329.3 2.58L339.3 2.51L349.3 2.14L359.2 1.63L369.2 1.20L379.1 1.01L389.1 1.06L399.0 1.21L399.0 14.67L389.1 14.64L379.1 14.43L369.2 14.12L359.2 13.81L349.3 13.62L339.3 13.60L329.3 13.71L319.4 13.87L309.4 13.96L299.5 13.90L289.6 13.68L279.6 13.35L269.7 13.02L259.7 12.82L249.8 12.80L239.8 12.96L229.8 13.23L219.9 13.48L210.0 13.63L200.0 13.62L190.0 13.49L180.1 13.32L170.2 13.25L160.2 13.34L150.3 13.60L140.3 13.99L130.3 14.38L120.4 14.66L110.5 14.76L100.5 14.69L90.5 14.52L80.6 14.38L70.6 14.36L60.7 14.49L50.8 14.73L40.8 15.00L30.8 15.17L20.9 15.16L11.0 14.96L1.0 14.64Z' fill='%238c93ee' fill-opacity='0.24'/%3E%3C/svg%3E");
 
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
@@ -190,11 +188,10 @@
     }
   }
 
-  /* The line appears and goes at once instead of being drawn. */
+  /* The swipe appears whole instead of being drawn. */
   @media (prefers-reduced-motion: reduce) {
     :root {
-      --link-line-draw: 0s;
-      --link-line-undraw: 0s;
+      --link-mark-draw: 0s;
     }
   }
 

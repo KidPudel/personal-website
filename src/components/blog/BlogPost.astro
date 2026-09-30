@@ -43,8 +43,8 @@ const dateFormat = new Intl.DateTimeFormat(contentLocale, {
   </main>
   <footer class="case-footer">
     <nav aria-label={t('Blog links', 'Ссылки блога')}>
-      <a href={localePath('/blog/', locale)}><span class="link-line">{t('All posts', 'Все записи')}</span></a>
-      <a href={localePath('/', locale)}><span class="link-line">{t('Home', 'Главная')}</span></a>
+      <a href={localePath('/blog/', locale)}><span class="link-mark">{t('All posts', 'Все записи')}</span></a>
+      <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
     </nav>
   </footer>
 </BaseDocument>

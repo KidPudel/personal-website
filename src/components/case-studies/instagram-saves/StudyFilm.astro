@@ -23,10 +23,10 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
     aria-label={title} aria-describedby={`${id}-caption`}>
     <source src={small} type="video/mp4" media="(max-resolution: 1.5dppx)" />
     <source src={large} type="video/mp4" />
-    <a href={large}><span class="link-line">{t('Watch', 'Смотреть:')} {title}</span></a>
+    <a href={large}><span class="link-mark">{t('Watch', 'Смотреть:')} {title}</span></a>
   </video>
-  <button type="button" hidden aria-label={`${labels.play}: ${title}`} data-labels={JSON.stringify(labels)}><span class="link-line">{labels.play}</span></button>
-  <noscript><a href={large}><span class="link-line">{t('Watch', 'Смотреть:')} {title}</span></a></noscript>
+  <button type="button" hidden aria-label={`${labels.play}: ${title}`} data-labels={JSON.stringify(labels)}><span class="link-mark">{labels.play}</span></button>
+  <noscript><a href={large}><span class="link-mark">{t('Watch', 'Смотреть:')} {title}</span></a></noscript>
   <figcaption id={`${id}-caption`}>
     <span>{description}</span>
   </figcaption>
@@ -50,7 +50,7 @@ const cover = await getImage({ src: poster, width: 720, format: 'webp', quality:
       const labels = { play: 'Play', pause: 'Pause', ...JSON.parse(button.dataset.labels ?? '{}') };
       const syncLabel = () => {
         const label = video.paused ? labels.play : labels.pause;
-        (button.querySelector('.link-line') ?? button).textContent = label;
+        (button.querySelector('.link-mark') ?? button).textContent = label;
         button.setAttribute('aria-label', `${label}: ${video.getAttribute('aria-label')}`);
       };
       const sync = () => {

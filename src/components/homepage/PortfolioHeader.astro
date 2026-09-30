@@ -40,7 +40,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
                 data-locale-switch={option}
                 data-locale-storage-key={localeStorageKey}
               >
-                <span aria-hidden="true"><span class="link-line">{switchLabels[option]}</span></span>
+                <span aria-hidden="true"><span class="link-mark">{switchLabels[option]}</span></span>
                 <span class="sr-only">{localeDetails[option].name}</span>
               </a>
             )}
@@ -59,7 +59,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
         {connectLinks(locale).map((link, index) => (
           <>
             {index === 4 && <span class="contact-disclosure__break" aria-hidden="true"></span>}
-            <a href={link.href}><span class="link-line">{link.label}</span></a>
+            <a href={link.href}><span class="link-mark">{link.label}</span></a>
           </>
         ))}
       </div>

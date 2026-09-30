@@ -26,7 +26,7 @@ const Text = heading ? 'h2' : 'p';
      the parent decides how much of the card is clickable. -->
 <div class:list={['work-caption', className]} {...rest}>
   <Text class="work-caption__text">
-    <a class="work-caption__link link-line" href={href}>
+    <a class="work-caption__link link-mark" href={href}>
       {pitch}<span class="sr-only">{t(` ${name} case study`, ` Кейс ${name}`)}</span>
     </a>
   </Text>
@@ -62,11 +62,10 @@ const Text = heading ? 'h2' : 'p';
   }
 
   /* Touch screens can't hover, and the caption is the only way into the
-     case study, so it keeps a faint line there to read as a link. */
+     case study, so it keeps a faint mark there to read as a link. */
   @media (hover: none) {
     .work-caption__link {
-      background-image: linear-gradient(var(--link-line-color), var(--link-line-color));
-      background-size: 100% var(--link-line-width);
+      background-image: var(--link-mark-rest);
     }
   }
 

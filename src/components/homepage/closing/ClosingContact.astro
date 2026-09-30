@@ -12,11 +12,11 @@ const [email, ...elsewhere] = connectLinks(locale);
 <footer id="contact" class="closing-contact" aria-labelledby="closing-contact-title">
   <h2 id="closing-contact-title" class="sr-only">{t('Get in touch', 'Связаться')}</h2>
 
-  <a class="closing-contact__email" href={email.href}><span class="link-line">{publicEmail}</span></a>
+  <a class="closing-contact__email" href={email.href}><span class="link-mark">{publicEmail}</span></a>
 
   <ul class="closing-contact__links" role="list">
     {elsewhere.map((link) => (
-      <li><a href={link.href}><span class="link-line">{link.label}</span></a></li>
+      <li><a href={link.href}><span class="link-mark">{link.label}</span></a></li>
     ))}
   </ul>
 </footer>
@@ -42,9 +42,6 @@ const [email, ...elsewhere] = connectLinks(locale);
     line-height: 1.15;
     overflow-wrap: anywhere;
     text-decoration: none;
-    /* This face's box already ends well below its descenders. */
-    --link-line-gap: 0em;
-    --link-line-raise: 0.03em;
   }
 
   .closing-contact__links {

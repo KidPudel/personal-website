@@ -11,7 +11,7 @@ const destination = host.endsWith('itch.io') ? 'itch.io' : host === 'github.com'
 ---
 
 <a class="side-project-caption" href={href}>
-  <span class="side-project-caption__name"><span class="link-line">{name}</span></span>
+  <span class="side-project-caption__name"><span class="link-mark">{name}</span></span>
   <span class="side-project-caption__destination">{destination}</span>
 </a>
 
@@ -47,11 +47,10 @@ const destination = host.endsWith('itch.io') ? 'itch.io' : host === 'github.com'
     outline-offset: var(--focus-offset);
   }
 
-  /* Touch screens can't hover, so the name keeps a faint line there. */
+  /* Touch screens can't hover, so the name keeps a faint mark there. */
   @media (hover: none) {
-    .side-project-caption .link-line {
-      background-image: linear-gradient(var(--link-line-color), var(--link-line-color));
-      background-size: 100% var(--link-line-width);
+    .side-project-caption .link-mark {
+      background-image: var(--link-mark-rest);
     }
   }
 </style>

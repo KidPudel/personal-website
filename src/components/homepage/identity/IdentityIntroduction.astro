@@ -29,7 +29,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
             {identity.purpose.before}<br class="identity__figma-break" />{identity.purpose.continuation}<a
               class="identity__joyful-link"
               href={identity.purpose.href}
-            ><span class="identity__joyful-word link-line">{identity.purpose.word}</span><Image
+            ><span class="identity__joyful-word link-mark">{identity.purpose.word}</span><Image
                 class="identity__joyful-circle"
                 src={joyfulCircle}
                 alt=""
@@ -140,6 +140,8 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
   .identity__joyful-word {
     position: relative;
     z-index: 1;
+    /* The handwriting face sits deeper in its box, so the swipe rides higher. */
+    --link-mark-lift: 0.08em;
   }
 
   /* The drawn loop sits in the upper part of its image, so -42% centers the
