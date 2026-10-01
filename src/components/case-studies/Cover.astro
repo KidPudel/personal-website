@@ -1,0 +1,19 @@
+---
+interface Props {
+  /** Plain-text title. Leave out to pass a designed title in the `title` slot. */
+  title?: string;
+  pitch: string;
+  /** The facts beside the title, one per line: role, time, how it ended. */
+  facts: string[];
+}
+
+const { title, pitch, facts } = Astro.props;
+---
+
+<!-- The name set large, the pitch under it, the facts small at the side, then the work. -->
+<header class="cover">
+  {title ? <h1 class:list={['cover__title', title.length > 24 && 'cover__title--long']}>{title}</h1> : <slot name="title" />}
+  <p class="cover__pitch">{pitch}</p>
+  <p class="cover__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
+  <div class="cover__work"><slot /></div>
+</header>

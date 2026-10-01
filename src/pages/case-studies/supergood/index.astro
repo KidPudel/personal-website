@@ -1,27 +1,43 @@
 ---
+import { Image } from 'astro:assets';
+
+import penCircle from '../../../assets/art/elements/circled.png';
 import basket from '../../../assets/case_study_images/supergood/basket.png';
-import checkout from '../../../assets/case_study_images/supergood/checkout.png';
+import checkoutHero from '../../../assets/case_study_images/supergood/checkout-hero.png';
 import dishSheetDark from '../../../assets/case_study_images/supergood/dish-sheet-dark.png';
-import dishSheetLight from '../../../assets/case_study_images/supergood/dish-sheet-light.png';
 import history from '../../../assets/case_study_images/supergood/history.png';
 import deliveryMap from '../../../assets/case_study_images/supergood/map.png';
 import menuDark from '../../../assets/case_study_images/supergood/menu-dark.png';
 import menuLight from '../../../assets/case_study_images/supergood/menu-light.png';
+import menuHero from '../../../assets/case_study_images/supergood/menu-light-hero.png';
+import dishHero from '../../../assets/case_study_images/supergood/dish-sheet-light-hero.png';
 import orderTracking from '../../../assets/case_study_images/supergood/order-tracking.png';
 import BarCompare from '../../../components/case-studies/BarCompare.astro';
+import Cover from '../../../components/case-studies/Cover.astro';
 import Decision from '../../../components/case-studies/Decision.astro';
 import Rich from '../../../components/case-studies/Rich.astro';
 import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
+import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
-import '../../../styles/case-study.css';
+import '../../../styles/study.css';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 260px';
-const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
+const phoneSizes = '(max-width: 500px) calc((100vw - 72px) / 3), (max-width: 900px) calc((100vw - 140px) / 3), 236px';
+const pairSizes = '(max-width: 860px) calc((100vw - 140px) / 2), 248px';
+
+const methods = [
+  t('Review analysis: about 150 App Store and Google Play reviews, sorted by complaint.', 'Анализ отзывов: около 150 отзывов из App Store и Google Play, разложенных по темам жалоб.'),
+  t('Contextual inquiry: I watched 10 people order at work, in an office and a call center, and noted where they hesitated.', 'Контекстное исследование: смотрел, как заказывают 10 человек на работе, в офисе и колл-центре, и отмечал, где они сомневаются.'),
+  t('Competitive analysis: Кухня на районе for how to present the menu, Самокат and Яндекс Лавка for patterns our customers already knew.', 'Конкурентный анализ: «Кухня на районе» для подачи меню, «Самокат» и «Яндекс Лавка» для паттернов, которые наши клиенты уже знали.'),
+  t('Comparative usability testing: the old app against prototypes, then against the built app, with 10 colleagues who didn’t work on it.', 'Сравнительное юзабилити-тестирование: старое приложение против прототипов, а потом против готового, на 10 коллегах, которые над ним не работали.'),
+].map((text) => {
+  const at = text.indexOf(': ');
+  return { name: text.slice(0, at), detail: text.slice(at + 2) };
+});
 ---
 
 <BaseDocument
@@ -30,24 +46,25 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
     'How I redesigned ordering in SuperGood, a homemade food delivery app, and rebuilt its iOS and Android apps as one Flutter app. Repeating a usual order went from about a minute to about 5 seconds, and the store rating went from 3.1 to 3.7.',
     'Как я переделал заказ в SuperGood, приложении доставки домашней еды, и собрал вместо двух нативных приложений одно на Flutter. Повторить привычный заказ теперь можно примерно за 5 секунд вместо минуты, а рейтинг в магазинах приложений вырос с 3,1 до 3,7.',
   )}
-  pageClass="supergood-case-study editorial-case-study"
+  pageClass="study-document study--supergood"
   ogImage={menuLight.src}
 >
   <main id="main-content">
-    <header class="hero">
-      <h1 class="hero-title">SuperGood</h1>
-      <p class="hero__line">{t('Homemade food, without making the order feel like a gamble.', 'Домашняя еда, и заказ больше не похож на лотерею.')}</p>
-      <p class="facts-line">
-        {t('Product designer and the only mobile engineer at PizzaSushiWok, a small company · 11 months, 2024', 'Продуктовый дизайнер и единственный мобильный разработчик в PizzaSushiWok, небольшой компании · 11 месяцев, 2024')}<br />
-        {t('Shipped on iOS and Android, and later closed for financial reasons.', 'Вышло на iOS и Android, позже проект закрыли по финансовым причинам.')}
-      </p>
-
-      <div class="phones">
-        <Shot src={menuLight} priority="high" sizes={phoneSizes} alt={t('SuperGood menu with a pinned bar showing delivery time, item count, and total.', 'Меню SuperGood с закреплённой панелью: время доставки, количество позиций и сумма.')} />
-        <Shot src={dishSheetLight} priority="eager" sizes={phoneSizes} alt={t('Dish card with weight, price, nutrition, ingredients, and an add-to-basket button.', 'Карточка блюда с весом, ценой, КБЖУ, составом и кнопкой «В корзину».')} />
-        <Shot src={checkout} priority="eager" sizes={phoneSizes} alt={t('Checkout with address, delivery time, payment, bonuses, and total on one screen.', 'Оформление заказа: адрес, время доставки, оплата, бонусы и итог на одном экране.')} />
+    <Cover
+      title="SuperGood"
+      pitch={t('Homemade food, without making the order feel like a gamble.', 'Домашняя еда, и заказ больше не похож на лотерею.')}
+      facts={[
+        t('Product designer and the only mobile engineer at PizzaSushiWok, a small company', 'Продуктовый дизайнер и единственный мобильный разработчик в PizzaSushiWok, небольшой компании'),
+        t('11 months, 2024', '11 месяцев, 2024'),
+        t('Shipped on iOS and Android, and later closed for financial reasons.', 'Вышло на iOS и Android, позже проект закрыли по финансовым причинам.'),
+      ]}
+    >
+      <div class="cover-phones">
+        <Shot src={menuHero} priority="high" sizes={phoneSizes} alt={t('SuperGood menu with a pinned bar showing delivery time, item count, and total.', 'Меню SuperGood с закреплённой панелью: время доставки, количество позиций и сумма.')} />
+        <Shot src={dishHero} priority="eager" sizes={phoneSizes} alt={t('Dish card with weight, price, nutrition, ingredients, and an add-to-basket button.', 'Карточка блюда с весом, ценой, КБЖУ, составом и кнопкой «В корзину».')} />
+        <Shot src={checkoutHero} priority="eager" sizes={phoneSizes} alt={t('Checkout with address, delivery time, payment, bonuses, and total on one screen.', 'Оформление заказа: адрес, время доставки, оплата, бонусы и итог на одном экране.')} />
       </div>
-    </header>
+    </Cover>
 
     <StarSummary
       situation={t(
@@ -79,16 +96,22 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
         'Люди сомневались, что еда стоит своих денег, а приложение не помогало. SuperGood конкурировал с «Кухней на районе» за повседневные заказы: обед на работе или ужин, когда готовить совсем не хочется. Чтобы понять, почему люди сомневались, я начал с публичных отзывов.',
       )}
     >
-      <figure class="split">
+      <!-- Ten marks for the reviews, the app's three circled with the pen from the homepage. -->
+      <figure class="split" data-arrive>
         <figcaption class="split__title">{t('What public reviews complained about', 'На что жаловались в публичных отзывах')}</figcaption>
-        <div class="split__bar" aria-hidden="true">
-          <span class="split__part" style="--share: 70"></span>
-          <span class="split__part split__part--mine" style="--share: 30"></span>
+        <div class="split__chart">
+          <div class="split__marks" aria-hidden="true">
+            {Array.from({ length: 7 }, (_, index) => <span class="split__mark" style={`--i: ${index}`}></span>)}
+            <span class="split__mine">
+              {Array.from({ length: 3 }, () => <span class="split__mark split__mark--mine"></span>)}
+              <Image class="split__circle pen-circle" src={penCircle} alt="" widths={[256, 512]} sizes="9rem" loading="lazy" decoding="async" />
+            </span>
+          </div>
+          <dl class="split__legend">
+            <div class="split__key split__key--mine"><dt>≈30%</dt><dd>{t('The app. This part was mine.', 'Приложение. Это была моя часть.')}</dd></div>
+            <div class="split__key"><dt>≈70%</dt><dd>{t('The food for its price. Kitchens and prices weren’t part of my role.', 'Еда за свои деньги. Кухня и цены не входили в мою зону ответственности.')}</dd></div>
+          </dl>
         </div>
-        <dl class="split__legend">
-          <div class="split__key"><dt>≈70%</dt><dd>{t('The food for its price. Kitchens and prices weren’t part of my role.', 'Еда за свои деньги. Кухня и цены не входили в мою зону ответственности.')}</dd></div>
-          <div class="split__key split__key--mine"><dt>≈30%</dt><dd>{t('The app. This part was mine.', 'Приложение. Это была моя часть.')}</dd></div>
-        </dl>
         <p class="split__note">{t('A rough split from about 150 App Store and Google Play reviews.', 'Примерное соотношение по 150 отзывам в App Store и Google Play.')}</p>
       </figure>
 
@@ -112,17 +135,16 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
     </StudySection>
 
     <StudySection part="research" lead={t('Four kinds of research shaped the redesign:', 'Редизайн вырос из четырёх видов исследования:')}>
-      <ul class="plain-list">
-        <li>{t('Review analysis: about 150 App Store and Google Play reviews, sorted by complaint.', 'Анализ отзывов: около 150 отзывов из App Store и Google Play, разложенных по темам жалоб.')}</li>
-        <li>{t('Contextual inquiry: I watched 10 people order at work, in an office and a call center, and noted where they hesitated.', 'Контекстное исследование: смотрел, как заказывают 10 человек на работе, в офисе и колл-центре, и отмечал, где они сомневаются.')}</li>
-        <li>{t('Competitive analysis: Кухня на районе for how to present the menu, Самокат and Яндекс Лавка for patterns our customers already knew.', 'Конкурентный анализ: «Кухня на районе» для подачи меню, «Самокат» и «Яндекс Лавка» для паттернов, которые наши клиенты уже знали.')}</li>
-        <li>{t('Comparative usability testing: the old app against prototypes, then against the built app, with 10 colleagues who didn’t work on it.', 'Сравнительное юзабилити-тестирование: старое приложение против прототипов, а потом против готового, на 10 коллегах, которые над ним не работали.')}</li>
+      <ul class="methods" role="list">
+        {methods.map((method) => (
+          <li><span class="methods__name">{method.name}<span class="sr-only">:</span></span> <span class="methods__detail">{method.detail}</span></li>
+        ))}
       </ul>
 
-      <p class="insight">{t(
-        'Watching people order made one thing clear: weekday orders repeat. People already knew what they wanted, but the app made them look for it again every time.',
-        'Когда я смотрел, как люди заказывают, стало ясно главное: будничные заказы повторяются. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.',
-      )}</p>
+      <p class="statement" data-arrive><Rich text={t(
+        'Watching people order made one thing clear: ==weekday orders repeat==. People already knew what they wanted, but the app made them look for it again every time.',
+        'Когда я смотрел, как люди заказывают, стало ясно главное: ==будничные заказы повторяются==. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.',
+      )} /></p>
 
       <p>{t('I wrote what I heard as three job stories (Jobs to be Done). Each one led to one of the first three decisions:', 'Услышанное я записал в виде трёх job stories (Jobs to be Done). Каждая привела к одному из первых трёх решений:')}</p>
       <ul class="plain-list">
@@ -189,6 +211,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
 
       <Decision
         number={5}
+        layout="stack"
         title={t('One Flutter app for iOS and Android', 'Одно приложение на Flutter для iOS и Android')}
         navLabel={t('One Flutter app', 'Одно приложение')}
         problem={t('With two separate apps, every change had to be built twice and could behave differently on each platform.', 'С двумя отдельными приложениями каждое изменение приходилось делать дважды, и на разных платформах оно могло работать по-разному.')}
@@ -205,31 +228,31 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
     </StudySection>
 
     <StudySection part="results" lead={t('I checked the redesign twice: in the usability test with colleagues, and in the stores after the release.', 'Я проверил редизайн дважды: на юзабилити-тесте с коллегами и в магазинах приложений после релиза.')}>
-      <div class="chart-block">
-        <BarCompare
-          title={t('Time to repeat a usual order', 'Время на повтор привычного заказа')}
-          rows={[
-            { label: t('Before: find each dish again', 'До: снова искать каждое блюдо'), value: 60, display: t('≈60 s', '≈60 с') },
-            { label: t('After: history, add whole order', 'После: история, добавить весь заказ'), value: 5, display: t('≈5 s', '≈5 с'), emphasis: true },
-          ]}
-          note={t('Usability test with 10 colleagues outside the app team.', 'Юзабилити-тест, 10 коллег не из команды приложения.')}
-        />
-      </div>
+      <BarCompare
+        title={t('Time to repeat a usual order', 'Время на повтор привычного заказа')}
+        unit={5}
+        unitLabel={t('One mark is 5 seconds.', 'Одна отметка: 5 секунд.')}
+        rows={[
+          { label: t('Before: find each dish again', 'До: снова искать каждое блюдо'), value: 60, display: t('≈60 s', '≈60 с') },
+          { label: t('After: history, add whole order', 'После: история, добавить весь заказ'), value: 5, display: t('≈5 s', '≈5 с'), emphasis: true },
+        ]}
+        note={t('Usability test with 10 colleagues outside the app team.', 'Юзабилити-тест, 10 коллег не из команды приложения.')}
+      />
       <p><Rich text={t(
         'In the same test, **all 10** rebuilt their usual order correctly, up from 2 of 10 before. Ease went from **3 to 6 out of 7** on the Single Ease Question.',
         'На том же тесте привычный заказ правильно собрали **все 10**, а раньше только 2 из 10. Лёгкость по Single Ease Question выросла **с 3 до 6 из 7**.',
       )} /></p>
-      <div class="chart-block">
-        <BarCompare
-          title={t('Store rating, out of 5', 'Рейтинг в магазинах приложений, из 5')}
-          max={5}
-          rows={[
-            { label: t('Before the redesign', 'До редизайна'), value: 3.1, display: t('3.1', '3,1') },
-            { label: t('After the release', 'После релиза'), value: 3.7, display: t('3.7', '3,7'), emphasis: true },
-          ]}
-          note={t('Before and after the release, so the redesign isn’t the only possible cause.', 'Сравнение до и после релиза, так что редизайн не единственная возможная причина.')}
-        />
-      </div>
+      <BarCompare
+        shape="scale"
+        title={t('Store rating, out of 5', 'Рейтинг в магазинах приложений, из 5')}
+        from={1}
+        max={5}
+        rows={[
+          { label: t('Before the redesign', 'До редизайна'), value: 3.1, display: t('3.1', '3,1') },
+          { label: t('After the release', 'После релиза'), value: 3.7, display: t('3.7', '3,7'), emphasis: true },
+        ]}
+        note={t('Before and after the release, so the redesign isn’t the only possible cause.', 'Сравнение до и после релиза, так что редизайн не единственная возможная причина.')}
+      />
       <p>{t(
         'In the new reviews, complaints about the food’s value stayed, but people praised the app: a fresher look, nothing new to learn, and an order history that actually helps.',
         'В новых отзывах жалобы на еду за свои деньги остались, а приложение хвалили: выглядит свежее, переучиваться не нужно, а история заказов правда помогает.',
@@ -252,6 +275,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       </ul>
     </StudySection>
   </main>
+  <StudyLife />
 
   <footer class="case-footer">
     <nav aria-label={t('SuperGood project links', 'Ссылки проекта SuperGood')}>
@@ -263,21 +287,161 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
 </BaseDocument>
 
 <style>
-  .phones { --phones: 3; }
-  /* Drawn like the other charts: no card, a thin bar, ink for the part that was mine. */
-  .split { max-width: var(--study-measure); margin: 32px 0; }
-  .split__title { margin: 0 0 16px; color: var(--color-ink); font-size: var(--study-body); font-weight: 700; letter-spacing: -.015em; line-height: 1.35; }
-  .split__bar { display: flex; gap: 2px; height: 10px; }
-  .split__part { flex: var(--share) 1 0; border-radius: 4px 0 0 4px; background: #d0d0d3; }
-  .split__part--mine { border-radius: 0 4px 4px 0; background: var(--color-ink); }
-  .split__legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0 0; }
-  .split__key { display: grid; grid-template-columns: 12px minmax(0, 1fr); column-gap: 10px; }
-  .split__key::before { content: ''; grid-row: 1 / 3; width: 10px; height: 10px; margin-top: 7px; border-radius: 50%; background: #d0d0d3; }
-  .split__key--mine::before { background: var(--color-ink); }
-  .split__key { color: var(--study-caption); }
-  .split__key--mine { color: var(--color-ink); }
-  .split__key dt { font-size: var(--study-small); font-weight: 700; line-height: 1.5; }
-  .split__key dd { margin: 0; font-size: var(--study-small); line-height: 1.5; }
-  .split__note { margin: 14px 0 0; color: var(--study-caption); font-size: .875rem; line-height: 1.55; }
-  @container study (max-width: 599px) { .split__legend { grid-template-columns: minmax(0, 1fr); } }
+  /* Three screens of one height. */
+  .cover-phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 3vw, 3rem);
+    max-width: 52rem;
+    margin: 0 auto;
+  }
+
+  .cover-phones :global(.shot) {
+    position: relative;
+    width: 100%;
+    margin: 0;
+    aspect-ratio: 587 / 1116;
+  }
+
+  .cover-phones :global(.shot__frame) {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cover-phones :global(img) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    object-fit: contain;
+    object-position: center top;
+  }
+
+  /* The review split: ten marks, the app's three circled in the pen from the homepage. */
+  .split {
+    margin: 2.5rem auto;
+  }
+
+  .split__title {
+    margin: 0 0 1.25rem;
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-size: var(--text);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .split__chart {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2.25rem;
+  }
+
+  .split__marks,
+  .split__mine {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .split__mine {
+    position: relative;
+  }
+
+  .split__mark {
+    display: block;
+    width: 0.9rem;
+    height: 2.25rem;
+    border-radius: 0.22rem;
+    background: color-mix(in srgb, var(--context) calc(100% - var(--i, 0) * 4%), var(--color-field));
+  }
+
+  .split__mark--mine {
+    background: var(--color-ink);
+  }
+
+  .split__mine :global(.split__circle) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7.25rem;
+    max-width: none;
+    height: auto;
+    translate: -50% -48%;
+    pointer-events: none;
+  }
+
+  .split__legend {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 17rem;
+    margin: 0;
+    font-size: var(--small);
+    line-height: 1.45;
+  }
+
+  .split__key {
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.5rem;
+    color: var(--color-muted);
+  }
+
+  .split__key--mine {
+    color: var(--color-ink);
+  }
+
+  .split__key dt {
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .split__key dd {
+    margin: 0;
+  }
+
+  .split .split__note {
+    margin: 1.4rem 0 0;
+    color: var(--color-muted);
+    font-size: var(--small);
+    line-height: 1.55;
+  }
+
+  /* Four kinds of research, each named, then what it was. */
+  .methods {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2.5rem;
+    margin: 1.75rem auto 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .methods li {
+    margin: 0;
+    font-size: var(--small);
+    line-height: 1.55;
+  }
+
+  .methods__name {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  .methods__detail {
+    display: block;
+  }
+
+  .methods__detail::first-letter {
+    text-transform: uppercase;
+  }
+
+  @container study (max-width: 559px) {
+    .methods {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 </style>

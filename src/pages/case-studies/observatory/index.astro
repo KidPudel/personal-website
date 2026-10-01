@@ -25,15 +25,17 @@ import wireframeSavedResults from '../../../assets/case_study_images/validation_
 import wireframeTestComplex from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 8.png';
 import wireframeTestSetup from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 10.png';
 import BarCompare from '../../../components/case-studies/BarCompare.astro';
+import Cover from '../../../components/case-studies/Cover.astro';
 import Decision from '../../../components/case-studies/Decision.astro';
 import Rich from '../../../components/case-studies/Rich.astro';
 import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
 import StepCompare from '../../../components/case-studies/StepCompare.astro';
+import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
-import '../../../styles/case-study.css';
+import '../../../styles/study.css';
 
 const repositoryURL = 'https://github.com/KidPudel/Observatory';
 const releaseURL = 'https://github.com/KidPudel/Observatory/releases/latest';
@@ -48,8 +50,9 @@ const optimizedTitleTexture = await getImage({
   format: 'webp',
   quality: 80,
 });
-const halfSizes = '(max-width: 760px) calc(100vw - 40px), 504px';
-const thirdSizes = '(max-width: 760px) calc(100vw - 40px), 336px';
+const wideSizes = '(max-width: 1100px) calc(100vw - 40px), 940px';
+const halfSizes = '(max-width: 760px) calc(100vw - 40px), 460px';
+const thirdSizes = '(max-width: 760px) calc(100vw - 40px), 300px';
 
 const sketches = [
   {
@@ -94,19 +97,27 @@ const categories = [
     'How I designed Observatory, a macOS activity monitor that shows each app as one row, records tests, and compares runs. Three colleagues have used it for two months.',
     'Как я проектировал Observatory, монитор активности для macOS: он показывает каждое приложение одной строкой, записывает тесты и сравнивает прогоны. Три коллеги пользуются им уже два месяца.',
   )}
-  pageClass="observatory-case-study editorial-case-study"
+  pageClass="study-document study--observatory"
   ogImage={outcomeNow.src}
 >
   <main id="main-content">
-    <header class="hero">
+    <Cover
+      pitch={t('Activity Monitor, but more.', 'Как «Мониторинг системы», только больше.')}
+      facts={[
+        t('Product design, research, identity, and the launch film. I wrote the specs and directed AI development', 'Продуктовый дизайн, исследование, айдентика и ролик к запуску. Писал спецификации и руководил разработкой с AI'),
+        '2026',
+        t('Release 0.1.1 for macOS 14 and later, used by 3 colleagues for about two months.', 'Релиз 0.1.1 для macOS 14 и новее, им около двух месяцев пользуются 3 коллеги.'),
+      ]}
+    >
       <h1
-        class="hero-title"
+        slot="title"
+        class="cover__title wordmark"
         aria-label={heroTitle}
         style={`--hero-title-texture: url('${optimizedTitleTexture.src}')`}
       >
         {heroTitle.split('').map((letter, index) => (
           <span
-            class="hero-title__letter"
+            class="wordmark__letter"
             aria-hidden="true"
             data-letter={letter}
             style={`--letter-index: ${index}; --texture-position: ${(index / (heroTitle.length - 1)) * 100}%`}
@@ -115,39 +126,33 @@ const categories = [
           </span>
         ))}
       </h1>
-      <p class="hero__line">{t('Activity Monitor, but more.', 'Как «Мониторинг системы», только больше.')}</p>
 
-      <p class="facts-line">
-        {t('Product design, research, identity, and the launch film. I wrote the specs and directed AI development · 2026', 'Продуктовый дизайн, исследование, айдентика и ролик к запуску. Писал спецификации и руководил разработкой с AI · 2026')}<br />
-        {t('Release 0.1.1 for macOS 14 and later, used by 3 colleagues for about two months.', 'Релиз 0.1.1 для macOS 14 и новее, им около двух месяцев пользуются 3 коллеги.')}
-      </p>
-
-      <figure class="hero-introduction">
+      <figure class="film">
         <a
-          class="hero-introduction__link"
+          class="film__link"
           href={launchFilmURL}
           data-introduction-film
           data-embed-src={launchFilmEmbedURL}
           data-embed-title={t('Observatory product introduction', 'Презентация Observatory')}
         >
-          <span class="hero-introduction__stage">
+          <span class="film__stage">
             <Image
               src={launchFilmPoster}
               alt=""
               widths={[720, 1080, 1280]}
-              sizes="(max-width: 760px) calc(100vw - 40px), 1040px"
+              sizes="(max-width: 1100px) calc(100vw - 40px), 1100px"
               format="webp"
               loading="eager"
               decoding="async"
               fetchpriority="high"
             />
-            <span class="hero-introduction__play" aria-hidden="true"></span>
+            <span class="film__play" aria-hidden="true"></span>
           </span>
           <span class="sr-only">{t('Watch the Observatory product introduction on YouTube', 'Смотреть презентацию Observatory на YouTube')}</span>
         </a>
         <figcaption>{t('Product introduction', 'Презентация продукта')}</figcaption>
       </figure>
-    </header>
+    </Cover>
 
     <StarSummary
       situation={t(
@@ -179,7 +184,8 @@ const categories = [
         'Во время тяжёлой работы я открывал «Мониторинг системы», чтобы найти приложение, которым пользуюсь. Его активность была раскидана по множеству процессов: найди их, сложи в уме и следи, пока цифры меняются. Не самый спокойный способ проверить память. А когда задача заканчивалась, вернуться было не к чему.',
       )}
     >
-      <figure class="process-split">
+      <!-- The same app in both tools. As it arrives, the 17 rows gather into Observatory's one. -->
+      <figure class="process-split col-wide gather" data-arrive>
         <div class="process-split__side">
           <p class="process-split__tool">{t('Activity Monitor', 'Мониторинг системы')}</p>
           <ol class="process-split__rows" aria-hidden="true">
@@ -187,12 +193,15 @@ const categories = [
           </ol>
           <p class="process-split__count">{t('17 rows to find and add up', '17 строк, которые нужно найти и сложить')}</p>
         </div>
-        <div class="process-split__side process-split__side--after">
+        <div class="process-split__side">
           <p class="process-split__tool">Observatory</p>
-          <div class="process-split__app" aria-hidden="true">
-            <span class="process-split__name">Brave Browser</span>
-            <span class="process-split__procs">{t('17 processes', '17 процессов')}</span>
-            <strong>1.9 GiB</strong>
+          <div class="process-split__stack">
+            {braveProcesses.map((name, index) => <span class="gather__ghost process-split__ghost" style={`--i: ${index}`} aria-hidden="true">{name}</span>)}
+            <div class="process-split__app gather__one" aria-hidden="true">
+              <span class="process-split__name">Brave Browser</span>
+              <span class="process-split__procs">{t('17 processes', '17 процессов')}</span>
+              <strong>1.9 GiB</strong>
+            </div>
           </div>
           <p class="process-split__count">{t('1 row, already added up', '1 строка, уже сложено')}</p>
         </div>
@@ -202,8 +211,8 @@ const categories = [
         )}</figcaption>
       </figure>
 
-      <p class="lead-in">{t('So the job, written as a job story (Jobs to be Done):', 'Если записать это как job story (Jobs to be Done):')}</p>
-      <p class="insight">{t(
+      <p>{t('So the job, written as a job story (Jobs to be Done):', 'Если записать это как job story (Jobs to be Done):')}</p>
+      <p class="job-story">{t(
         'When I’m doing heavy work, I want to see what an app is using and keep a record, so I can come back to it and compare.',
         'Когда я делаю тяжёлую работу, я хочу видеть, что потребляет приложение, и сохранять запись, чтобы вернуться к ней и сравнить.',
       )}</p>
@@ -229,8 +238,8 @@ const categories = [
         'Сначала я проверил, что проблема не только у меня. Прежде чем что-то делать, я провёл CustDev-интервью в логике Jobs to be Done. Пять человек рассказали, как в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти. По их ответам стало ясно, что это стоит делать.',
       )}
     >
-      <div class="research-portraits">
-        <figure>
+      <div class="personas col-wide">
+        <figure class="persona">
           <Image
             src={personaIndependentTroubleshooter}
             alt={t('Hand-drawn portrait of the independent troubleshooter persona wearing glasses and making an OK gesture.', 'Нарисованный от руки портрет персоны «самостоятельный диагност»: человек в очках показывает жест «ОК».')}
@@ -244,7 +253,7 @@ const categories = [
           <p>{t('Checks their own Mac.', 'Проверяет свой Mac.')}</p>
           <p><strong>{t('Job story.', 'Job story.')}</strong> {t('When I check what my Mac is doing, I want to see the whole app and catch a spike, so I don’t have to piece it together from a changing list.', 'Когда я смотрю, что происходит с Mac, я хочу видеть приложение целиком и замечать пики, чтобы не собирать картину по меняющемуся списку.')}</p>
         </figure>
-        <figure>
+        <figure class="persona">
           <Image
             src={personaPerformanceVerifier}
             alt={t('Hand-drawn portrait of the performance verifier persona writing on a clipboard.', 'Нарисованный от руки портрет персоны «проверяющий производительность»: человек делает записи на планшете для бумаг.')}
@@ -260,22 +269,22 @@ const categories = [
         </figure>
       </div>
 
-      <p class="insight">{t(
-        'Both started from an app or a task, never from a process. So the interface, and my first sketches, start from the app.',
-        'Оба начинали с приложения или задачи, а не с процесса. Поэтому интерфейс, а с ним и мои первые скетчи, начинаются с приложения.',
-      )}</p>
+      <p class="statement" data-arrive><Rich text={t(
+        'Both started from an app or a task, ==never from a process==. So the interface, and my first sketches, start from the app.',
+        'Оба начинали с приложения или задачи, ==а не с процесса==. Поэтому интерфейс, а с ним и мои первые скетчи, начинаются с приложения.',
+      )} /></p>
 
-      <div class="sketch-grid">
+      <div class="sketches col-full">
         {sketches.map((sketch) => (
-          <figure>
-            <div class="sketch-surface"><Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 900px) calc((100vw - 64px) / 2), 242px" format="webp" loading="lazy" decoding="async" /></div>
+          <figure class="sketch">
+            <Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 900px) calc((100vw - 64px) / 2), 270px" format="webp" loading="lazy" decoding="async" />
             <figcaption>{sketch.caption}</figcaption>
           </figure>
         ))}
       </div>
 
       <p>{t('From the sketches I made a first prototype with three places to go: Now, Tests, and History.', 'По скетчам я собрал первый прототип с тремя разделами: «Now», «Tests» и «History».')}</p>
-      <div class="prototype-row">
+      <div class="prototype-row col-wide">
         <Shot kind="desktop" src={prototypeNow} sizes={thirdSizes} alt={t('Initial low-fidelity Now screen with application cards.', 'Первый черновой экран «Now» с карточками приложений.')} caption={t('Now: a quick look', '«Now»: быстрый взгляд')} />
         <Shot kind="desktop" src={prototypeTest} sizes={thirdSizes} alt={t('Initial low-fidelity test setup screen.', 'Первый черновой экран настройки теста.')} caption={t('Tests: record a run', '«Tests»: записать прогон')} />
         <Shot kind="desktop" src={prototypeHistory} sizes={thirdSizes} alt={t('Initial low-fidelity History screen with saved recordings.', 'Первый черновой экран «History» с сохранёнными записями.')} caption={t('History: return to results', '«History»: вернуться к результатам')} />
@@ -287,9 +296,9 @@ const categories = [
     </StudySection>
 
     <StudySection part="decisions">
-
       <Decision
         number={1}
+        layout="stack"
         title={t('Group processes under their app', 'Процессы под своим приложением')}
         navLabel={t('Group by app', 'По приложениям')}
         problem={t('One app showed up as lots of rows, so its real cost was hidden.', 'Одно приложение занимало много строк, и его реальная нагрузка терялась.')}
@@ -299,7 +308,7 @@ const categories = [
         effect={t('Brave Browser went from **17 rows to 1**.', 'Brave Browser занимает **1 строку вместо 17**.')}
         source={t('measured in the live view', 'измерено в живом просмотре')}
       >
-        <Shot kind="desktop" src={outcomeProcessDetails} sizes={halfSizes} alt={t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.')} caption={t('Totals first. Processes when you need them.', 'Сначала итоги, процессы по запросу.')} />
+        <Shot kind="desktop" src={outcomeProcessDetails} sizes={wideSizes} alt={t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.')} caption={t('Totals first. Processes when you need them.', 'Сначала итоги, процессы по запросу.')} />
       </Decision>
 
       <Decision
@@ -312,7 +321,7 @@ const categories = [
         why={t('With aligned columns, you can compare one metric down a column in a single glance.', 'В выровненных колонках одну метрику можно сравнить одним взглядом сверху вниз.')}
         instead={t('The card grid from the first prototype kept the groups clear, but comparing was slow.', 'Сетка карточек из первого прототипа хорошо показывала группы, но сравнивать в ней было медленно.')}
       >
-        <div class="pair pair--stack-mobile">
+        <div class="pair pair--wide">
           <Shot kind="wireframe" src={wireframeNowCards} sizes={halfSizes} alt={t('Wireframe of a card-based live application view.', 'Вайрфрейм живого просмотра приложений на карточках.')} caption={t('Before: a card per app', 'До: карточка на приложение')} />
           <Shot kind="wireframe" src={wireframeNowList} sizes={halfSizes} alt={t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.')} caption={t('After: an aligned list with a live chart', 'После: выровненный список с живым графиком')} />
         </div>
@@ -327,7 +336,7 @@ const categories = [
         decision={t('Now you pick the apps first, then the recording mode, and setup and the running recording are separate screens.', 'Теперь сначала выбираешь приложения, потом режим записи, а настройка и идущая запись стали отдельными экранами.')}
         why={t('People start from what they want to watch. How the tool records it comes second.', 'Люди начинают с того, за чем хотят наблюдать. Как инструмент это записывает, для них вторично.')}
       >
-        <div class="pair pair--stack-mobile">
+        <div class="pair pair--wide">
           <Shot kind="wireframe" src={wireframeTestComplex} sizes={halfSizes} alt={t('Wireframe combining test setup, recent tests, and an active recording.', 'Вайрфрейм, где на одном экране настройка теста, недавние тесты и идущая запись.')} caption={t('Before: everything on one screen', 'До: всё на одном экране')} />
           <Shot kind="wireframe" src={wireframeTestSetup} sizes={halfSizes} alt={t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.')} caption={t('After: choose, set up, start', 'После: выбрать, настроить, запустить')} />
         </div>
@@ -344,7 +353,7 @@ const categories = [
         effect={t('Top-level sections went from **3 to 2**.', 'Разделов верхнего уровня стало **2 вместо 3**.')}
         source={t('counted from the prototypes', 'посчитано по прототипам')}
       >
-        <div class="pair pair--stack-mobile">
+        <div class="pair pair--wide">
           <Shot kind="wireframe" src={wireframeHistory} sizes={halfSizes} alt={t('Wireframe of a separate History destination.', 'Вайрфрейм отдельного раздела «History».')} caption={t('Before: History as its own section', 'До: «History» отдельным разделом')} />
           <Shot kind="wireframe" src={wireframeSavedResults} sizes={halfSizes} alt={t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».')} caption={t('After: Saved Results inside Tests', 'После: «Saved Results» внутри «Tests»')} />
         </div>
@@ -358,9 +367,9 @@ const categories = [
         'Observatory 0.1.1 работает на macOS 14 и новее. Живой просмотр держит перед глазами последние 60 секунд. «Tests» записывает от одного до четырёх приложений, с прогревом и повторными раундами по желанию, а записи остаются на Mac.',
       )}
     >
-      <div class="final-screens">
-        <Shot kind="desktop" src={outcomeNow} sizes="(max-width: 760px) calc(100vw - 40px), 1040px" alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} caption={t('Every app is one row. The live chart keeps the last 60 seconds.', 'Каждое приложение одной строкой. Живой график хранит последние 60 секунд.')} />
-        <div class="pair pair--stack-mobile">
+      <div class="final-screens col-full">
+        <Shot kind="desktop" src={outcomeNow} sizes="(max-width: 1240px) calc(100vw - 40px), 1100px" alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} caption={t('Every app is one row. The live chart keeps the last 60 seconds.', 'Каждое приложение одной строкой. Живой график хранит последние 60 секунд.')} />
+        <div class="pair pair--wide">
           <Shot kind="desktop" src={outcomeTestSetup} sizes={halfSizes} alt={t('Final Observatory controlled test setup screen.', 'Финальный экран настройки контролируемого теста в Observatory.')} caption={t('Choose apps, then the mode, then the run.', 'Выбрать приложения, затем режим, затем прогон.')} />
           <Shot kind="desktop" src={outcomeRecording} sizes={halfSizes} alt={t('Final Observatory guided recording screen.', 'Финальный экран записи с подсказками в Observatory.')} caption={t('Manual mode guides you through one app at a time.', 'Ручной режим ведёт по одному приложению за раз.')} />
           <Shot kind="desktop" src={outcomeSavedResults} sizes={halfSizes} alt={t('Final Observatory Saved Results screen.', 'Финальный экран «Saved Results» в Observatory.')} caption={t('Saved results keep their context.', 'Сохранённые результаты хранят контекст.')} />
@@ -368,18 +377,18 @@ const categories = [
         </div>
       </div>
 
-      <div class="chart-block">
-        <BarCompare
-          title={t('Time to answer “how much memory is Brave using?”', 'Время, чтобы ответить «сколько памяти ест Brave?»')}
-          rows={[
-            { label: t('Activity Monitor: find and add 17 rows', '«Мониторинг системы»: найти и сложить 17 строк'), value: 60, display: t('≈60 s', '≈60 с') },
-            { label: t('Observatory: read one row', 'Observatory: прочитать одну строку'), value: 3, display: t('≈3 s', '≈3 с'), emphasis: true },
-          ]}
-          note={t('Estimate from walking through both apps. Activity Monitor also keeps refreshing while you add.', 'Оценка по проходу через оба приложения. К тому же «Мониторинг системы» обновляет цифры, пока ты складываешь.')}
-        />
-      </div>
+      <BarCompare
+        title={t('Time to answer “how much memory is Brave using?”', 'Время, чтобы ответить «сколько памяти ест Brave?»')}
+        unit={3}
+        unitLabel={t('One mark is 3 seconds.', 'Одна отметка: 3 секунды.')}
+        rows={[
+          { label: t('Activity Monitor: find and add 17 rows', '«Мониторинг системы»: найти и сложить 17 строк'), value: 60, display: t('≈60 s', '≈60 с') },
+          { label: t('Observatory: read one row', 'Observatory: прочитать одну строку'), value: 3, display: t('≈3 s', '≈3 с'), emphasis: true },
+        ]}
+        note={t('Estimate from walking through both apps. Activity Monitor also keeps refreshing while you add.', 'Оценка по проходу через оба приложения. К тому же «Мониторинг системы» обновляет цифры, пока ты складываешь.')}
+      />
 
-      <p class="usage"><Rich text={t(
+      <p class="marked" data-arrive><Rich text={t(
         '**All 3 colleagues** who tried it still use it after two months. They mostly use Tests, for two things: recording an app before and after a change, and comparing apps of one kind, like the terminals Ghostty, kitty, and Alacritty.',
         '**Все 3 коллеги**, которые попробовали Observatory, пользуются им и спустя два месяца. Чаще всего они берут «Tests», и для двух вещей: записать приложение до и после изменения и сравнить приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
       )} /></p>
@@ -393,7 +402,7 @@ const categories = [
         'Я бы сгруппировал приложения по назначению. Коллеги уже сравнивали приложения одного типа и выбирали их по одному. Группировка по категориям применяет ту же идею уровнем выше: похожее рядом с похожим.',
       )}
     >
-      <div class="pair pair--stack-mobile next-pair">
+      <div class="next-pair col-wide">
         <figure class="category-mock">
           <div class="category-mock__window">
             {categories.map((category) => (
@@ -403,7 +412,7 @@ const categories = [
               </div>
             ))}
           </div>
-          <figcaption class="category-mock__caption">{t('Concept: one pick adds a whole category to a test.', 'Концепция: один выбор добавляет в тест всю категорию.')}</figcaption>
+          <figcaption>{t('Concept: one pick adds a whole category to a test.', 'Концепция: один выбор добавляет в тест всю категорию.')}</figcaption>
         </figure>
         <StepCompare
           title={t('Setting up a terminal comparison', 'Настроить сравнение терминалов')}
@@ -414,12 +423,13 @@ const categories = [
           note={t('Proposed, not built yet.', 'Предложение, пока не сделано.')}
         />
       </div>
-      <p class="next-note">{t(
+      <p>{t(
         'After that, I want to test with people outside my team: can they tell what happened in a run, and which recordings are worth comparing?',
         'Дальше хочу проверить на людях вне моей команды: понимают ли они, что произошло в прогоне, и какие записи стоит сравнивать?',
       )}</p>
     </StudySection>
   </main>
+  <StudyLife />
 
   <footer class="case-footer">
     <nav aria-label={t('Observatory project links', 'Ссылки проекта Observatory')}>
@@ -436,13 +446,13 @@ const categories = [
 <script>
   document.querySelectorAll<HTMLAnchorElement>('[data-introduction-film]').forEach((link) => {
     const embedSrc = link.dataset.embedSrc;
-    const stage = link.querySelector('.hero-introduction__stage');
+    const stage = link.querySelector('.film__stage');
     if (!embedSrc || !stage) return;
 
     link.addEventListener('click', (event) => {
       event.preventDefault();
       const frame = document.createElement('iframe');
-      frame.className = 'hero-introduction__player';
+      frame.className = 'film__player';
       frame.src = embedSrc;
       frame.title = link.dataset.embedTitle ?? '';
       frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
@@ -456,10 +466,23 @@ const categories = [
 </script>
 
 <style>
-  .hero h1 { margin: 0 0 12px; font-family: var(--font-display); font-size: clamp(72px, 8vw, 112px); font-weight: 700; font-synthesis: none; letter-spacing: -0.06em; line-height: 0.9; }
-  .hero-title { white-space: nowrap; }
-  .hero-title__letter { position: relative; display: inline-block; }
-  .hero-title__letter::after {
+  /* The wordmark keeps its own face and the texture that flashes through its letters, as a logo. */
+  :global(.cover) .wordmark {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 2rem + 6vw, 7rem);
+    font-weight: 700;
+    font-synthesis: none;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    white-space: nowrap;
+  }
+
+  .wordmark__letter {
+    position: relative;
+    display: inline-block;
+  }
+
+  .wordmark__letter::after {
     content: attr(data-letter);
     position: absolute;
     inset: -0.14em -0.05em -0.2em;
@@ -475,49 +498,289 @@ const categories = [
     transform-origin: 50% 70%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: hero-title-texture-flash 820ms cubic-bezier(0.22, 0.75, 0.28, 1) both;
+    animation: wordmark-texture-flash 820ms cubic-bezier(0.22, 0.75, 0.28, 1) both;
     animation-delay: calc(180ms + var(--letter-index) * 82ms);
     will-change: opacity, transform;
   }
 
-  @keyframes hero-title-texture-flash {
+  @keyframes wordmark-texture-flash {
     0%, 16%, 100% { opacity: 0; transform: translateY(0.035em) scale(0.985); }
     38%, 68% { opacity: 1; transform: translateY(0) scale(1); }
   }
 
+  /* The launch film: a poster that becomes the player on request. */
+  .film__link {
+    display: block;
+  }
+
+  .film__stage {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: #111;
+  }
+
+  .film__stage :global(img),
+  .film__stage :global(.film__player) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+
+  .film__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: var(--color-field);
+    translate: -50% -50%;
+  }
+
+  .film__play::after {
+    position: absolute;
+    top: 50%;
+    left: 52%;
+    border-style: solid;
+    border-width: 9px 0 9px 16px;
+    border-color: transparent transparent transparent var(--color-ink);
+    translate: -40% -50%;
+    content: '';
+  }
+
+  .film figcaption {
+    margin-top: 0.85rem;
+  }
+
   /* One app in Activity Monitor versus Observatory. */
-  .process-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 48px; margin-block: 32px 28px; }
-  .process-split__side { display: flex; flex-direction: column; }
-  .process-split__tool { margin: 0 0 14px; color: #656560; font-size: .9375rem; line-height: 1.4; }
-  .process-split__rows { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; font-size: .8125rem; line-height: 1.35; }
-  .process-split__rows li { padding: 2px 8px; border-radius: 4px; background: #f1f0ec; color: #4e4b45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .process-split__app { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; background: var(--color-ink); color: var(--color-field); font-size: 1rem; line-height: 1.3; }
-  .process-split__name { font-weight: 700; }
-  .process-split__procs { color: rgb(248 248 248 / 70%); font-size: .875rem; }
-  .process-split__count { margin: auto 0 0; padding-top: 14px; font-size: var(--study-small); font-weight: 700; line-height: 1.4; }
-  .process-split__caption { grid-column: 1 / -1; margin-top: 4px; }
-
-  .prototype-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
-  .final-screens { display: grid; gap: 28px; margin-top: 28px; }
-  .usage { margin-top: 8px; }
-  .final-screens .pair { row-gap: 28px; }
-
-  .next-pair { align-items: stretch; margin-top: 28px; }
-  .category-mock { display: flex; flex-direction: column; margin: 0; }
-  .category-mock__window { flex: 1; display: grid; gap: 14px; padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-  .category-mock__heading { display: flex; justify-content: space-between; margin: 0 0 6px; font-size: .9375rem; font-weight: 700; line-height: 1.4; }
-  .category-mock__heading span + span { color: #656560; font-weight: 400; }
-  .category-mock__apps { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
-  .category-mock__apps li { padding: 6px 10px; border-radius: 6px; background: #f1f0ec; font-size: .9375rem; line-height: 1.3; }
-  .category-mock__caption { margin-top: 12px; }
-  .next-note { margin-top: 32px; }
-
-  @media (max-width: 760px) {
-    .hero h1 { font-size: clamp(56px, 15vw, 61px); letter-spacing: -0.055em; }
+  .process-split {
+    --gather-step: 1.4rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem clamp(2rem, 5vw, 4rem);
+    margin-block: 2.5rem 2.75rem;
   }
-  @container study (max-width: 599px) {
-    .process-split, .prototype-row { grid-template-columns: minmax(0, 1fr); }
-    .process-split__count { padding-top: 10px; }
+
+  .process-split__side {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
-  @media (prefers-reduced-motion: reduce) { .hero-title__letter::after { animation: none; } }
+
+  .process-split .process-split__tool {
+    margin: 0 0 0.9rem;
+    color: var(--color-muted);
+    font-size: var(--small);
+  }
+
+  .process-split__rows {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .process-split__rows li,
+  .process-split__stack :global(.process-split__ghost) {
+    height: var(--gather-step);
+    overflow: hidden;
+    border-bottom: 1px solid rgb(17 17 15 / 8%);
+    color: var(--color-copy);
+    font-size: 0.8125rem;
+    line-height: var(--gather-step);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .process-split__stack {
+    position: relative;
+    min-height: var(--gather-step);
+  }
+
+  .process-split__app {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.55rem 0.75rem;
+    border-radius: 0.4rem;
+    background: var(--marker);
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+    line-height: 1.3;
+  }
+
+  .process-split__name {
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  .process-split__procs {
+    color: var(--color-copy);
+    font-size: 0.8125rem;
+  }
+
+  .process-split .process-split__count {
+    margin: auto 0 0;
+    padding-top: 1rem;
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-size: var(--small);
+    font-weight: 600;
+  }
+
+  .process-split__caption {
+    grid-column: 1 / -1;
+  }
+
+  /* The job story, said once in its own words. */
+  .study-document main .job-story {
+    color: var(--color-ink);
+    font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.4rem);
+    line-height: 1.45;
+  }
+
+  /* The two people behind the interviews, drawn by hand. */
+  .personas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem clamp(2rem, 5vw, 4rem);
+    margin-block: 2.5rem 0;
+  }
+
+  .persona :global(img) {
+    width: 9rem;
+    margin-bottom: 1rem;
+  }
+
+  .persona figcaption {
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-size: var(--text);
+    font-weight: 600;
+  }
+
+  .persona p {
+    margin: 0.2rem 0 0.75rem;
+  }
+
+  /* The four first sketches, across the page. */
+  .sketches {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 2rem);
+    margin-block: 0 3rem;
+  }
+
+  .sketch figcaption {
+    margin-top: 0.75rem;
+  }
+
+  .prototype-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-block: 1rem 1.5rem;
+  }
+
+  .final-screens {
+    display: grid;
+    gap: 2.5rem;
+    margin-block: 2.5rem 1rem;
+  }
+
+  .study-document .pair--wide {
+    max-width: none;
+    row-gap: 2.5rem;
+  }
+
+  /* The category concept beside the steps it saves. */
+  .next-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+    margin-block: 2.5rem;
+  }
+
+  .category-mock__window {
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    background: #fff;
+    box-shadow: 0 0 0 1px rgb(17 17 15 / 8%);
+  }
+
+  .category-mock .category-mock__heading {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 0.4rem;
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-size: var(--small);
+    font-weight: 600;
+  }
+
+  .category-mock__heading span + span {
+    color: var(--color-muted);
+  }
+
+  .category-mock__apps {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .category-mock .category-mock__apps li {
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.35rem;
+    background: #f1f0ec;
+    color: var(--color-copy);
+    font-size: var(--small);
+    line-height: 1.3;
+  }
+
+  .category-mock figcaption {
+    margin-top: 0.85rem;
+  }
+
+  .next-pair :global(.steps) {
+    margin-block: 0;
+  }
+
+  @media (max-width: 1099px) {
+    .sketches {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 699px) {
+    .process-split,
+    .personas,
+    .prototype-row,
+    .next-pair {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    :global(.cover) .wordmark {
+      font-size: clamp(3.25rem, 15vw, 4rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark__letter::after {
+      animation: none;
+    }
+  }
 </style>

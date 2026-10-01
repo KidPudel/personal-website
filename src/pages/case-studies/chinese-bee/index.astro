@@ -1,4 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+
+import penCircle from '../../../assets/art/elements/circled.png';
 import dictationStart from '../../../assets/case_study_images/two-sticks/fact.png';
 import flashcardScreen from '../../../assets/case_study_images/two-sticks/flash-card.png';
 import graphemes from '../../../assets/case_study_images/two-sticks/graphemes.png';
@@ -8,20 +11,23 @@ import searchResults from '../../../assets/case_study_images/two-sticks/search1.
 import searchScreen from '../../../assets/case_study_images/two-sticks/search2.png';
 import startScreen from '../../../assets/case_study_images/two-sticks/start1.png';
 import writeScreen from '../../../assets/case_study_images/two-sticks/write.png';
+import Cover from '../../../components/case-studies/Cover.astro';
 import Decision from '../../../components/case-studies/Decision.astro';
 import Rich from '../../../components/case-studies/Rich.astro';
 import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
 import StepCompare from '../../../components/case-studies/StepCompare.astro';
+import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
-import '../../../styles/case-study.css';
+import '../../../styles/study.css';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 260px';
-const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
+const phoneSizes = '(max-width: 760px) calc((100vw - 72px) / 3), 236px';
+const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 248px';
+const tools = [t('Dictionary', 'Словарь'), t('Flashcard app', 'Приложение с карточками'), t('Paper copybook', 'Бумажные прописи')];
 ---
 
 <BaseDocument
@@ -30,26 +36,26 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
     'How I turned a university diploma’s research into Two Sticks, a Telegram product for finding Chinese characters, remembering them, and writing them by hand, in one chat instead of three tools.',
     'Как я превратил исследование из дипломной работы в «Две палочки», продукт в Telegram, где можно найти китайский иероглиф, запомнить его и прописать от руки. Один чат вместо трёх инструментов.',
   )}
-  pageClass="chinesebee-case-study editorial-case-study"
+  pageClass="study-document study--two-sticks"
   ogImage={searchScreen.src}
   canonicalPath={localePath('/case-studies/two-sticks/', locale)}
 >
   <main id="main-content">
-    <header class="hero">
-      <h1 class="hero-title">{t('Two Sticks', 'Две палочки')}</h1>
-      <p class="hero__line">{t('Write the character, without leaving the chat.', 'Написать иероглиф, не выходя из чата.')}</p>
-
-      <p class="facts-line">
-        {t('Product direction, UX/UI, bot, API, and handwriting app · Built on a 2024 МПГУ diploma', 'Продукт, UX/UI, бот, API и приложение для прописей · На основе диплома МПГУ 2024 года')}<br />
-        {t('A Telegram bot and Web App with nothing to install. A few students used the prototype, and it’s no longer hosted.', 'Telegram-бот и Web App, ничего не нужно устанавливать. Прототипом пользовались несколько студентов, сейчас он не размещён.')}
-      </p>
-
-      <div class="phones">
+    <Cover
+      title={t('Two Sticks', 'Две палочки')}
+      pitch={t('Write the character, without leaving the chat.', 'Написать иероглиф, не выходя из чата.')}
+      facts={[
+        t('Product direction, UX/UI, bot, API, and handwriting app', 'Продукт, UX/UI, бот, API и приложение для прописей'),
+        t('Built on a 2024 МПГУ diploma', 'На основе диплома МПГУ 2024 года'),
+        t('A Telegram bot and Web App with nothing to install. A few students used the prototype, and it’s no longer hosted.', 'Telegram-бот и Web App, ничего не нужно устанавливать. Прототипом пользовались несколько студентов, сейчас он не размещён.'),
+      ]}
+    >
+      <div class="cover-phones">
         <Shot src={searchScreen} priority="high" sizes={phoneSizes} alt={t('Two Sticks word search result with character details and a save action.', 'Результат поиска слова в «Двух палочках» с карточкой иероглифа и кнопкой сохранения.')} />
         <Shot src={flashcardScreen} priority="eager" sizes={phoneSizes} alt={t('Two Sticks flashcard practice using the learner’s saved characters.', 'Практика с карточками в «Двух палочках» на сохранённых иероглифах ученика.')} />
         <Shot src={writeScreen} priority="eager" sizes={phoneSizes} alt={t('Two Sticks handwriting Web App with a drawn character and recognition score.', 'Web App для прописей «Две палочки» с нарисованным иероглифом и оценкой распознавания.')} />
       </div>
-    </header>
+    </Cover>
 
     <StarSummary
       situation={t(
@@ -108,7 +114,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         'Their competitive analysis also showed a gap. Serious writing practice lived in separate apps, and Telegram bots were easy to start but mostly about vocabulary.',
         'Их конкурентный анализ показал и пробел. Серьёзная практика письма была только в отдельных приложениях, а боты в Telegram легко начать, но они в основном про слова.',
       )}</p>
-      <figure class="position">
+      <!-- The positioning map, with the corner Two Sticks aimed for circled in the pen from the homepage. -->
+      <figure class="position" data-arrive>
         <div class="position__plot" role="img" aria-label={t(
           'Positioning map. Skritter offers deep writing practice but is a separate app. Telegram bots are easy to start but focus on vocabulary. Two Sticks is easy to start and includes writing practice.',
           'Карта позиционирования. Skritter даёт серьёзную практику письма, но это отдельное приложение. Боты в Telegram легко начать, но они про слова. «Две палочки» легко начать, и в них есть практика письма.',
@@ -117,9 +124,12 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
           <span class="position__axis position__axis--x" aria-hidden="true">{t('Easier to start →', 'Проще начать →')}</span>
           <span class="position__point" style="--x: 14%; --y: 26%" aria-hidden="true">Skritter</span>
           <span class="position__point position__point--end" style="--x: 74%; --y: 74%" aria-hidden="true">{t('Telegram bots', 'Боты в Telegram')}</span>
-          <span class="position__point position__point--ours position__point--end" style="--x: 74%; --y: 26%" aria-hidden="true">{t('Two Sticks', 'Две палочки')}</span>
+          <span class="position__point position__point--ours position__point--end" style="--x: 74%; --y: 26%" aria-hidden="true">
+            {t('Two Sticks', 'Две палочки')}
+            <Image class="position__circle pen-circle" src={penCircle} alt="" widths={[256, 512]} sizes="12rem" loading="lazy" decoding="async" />
+          </span>
         </div>
-        <figcaption class="position__caption">{t(
+        <figcaption>{t(
           'Positioning map from the diploma team’s competitive analysis. Two Sticks aimed for the top right: easy to start, with real writing practice.',
           'Карта позиционирования по конкурентному анализу дипломной команды. «Две палочки» целились в правый верхний угол: легко начать и есть настоящая практика письма.',
         )}</figcaption>
@@ -141,6 +151,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 
       <Decision
         number={2}
+        layout="stack"
         title={t('One saved list for every exercise', 'Один список слов для всех упражнений')}
         navLabel={t('One word list', 'Список слов')}
         problem={t('Learners had to build a separate word list for each tool.', 'Ученикам приходилось собирать отдельный список слов для каждого инструмента.')}
@@ -174,13 +185,14 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         why={t('The diploma research pointed to structure and mnemonics, and in the chat the sheet is always one scroll away.', 'На структуру и мнемонику указывало исследование из диплома, а в чате лист всегда в одной прокрутке.')}
       >
         <div class="sheet-pair">
-          <Shot src={sheetInChat} sizes="(max-width: 760px) min(calc(100vw - 40px), 260px), 260px" alt={t('The saved-words command sending a notebook sheet into the chat.', 'Команда сохранённых слов присылает лист-пропись в чат.')} caption={t('The sheet arrives in the chat.', 'Лист приходит прямо в чат.')} />
-          <Shot kind="sheet" src={notebookFilled} sizes="(max-width: 760px) calc(100vw - 40px), 740px" alt={t('Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid.', 'Заполненный лист-пропись для 教 со структурой, порядком черт, похожими иероглифами, мнемоникой и сеткой для письма.')} caption={t('Structure, stroke order, look-alikes, a mnemonic, and a grid on one sheet.', 'Структура, порядок черт, похожие иероглифы, мнемоника и сетка на одном листе.')} />
+          <Shot src={sheetInChat} sizes="(max-width: 760px) min(calc(100vw - 40px), 248px), 248px" alt={t('The saved-words command sending a notebook sheet into the chat.', 'Команда сохранённых слов присылает лист-пропись в чат.')} caption={t('The sheet arrives in the chat.', 'Лист приходит прямо в чат.')} />
+          <Shot kind="sheet" src={notebookFilled} sizes="(max-width: 760px) calc(100vw - 40px), 700px" alt={t('Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid.', 'Заполненный лист-пропись для 教 со структурой, порядком черт, похожими иероглифами, мнемоникой и сеткой для письма.')} caption={t('Structure, stroke order, look-alikes, a mnemonic, and a grid on one sheet.', 'Структура, порядок черт, похожие иероглифы, мнемоника и сетка на одном листе.')} />
         </div>
       </Decision>
 
       <Decision
         number={5}
+        layout="stack"
         title={t('An optional primer', 'Вводный курс по желанию')}
         navLabel={t('Primer', 'Вводный курс')}
         problem={t('A primer on how characters work helps beginners and slows everyone else down.', 'Вводный курс о том, как устроены иероглифы, помогает новичкам и тормозит всех остальных.')}
@@ -204,21 +216,25 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       />
     </StudySection>
 
-    <StudySection part="results" lead={t('Three tools became one chat, with nothing to install.', 'Три инструмента превратились в один чат, где ничего не нужно устанавливать.')}>
-      <figure class="tools">
-        <div class="tools__row">
+    <StudySection part="results">
+      <p class="statement" data-arrive><Rich text={t('Three tools became ==one chat==, with nothing to install.', 'Три инструмента превратились в ==один чат==, где ничего не нужно устанавливать.')} /></p>
+
+      <!-- Three tools gather into the one chat that replaced them as the figure arrives. -->
+      <figure class="tools col-wide gather" data-arrive>
+        <div class="tools__side">
           <p class="tools__label">{t('Before: 3 tools', 'Раньше: 3 инструмента')}</p>
           <ul class="tools__list" role="list">
-            <li>{t('Dictionary', 'Словарь')}</li>
-            <li>{t('Flashcard app', 'Приложение с карточками')}</li>
-            <li>{t('Paper copybook', 'Бумажные прописи')}</li>
+            {tools.map((tool) => <li>{tool}</li>)}
           </ul>
         </div>
-        <div class="tools__row tools__row--after">
+        <div class="tools__side tools__side--after">
           <p class="tools__label">{t('Two Sticks: 1 chat', '«Две палочки»: 1 чат')}</p>
-          <ul class="tools__list" role="list">
-            <li>{t('Search, flashcards, notebook sheets, and handwriting, all in Telegram', 'Поиск, карточки, листы-прописи и письмо, всё в Telegram')}</li>
-          </ul>
+          <div class="tools__stack">
+            {tools.map((tool, index) => <span class="gather__ghost tools__ghost" style={`--i: ${index}`} aria-hidden="true">{tool}</span>)}
+            <ul class="tools__list gather__one" role="list">
+              <li>{t('Search, flashcards, notebook sheets, and handwriting, all in Telegram', 'Поиск, карточки, листы-прописи и письмо, всё в Telegram')}</li>
+            </ul>
+          </div>
         </div>
       </figure>
 
@@ -243,17 +259,16 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         'Я бы добавил голос. Студентам не хватало произношения, а в Telegram уже есть голосовые, так что следующий шаг ложится прямо в чат: послушать слово, записать его и получить отзыв о тонах.',
       )}
     >
-      <div class="next-steps">
-        <StepCompare
-          title={t('Pronunciation drill, proposed', 'Тренировка произношения, предложение')}
-          rows={[
-            { label: t('In the chat', 'Прямо в чате'), steps: [t('Hear the word', 'Послушать слово'), t('Record a voice message', 'Записать голосовое'), t('See which tones were off', 'Увидеть, какие тоны не получились'), t('Try again', 'Попробовать снова')], emphasis: true },
-          ]}
-          note={t('Not built yet. Success would mean tone scores improving on the same word over attempts.', 'Пока не сделано. Успехом будет рост оценки тонов на одном и том же слове от попытки к попытке.')}
-        />
-      </div>
+      <StepCompare
+        title={t('Pronunciation drill, proposed', 'Тренировка произношения, предложение')}
+        rows={[
+          { label: t('In the chat', 'Прямо в чате'), steps: [t('Hear the word', 'Послушать слово'), t('Record a voice message', 'Записать голосовое'), t('See which tones were off', 'Увидеть, какие тоны не получились'), t('Try again', 'Попробовать снова')], emphasis: true },
+        ]}
+        note={t('Not built yet. Success would mean tone scores improving on the same word over attempts.', 'Пока не сделано. Успехом будет рост оценки тонов на одном и том же слове от попытки к попытке.')}
+      />
     </StudySection>
   </main>
+  <StudyLife />
 
   <footer class="case-footer">
     <nav aria-label={t('Two Sticks project links', 'Ссылки проекта «Две палочки»')}>
@@ -268,38 +283,158 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 </BaseDocument>
 
 <style>
-  .phones { --phones: 3; }
+  /* Three phones of one width. */
+  .cover-phones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 3vw, 3rem);
+    align-items: start;
+    max-width: 50rem;
+    margin: 0 auto;
+  }
 
-  /* Before and after as two plain lists: grey for what learners had, ink for what they got. */
-  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; max-width: var(--study-measure); margin: 24px 0 28px; }
-  .tools__row { color: var(--study-caption); }
-  .tools__row--after { color: var(--color-ink); }
-  .tools .tools__label { margin: 0 0 4px; font-size: var(--study-body); font-weight: 700; line-height: 1.4; }
-  .tools__list { margin: 0; padding: 0; list-style: none; font-size: var(--study-small); line-height: 1.55; }
+  .cover-phones > :global(.shot) {
+    width: 100%;
+  }
 
-  /* A two-by-two positioning map: ease of starting against depth of writing practice. */
-  .position { max-width: var(--study-measure); margin: 28px 0 0; }
-  /* Only the two axes, no card: the same quiet line weight as the charts. */
-  .position__plot { position: relative; aspect-ratio: 2 / 1; background:
-      linear-gradient(to right, transparent calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% + .5px), transparent calc(50% + .5px)),
-      linear-gradient(to bottom, transparent calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% + .5px), transparent calc(50% + .5px)); }
-  .position__axis { position: absolute; color: var(--study-caption); font-size: .875rem; line-height: 1.3; }
+  /* The positioning map: only its two axes, crisp, with the target corner circled. */
+  .position {
+    margin-block: 2rem 0;
+  }
+
+  .position__plot {
+    position: relative;
+    aspect-ratio: 2 / 1;
+    margin-bottom: 1rem;
+    background:
+      linear-gradient(to right, transparent calc(50% - 0.5px), rgb(17 17 15 / 22%) calc(50% - 0.5px), rgb(17 17 15 / 22%) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(to bottom, transparent calc(50% - 0.5px), rgb(17 17 15 / 22%) calc(50% - 0.5px), rgb(17 17 15 / 22%) calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  }
+
+  .position__axis {
+    position: absolute;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    line-height: 1.3;
+  }
+
   .position__axis--y { top: 0; left: calc(50% + 10px); }
   .position__axis--x { right: 0; top: calc(50% + 8px); }
-  .position__point { position: absolute; left: var(--x); top: var(--y); display: inline-flex; align-items: center; gap: 8px; translate: -8px -50%; color: var(--study-caption); font-size: var(--study-small); line-height: 1.2; white-space: nowrap; }
-  .position__point::before { content: ''; width: 10px; height: 10px; flex: none; border-radius: 50%; background: #d0d0d3; }
+
+  .position__point {
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-muted);
+    font-size: var(--small);
+    line-height: 1.2;
+    white-space: nowrap;
+    translate: -0.5rem -50%;
+  }
+
+  .position__point::before {
+    width: 0.625rem;
+    height: 0.625rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--context);
+    content: '';
+  }
+
   /* Points on the right half put the label before the dot, so it never runs off the edge. */
-  .position__point--end { flex-direction: row-reverse; translate: calc(8px - 100%) -50%; }
-  .position__point--ours { color: var(--color-ink); font-weight: 700; }
-  .position__point--ours::before { width: 12px; height: 12px; background: var(--color-ink); }
-  .position__caption { margin-top: 14px; }
+  .position__point--end {
+    flex-direction: row-reverse;
+    translate: calc(0.5rem - 100%) -50%;
+  }
 
-  .sheet-pair { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
-  .next-steps { margin-top: 28px; }
+  .position__point--ours {
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
 
-  @container study (max-width: 599px) {
-    .tools, .sheet-pair { grid-template-columns: minmax(0, 1fr); }
-    .position__plot { aspect-ratio: 4 / 3; }
-    .position__point { font-size: .875rem; }
+  .position__point--ours::before {
+    background: var(--color-ink);
+  }
+
+  .position__point--ours :global(.position__circle) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: calc(100% + 3.5rem);
+    max-width: none;
+    height: auto;
+    translate: -50% -50%;
+    pointer-events: none;
+  }
+
+  /* Before and after: three tools, then one chat. */
+  .tools {
+    --gather-step: 1.9rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem clamp(2rem, 5vw, 4rem);
+    margin-block: 0 2.5rem;
+  }
+
+  .tools .tools__label {
+    margin: 0 0 0.6rem;
+    color: var(--color-muted);
+    font-size: var(--small);
+  }
+
+  .tools__side--after .tools__label {
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  .tools__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tools .tools__list li,
+  .tools__stack :global(.tools__ghost) {
+    min-height: var(--gather-step);
+    padding: 0.2rem 0;
+    border-bottom: 1px solid rgb(17 17 15 / 10%);
+    color: var(--color-copy);
+    font-size: var(--text);
+    line-height: 1.5;
+  }
+
+  .tools__stack {
+    position: relative;
+  }
+
+  .tools .tools__side--after .tools__list li {
+    padding: 0.2rem 0.5rem;
+    border-bottom: 0;
+    border-radius: 0.3rem;
+    background: var(--marker);
+    color: var(--color-ink);
+  }
+
+  .sheet-pair {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  @media (max-width: 699px) {
+    .tools,
+    .sheet-pair {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .position__plot {
+      aspect-ratio: 4 / 3;
+    }
   }
 </style>

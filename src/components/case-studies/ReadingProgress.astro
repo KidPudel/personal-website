@@ -4,12 +4,8 @@ import { toLocale, translator } from '../../i18n/locales';
 const t = translator(toLocale(Astro.currentLocale));
 ---
 
-<!-- Navigation for a case study, built from its sections and decisions. Wide screens get a list beside
-     the text; narrower ones get the contents list after the summary and a small pill that leads back
-     to it. Without JavaScript the headings still carry the structure. -->
-<reading-progress hidden data-back-label={t('Back to contents', 'К содержанию')}>
-  <nav class="rail" aria-label={t('Case study sections', 'Разделы кейса')}></nav>
-  <a class="pill" href="#contents" hidden></a>
+<reading-progress hidden data-section-label={t('Section', 'Раздел')}>
+  <nav aria-label={t('Case study sections', 'Разделы кейса')}></nav>
 </reading-progress>
 
 <script>
@@ -17,95 +13,75 @@ const t = translator(toLocale(Astro.currentLocale));
     private abort?: AbortController;
     private resize?: ResizeObserver;
     private frame = 0;
+    private active = -1;
 
     connectedCallback() {
       this.abort?.abort();
+      this.resize?.disconnect();
+      cancelAnimationFrame(this.frame);
+      this.frame = 0;
+      this.active = -1;
       this.abort = new AbortController();
       const { signal } = this.abort;
       const main = document.querySelector('main');
-      const rail = this.querySelector<HTMLElement>('.rail');
-      const pill = this.querySelector<HTMLAnchorElement>('.pill');
-      if (!main || !rail || !pill) return;
+      const nav = this.querySelector('nav');
+      if (!main || !nav) return;
       const items = Array.from(main.querySelectorAll<HTMLElement>('[data-index-section], [data-index-sub]'));
-      if (!items.length) return;
-      items.forEach((item, index) => { if (!item.id) item.id = `study-part-${index + 1}`; });
-      const heading = (item: HTMLElement) => item.querySelector<HTMLElement>('h2, h3') ?? item;
-      const isSub = (item: HTMLElement) => item.hasAttribute('data-index-sub');
-
-      const jump = (item: HTMLElement) => (event: MouseEvent) => {
-        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-        event.preventDefault();
-        const target = heading(item);
-        history.replaceState(null, '', `#${item.id}`);
-        target.scrollIntoView({ block: 'start', behavior: 'instant' });
-        target.setAttribute('tabindex', '-1');
-        target.focus({ preventScroll: true });
-        target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
-        schedule();
-      };
-      const link = (item: HTMLElement) => {
-        const anchor = document.createElement('a');
-        anchor.href = `#${item.id}`;
-        anchor.textContent = item.dataset.indexLabel ?? heading(item).textContent?.trim() ?? '';
-        // Navigation links take the hover swipe only, not the faint mark that links in running text carry.
-        anchor.className = 'link-mark';
-        anchor.addEventListener('click', jump(item), { signal });
-        return anchor;
-      };
-
-      // The side list: sections, with decisions indented under them.
-      const railLinks = items.map((item) => {
-        const anchor = link(item);
-        anchor.className = isSub(item) ? 'sub' : '';
-        return anchor;
-      });
-      rail.replaceChildren(...railLinks);
-
-      // The contents list after the summary, for screens without room for the side list.
-      const contents = main.querySelector<HTMLElement>('[data-study-contents]');
-      if (contents) {
-        const list = document.createElement('ol');
-        let lastSection: HTMLLIElement | undefined;
-        let subList: HTMLOListElement | undefined;
-        items.filter((item) => item.id !== 'summary').forEach((item) => {
-          const entry = document.createElement('li');
-          entry.append(link(item));
-          if (isSub(item) && lastSection) {
-            if (!subList) { subList = document.createElement('ol'); lastSection.append(subList); }
-            subList.append(entry);
-          } else {
-            list.append(entry);
-            lastSection = entry;
-            subList = undefined;
-          }
-        });
-        contents.querySelector('ol')?.remove();
-        contents.append(list);
-        contents.hidden = false;
-        pill.addEventListener('click', (event) => {
+      const headings = items.map((item) => item.querySelector<HTMLElement>('h2, h3') ?? item);
+      if (!headings.length) return;
+      nav.replaceChildren();
+      const links = headings.map((heading, index) => {
+        const item = items[index];
+        if (!item.id) {
+          const stem = `study-${heading.textContent?.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || index}`;
+          let id = stem;
+          let suffix = 1;
+          while (document.getElementById(id)) id = `${stem}-${suffix++}`;
+          item.id = id;
+        }
+        const link = document.createElement('a');
+        link.href = `#${item.id}`;
+        const name = item.dataset.indexLabel ?? heading.textContent?.trim();
+        link.setAttribute('aria-label', name || `${this.dataset.sectionLabel ?? 'Section'} ${index + 1}`);
+        const tick = document.createElement('span');
+        tick.className = 'tick';
+        tick.setAttribute('aria-hidden', 'true');
+        const label = document.createElement('span');
+        label.className = 'label';
+        label.textContent = name ?? null;
+        label.setAttribute('aria-hidden', 'true');
+        link.append(tick, label);
+        link.addEventListener('click', (event) => {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           event.preventDefault();
-          contents.scrollIntoView({ block: 'start', behavior: 'instant' });
-          contents.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
+          history.replaceState(null, '', `#${item.id}`);
+          heading.scrollIntoView({ block: 'start', behavior: 'instant' });
+          heading.setAttribute('tabindex', '-1');
+          heading.focus({ preventScroll: true });
+          heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
+          schedule();
         }, { signal });
-      }
-
+        nav.append(link);
+        return link;
+      });
+      let navWidth = 0;
       const update = () => {
         this.frame = 0;
-        const line = Math.min(160, innerHeight * 0.25);
         let active = 0;
-        items.forEach((item, index) => { if (heading(item).getBoundingClientRect().top <= line) active = index; });
-        if (main.getBoundingClientRect().bottom <= innerHeight + 2) active = items.length - 1;
-        railLinks.forEach((anchor, index) => {
-          if (index === active) anchor.setAttribute('aria-current', 'location');
-          else anchor.removeAttribute('aria-current');
+        headings.forEach((heading, index) => {
+          if (heading.getBoundingClientRect().top <= Math.min(180, innerHeight * 0.25)) active = index;
         });
-        // The pill names where the reader is, and appears once the contents list is out of view.
-        const current = items[active];
-        const section = isSub(current) ? items.slice(0, active).reverse().find((item) => !isSub(item)) : current;
-        const name = [section, isSub(current) ? current : undefined].filter(Boolean).map((item) => item!.dataset.indexLabel).join(' · ');
-        pill.textContent = `↑ ${name}`;
-        pill.setAttribute('aria-label', `${this.dataset.backLabel ?? 'Back to contents'}. ${name}`);
-        pill.hidden = !contents || contents.getBoundingClientRect().bottom > 0 || active === 0;
+        if (main.getBoundingClientRect().bottom <= innerHeight + 2) active = headings.length - 1;
+        if ((active !== this.active || nav.clientWidth !== navWidth) && window.matchMedia('(max-width: 1000px)').matches) {
+          const link = links[active];
+          nav.scrollTo({ left: link.offsetLeft - nav.clientWidth / 2 + link.clientWidth / 2, behavior: 'instant' });
+        }
+        navWidth = nav.clientWidth;
+        this.active = active;
+        links.forEach((link, index) => {
+          if (index === active) link.setAttribute('aria-current', 'location');
+          else link.removeAttribute('aria-current');
+        });
       };
       const schedule = () => {
         if (!this.frame) this.frame = requestAnimationFrame(update);
@@ -117,7 +93,6 @@ const t = translator(toLocale(Astro.currentLocale));
       this.resize.observe(main);
       update();
     }
-
     disconnectedCallback() {
       this.abort?.abort();
       this.resize?.disconnect();
@@ -128,21 +103,25 @@ const t = translator(toLocale(Astro.currentLocale));
 </script>
 
 <style is:global>
+  reading-progress { position: fixed; z-index: 10; left: clamp(12px, 3vw, 48px); top: 50%; transform: translateY(-50%); width: 44px; }
   reading-progress[hidden] { display: none; }
-  reading-progress .rail { display: none; }
-  /* Wide screens: a quiet list beside the text, the current part in ink. */
-  @media (min-width: 1400px) {
-    reading-progress .rail { position: fixed; z-index: 10; top: 50%; left: 24px; display: flex; flex-direction: column; gap: 2px; width: calc(var(--page-gutter) - 48px); max-height: 80vh; overflow-y: auto; transform: translateY(-50%); scrollbar-width: none; }
-    reading-progress .rail a { padding: 3px 0; color: var(--color-muted); font: 14px/1.35 var(--font-reading); text-decoration: none; transition: color 120ms ease-out; }
-    reading-progress .rail a.sub { padding-left: 12px; font-size: 13px; }
-    reading-progress .rail a[aria-current] { color: var(--color-ink); }
-    reading-progress .pill { display: none; }
+  reading-progress nav { display: flex; flex-direction: column; height: auto; max-height: 76vh; justify-content: center; }
+  reading-progress a { position: relative; display: flex; align-items: center; justify-content: center; width: 44px; height: 20px; min-height: 16px; flex: 0 1 20px; text-decoration: none; }
+  reading-progress .tick { display: block; width: 16px; height: 4px; border-radius: 4px; background: var(--color-ink); opacity: .18; transition: transform 120ms ease-out, opacity 120ms ease-out; }
+  reading-progress a[aria-current] .tick { opacity: 1; transform: scaleX(2); }
+  reading-progress .label { position: absolute; left: 48px; padding: 8px 12px; width: max-content; max-width: 280px; border-radius: 8px; background: var(--color-field); color: var(--color-ink); font: 14px/1.4 var(--font-reading); opacity: 0; visibility: hidden; pointer-events: none; }
+  reading-progress a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 0; border-radius: 5px; }
+  reading-progress a:focus-visible .label { opacity: 1; visibility: visible; }
+  reading-progress a:focus-visible .tick { transition: none; }
+  @media (hover: hover) { reading-progress a:hover .label { opacity: 1; visibility: visible; } reading-progress a:hover .tick { opacity: 1; } }
+  @media (max-width: 1000px) {
+    reading-progress { left: 50%; top: auto; bottom: 8px; transform: translateX(-50%); width: min(calc(100% - 32px), 360px); padding: 0 8px; border-radius: 24px; background: var(--color-field); }
+    reading-progress nav { flex-direction: row; height: 44px; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
+    reading-progress a { flex: 1 0 44px; height: 44px; }
+    reading-progress .tick { width: 4px; height: 12px; }
+    reading-progress a[aria-current] .tick { transform: scaleY(1.6); }
+    reading-progress .label { display: none; }
   }
-  @media (min-width: 1400px) and (hover: hover) { reading-progress .rail a:hover { color: var(--color-ink); } }
-  /* Narrower screens: one small pill that names the current part and leads back to the contents. */
-  reading-progress .pill { position: fixed; z-index: 10; left: 50%; bottom: 14px; max-width: min(calc(100% - 32px), 420px); padding: 10px 16px; overflow: hidden; border-radius: 999px; background: var(--color-field); box-shadow: 0 0 0 1px rgb(17 17 15 / 10%), 0 8px 24px -12px rgb(17 17 15 / 30%); color: var(--color-ink); font: 14px/1.3 var(--font-reading); text-decoration: none; white-space: nowrap; text-overflow: ellipsis; transform: translateX(-50%); }
-  reading-progress .pill[hidden] { display: none; }
-  reading-progress a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; border-radius: 4px; }
-  @media (prefers-reduced-motion: reduce) { reading-progress .rail a { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { reading-progress .tick { transition: none; } }
   @media print { reading-progress { display: none; } }
 </style>

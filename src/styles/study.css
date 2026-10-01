@@ -1,0 +1,571 @@
+/* The case studies, set as a marked-up proof.
+
+   The text is the document; Igor's marks sit on top of it. Results are highlighted as they scroll
+   in, sources and caveats are black notes in the margin joined by a thin line to the words they
+   qualify, and each study keeps one sentence set large. Fonts keep their roles: Crimson Text 400
+   for headings and that one sentence, Instrument Sans for everything else, Instrument Sans
+   Semibold for emphasis and notes. The live parts (StudyLife.astro) only add motion; without
+   them every mark is already in place. */
+
+html.study-document {
+  --frame: 1200px;
+  --gutter: clamp(20px, 5vw, 72px);
+  --gap: clamp(16px, 2vw, 24px);
+  --measure: 36rem;
+  --text: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --small: 0.875rem;
+  --space-part: clamp(5.5rem, 3.5rem + 6vw, 9rem);
+  --context: #c6cfd6;
+  --marker: #ffe25c;
+  --page-gutter: var(--gutter);
+  --page-frame: var(--frame);
+  /* The names the film and image components read. */
+  --study-body: var(--text);
+  --study-small: var(--small);
+  --study-caption: var(--color-muted);
+}
+
+/* Each study's highlighter, after its product. */
+html.study--supergood { --marker: #ffdf55; }
+html.study--observatory { --marker: #cfe89a; }
+html.study--instagram { --marker: #ffc8df; }
+html.study--two-sticks { --marker: #d9d0fc; }
+
+.study-document main {
+  /* 1 when the notes sit in the margins and can be joined to their words by a line. */
+  --note-lines: 1;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap);
+  width: min(calc(100% - 2 * var(--gutter)), var(--frame));
+  margin-inline: auto;
+  color: var(--color-ink);
+  font-family: var(--font-reading);
+}
+
+/* Every part shares the page's twelve columns: headings hang on the left, reading runs in the
+   middle six, notes and screens use the margins. */
+.part,
+.decision,
+.cover {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gap);
+  align-items: start;
+}
+
+:where(.part, .decision, .cover) > * {
+  grid-column: 4 / span 6;
+  min-width: 0;
+}
+
+.study-document .col-wide { grid-column: 3 / span 8; }
+.study-document .col-full { grid-column: 1 / -1; }
+
+.study-document main img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.study-document main a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.study-document main :is(p, li) a:not([class]) {
+  background: var(--link-mark-rest) no-repeat 0 calc(100% - 0.02em) / 100% 0.62em;
+}
+
+.study-document main :is(p, li) a:not([class]):is(:hover, :focus-visible) {
+  animation: link-mark-draw var(--link-mark-draw) step-end forwards;
+}
+
+.study-document [id] {
+  scroll-margin-top: 6rem;
+}
+
+/* ---- Type ------------------------------------------------------------------------------------- */
+
+.study-document main :is(h1, h2, h3, .statement) {
+  font-family: var(--font-study-heading);
+  font-weight: 400;
+  font-synthesis: none;
+  text-wrap: balance;
+}
+
+.part > h2 {
+  grid-column: 1 / span 3;
+  /* Spans the first rows, so a two-line heading never pushes the reading apart. */
+  grid-row: 1 / span 3;
+  margin-block: -0.35rem 1.5rem;
+  padding-right: 1rem;
+  font-size: clamp(1.9rem, 1.55rem + 1.1vw, 2.6rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.study-document main h3 {
+  margin-block: 0 1rem;
+  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.75rem);
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+}
+
+.study-document .part > h3 {
+  margin-top: clamp(2.75rem, 5vw, 4rem);
+}
+
+.study-document main p,
+.study-document main li {
+  color: var(--color-copy);
+  font-size: var(--text);
+  line-height: 1.68;
+}
+
+.study-document main p {
+  margin-block: 0 1em;
+}
+
+.study-document main .part__lead {
+  color: var(--color-ink);
+}
+
+.study-document main :is(strong, b, .summary__label) {
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-weight: 600;
+}
+
+.study-document main .note,
+.study-document main figcaption {
+  color: var(--color-muted);
+  font-size: var(--small);
+  line-height: 1.55;
+}
+
+.study-document main figure {
+  min-width: 0;
+}
+
+.study-document .plain-list {
+  margin-block: 0 1.25rem;
+  padding-left: 1.2em;
+}
+
+.study-document .plain-list li + li {
+  margin-top: 0.5rem;
+}
+
+.study-document .plain-list li::marker {
+  color: var(--color-muted);
+}
+
+/* ---- Marks ------------------------------------------------------------------------------------ */
+
+/* The highlighter: a flat band behind the words, drawn left to right as they arrive. */
+.study-document main mark,
+.study-document main .marked strong {
+  padding: 0.04em 0.14em;
+  margin-inline: -0.06em;
+  color: var(--color-ink);
+  background: linear-gradient(var(--marker), var(--marker)) 0 50% / var(--mark-size, 100%) 100% no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 650ms var(--ease-out);
+}
+
+html.js .study-document main [data-arrive]:not(.is-here) :is(mark, strong) {
+  --mark-size: 0%;
+}
+
+/* A note in the margin: what the result rests on, said where the result is. */
+.callout {
+  align-self: center;
+  justify-self: start;
+  max-width: 14rem;
+  margin: 0;
+  padding: 0.55rem 0.8rem 0.6rem;
+  border-radius: 0.85rem;
+  background: var(--color-ink);
+  color: #f8f8f8;
+  font-family: var(--font-study-emphasis);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.38;
+  text-wrap: balance;
+}
+
+.study-document main .callout {
+  color: #f8f8f8;
+  font-size: 0.75rem;
+  line-height: 1.38;
+}
+
+/* The lines joining notes to their words, drawn over the page. */
+.note-lines {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.note-lines path {
+  fill: none;
+  stroke: var(--color-ink);
+  stroke-width: 1;
+}
+
+.note-lines circle {
+  fill: var(--color-ink);
+  stroke: #f8f8f8;
+  stroke-width: 1.5;
+}
+
+/* Igor's pen circle, drawn in five frames the way the homepage's drawings move. */
+@property --sweep {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 360deg;
+}
+
+.pen-circle {
+  -webkit-mask-image: conic-gradient(from 200deg, #000 var(--sweep), transparent 0);
+  mask-image: conic-gradient(from 200deg, #000 var(--sweep), transparent 0);
+  transition: --sweep 410ms steps(5, end) 300ms;
+}
+
+html.js [data-arrive]:not(.is-here) .pen-circle {
+  --sweep: 0deg;
+}
+
+/* Many into one: when the figure arrives, the separate rows slide up into the single row that
+   replaces them, and it appears. Without the live layer only the single row is shown. */
+.gather {
+  position: relative;
+}
+
+.gather__ghost {
+  display: none;
+}
+
+html.js .gather__ghost {
+  position: absolute;
+  top: calc(var(--i) * var(--gather-step));
+  right: 0;
+  left: 0;
+  display: block;
+  transition:
+    transform 700ms var(--ease-in-out) calc(var(--i) * 22ms),
+    opacity 260ms ease calc(520ms + var(--i) * 22ms);
+}
+
+html.js .gather.is-here .gather__ghost {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--i) * var(--gather-step)));
+}
+
+html.js .gather:not(.is-here) .gather__one {
+  opacity: 0;
+}
+
+.gather__one {
+  transition: opacity 320ms ease 820ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .gather__ghost,
+  .gather__one {
+    transition: none;
+  }
+}
+
+/* A units chart plays when it arrives: every row at once, one mark per beat, so the rows finish in
+   proportion to their values. The value shows when its row is done. A scale chart's result
+   travels from where it was. */
+html.js .chart--units:not(.is-here) .chart__unit {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--context);
+}
+
+html.js .chart--units:not(.is-here) .chart__value {
+  opacity: 0;
+}
+
+.chart--units.is-here .chart__unit {
+  animation: chart-unit-on 1ms steps(1, end) both;
+  animation-delay: calc(var(--i) * 170ms);
+}
+
+.chart--units.is-here .chart__value {
+  animation: chart-value-on 240ms ease-out both;
+  animation-delay: calc(var(--count) * 170ms);
+}
+
+@keyframes chart-unit-on {
+  from { background: transparent; box-shadow: inset 0 0 0 1px var(--context); }
+}
+
+@keyframes chart-value-on {
+  from { opacity: 0; }
+}
+
+/* People counted as dots fill the same way, one per beat. */
+html.js .people:not(.is-here) .people__dot--on {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--context);
+}
+
+.people.is-here .people__dot--on {
+  animation: chart-unit-on 1ms steps(1, end) both;
+  animation-delay: calc(var(--i) * 140ms);
+}
+
+html.js .chart--scale:not(.is-here) .chart__dot--emphasis {
+  left: var(--from);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart--units.is-here :is(.chart__unit, .chart__value),
+  .people.is-here .people__dot--on {
+    animation: none;
+  }
+}
+
+/* The one sentence a study turns on, set across the page. */
+.study-document main .statement {
+  grid-column: 1 / -1;
+  max-width: 22ch;
+  margin-block: clamp(3.5rem, 6vw, 5.5rem);
+  color: var(--color-ink);
+  font-size: clamp(2.4rem, 1.4rem + 4.2vw, 5.25rem);
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+}
+
+.study-document main .statement mark {
+  padding-inline: 0.06em;
+}
+
+.part {
+  margin-top: var(--space-part);
+}
+
+/* ---- Cover ------------------------------------------------------------------------------------ */
+
+.cover {
+  padding-top: clamp(7rem, 11vw, 10rem);
+}
+
+.study-document main .cover__title {
+  grid-column: 1 / span 8;
+  margin: 0;
+  font-size: clamp(3.25rem, 1.8rem + 5.2vw, 6.25rem);
+  letter-spacing: -0.035em;
+  line-height: 0.92;
+}
+
+.study-document main .cover__title--long {
+  grid-column: 1 / span 8;
+  font-size: clamp(2.6rem, 1.6rem + 3.6vw, 4.75rem);
+  letter-spacing: -0.028em;
+  line-height: 0.98;
+}
+
+.study-document main .cover__pitch {
+  grid-column: 1 / span 6;
+  margin-block: 1.4rem 0;
+  color: var(--color-ink);
+  font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+  line-height: 1.4;
+}
+
+.study-document main .cover__facts {
+  grid-column: 9 / span 4;
+  grid-row: 1 / span 2;
+  align-self: end;
+  margin: 0;
+  color: var(--color-muted);
+  font-size: var(--small);
+  line-height: 1.6;
+}
+
+.cover__work {
+  grid-column: 1 / -1;
+  margin-top: clamp(3rem, 6vw, 5.5rem);
+}
+
+/* ---- The short version ------------------------------------------------------------------------- */
+
+.part--summary {
+  margin-top: clamp(4.5rem, 3rem + 4vw, 7rem);
+}
+
+/* A result and the note it carries share a row: the result in the reading column, the note in
+   the margin beside it, nine columns in all. */
+.outcome {
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.part > .outcome--right { grid-column: 4 / span 9; }
+.part > .outcome--left { grid-column: 1 / span 9; }
+.outcome--right > :first-child { grid-column: 1 / span 6; }
+.outcome--right > .callout { grid-column: 8 / span 2; }
+.outcome--left > :first-child { grid-column: 4 / span 6; grid-row: 1; }
+.outcome--left > .callout { grid-column: 1 / span 2; grid-row: 1; justify-self: end; }
+
+/* ---- Decisions --------------------------------------------------------------------------------- */
+
+.part--decisions > h2 {
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.decision {
+  margin-top: clamp(4.5rem, 3rem + 5vw, 8rem);
+}
+
+.part--decisions > h2 + .decision {
+  margin-top: 0;
+}
+
+/* The story keeps the reading column and the free margin; the screen takes the other margin,
+   on alternate sides down the page. */
+.decision__story {
+  display: grid;
+  grid-row: 1;
+  grid-template-columns: subgrid;
+  align-content: start;
+}
+
+.decision__story--right { grid-column: 4 / span 9; }
+.decision__story--right > * { grid-column: 1 / span 6; min-width: 0; }
+.decision__story--left { grid-column: 1 / span 9; }
+.decision__story--left > * { grid-column: 4 / span 6; min-width: 0; }
+.decision__story > .outcome { grid-column: 1 / -1; }
+
+.decision--side > .decision__visual {
+  grid-column: 1 / span 3;
+  grid-row: 1;
+}
+
+.decision--side.decision--even > .decision__visual {
+  grid-column: 10 / span 3;
+}
+
+.decision--stack > .decision__visual {
+  grid-column: 2 / span 10;
+  grid-row: 2;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.study-document main .decision__effect {
+  margin-block: 0.75rem 0;
+  color: var(--color-ink);
+}
+
+.study-document .pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 4vw, 4rem);
+  align-items: start;
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+/* ---- Footer ------------------------------------------------------------------------------------ */
+
+.study-document .case-footer {
+  width: min(calc(100% - 2 * var(--gutter)), var(--frame));
+  margin: var(--space-part) auto 0;
+  padding: 1.5rem 0 5rem;
+  background: linear-gradient(90deg, rgb(17 17 15 / 45%) 50%, transparent 0) 0 0 / 14px 1px repeat-x;
+  font-family: var(--font-reading);
+}
+
+.study-document .case-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 2.5rem;
+  font-size: var(--small);
+}
+
+.study-document .case-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---- Narrower pages: one column, notes under what they qualify --------------------------------- */
+
+@media (max-width: 1099px) {
+  .study-document main {
+    --note-lines: 0;
+  }
+
+  :where(.part, .decision, .cover) > *,
+  .part > h2,
+  .study-document .col-wide,
+  .study-document main .cover__title,
+  .study-document main .cover__pitch,
+  .study-document main .cover__facts,
+  .decision--side > .decision__visual,
+  .decision--side.decision--even > .decision__visual,
+  .decision--stack > .decision__visual,
+  .decision__story,
+  .part > .outcome--right,
+  .part > .outcome--left {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .decision__story {
+    display: block;
+  }
+
+  :where(.part, .decision__story) > :not(.decision, .decision__visual, .col-wide, .statement),
+  .decision__story {
+    width: 100%;
+    max-width: var(--measure);
+    margin-inline: auto;
+  }
+
+  .part > h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .study-document main .cover__facts {
+    margin-top: 1.5rem;
+  }
+
+  .decision--side > .decision__visual {
+    order: 2;
+    margin-top: 2.25rem;
+  }
+
+  .outcome {
+    display: block;
+  }
+
+  .outcome > .callout,
+  .outcome--right > .callout,
+  .outcome--left > .callout {
+    display: inline-block;
+    margin-top: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-document main mark,
+  .study-document main .marked strong {
+    transition: none;
+  }
+}

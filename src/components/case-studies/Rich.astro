@@ -1,12 +1,15 @@
 ---
-// Plain text with **bold** marks, used to set key numbers apart inside a sentence. Everything else is escaped.
+// Plain text with two marks. **Bold** sets key numbers apart inside a sentence; ==marked== lays
+// the highlighter over a phrase without changing its weight. Everything else is escaped.
 interface Props {
   text: string;
 }
 
 const { text } = Astro.props;
 const escape = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const html = escape(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+const html = escape(text)
+  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  .replace(/==(.+?)==/g, '<mark>$1</mark>');
 ---
 
 <Fragment set:html={html} />

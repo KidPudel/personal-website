@@ -1,6 +1,42 @@
 # Implementation plan
 
-Last updated: 2026-09-29
+Last updated: 2026-10-02
+
+## Completed milestone: case studies as a marked-up proof
+
+- Replace the centred, template-like case-study pages with an editorial layout on a twelve-column page: headings hanging in the left margin, reading in the middle six columns, notes and screens in the margins.
+- Keep the copy and the font roles: Crimson Text 400 for headings and one large sentence per study, Instrument Sans for everything else, Instrument Sans Semibold for emphasis.
+- Mark results with a highlighter in each study's colour, and set each source or caveat already in the copy as a margin note joined by a line to its claim.
+- Give each study one live moment that explains something, using only Igor's own drawings for hand-drawn marks. Everything renders finished without JavaScript and under reduced motion.
+- Verify both languages at phone, tablet, and desktop widths, the media contract, and both production builds. See `docs/PROGRESS.md`.
+
+## Completed milestone: case-study heading character
+
+- Follow Igor's latest typography direction: regular Crimson Text for page, section, and decision headings, paired with the existing reading sans.
+- Give the heading levels a clearer responsive scale and more space before prose. Use regular Alegreya for Cyrillic headings and retain Observatory's authored wordmark.
+- Use actual semibold sans-serif faces for emphasis within case-study prose and the summary labels.
+- Reuse the local Crimson font and self-host its Cyrillic companion; isolate the heading role from the homepage, blog, and listing.
+- Verify both languages at desktop/mobile sizes, heading navigation, media checks, and both production base paths. See `docs/PROGRESS.md`.
+
+## Completed milestone: case-study flow and results alignment
+
+- Keep step sequences and charts contained within the reading column, including their titles, labels, and notes.
+- Use ordered steps and aligned comparison columns that stack on narrow screens.
+- Group each Instagram walkthrough with its caption and playback control, with consistent separation before the results text.
+- Verify both languages, desktop/mobile rendering, keyboard playback, static video links, media checks, and both production builds. See `docs/PROGRESS.md`.
+
+## Completed milestone: centered case-study reading and evidence
+
+- Center the reading column and wider evidence across all four case studies, following Igor's alignment correction.
+- Stack the existing SuperGood opening on the same center axis; align its phone frames without altering evidence or adding visual elements.
+- Preserve the authored typography, colors, copy, progress marks, and static reading order.
+- Verify both languages, representative desktop/mobile layouts, responsive media delivery, media checks, and both production base paths. See `docs/PROGRESS.md`.
+
+## Completed milestone: restore compact case-study navigation
+
+- Restore the authored progress marks with vertical desktop and horizontal narrow-screen layouts; remove the contents lists and text pill.
+- Preserve current section/decision anchors, translated accessible labels, focus transfer, and reduced-motion behavior.
+- Verify all case studies in both languages at desktop and mobile widths, navigation and active tracking, and production builds. See `docs/PROGRESS.md`.
 
 ## Completed milestone: STAR case studies with sourced metrics
 

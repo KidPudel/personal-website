@@ -22,6 +22,17 @@
   font-display: swap;
 }
 
+/* A regular Cyrillic companion for case-study headings, independent of the
+   homepage's bold display role. Self-hosted Google Fonts WOFF2 subset. */
+@font-face {
+  font-family: 'Alegreya Study';
+  src: url('../assets/fonts/alegreya-cyrillic-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
 @font-face {
   font-family: 'Instrument Sans';
   src: url('../assets/fonts/InstrumentSans-Regular.ttf') format('truetype');
@@ -52,6 +63,25 @@
   font-style: normal;
   font-weight: 400;
   font-display: swap;
+}
+
+/* Case-study prose has its own real semibold faces, so other documents keep
+   their existing weight rendering. */
+@font-face {
+  font-family: 'Instrument Sans Semibold';
+  src: url('../assets/fonts/instrument-sans-latin-600-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Golos Text Semibold';
+  src: url('../assets/fonts/golos-text-cyrillic-600-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }
 
 @font-face {
@@ -148,6 +178,8 @@
 
     --font-reading: 'Instrument Sans', 'Golos Text', Arial, sans-serif;
     --font-display: 'Averia Serif Libre', 'Alegreya', Georgia, serif;
+    --font-study-heading: 'Crimson Text', 'Alegreya Study', Georgia, serif;
+    --font-study-emphasis: 'Instrument Sans Semibold', 'Golos Text Semibold', Arial, sans-serif;
     --font-editorial: 'Crimson Text', 'Alegreya', Georgia, serif;
     --font-special: 'Bright Chalk', 'Delius', 'Caveat', Arial, sans-serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', 'Caveat', Arial, sans-serif;

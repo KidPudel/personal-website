@@ -1,0 +1,115 @@
+---
+// The live layer of a case study, all progressive: without it, every note, mark, and chart is
+// already on the page in its finished state.
+//   - Margin notes are joined by a thin line to the words they qualify.
+//   - The highlighter is drawn over a result as it scrolls into view.
+//   - Charts marked data-replay play in proportion when they arrive, and can be replayed.
+//   - Igor's pen circle draws itself around what it marks.
+---
+
+<script>
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  const main = document.querySelector<HTMLElement>('main');
+
+  // ---- Lines from notes to what they are about -------------------------------------------------
+  if (main) {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const layer = document.createElementNS(svgNS, 'svg');
+    layer.classList.add('note-lines');
+    layer.setAttribute('aria-hidden', 'true');
+    main.prepend(layer);
+
+    const rectOf = (element: Element) => {
+      const rects = Array.from(element.getClientRects()).filter((rect) => rect.width > 0);
+      return rects.at(-1) ?? element.getBoundingClientRect();
+    };
+
+    const draw = () => {
+      const origin = main.getBoundingClientRect();
+      const wide = getComputedStyle(main).getPropertyValue('--note-lines').trim() === '1';
+      layer.setAttribute('width', String(origin.width));
+      layer.setAttribute('height', String(main.scrollHeight));
+      layer.replaceChildren();
+      const line = (x1: number, y1: number, x2: number, y2: number) => {
+        const path = document.createElementNS(svgNS, 'path');
+        path.setAttribute('d', `M${x1} ${y1}L${x2} ${y2}`);
+        const dot = document.createElementNS(svgNS, 'circle');
+        dot.setAttribute('cx', String(x2));
+        dot.setAttribute('cy', String(y2));
+        dot.setAttribute('r', '2.5');
+        layer.append(path, dot);
+      };
+
+      // Margin notes: from the note's facing side to the words they qualify.
+      if (wide) {
+        main.querySelectorAll<HTMLElement>('[data-note-for]').forEach((note) => {
+          const target = document.getElementById(note.dataset.noteFor ?? '');
+          if (!target) return;
+          const box = note.getBoundingClientRect();
+          const block = target.getBoundingClientRect();
+          const fromRight = box.left > block.right;
+          // From the right, the line meets the end of the last highlighted words. From the left,
+          // it stops at the start of the line, so it never runs through the sentence.
+          const words = target.querySelectorAll('strong, mark');
+          const firstLine = parseFloat(getComputedStyle(target).lineHeight) || 24;
+          const goal = fromRight
+            ? rectOf(words.length ? words[words.length - 1] : target)
+            : { left: block.left, right: block.left, top: block.top, height: firstLine };
+          const middle = goal.top + goal.height / 2;
+          // From the right, stop just past the last word on the highlight's line, so the line never
+          // crosses the words that follow it.
+          let end = goal.right;
+          if (fromRight) {
+            const range = document.createRange();
+            range.selectNodeContents(target);
+            Array.from(range.getClientRects()).forEach((rect) => {
+              if (rect.width && Math.abs(rect.top + rect.height / 2 - middle) < rect.height / 2) end = Math.max(end, rect.right);
+            });
+          }
+          const x1 = (fromRight ? box.left : box.right) - origin.left;
+          const y1 = box.top + box.height / 2 - origin.top;
+          const x2 = (fromRight ? end + 6 : goal.left - 8) - origin.left;
+          const y2 = middle - origin.top;
+          line(x1, y1, x2, y2);
+        });
+      }
+
+    };
+
+    let frame = 0;
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(draw);
+    };
+    new ResizeObserver(schedule).observe(main);
+    window.addEventListener('resize', schedule, { passive: true });
+    document.fonts?.ready.then(schedule);
+    schedule();
+  }
+
+  // ---- Things that happen once, as they arrive -------------------------------------------------
+  const arrive = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-here');
+      arrive.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -18% 0px', threshold: 0.4 });
+
+  document.querySelectorAll('[data-arrive]').forEach((element) => {
+    if (motion.matches) element.classList.add('is-here');
+    else arrive.observe(element);
+  });
+
+  // A chart that replays: take the state away and give it back, so its animation runs again.
+  document.querySelectorAll<HTMLButtonElement>('[data-replay]').forEach((button) => {
+    button.hidden = false;
+    button.addEventListener('click', () => {
+      const chart = button.closest('[data-arrive]');
+      if (!chart) return;
+      chart.classList.remove('is-here');
+      void (chart as HTMLElement).offsetWidth;
+      chart.classList.add('is-here');
+    });
+  });
+</script>

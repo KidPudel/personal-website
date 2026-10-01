@@ -27,13 +27,8 @@ const labels: Record<Part, string> = {
 const label = labels[part];
 ---
 
-<section class="study-section" id={part} data-index-section data-index-label={label}>
-  <h2 class="study-section__title">{title ?? label}</h2>
-  {lead && <p class="study-section__lead"><Rich text={lead} /></p>}
+<section class:list={['part', `part--${part}`]} id={part} data-index-section data-index-label={label}>
+  <h2>{title ?? label}</h2>
+  {lead && <p class="part__lead"><Rich text={lead} /></p>}
   <slot />
 </section>
-
-<style>
-  .study-section { padding-block: clamp(48px, 6vw, 80px) 0; }
-  .study-section__title { margin-bottom: 16px; }
-</style>

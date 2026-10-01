@@ -5,49 +5,41 @@ interface Props {
   number: number;
   /** Says what was done, so the decision can be found by its title. */
   title: string;
-  /** A short name for the contents list. */
+  /** A short destination label for the progress navigation. */
   navLabel: string;
   problem: string;
   decision: string;
   why: string;
   /** The option weighed and not chosen, with the reason. */
   instead?: string;
-  /** The outcome, with its numbers in **bold**. */
+  /** The outcome, with its numbers in **bold**; they are highlighted as it scrolls in. */
   effect?: string;
-  /** Where the outcome comes from: a test, a count from the flow, reviews. */
+  /** Where the outcome comes from, set as a note in the margin beside it. */
   source?: string;
-  /** side: text beside the visual. stack: text above a wide visual. */
+  /** side: the screen in the margin beside the story. stack: a wide visual after it. */
   layout?: 'side' | 'stack';
 }
 
 const { number, title, navLabel, problem, decision, why, instead, effect, source, layout = 'side' } = Astro.props;
+const even = number % 2 === 0;
+// The note goes in whichever margin the screen leaves free.
+const noteSide = layout === 'side' && !even ? 'right' : layout === 'side' ? 'left' : 'right';
 ---
 
 <!-- Written as a short story: the problem, what I did, why, the alternative, the outcome. -->
-<article class:list={['decision', `decision--${layout}`]} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
-  <div class="decision__text">
-    <h3 class="decision__title">{number}. {title}</h3>
+<article class:list={['decision', `decision--${layout}`, even && 'decision--even']} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
+  <div class:list={['decision__story', `decision__story--${noteSide}`]}>
+    <h3>{number}. {title}</h3>
     <p>{problem}</p>
     <p>{decision}</p>
     <p>{why}</p>
     {instead && <p>{instead}</p>}
-    {effect && <p class="decision__effect"><Rich text={effect} />{source && <span class="decision__source"> ({source})</span>}</p>}
+    {effect && (
+      <div class:list={['outcome', `outcome--${noteSide}`]}>
+        <p class="decision__effect marked" id={`outcome-${number}`} data-arrive><Rich text={effect} /></p>
+        {source && <p class="callout" data-note-for={`outcome-${number}`}>{source}</p>}
+      </div>
+    )}
   </div>
   {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
 </article>
-
-<style>
-  .decision { display: grid; gap: 28px; margin-top: clamp(48px, 6vw, 72px); }
-  /* The first decision sits right under the section heading. */
-  :global(.study-section__title) + .decision { margin-top: 20px; }
-  .decision--side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 48px; }
-  .decision__title { margin: 0 0 14px; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.3; }
-  .decision__text :global(p) { margin-bottom: 12px; }
-  .decision__source { color: var(--study-caption); }
-  .decision__visual { min-width: 0; }
-  @container study (max-width: 859px) {
-    .decision--side { grid-template-columns: minmax(0, 1fr); gap: 24px; }
-    .decision--side .decision__visual { justify-self: start; width: min(100%, 520px); }
-    .decision__visual > :global(.shot--device), .decision__visual > :global(.shot--screen) { margin-inline: 0; }
-  }
-</style>

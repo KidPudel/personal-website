@@ -1,6 +1,48 @@
 # Progress
 
-Last updated: 2026-10-01
+Last updated: 2026-10-02
+
+## Case studies: a marked-up proof
+
+- Igor called the earlier pages generic Swiss templating and asked for editorial minimalism with something alive. Two attempts were rejected on the way: generated "hand-drawn" SVG emblems, circles, and arrows (amateur, and drawn icons at large size meant nothing), and serif italics in body copy (broke the font rule). Crop lines around screens and caption pointer lines were also removed as decoration that served nothing. Rules recorded in Claude's project memory.
+- The pages now share `src/styles/study.css` instead of `case-study.css`, which still serves the blog and the listing. A twelve-column page: section headings hang in the left margin beside the reading column, and screens sit in the margins beside their decision on alternate sides (`Decision.astro`, `layout="side"`) or wide under it (`layout="stack"`). The cover sets the name large with the pitch and the facts small at the side (`Cover.astro`); the homepage card texture is no longer reused.
+- Results in **bold** are highlighted in each study's colour (SuperGood yellow, Observatory green, Instagram pink, Two Sticks lavender). `Rich.astro` also accepts `==marked==` for a highlight without bold. Each decision's source and the summary's caveat are black notes in the free margin, joined by a thin line to the words they qualify; on narrower pages they sit under their claim with no line.
+- One sentence per study is set large in Crimson Text, upright: SuperGood's "weekday orders repeat", Observatory's "never from a process", Instagram's "a way back", Two Sticks' "one chat".
+- Live moments, all in `StudyLife.astro` and finished without JavaScript or under reduced motion: highlights draw in as results arrive; unit charts replay in proportion (one mark per beat in every row) with a Replay button; the store rating moves from 3.1 to 3.7; Observatory's 17 process rows and Two Sticks' 3 tools gather into the one row that replaced them; Igor's pen circle (`circled.png`) draws itself once per study where it means something (SuperGood's share of reviews that was his, Instagram's 6 of 9, Two Sticks' target corner).
+- Charts are crisp: `BarCompare` draws units or a 1–5 scale, `StepCompare` dots on a hairline. The generated-ink code was removed.
+- Copy is unchanged: a script compared every string with the previous pages; only the facts lines were split into lines at their middle dot.
+- Verified at 375, 768, 1024, and 1280 px for all four studies in English and Russian with no horizontal overflow; desktop captures at 1440 px and phone checks in the browser pane. Astro diagnostics, the media contract, and both production builds pass.
+
+## Case-study headings: Crimson Text
+
+- Replaced the bold sans-serif narrative headings with regular Crimson Text (400), following Igor's correction after the Averia Light pass. Page titles, section headings, and decision titles have distinct responsive sizes, gentler tracking, and more space before prose.
+- Reused the existing local Crimson font and added regular Alegreya as its Cyrillic companion instead of the existing bold substitute. The companion WOFF2 subset is self-hosted, with its upstream OFL license beside it. A separate heading font role keeps the homepage display type, blog, and listing unchanged; Observatory retains its original wordmark.
+- Changed case-study body emphasis and summary lead-ins to real Instrument Sans and Golos Text semibold (600), with local WOFF2 subsets and OFL licenses. The font role applies only to case-study emphasis, preserving other documents' existing weight rendering.
+- Verified the semibold follow-up in SuperGood's desktop English and mobile Russian summaries: computed 600 weights, no mobile overflow or browser errors, and visually readable emphasis. Astro diagnostics, media checks, and both production builds pass.
+- Kept the current content, centered reading/evidence layout, media delivery, and progress marks. The referenced `docs/CONCEPT_DESIGN.md` is absent from this checkout, so this pass follows Igor's explicit typography instruction and the architecture boundaries.
+- Checked all four studies in English and Russian at 390 and 1440 px: heading styles, no horizontal overflow, no broken completed images, and no browser warnings/errors. Inspected representative desktop/mobile titles and reading sections, including the long Russian Instagram heading; verified a progress link transfers focus to its decision heading. Astro diagnostics, the media contract, and both production base paths pass.
+
+## Case-study flow and results alignment
+
+- Fixed the mismatched widths that let Two Sticks' pronunciation steps drift left of their title and note. Step sequences now use contained ordered lists; before/after comparisons share two aligned columns and stack on mobile.
+- Centered whole reading blocks instead of independently centering every nested label. Chart titles, rows, and notes keep one left edge inside their component, with consistent note typography and clearer row spacing.
+- Instagram walkthroughs now place captions and Play/Pause controls together below each video, aligned across the row. Added space before the following results text. Existing colors, typography, copy, evidence, posters, deferred loading, and playback behavior remain intact.
+- Verified component alignment in 40 route/locale/viewport combinations and reading-column alignment in 48 combinations, spanning 320–1728 px. Inspected desktop/mobile screenshots; keyboard play/pause and static film links pass. Astro diagnostics, the media contract, and both production builds pass.
+
+## Centered case-study reading and evidence
+
+- Centered the reading column across all four case studies, with wider evidence on the same axis. Summaries, section headings, prose, lists, charts, captions, and footers now sit within balanced page margins instead of starting at the homepage's left edge.
+- SuperGood opens as a centered vertical composition: title, description, metadata, then its three existing screens. The frames share a common height and consistent spacing. Stacked decision images, Instagram's opening screens, notebooks and wireframes, and Two Sticks' tools comparison follow the same centered alignment.
+- Kept the existing type, colors, copy, evidence, and compact progress marks. Only fully transparent outer pixels were removed from the SuperGood hero derivatives; originals remain intact. `scripts/prepare-supergood-hero.mjs` reproduces them, and raw-pixel comparisons confirm that every visible pixel is preserved.
+- Updated SuperGood's responsive image sizes, retaining intrinsic dimensions, eager hero images, and one high-priority image. Later media stays lazy.
+- Verified all four studies in English and Russian at 320, 390, 820, 1024, 1440, and 1728 px: centered reading blocks, valid progress navigation, no horizontal overflow or browser errors. Inspected desktop/mobile screenshots and the SuperGood summary. Astro diagnostics, the media contract, and both production builds pass.
+
+## Case-study progress marks restored
+
+- Restored Igor's preferred compact tick navigation: a vertical rail on desktop and a horizontally scrollable strip at widths up to 1000 px. The current mark grows and turns ink; desktop hover and keyboard focus reveal the destination label.
+- Removed the visible section/decision list, inline Contents block, and back-to-contents pill. Marks still map to the current sections and decisions, with localized accessible labels and stable anchors.
+- Kept the active mobile mark visible after scrolling, navigation, and viewport changes. Links move keyboard focus to the destination heading; reduced motion removes visible transitions.
+- Verified all four case studies in English and Russian at 320, 390, 1024, and 1440 px: correct orientation, valid destinations, active tracking, focus transfer, no horizontal overflow, and no browser errors. Astro diagnostics, media checks, and production builds for both base paths pass.
 
 ## Case studies: written, not assembled, and easy to navigate
 

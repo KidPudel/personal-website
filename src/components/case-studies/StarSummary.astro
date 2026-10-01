@@ -6,9 +6,9 @@ interface Props {
   situation: string;
   task: string;
   action: string;
-  /** Outcome numbers go in **bold**, so they stand out inside the sentence. */
+  /** Outcome numbers go in **bold**; they are highlighted as the summary scrolls in. */
   result: string;
-  /** One honest note about the numbers, said once for the whole page. */
+  /** One honest note about the numbers, set as a note in the margin beside the result. */
   caption?: string;
 }
 
@@ -18,28 +18,14 @@ const parts = [
   { label: t('Situation.', 'Ситуация.'), text: situation },
   { label: t('Task.', 'Задача.'), text: task },
   { label: t('Action.', 'Действия.'), text: action },
-  { label: t('Result.', 'Результат.'), text: result },
 ];
 ---
 
-<section class="summary" id="summary" data-index-section data-index-label={t('Summary', 'Коротко')} aria-labelledby="summary-title">
+<section class="part part--summary" id="summary" data-index-section data-index-label={t('Summary', 'Коротко')} aria-labelledby="summary-title">
   <h2 id="summary-title">{t('The short version', 'Коротко')}</h2>
   {parts.map((part) => <p><span class="summary__label">{part.label}</span> <Rich text={part.text} /></p>)}
-  {caption && <p class="note">{caption}</p>}
-  <!-- Filled from the page's sections by the reading progress script; shown where the side list has no room. -->
-  <nav class="contents" id="contents" data-study-contents hidden aria-labelledby="contents-title">
-    <h2 class="contents__title" id="contents-title">{t('Contents', 'Содержание')}</h2>
-  </nav>
+  <div class="outcome outcome--right">
+    <p class="marked" id="summary-result" data-arrive><span class="summary__label">{t('Result.', 'Результат.')}</span> <Rich text={result} /></p>
+    {caption && <p class="callout" data-note-for="summary-result">{caption}</p>}
+  </div>
 </section>
-
-<style>
-  .summary { padding-top: 32px; }
-  .summary__label { font-weight: 700; }
-  .contents { margin-top: 36px; }
-  .contents__title { margin: 0 0 10px; font-size: var(--study-body); letter-spacing: -.01em; }
-  .contents :global(ol) { margin: 0; padding: 0; list-style: none; font-size: var(--study-body); line-height: 1.5; }
-  .contents :global(li + li) { margin-top: 4px; }
-  .contents :global(ol ol) { margin: 4px 0 2px; padding-left: 1.1em; color: var(--color-copy); font-size: var(--study-small); }
-  .contents :global(a) { text-decoration: none; }
-  @media (min-width: 1400px) { .contents { display: none; } }
-</style>

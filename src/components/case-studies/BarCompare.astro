@@ -1,9 +1,11 @@
 ---
+import { toLocale, translator } from '../../i18n/locales';
+
 interface Row {
   label: string;
   value: number;
   display: string;
-  /** The row the chart is about. The rest are context in grey. */
+  /** The row the chart is about, in ink. The rest are context in grey. */
   emphasis?: boolean;
 }
 
@@ -11,41 +13,246 @@ interface Props {
   title: string;
   rows: Row[];
   note?: string;
-  /** The top of the scale, such as 7 for a 1–7 rating. Defaults to the largest value. */
+  /**
+   * units: each row is a count of equal marks, `unit` apiece, so the difference can be counted.
+   * scale: each row is a point on one scale from `from` to `max`, like a store rating.
+   */
+  shape?: 'units' | 'scale';
+  /** What one mark stands for, such as 5 for five seconds. */
+  unit?: number;
+  /** Says what one mark is, under the chart. */
+  unitLabel?: string;
+  from?: number;
   max?: number;
 }
 
-const { title, rows, note, max = Math.max(...rows.map((row) => row.value)) } = Astro.props;
+const { title, rows, note, shape = 'units', unit = 1, unitLabel, from = 0, max = Math.max(...rows.map((row) => row.value)) } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const counts = rows.map((row) => Math.max(1, Math.round(row.value / unit)));
+const most = Math.max(...counts);
+const ticks = Array.from({ length: Math.round(max - from) + 1 }, (_, index) => from + index);
+const at = (value: number) => ((value - from) / (max - from)) * 100;
+const startAt = at(Math.min(...rows.map((row) => row.value)));
 ---
 
-<!-- Drawn like the blog's chart: no card, thin bars, the value at the end of the bar. -->
-<figure class="bars">
-  <figcaption class="bars__title">{title}</figcaption>
-  <dl class="bars__rows">
-    {rows.map((row) => (
-      <div class:list={['bars__row', row.emphasis && 'bars__row--emphasis']}>
-        <dt class="bars__label">{row.label}</dt>
-        <dd class="bars__plot">
-          <span class="bars__bar" style={`--share: ${row.value / max}`} aria-hidden="true"></span>
-          <span class="bars__value">{row.display}</span>
-        </dd>
+<!-- Drawn like the blog's chart: no card, grey for context, ink for what the chart is about. -->
+<!-- When it arrives, a units chart plays at one mark per beat in every row at once, so the rows
+     finish in proportion to their values; a scale chart moves its result from where it was. -->
+<figure class:list={['chart', `chart--${shape}`]} style={`--most: ${most}`} data-arrive>
+  <figcaption class="chart__title">{title}</figcaption>
+
+  {shape === 'units' && (
+    <dl class="chart__rows">
+      {rows.map((row, index) => (
+        <div class:list={['chart__row', row.emphasis && 'chart__row--emphasis']} style={`--count: ${counts[index]}`}>
+          <dt class="chart__label">{row.label}</dt>
+          <dd class="chart__plot">
+            <span class="chart__units" aria-hidden="true">
+              {Array.from({ length: counts[index] }, (_, mark) => <span class="chart__unit" style={`--i: ${mark}`}></span>)}
+            </span>
+            <span class="chart__value">{row.display}</span>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  )}
+
+  {shape === 'scale' && (
+    <div class="chart__scale">
+      <dl class="chart__points">
+        {rows.map((row) => (
+          <div class:list={['chart__point', row.emphasis && 'chart__point--emphasis']}>
+            <dt class="chart__label">{row.label}</dt>
+            <dd class="chart__value">{row.display}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="chart__track" aria-hidden="true">
+        {rows.map((row) => <span class:list={['chart__dot', row.emphasis && 'chart__dot--emphasis']} style={`--at: ${at(row.value)}%; --from: ${startAt}%`}></span>)}
+        {ticks.map((tick) => <span class="chart__tick" style={`--at: ${at(tick)}%`}>{tick}</span>)}
       </div>
-    ))}
-  </dl>
-  {note && <p class="bars__note">{note}</p>}
+    </div>
+  )}
+
+  {(unitLabel || note) && <p class="chart__note">{unitLabel}{unitLabel && note && ' '}{note}</p>}
+  {shape === 'units' && <button class="chart__replay" type="button" data-replay hidden><span class="link-mark">{t('Replay', 'Повторить')}</span></button>}
 </figure>
 
 <style>
-  .bars { margin: 0; }
-  .bars__title { margin: 0 0 16px; color: var(--color-ink); font-size: var(--study-body); font-weight: 700; letter-spacing: -.015em; line-height: 1.35; text-wrap: balance; }
-  .bars__rows { display: grid; gap: 12px; margin: 0; }
-  .bars__row { display: grid; gap: 4px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
-  .bars__row--emphasis { color: var(--color-ink); }
-  .bars__label { margin: 0; }
-  .bars__plot { display: flex; align-items: center; gap: 10px; margin: 0; }
-  /* Scaled to the top of the scale, so a short bar is really short. */
-  .bars__bar { display: block; flex: none; width: calc((100% - 4.5rem) * var(--share)); min-width: 2px; height: 10px; border-radius: 0 4px 4px 0; background: #d0d0d3; }
-  .bars__row--emphasis .bars__bar { background: var(--color-ink); }
-  .bars__value { font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .bars__note { margin: 14px 0 0; color: var(--study-caption); font-size: .875rem; line-height: 1.55; }
+  .chart {
+    margin-block: 2.5rem;
+    container: chart / inline-size;
+  }
+
+  .chart__title {
+    margin: 0 0 1.1rem;
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-size: var(--text);
+    font-weight: 600;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .chart__rows {
+    display: grid;
+    gap: 1.1rem;
+    margin: 0;
+  }
+
+  .chart__row {
+    display: grid;
+    gap: 0.45rem;
+    color: var(--color-muted);
+    font-size: var(--small);
+    line-height: 1.4;
+  }
+
+  .chart__row--emphasis {
+    color: var(--color-ink);
+  }
+
+  .chart__label,
+  .chart__plot {
+    margin: 0;
+  }
+
+  .chart__plot {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  /* Every mark is the same size in every row, so the rows can be compared by eye. */
+  .chart__units {
+    --unit: min(1.15rem, calc((100cqi - 5rem - (var(--most) - 1) * 0.35rem) / var(--most)));
+    display: flex;
+    flex: none;
+    gap: 0.35rem;
+  }
+
+  .chart__unit {
+    display: block;
+    width: var(--unit);
+    height: calc(var(--unit) * 2.6);
+    border-radius: 0.25rem;
+    background: color-mix(in srgb, var(--context) calc(100% - var(--i, 0) * 2.5%), var(--color-field));
+  }
+
+  .chart__row--emphasis .chart__unit {
+    background: var(--color-ink);
+  }
+
+  .chart__value {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  /* A scale: two points on one line, read against the whole range. */
+  .chart__scale {
+    max-width: 30rem;
+  }
+
+  .chart__points {
+    display: flex;
+    gap: 2rem;
+    margin: 0 0 1rem;
+  }
+
+  .chart__point {
+    color: var(--color-muted);
+    font-size: var(--small);
+    line-height: 1.4;
+  }
+
+  .chart__point--emphasis {
+    color: var(--color-ink);
+  }
+
+  .chart__point .chart__value {
+    font-size: var(--text);
+  }
+
+  .chart__point--emphasis .chart__value {
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  .chart__track {
+    position: relative;
+    height: 1px;
+    margin-bottom: 2.4rem;
+    background: var(--context);
+  }
+
+  .chart__dot {
+    position: absolute;
+    top: 50%;
+    left: var(--at);
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background: var(--context);
+    translate: -50% -50%;
+  }
+
+  .chart__dot--emphasis {
+    background: var(--color-ink);
+  }
+
+  .chart__tick {
+    position: absolute;
+    top: 0.7rem;
+    left: var(--at);
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    translate: -50% 0;
+  }
+
+  /* The result travels from where it was (its starting state is in study.css). */
+  .chart__dot--emphasis {
+    transition: left 1100ms var(--ease-out) 200ms;
+  }
+
+  .chart__replay {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 0.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-ink);
+    font: inherit;
+    font-size: var(--small);
+    cursor: pointer;
+  }
+
+  .chart__replay[hidden] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chart__unit,
+    .chart__value {
+      animation: none !important;
+    }
+
+    .chart__dot--emphasis {
+      transition: none;
+    }
+
+    .chart__replay {
+      display: none;
+    }
+  }
+
+  .chart .chart__note {
+    margin: 1.1rem 0 0;
+    color: var(--color-muted);
+    font-size: var(--small);
+    line-height: 1.55;
+  }
 </style>

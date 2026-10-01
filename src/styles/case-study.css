@@ -1,8 +1,7 @@
 /* Shared editorial presentation for the four case studies and their listing. */
 html.editorial-case-study { background: var(--color-field); color: var(--color-ink); }
 .editorial-case-study body { background: var(--color-field); }
-/* One left edge, shared with the header and the homepage: the page gutter. Text keeps a readable
-   measure from that edge; visuals may run to --study-frame. */
+/* Center the reading column within the page. Evidence can use a wider frame on the same axis. */
 .editorial-case-study main,
 .editorial-case-study .case-footer {
   --study-frame: 1040px;
@@ -15,15 +14,46 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
   color: var(--color-ink);
 }
 .editorial-case-study main { width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)); margin-inline: auto; }
+.editorial-case-study:not(.blog-document) main:not(.case-index) { width: min(calc(100% - 2 * clamp(20px, 4vw, 48px)), var(--study-frame)); }
 .editorial-case-study:not(.blog-document) main:not(.case-index) > * { max-width: var(--study-frame); }
+/* Center whole reading blocks, so a component's own labels and rows stay aligned inside it. */
+.editorial-case-study:not(.blog-document) main:not(.case-index) > .hero > :is(h1, p, .facts),
+.editorial-case-study:not(.blog-document) main:not(.case-index) > .study-section > :is(h2, p, blockquote, .plain-list, .chart-block) { margin-inline: auto; }
+.editorial-case-study:not(.blog-document) .decision--stack > .decision__text { max-width: var(--study-measure); margin-inline: auto; }
+.editorial-case-study:not(.blog-document) main:not(.case-index) .study-section > figure { margin-inline: auto; }
+.editorial-case-study:not(.blog-document) main:not(.case-index) > .summary { max-width: var(--study-measure); margin-inline: auto; }
 /* Layout follows the width of the column itself, not the window, so the frame between breakpoints
    never gets cramped columns. Case studies only: the blog and the listing keep their own layout. */
 .editorial-case-study:not(.blog-document) main:not(.case-index) { container: study / inline-size; }
 .editorial-case-study :is(h1, h2, h3) { font-family: var(--font-reading); font-weight: 700; text-wrap: balance; }
-/* One typeface throughout: Instrument Sans, set apart by size and weight only. */
+/* Sans-serif defaults remain for the shared blog and listing styles. */
 .editorial-case-study h1 { margin: 0 0 14px; font-size: clamp(2.5rem, 4.6vw, 3.75rem); letter-spacing: -.045em; line-height: 1.05; }
 .editorial-case-study h2 { margin: 0 0 16px; font-size: clamp(1.6rem, 2.4vw, 2.125rem); letter-spacing: -.03em; line-height: 1.2; }
 .editorial-case-study h3 { margin: 0 0 14px; font-size: clamp(1.2rem, 1.6vw, 1.375rem); letter-spacing: -.01em; line-height: 1.35; }
+/* Regular Crimson headings give the studies a different voice from the
+   reading text, with open tracking and a clear hierarchy. */
+.editorial-case-study:not(.blog-document) main:not(.case-index) :is(h2, h3),
+.editorial-case-study:not(.blog-document):not(.observatory-case-study) main:not(.case-index) h1 {
+  font-family: var(--font-study-heading);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: -.018em;
+}
+.editorial-case-study:not(.blog-document):not(.observatory-case-study) main:not(.case-index) h1 {
+  font-size: clamp(2.75rem, 5vw, 4.5rem);
+  line-height: 1.12;
+  margin-bottom: 20px;
+}
+.editorial-case-study:not(.blog-document) main:not(.case-index) h2 {
+  font-size: clamp(2rem, 3vw, 2.625rem);
+  line-height: 1.18;
+  margin-bottom: 24px;
+}
+.editorial-case-study:not(.blog-document) main:not(.case-index) h3 {
+  font-size: clamp(1.5rem, 2vw, 1.8125rem);
+  line-height: 1.25;
+  margin-bottom: 18px;
+}
 .editorial-case-study :where(main:not(.case-index)) p { margin: 0 0 20px; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
 .editorial-case-study:not(.blog-document) main:not(.case-index) :is(h1, h2, h3, p, blockquote) { max-width: var(--study-measure); }
 .editorial-case-study figure { margin: 28px 0; min-width: 0; }
@@ -48,13 +78,17 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .editorial-case-study .sketch-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-block: 28px; }
 .editorial-case-study .sketch-grid figure { margin: 0; }
 .editorial-case-study .sketch-grid img { width: 100%; }
-.editorial-case-study .case-footer { width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)); margin: 56px auto 0; padding-bottom: 80px; }
+.editorial-case-study .case-footer { width: min(calc(100% - 2 * clamp(20px, 4vw, 48px)), var(--study-measure)); margin: 56px auto 0; padding-bottom: 80px; }
 .editorial-case-study .case-footer nav { display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: var(--study-small); }
 .editorial-case-study .case-footer a { display: inline-flex; align-items: center; min-height: 44px; }
 
 /* Case-study building blocks. The studies are written, not assembled: prose, plain lists, and charts
    drawn like the blog's, with outcome numbers in bold inside the sentence. */
 .editorial-case-study :where(main:not(.case-index)) strong { font-weight: 700; }
+.editorial-case-study:not(.blog-document) main:not(.case-index) :is(strong, b, .summary__label) {
+  font-family: var(--font-study-emphasis);
+  font-weight: 600;
+}
 /* The facts under the title, as one caption line like the homepage's work captions. */
 .editorial-case-study :where(main) .facts-line { margin: 20px 0 32px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.55; }
 .editorial-case-study .plain-list { max-width: var(--study-measure); margin: 0 0 20px; padding-left: 1.2em; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
