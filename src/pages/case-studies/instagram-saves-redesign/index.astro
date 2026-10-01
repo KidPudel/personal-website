@@ -134,7 +134,14 @@ const journey = [
       </div>
     </StudySection>
 
-    <StudySection part="task" title={t('Make saves findable, without more filing.', 'Сделать сохранённое находимым без лишней сортировки.')}>
+    <StudySection
+      part="task"
+      title={t('Make saves findable, without more filing.', 'Сделать сохранённое находимым без лишней сортировки.')}
+      lead={t(
+        'So the goal wasn’t another way to save. It was a way back.',
+        'Так что цель была не в новом способе сохранять, а в способе возвращаться.',
+      )}
+    >
       <dl class="terms row">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Get people back to a specific save quickly.', 'Быстро возвращать людей к конкретному сохранённому посту.')}</dd></div>
         <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Share of Saved visits that end with a post opened. Time to find a post. Share of saves filed into a collection.', 'Доля заходов в «Сохранённое», которые заканчиваются открытием поста. Время на поиск поста. Доля сохранений, разложенных по коллекциям.')}</dd></div>
@@ -150,6 +157,12 @@ const journey = [
         'Я задал девяти людям одни и те же вопросы: зачем они начали сохранять, как сохраняют и ищут сейчас, что пробовали раньше и чем пользуются вместо этого.',
       )}
     >
+      <div class="notebooks">
+        <StudyImage src={doodlesOne} kind="spread" sizes="(max-width: 760px) calc((100vw - 56px) / 2), 300px" alt={t("First notebook spread of Igor's interview doodles and handwritten observations about saving and finding posts.", 'Первый разворот блокнота с рисунками Игоря с интервью и рукописными наблюдениями о том, как сохраняют и ищут публикации.')} />
+        <StudyImage src={doodlesTwo} kind="spread" sizes="(max-width: 760px) calc((100vw - 56px) / 2), 300px" alt={t('Second notebook spread with sketched people and notes about revisiting, organizing, and remembering saves.', 'Второй разворот блокнота с набросками людей и заметками о том, как возвращаются к сохранённому, упорядочивают его и вспоминают.')} />
+      </div>
+      <p class="note">{t('My interview notes, drawn as well as written.', 'Мои заметки с интервью: я не только записывал, но и рисовал.')}</p>
+
       <figure class="people">
         <figcaption class="people__title">
           <span class="people__dots" aria-hidden="true">
@@ -169,7 +182,7 @@ const journey = [
             </ul>
           </section>
         ))}
-        <p class="people__note">{t('Each need is my synthesis of that interview, not a quote.', 'Потребности я вывел из каждого интервью сам, это не цитаты.')}</p>
+        <p class="people__note">{t('Each need is my synthesis of that interview, not a quote. Nine people set the direction, but they don’t speak for every Instagram user.', 'Потребности я вывел из каждого интервью сам, это не цитаты. Девять человек задали направление, но не говорят за всех пользователей Instagram.')}</p>
       </figure>
 
       <h3 class="subtitle">{t('Other patterns', 'Что ещё повторялось')}</h3>
@@ -179,13 +192,8 @@ const journey = [
         <li><span class="stats__value">{t('2 of 2', '2 из 2')}</span><span class="stats__label">{t('people using shared collections couldn’t tell if the other person saw a post', 'пользователей общих коллекций не понимали, видел ли пост другой человек')}</span><span class="stats__method">{t('Shared collections give no feedback', 'Общие коллекции молчат')}</span></li>
       </ul>
 
-      <div class="notebooks">
-        <StudyImage src={doodlesOne} kind="spread" sizes="(max-width: 760px) calc((100vw - 56px) / 2), 300px" alt={t("First notebook spread of Igor's interview doodles and handwritten observations about saving and finding posts.", 'Первый разворот блокнота с рисунками Игоря с интервью и рукописными наблюдениями о том, как сохраняют и ищут публикации.')} />
-        <StudyImage src={doodlesTwo} kind="spread" sizes="(max-width: 760px) calc((100vw - 56px) / 2), 300px" alt={t('Second notebook spread with sketched people and notes about revisiting, organizing, and remembering saves.', 'Второй разворот блокнота с набросками людей и заметками о том, как возвращаются к сохранённому, упорядочивают его и вспоминают.')} />
-      </div>
-      <p class="note">{t('My interview notes, drawn as well as written. Nine people set the direction, but they don’t speak for every Instagram user.', 'Мои заметки с интервью: я не только записывал, но и рисовал. Девять человек задали направление, но не говорят за всех пользователей Instagram.')}</p>
-
       <h3 class="subtitle">{t('Customer journey map: where it breaks', 'CJM: где ломается путь')}</h3>
+      <p>{t('To see where each of these breaks the experience, I put all nine interviews on one customer journey map.', 'Чтобы увидеть, где именно всё ломается, я разложил все девять интервью на одну карту пути пользователя.')}</p>
       <div class="journey">
       <table>
         <thead>
@@ -208,9 +216,9 @@ const journey = [
         </tbody>
       </table>
       </div>
-      <p class="note">{t('Built from all nine interviews.', 'Собрана по всем девяти интервью.')}</p>
 
       <h3 class="subtitle">{t('What to build first', 'Что делать в первую очередь')}</h3>
+      <p>{t('The map made the order clear. Search went first, because it served six people.', 'Карта расставила приоритеты. Поиск пошёл первым, потому что он нужен шестерым.')}</p>
       <ol class="priority" role="list">
         <li><span class="priority__tag">{t('First', 'Сначала')}</span><strong>{t('Search and a date filter', 'Поиск и фильтр по дате')}</strong></li>
         <li><span class="priority__tag">{t('Next', 'Затем')}</span><strong>{t('Collection suggestions', 'Подсказки коллекций')}</strong></li>
@@ -218,11 +226,12 @@ const journey = [
         <li><span class="priority__tag">{t('To test', 'Проверить')}</span><strong>{t('Shared reactions and a collection feed', 'Общие реакции и лента из коллекции')}</strong></li>
       </ol>
       <p class="note">{t(
-        'Search went first because it served six people. Left for later, since each came from one person: places from travel videos, planning together as a couple, bulk tools and export, and help letting go of saves.',
-        'Поиск пошёл первым, потому что он нужен шестерым. Отложил то, что было нужно одному человеку: места из видео о путешествиях, совместное планирование для пар, массовые действия с экспортом и помощь в том, чтобы отпускать сохранённое.',
+        'Left for later, since each came from one person: places from travel videos, planning together as a couple, bulk tools and export, and help letting go of saves.',
+        'Отложил то, что было нужно одному человеку: места из видео о путешествиях, совместное планирование для пар, массовые действия с экспортом и помощь в том, чтобы отпускать сохранённое.',
       )}</p>
 
       <h3 class="subtitle">{t('Wireframes before pixels', 'Вайрфреймы до пикселей')}</h3>
+      <p>{t('I wireframed the two main flows, saving and finding, before designing the screens.', 'Два главных сценария, сохранение и поиск, я сначала собрал в вайрфреймах и только потом рисовал экраны.')}</p>
       <div class="wireframes">
         <StudyImage src={saveFlow} kind="wireframe" alt={t('Early three-screen wireframe flow from watching a reel to a save prompt and suggested collections.', 'Ранний вайрфрейм из трёх экранов: от просмотра рилса до предложения сохранить и подсказанных коллекций.')} caption={t('Saving: from a reel to a suggested collection.', 'Сохранение: от рилса до подсказанной коллекции.')} />
         <StudyImage src={managementFlow} kind="wireframe" alt={t('Wireframe sequence exploring saved-content management, collections, and search states.', 'Серия вайрфреймов: управление сохранённым, коллекции и состояния поиска.')} caption={t('Finding: collections, search, and result states.', 'Поиск: коллекции, запрос и состояния результатов.')} />
@@ -305,8 +314,8 @@ const journey = [
       part="result"
       title={t('From scrolling to searching.', 'От листания к поиску.')}
       lead={t(
-        'When I showed the prototype, people reacted warmly: “this is a massive improvement”, “really convenient”. That’s nice to hear, but it’s an early reaction, not evidence, so the numbers below are estimates from the flows.',
-        'Когда я показывал прототип, реакция была тёплой: «это огромное улучшение», «очень удобно». Приятно, но это первые впечатления, а не доказательства, поэтому цифры ниже я оценил по сценариям.',
+        'When I showed the prototype, people reacted warmly: “this is a massive improvement”, “really convenient”.',
+        'Когда я показывал прототип, реакция была тёплой: «это огромное улучшение», «очень удобно».',
       )}
     >
       <div class="films">
@@ -318,6 +327,7 @@ const journey = [
           small={managementFilmSmall} large={managementFilmLarge} poster={managementFilmPoster} />
       </div>
 
+      <p>{t('That’s nice to hear, but it’s an early reaction, not evidence. So these numbers are estimates from the flows:', 'Приятно, но это первые впечатления, а не доказательства. Поэтому цифры ниже я оценил по сценариям:')}</p>
       <div class="charts">
         <BarCompare
           title={t('Time to find a half-remembered post', 'Время, чтобы найти полузабытый пост')}
@@ -390,7 +400,8 @@ const journey = [
   .journey td { color: var(--color-copy); }
   .journey td:last-child { color: var(--color-ink); font-weight: 600; }
 
-  .notebooks { display: grid; grid-template-columns: repeat(2, minmax(0, 300px)); gap: 16px; margin-top: 32px; }
+  .notebooks { display: grid; grid-template-columns: repeat(2, minmax(0, 300px)); gap: 16px; margin-top: 24px; }
+  .notebooks + .note + .people { margin-top: 36px; }
 
   .priority { display: grid; gap: 10px; max-width: var(--study-measure); margin: 20px 0 0; padding: 0; list-style: none; }
   .priority li { display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); column-gap: 20px; align-items: baseline; }

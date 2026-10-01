@@ -83,27 +83,32 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         'Словарь даёт иероглиф, его звучание и значение. А чтобы написать его по памяти, нужна другая практика, и она жила в других местах.',
       )}
     >
-      <figure class="tools">
-        <div class="tools__row">
-          <p class="tools__label">{t('Before: 3 tools', 'Раньше: 3 инструмента')}</p>
-          <ul class="tools__list" role="list">
-            <li>{t('Dictionary', 'Словарь')}</li>
-            <li>{t('Flashcard app', 'Приложение с карточками')}</li>
-            <li>{t('Paper copybook', 'Бумажные прописи')}</li>
-          </ul>
-        </div>
-        <div class="tools__row tools__row--after">
-          <p class="tools__label">{t('Two Sticks: 1 chat', '«Две палочки»: 1 чат')}</p>
-          <ul class="tools__list" role="list">
-            <li>{t('Search, flashcards, notebook sheets, and handwriting, all in Telegram', 'Поиск, карточки, листы-прописи и письмо, всё в Telegram')}</li>
-          </ul>
-        </div>
-      </figure>
+
 
       <p>{t(
-        'It started with a 2024 МПГУ diploma by Смакова, Шаталова, and Шинкарева. They studied copybooks, memorisation methods, and competing apps and bots, and 15 of 20 visitors at their open-day masterclass were interested in the idea. That’s a signal of interest, not a test of my product, but their research became my brief.',
-        'Всё началось с диплома МПГУ 2024 года, который написали Смакова, Шаталова и Шинкарева. Они изучили прописи, методы запоминания, конкурирующие приложения и боты, а на их мастер-классе в день открытых дверей идеей заинтересовались 15 из 20 гостей. Это сигнал интереса, а не проверка моего продукта, но их исследование стало моим брифом.',
+        'This wasn’t my research to begin with. It started with a 2024 МПГУ diploma by Смакова, Шаталова, and Шинкарева. They studied copybooks, memorisation methods, and competing apps and bots, and 15 of 20 visitors at their open-day masterclass were interested in the idea. That’s a signal of interest, not a test of my product, but their research became my brief.',
+        'Изначально это было не моё исследование. Всё началось с диплома МПГУ 2024 года, который написали Смакова, Шаталова и Шинкарева. Они изучили прописи, методы запоминания, конкурирующие приложения и боты, а на их мастер-классе в день открытых дверей идеей заинтересовались 15 из 20 гостей. Это сигнал интереса, а не проверка моего продукта, но их исследование стало моим брифом.',
       )}</p>
+      <p>{t(
+        'Their competitive analysis also showed a gap. Serious writing practice lived in separate apps, and Telegram bots were easy to start but mostly about vocabulary.',
+        'Их конкурентный анализ показал и пробел. Серьёзная практика письма была только в отдельных приложениях, а боты в Telegram легко начать, но они в основном про слова.',
+      )}</p>
+      <figure class="position">
+        <div class="position__plot" role="img" aria-label={t(
+          'Positioning map. Skritter offers deep writing practice but is a separate app. Telegram bots are easy to start but focus on vocabulary. Two Sticks is easy to start and includes writing practice.',
+          'Карта позиционирования. Skritter даёт серьёзную практику письма, но это отдельное приложение. Боты в Telegram легко начать, но они про слова. «Две палочки» легко начать, и в них есть практика письма.',
+        )}>
+          <span class="position__axis position__axis--y" aria-hidden="true">{t('↑ More writing practice', '↑ Больше практики письма')}</span>
+          <span class="position__axis position__axis--x" aria-hidden="true">{t('Easier to start →', 'Проще начать →')}</span>
+          <span class="position__point" style="--x: 14%; --y: 26%" aria-hidden="true">Skritter</span>
+          <span class="position__point position__point--end" style="--x: 74%; --y: 74%" aria-hidden="true">{t('Telegram bots', 'Боты в Telegram')}</span>
+          <span class="position__point position__point--ours position__point--end" style="--x: 74%; --y: 26%" aria-hidden="true">{t('Two Sticks', 'Две палочки')}</span>
+        </div>
+        <figcaption class="position__caption">{t(
+          'Positioning map from the diploma team’s competitive analysis. Two Sticks aimed for the top right: easy to start, with real writing practice.',
+          'Карта позиционирования по конкурентному анализу дипломной команды. «Две палочки» целились в правый верхний угол: легко начать и есть настоящая практика письма.',
+        )}</figcaption>
+      </figure>
     </StudySection>
 
     <StudySection
@@ -125,27 +130,10 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       part="action"
       title={t('Decisions that turned a brief into a product.', 'Решения, которые превратили бриф в продукт.')}
       lead={t(
-        'The diploma team’s competitive analysis showed a gap. Serious writing practice lived in separate apps, and Telegram bots were easy to start but mostly about vocabulary.',
-        'Конкурентный анализ дипломной команды показал пробел. Серьёзная практика письма была только в отдельных приложениях, а боты в Telegram легко начать, но они в основном про слова.',
+        'Six decisions, from where practice should live to what to leave out.',
+        'Шесть решений: от того, где должна жить практика, до того, что оставить на потом.',
       )}
     >
-      <figure class="position">
-        <div class="position__plot" role="img" aria-label={t(
-          'Positioning map. Skritter offers deep writing practice but is a separate app. Telegram bots are easy to start but focus on vocabulary. Two Sticks is easy to start and includes writing practice.',
-          'Карта позиционирования. Skritter даёт серьёзную практику письма, но это отдельное приложение. Боты в Telegram легко начать, но они про слова. «Две палочки» легко начать, и в них есть практика письма.',
-        )}>
-          <span class="position__axis position__axis--y" aria-hidden="true">{t('↑ More writing practice', '↑ Больше практики письма')}</span>
-          <span class="position__axis position__axis--x" aria-hidden="true">{t('Easier to start →', 'Проще начать →')}</span>
-          <span class="position__point" style="--x: 14%; --y: 26%" aria-hidden="true">Skritter</span>
-          <span class="position__point position__point--end" style="--x: 74%; --y: 74%" aria-hidden="true">{t('Telegram bots', 'Боты в Telegram')}</span>
-          <span class="position__point position__point--ours position__point--end" style="--x: 74%; --y: 26%" aria-hidden="true">{t('Two Sticks', 'Две палочки')}</span>
-        </div>
-        <figcaption class="position__caption">{t(
-          'Positioning map, based on the diploma team’s competitive analysis. Two Sticks aims for both: easy to start, with real writing practice.',
-          'Карта позиционирования по конкурентному анализу дипломной команды. «Две палочки» целятся в оба: легко начать и есть настоящая практика письма.',
-        )}</figcaption>
-      </figure>
-
       <Decision
         number={1}
         title={t('Telegram, not a new app.', 'Telegram, а не новое приложение.')}
@@ -217,14 +205,25 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       />
     </StudySection>
 
-    <StudySection
-      part="result"
-      title={t('One chat instead of three tools.', 'Один чат вместо трёх инструментов.')}
-      lead={t(
-        'A few students at the university used it, and I talked with them about how it went.',
-        'Им пользовались несколько студентов университета, и я поговорил с ними о том, как всё прошло.',
-      )}
-    >
+    <StudySection part="result" title={t('One chat instead of three tools.', 'Один чат вместо трёх инструментов.')}>
+      <figure class="tools">
+        <div class="tools__row">
+          <p class="tools__label">{t('Before: 3 tools', 'Раньше: 3 инструмента')}</p>
+          <ul class="tools__list" role="list">
+            <li>{t('Dictionary', 'Словарь')}</li>
+            <li>{t('Flashcard app', 'Приложение с карточками')}</li>
+            <li>{t('Paper copybook', 'Бумажные прописи')}</li>
+          </ul>
+        </div>
+        <div class="tools__row tools__row--after">
+          <p class="tools__label">{t('Two Sticks: 1 chat', '«Две палочки»: 1 чат')}</p>
+          <ul class="tools__list" role="list">
+            <li>{t('Search, flashcards, notebook sheets, and handwriting, all in Telegram', 'Поиск, карточки, листы-прописи и письмо, всё в Telegram')}</li>
+          </ul>
+        </div>
+      </figure>
+
+      <p>{t('A few students at the university used it, and I talked with them about how it went.', 'Им пользовались несколько студентов университета, и я поговорил с ними о том, как всё прошло.')}</p>
       <ul class="points row" role="list">
         <li><strong>{t('What they liked', 'Что понравилось')}</strong><p>{t('Everything in one place: no switching between apps, and less effort just to keep up.', 'Всё в одном месте: не нужно переключаться между приложениями и тратить силы, чтобы просто не отставать.')}</p></li>
         <li><strong>{t('What they missed', 'Чего не хватило')}</strong><p>{t('Practising pronunciation, not just writing.', 'Практики произношения, а не только письма.')}</p></li>

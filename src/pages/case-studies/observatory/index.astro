@@ -206,18 +206,24 @@ const categories = [
         )}</figcaption>
       </figure>
 
+      <p class="lead-in">{t('So the job, written as a job story (Jobs to be Done):', 'Если записать это как job story (Jobs to be Done):')}</p>
       <p class="insight">{t(
         'When I’m doing heavy work, I want to see what an app is using and keep a record, so I can come back to it and compare.',
         'Когда я делаю тяжёлую работу, я хочу видеть, что потребляет приложение, и сохранять запись, чтобы вернуться к ней и сравнить.',
       )}</p>
-      <p class="note">{t('The job, written as a job story (Jobs to be Done).', 'Задача в формате job story (Jobs to be Done).')}</p>
     </StudySection>
 
-    <StudySection part="task" title={t('See the whole app, and keep a record.', 'Видеть приложение целиком и сохранять запись.')}>
+    <StudySection
+      part="task"
+      title={t('See the whole app, and keep a record.', 'Видеть приложение целиком и сохранять запись.')}
+      lead={t(
+        'I measured everything against Activity Monitor, since it’s the tool people already open.',
+        'Всё я сравнивал с «Мониторингом системы», ведь его люди и так открывают.',
+      )}
+    >
       <dl class="terms row">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Answer “what is this app using?” at a glance, and compare one run with another.', 'Отвечать на вопрос «что потребляет это приложение?» с одного взгляда и сравнивать прогоны между собой.')}</dd></div>
         <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Time to read an app’s total. Whether people can compare runs without screenshots. Whether anyone keeps using it.', 'Время, за которое виден итог по приложению. Могут ли люди сравнить прогоны без скриншотов. Продолжают ли им пользоваться.')}</dd></div>
-        <div><dt>{t('Baseline', 'Точка отсчёта')}</dt><dd>{t('macOS Activity Monitor, the tool people already open.', '«Мониторинг системы» в macOS, который люди и так открывают.')}</dd></div>
       </dl>
     </StudySection>
 
@@ -261,8 +267,8 @@ const categories = [
       </div>
 
       <p class="insight">{t(
-        'Both started from an app or a task, never from a process. So the interface starts from the app.',
-        'Оба начинали с приложения или задачи, а не с процесса. Поэтому и интерфейс начинается с приложения.',
+        'Both started from an app or a task, never from a process. So the interface, and my first sketches, start from the app.',
+        'Оба начинали с приложения или задачи, а не с процесса. Поэтому интерфейс, а с ним и мои первые скетчи, начинаются с приложения.',
       )}</p>
 
       <div class="sketch-grid">
@@ -281,8 +287,8 @@ const categories = [
         <Shot kind="desktop" src={prototypeHistory} sizes={thirdSizes} alt={t('Initial low-fidelity History screen with saved recordings.', 'Первый черновой экран «History» с сохранёнными записями.')} caption={t('History: return to results', '«History»: вернуться к результатам')} />
       </div>
       <p class="note">{t(
-        'The changes below came from walking through this prototype: task walkthroughs and design critique, not a formal usability study.',
-        'Изменения ниже появились после прохода по этому прототипу: из разбора сценариев и дизайн-критики, а не из формального юзабилити-исследования.',
+        'Decision 1 below came straight from the interviews and sketches. Decisions 2 to 4 came from walking through this prototype, with task walkthroughs and design critique rather than a formal usability study.',
+        'Решение 1 ниже выросло прямо из интервью и скетчей. Решения со 2 по 4 появились после прохода по этому прототипу: из разбора сценариев и дизайн-критики, а не из формального юзабилити-исследования.',
       )}</p>
 
       <Decision
@@ -379,8 +385,8 @@ const categories = [
       </div>
 
       <p class="usage">{t(
-        'They mostly use Tests, for two things: recording an app before and after a change, and comparing apps of one kind, like the terminals Ghostty, kitty, and Alacritty.',
-        'Чаще всего они пользуются «Tests», и для двух вещей: записать приложение до и после изменения и сравнить приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
+        'My three colleagues mostly use Tests, for two things: recording an app before and after a change, and comparing apps of one kind, like the terminals Ghostty, kitty, and Alacritty.',
+        'Мои три коллеги чаще всего пользуются «Tests», и для двух вещей: записать приложение до и после изменения и сравнить приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
       )}</p>
       <p class="note">{t('Beyond the app itself, I made the telescope artwork, the identity, and the launch film.', 'Кроме самого приложения, я сделал иллюстрацию с телескопом, айдентику и ролик к запуску.')}</p>
     </StudySection>

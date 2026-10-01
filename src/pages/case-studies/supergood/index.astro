@@ -80,8 +80,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       part="situation"
       title={t('People weren’t sure about the food, and the app didn’t help.', 'В еде сомневались, а приложение не помогало.')}
       lead={t(
-        'SuperGood competed with Кухня на районе for everyday meals: lunch at work, or dinner when you don’t feel like cooking.',
-        'SuperGood конкурировал с «Кухней на районе» за повседневные заказы: обед на работе или ужин, когда готовить совсем не хочется.',
+        'SuperGood competed with Кухня на районе for everyday meals: lunch at work, or dinner when you don’t feel like cooking. To see why people hesitated, I started with the public reviews.',
+        'SuperGood конкурировал с «Кухней на районе» за повседневные заказы: обед на работе или ужин, когда готовить совсем не хочется. Чтобы понять, почему люди сомневались, я начал с публичных отзывов.',
       )}
     >
       <figure class="split">
@@ -105,7 +105,14 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       </ul>
     </StudySection>
 
-    <StudySection part="task" title={t('Make the everyday order effortless.', 'Сделать повседневный заказ лёгким.')}>
+    <StudySection
+      part="task"
+      title={t('Make the everyday order effortless.', 'Сделать повседневный заказ лёгким.')}
+      lead={t(
+        'Kitchens and prices weren’t mine to change, so I took the part that was: the order itself.',
+        'Кухня и цены были не в моей власти, поэтому я взял то, что было: сам заказ.',
+      )}
+    >
       <dl class="terms row">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Remove the reasons to hesitate before paying, and make the usual order take seconds.', 'Убрать причины сомневаться перед оплатой и сделать так, чтобы привычный заказ занимал секунды.')}</dd></div>
         <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Time, success rate, and ease (SEQ) for repeating an order. Fewer app complaints in reviews. A higher store rating.', 'Время, доля успешных попыток и лёгкость (SEQ) при повторе заказа. Меньше жалоб на приложение в отзывах. Выше рейтинг в магазинах приложений.')}</dd></div>
@@ -126,17 +133,17 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       </ul>
 
       <p class="insight">{t(
-        'Weekday orders repeat. People already knew what they wanted, but the app made them look for it again every single time.',
-        'Будничные заказы повторяются. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.',
+        'Watching people order made one thing clear: weekday orders repeat. People already knew what they wanted, but the app made them look for it again every time.',
+        'Когда я смотрел, как люди заказывают, стало ясно главное: будничные заказы повторяются. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.',
       )}</p>
 
       <h3 class="subtitle">{t('Job stories (Jobs to be Done)', 'Job stories (Jobs to be Done)')}</h3>
+      <p>{t('I wrote what I heard in the interviews and reviews as three job stories. Each one led to one of the first three decisions.', 'Услышанное в интервью и отзывах я записал в виде трёх job stories. Каждая привела к одному из первых трёх решений.')}</p>
       <dl class="terms row">
         <div><dt>{t('Repeat the usual lunch', 'Повторить привычный обед')}</dt><dd>{t('When it’s lunchtime at work, I want my usual meal again with no effort, so ordering takes seconds.', 'Когда на работе время обеда, я хочу без усилий заказать то же, что обычно, чтобы заказ занимал секунды.')}</dd></div>
         <div><dt>{t('Know before paying', 'Знать всё до оплаты')}</dt><dd>{t('When I’m deciding whether to order, I want to know when the food arrives and what it costs, so nothing surprises me after I pay.', 'Когда я решаю, заказывать ли, я хочу знать, когда привезут и сколько это будет стоить, чтобы после оплаты не было сюрпризов.')}</dd></div>
         <div><dt>{t('Judge the value', 'Понять, стоит ли оно того')}</dt><dd>{t('When I pick a dish, I want to be sure it’s worth the price, so I don’t feel I overpaid.', 'Когда я выбираю блюдо, я хочу быть уверен, что оно стоит своих денег, чтобы не чувствовать, что переплатил.')}</dd></div>
       </dl>
-      <p class="note">{t('From the interviews and reviews. Each one led to one of the first three decisions.', 'Из интервью и отзывов. Каждая привела к одному из первых трёх решений.')}</p>
 
       <Decision
         number={1}
@@ -208,8 +215,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       part="result"
       title={t('Reordering took seconds, and the rating went up.', 'Повтор заказа стал занимать секунды, а рейтинг вырос.')}
       lead={t(
-        'After the release, we read the new reviews. Complaints about the food’s value stayed, but people praised the app: a fresher look, nothing new to learn, and an order history that actually helps.',
-        'После релиза мы читали новые отзывы. Жалобы на еду за свои деньги остались, а приложение хвалили: выглядит свежее, переучиваться не нужно, а история заказов правда помогает.',
+        'I checked the redesign twice: in the usability test with colleagues, and in the stores after the release.',
+        'Я проверил редизайн дважды: на юзабилити-тесте с коллегами и в магазинах приложений после релиза.',
       )}
     >
       <div class="charts">
@@ -249,14 +256,19 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
         />
       </div>
 
+      <p>{t(
+        'In the new reviews, complaints about the food’s value stayed, but people praised the app: a fresher look, nothing new to learn, and an order history that actually helps.',
+        'В новых отзывах жалобы на еду за свои деньги остались, а приложение хвалили: выглядит свежее, переучиваться не нужно, а история заказов правда помогает.',
+      )}</p>
+
     </StudySection>
 
     <StudySection
       part="reflection"
       title={t('I argued. Next time I’d bring evidence.', 'Я спорил. В следующий раз приду с данными.')}
       lead={t(
-        'The business often pushed its own ideas first, and urgently, while fixes that mattered more to customers waited. I pushed back, but with opinions, not a process.',
-        'Бизнес часто продвигал свои идеи в первую очередь и в спешке, а исправления, которые были важнее для клиентов, ждали. Я спорил, но опирался на мнения, а не на процесс.',
+        'What I’d do differently isn’t on the screens. The business often pushed its own ideas first, and urgently, while fixes that mattered more to customers waited. I pushed back, but with opinions, not a process.',
+        'То, что я сделал бы иначе, не про экраны. Бизнес часто продвигал свои идеи в первую очередь и в спешке, а исправления, которые были важнее для клиентов, ждали. Я спорил, но опирался на мнения, а не на процесс.',
       )}
     >
       <ul class="points" role="list">

@@ -2,6 +2,15 @@
 
 Last updated: 2026-10-01
 
+## Case studies: each part leads into the next
+
+- Read end to end for flow. The jumps were of five kinds: sections opening straight into a list, explanations placed after the thing they explain, blocks out of order, Result openings that pointed at the wrong thing, and SuperGood's Reflection arriving unannounced. Each is fixed with one connecting sentence built from facts already on the page, or by moving the block.
+- SuperGood: Situation now says the story starts from the reviews; Task opens with why the order was the scope (kitchens and prices weren't Igor's to change); the key insight names where it came from; the job stories are introduced before they appear; Result frames the two checks (usability test, then the stores) before the charts and gives the review praise after them; Reflection opens with "What I'd do differently isn't on the screens."
+- Observatory: the job story is introduced before it; Task opens with Activity Monitor as the baseline (it was a separate term); the sketches are tied to the insight; the prototype note now says correctly that Decision 1 came from the interviews and sketches and Decisions 2 to 4 from the prototype walkthrough, matching the summary's "three changes"; usage names "my three colleagues".
+- Instagram: Task opens with "the goal wasn't another way to save, it was a way back"; the notebook spreads come right after the interview questions; the journey map, the build order, and the wireframes each get a lead-in; Result shows the reactions and films first, then frames the numbers as estimates right before the charts.
+- Two Sticks: the positioning map moved from Action to Situation, where the diploma research is; the 3-tools-to-1-chat figure moved from Situation to Result, whose title it illustrates, so the solution no longer appears before the problem; Action opens with what the six decisions cover.
+- About 20 to 65 more words per study. Verified at 1440 and 390 px in English and Russian; Astro diagnostics, the media contract, and both production builds pass.
+
 ## Case studies: one typeface, shorter, steadier rhythm
 
 - One typeface: Instrument Sans for everything in the four case studies, set apart by size and weight only. Instrument Serif and the display face are gone from them; the key sentence of a section is larger regular-weight sans. The Observatory wordmark keeps its own face and texture animation, as a logo. The case-studies listing keeps its serif title, which matches the homepage's section titles.
