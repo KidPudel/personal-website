@@ -2,6 +2,16 @@
 
 Last updated: 2026-10-01
 
+## Case studies: written, not assembled, and easy to navigate
+
+- Why they read as AI-made: each page was assembled from a few repeated blocks: a grey eyebrow over every heading, rows of three equal columns with a bold title over grey text, metric strips (big number, label, grey source), "→" deltas, and decisions filled in like a form. Counted on SuperGood: 57 small grey labels on main (40 before this round), 7 now; 7 three-column rows, 0 now; 10 arrows, 0 now. The blog post has 9 grey labels and none of the rest.
+- Written as prose, like the blog: the facts under the title are one caption line, the summary is four paragraphs led by Situation, Task, Action, Result, the goal and constraints are a paragraph, research methods and findings are plain lists, and each decision is short paragraphs under a numbered title, ending with its outcome and source in brackets. "X, not Y" headings are gone.
+- Headings say what the section holds, so a reviewer can find things fast: Problem, Goal, Research, Decisions, Results, Reflection or Next steps. The order is still STAR. Decision titles name what was done ("Reorder from order history", "Search inside Saved"). Two Sticks' research section says plainly it was the diploma team's.
+- Outcome numbers are bold inside the sentence (summary Result, each decision's outcome, Results text), so they catch the eye without tiles. Charts stay, one per line at reading width.
+- Navigation is built from the sections and decisions (`ReadingProgress.astro`): from 1400 px a list beside the text names each section with its decisions indented and marks where you are; below that, a Contents list after the summary and a small pill at the bottom ("↑ Decisions · 3. Dish card details") that leads back to it. Instagram's journey map links each stage to the decision that fixes it.
+- `MetricGrid`-style blocks (`.points`, `.terms`, `.stats`, `.charts`) are removed; `Rich.astro` renders **bold** marks in copy. The blog and the case-studies listing still match main element for element (only the Russian Observatory pitch differs, by its quote marks).
+- Verified at 320 to 1920 px in English and Russian: no overflow, cramped columns, or overlaps; contents links and the pill jump to the right place. Astro diagnostics, the media contract, and both production builds pass.
+
 ## Case studies: the blog's visual language
 
 - Reference: the "Turn off one sound" post, which has no elements beyond text, one chart, and one film. The case studies now borrow its chart style and drop the remaining "UI kit" look.

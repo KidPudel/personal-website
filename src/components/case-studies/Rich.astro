@@ -1,0 +1,12 @@
+---
+// Plain text with **bold** marks, used to set key numbers apart inside a sentence. Everything else is escaped.
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+const escape = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const html = escape(text).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+---
+
+<Fragment set:html={html} />

@@ -1,64 +1,53 @@
 ---
-import { toLocale, translator } from '../../i18n/locales';
+import Rich from './Rich.astro';
 
 interface Props {
   number: number;
+  /** Says what was done, so the decision can be found by its title. */
   title: string;
+  /** A short name for the contents list. */
+  navLabel: string;
   problem: string;
   decision: string;
   why: string;
-  /** The option I weighed and did not choose, with the reason. */
+  /** The option weighed and not chosen, with the reason. */
   instead?: string;
+  /** The outcome, with its numbers in **bold**. */
   effect?: string;
-  /** Where the effect comes from, such as a test or a count from the flow. */
-  effectLabel?: string;
+  /** Where the outcome comes from: a test, a count from the flow, reviews. */
+  source?: string;
   /** side: text beside the visual. stack: text above a wide visual. */
   layout?: 'side' | 'stack';
 }
 
-const { number, title, problem, decision, why, instead, effect, effectLabel, layout = 'side' } = Astro.props;
-const t = translator(toLocale(Astro.currentLocale));
-// Read as a short story with bold lead-ins, so the parts stay scannable without a label grid.
-const parts = [
-  { label: t('Problem.', 'Проблема.'), text: problem },
-  { label: t('What I did.', 'Что я сделал.'), text: decision },
-  { label: t('Why.', 'Почему.'), text: why },
-  ...(instead ? [{ label: t('Alternative considered.', 'Альтернатива.'), text: instead }] : []),
-];
+const { number, title, navLabel, problem, decision, why, instead, effect, source, layout = 'side' } = Astro.props;
 ---
 
-<article class:list={['decision', `decision--${layout}`]}>
+<!-- Written as a short story: the problem, what I did, why, the alternative, the outcome. -->
+<article class:list={['decision', `decision--${layout}`]} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
   <div class="decision__text">
-    <p class="decision__number">{t('Decision', 'Решение')} {number}</p>
-    <h3 class="decision__title">{title}</h3>
-    {parts.map((part) => <p class="decision__part"><span class="decision__term">{part.label}</span> {part.text}</p>)}
-    {effect && (
-      <p class="decision__effect">
-        <strong>{effect}</strong>
-        <span class="decision__effect-label">{effectLabel ?? t('Effect', 'Эффект')}</span>
-      </p>
-    )}
+    <h3 class="decision__title">{number}. {title}</h3>
+    <p>{problem}</p>
+    <p>{decision}</p>
+    <p>{why}</p>
+    {instead && <p>{instead}</p>}
+    {effect && <p class="decision__effect"><Rich text={effect} />{source && <span class="decision__source"> ({source})</span>}</p>}
   </div>
   {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
 </article>
 
 <style>
-  .decision { display: grid; gap: 28px; margin-top: clamp(40px, 5vw, 56px); padding-top: clamp(28px, 3.5vw, 40px); border-top: 1px solid var(--study-rule); }
-  .decision--side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 40px; }
-  .decision__number { margin: 0 0 6px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
-  .decision__title { margin: 0 0 14px; font-size: clamp(1.3rem, 1.8vw, 1.6rem); line-height: 1.25; }
-  .decision__part { margin: 0 0 10px; }
-  /* The parts are named in grey, so the decision reads as text first and as a template second. */
-  .decision__term { color: var(--study-caption); }
-  /* The effect is the decision's outcome: one bold line, its source under it in grey. */
-  .decision__effect { display: flex; flex-direction: column; gap: 2px; margin: 18px 0 0; }
-  .decision__effect strong { font-size: var(--study-body); line-height: 1.45; }
-  .decision__effect-label { color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
+  .decision { display: grid; gap: 28px; margin-top: clamp(48px, 6vw, 72px); }
+  /* The first decision sits right under the section heading. */
+  :global(.study-section__title) + .decision { margin-top: 20px; }
+  .decision--side { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 48px; }
+  .decision__title { margin: 0 0 14px; font-size: clamp(1.25rem, 1.7vw, 1.5rem); line-height: 1.3; }
+  .decision__text :global(p) { margin-bottom: 12px; }
+  .decision__source { color: var(--study-caption); }
   .decision__visual { min-width: 0; }
   @container study (max-width: 859px) {
     .decision--side { grid-template-columns: minmax(0, 1fr); gap: 24px; }
     .decision--side .decision__visual { justify-self: start; width: min(100%, 520px); }
-    /* Stacked under the text, a single phone keeps the text's left edge instead of floating in the middle. */
     .decision__visual > :global(.shot--device), .decision__visual > :global(.shot--screen) { margin-inline: 0; }
   }
 </style>

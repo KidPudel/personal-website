@@ -1,38 +1,39 @@
 ---
 import { toLocale, translator } from '../../i18n/locales';
+import Rich from './Rich.astro';
 
-type Part = 'situation' | 'task' | 'action' | 'result' | 'reflection' | 'next';
+// The order still follows STAR (problem and goal are the situation and task, research and decisions
+// the action), but each heading says plainly what the section holds, so a reader can find it fast.
+type Part = 'problem' | 'goal' | 'research' | 'decisions' | 'results' | 'reflection' | 'next';
 
 interface Props {
   part: Part;
-  title: string;
+  /** Only when the plain name would mislead, such as research that was someone else's. */
+  title?: string;
   lead?: string;
-  id?: string;
 }
 
-const { part, title, lead, id = part } = Astro.props;
+const { part, title, lead } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
-// Every case study follows STAR, then closes with what I learned or would do next.
 const labels: Record<Part, string> = {
-  situation: t('Situation', 'Ситуация'),
-  task: t('Task', 'Задача'),
-  action: t('Action', 'Действия'),
-  result: t('Result', 'Результат'),
+  problem: t('Problem', 'Проблема'),
+  goal: t('Goal', 'Цель'),
+  research: t('Research', 'Исследование'),
+  decisions: t('Decisions', 'Решения'),
+  results: t('Results', 'Результаты'),
   reflection: t('Reflection', 'Выводы'),
-  next: t('Next', 'Дальше'),
+  next: t('Next steps', 'Что дальше'),
 };
 const label = labels[part];
 ---
 
-<section class="study-section" id={id} data-index-section data-index-label={label}>
-  <p class="study-section__eyebrow">{label}</p>
-  <h2 class="study-section__title">{title}</h2>
-  {lead && <p class="study-section__lead">{lead}</p>}
+<section class="study-section" id={part} data-index-section data-index-label={label}>
+  <h2 class="study-section__title">{title ?? label}</h2>
+  {lead && <p class="study-section__lead"><Rich text={lead} /></p>}
   <slot />
 </section>
 
 <style>
   .study-section { padding-block: clamp(48px, 6vw, 80px) 0; }
-  .study-section .study-section__eyebrow { margin: 0 0 10px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
   .study-section__title { margin-bottom: 16px; }
 </style>

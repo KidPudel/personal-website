@@ -34,8 +34,6 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .editorial-case-study :is(p, li, blockquote) a:not([class]) { background: var(--link-mark-rest) no-repeat 0 calc(100% - 0.02em) / 100% 0.62em; }
 .editorial-case-study :is(p, li, blockquote) a:not([class]):is(:hover, :focus-visible) { animation: link-mark-draw var(--link-mark-draw) step-end forwards; }
 .editorial-case-study [id] { scroll-margin-top: 40px; }
-/* A section jump lands on its label, not on the space above it. */
-.editorial-case-study .study-section { scroll-margin-top: calc(40px - clamp(48px, 6vw, 80px)); }
 .editorial-case-study .hero { padding: 40px 0 8px; }
 .editorial-case-study .hero__line { color: var(--color-copy); }
 .editorial-case-study .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; max-width: var(--study-measure); margin: 24px 0 32px; font-size: var(--study-small); line-height: 1.55; }
@@ -47,56 +45,31 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .editorial-case-study .research-portraits img { width: 150px; }
 .editorial-case-study .research-portraits figcaption { margin-top: 18px; color: var(--color-ink); font-size: var(--study-body); font-weight: 700; }
 .editorial-case-study .research-portraits figcaption + p { margin: 2px 0 12px; color: var(--color-copy); }
-.editorial-case-study .sketch-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 28px; }
+.editorial-case-study .sketch-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-block: 28px; }
 .editorial-case-study .sketch-grid figure { margin: 0; }
 .editorial-case-study .sketch-grid img { width: 100%; }
 .editorial-case-study .case-footer { width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)); margin: 56px auto 0; padding-bottom: 80px; }
 .editorial-case-study .case-footer nav { display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: var(--study-small); }
 .editorial-case-study .case-footer a { display: inline-flex; align-items: center; min-height: 44px; }
 
-/* STAR building blocks, shared by all four studies. Text groups are lists, not boxes, and charts
-   are drawn like the blog's: no cards, thin bars, ink for what the chart is about. */
-/* Short items with a bold first line: research methods, findings, lessons. */
-.editorial-case-study .points { display: grid; gap: 16px 40px; margin: 20px 0 0; padding: 0; list-style: none; }
-.editorial-case-study .points strong { display: block; margin-bottom: 2px; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.45; }
-.editorial-case-study .points p { margin: 0; color: var(--color-copy); }
-/* Term and definition pairs: goal, success metrics, constraints, job stories. */
-.editorial-case-study .terms { display: grid; gap: 16px 40px; margin: 20px 0 0; }
-.editorial-case-study .terms dt { margin-bottom: 2px; font-size: var(--study-body); font-weight: 700; letter-spacing: .012em; line-height: 1.45; }
-.editorial-case-study .terms dd { margin: 0; color: var(--color-copy); font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
-/* Research and findings led by their number: the number in bold at reading size, the source in grey. */
-.editorial-case-study .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 20px 32px; margin: 24px 0 0; padding: 0; list-style: none; }
-.editorial-case-study .stats li { display: flex; flex-direction: column; gap: 2px; }
-.editorial-case-study .stats__value { font-size: clamp(1.25rem, 1.7vw, 1.4rem); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; }
-.editorial-case-study .stats__label { font-size: var(--study-small); line-height: 1.45; }
-.editorial-case-study .stats__method { color: var(--study-caption); font-size: .875rem; line-height: 1.45; }
-.editorial-case-study .charts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px 56px; margin-top: 32px; }
+/* Case-study building blocks. The studies are written, not assembled: prose, plain lists, and charts
+   drawn like the blog's, with outcome numbers in bold inside the sentence. */
+.editorial-case-study :where(main:not(.case-index)) strong { font-weight: 700; }
+/* The facts under the title, as one caption line like the homepage's work captions. */
+.editorial-case-study :where(main) .facts-line { margin: 20px 0 32px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.55; }
+.editorial-case-study .plain-list { max-width: var(--study-measure); margin: 0 0 20px; padding-left: 1.2em; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
+.editorial-case-study .plain-list li + li { margin-top: 8px; }
+.editorial-case-study .plain-list li::marker { color: var(--study-caption); }
+.editorial-case-study .chart-block { max-width: var(--study-measure); margin: 28px 0 32px; }
 .editorial-case-study .phones { display: grid; grid-template-columns: repeat(var(--phones, 3), minmax(0, 1fr)); gap: clamp(10px, 3vw, 40px); align-items: start; margin-top: 32px; }
 .editorial-case-study .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); align-items: start; }
 /* The one sentence a section turns on: larger, in regular weight, so it reads as a thought rather than a heading. */
-.editorial-case-study :where(main:not(.case-index)) .insight { margin: 32px 0 0; font-size: clamp(1.3rem, 1.9vw, 1.6rem); letter-spacing: -.015em; line-height: 1.35; text-wrap: balance; }
+.editorial-case-study :where(main:not(.case-index)) .insight { margin: 32px 0 28px; font-size: clamp(1.3rem, 1.9vw, 1.6rem); letter-spacing: -.015em; line-height: 1.35; text-wrap: balance; }
 .editorial-case-study .note { color: var(--study-caption); font-size: var(--study-small); line-height: 1.6; }
-/* A sentence that introduces the block after it, so the reader knows what they're looking at first. */
-.editorial-case-study :where(main:not(.case-index)) .lead-in { margin: 24px 0 0; }
-.editorial-case-study :where(main:not(.case-index)) .lead-in + .insight { margin-top: 6px; }
-.editorial-case-study :is(.charts, .films, .tools) + p { margin-top: 28px; }
-.editorial-case-study .subtitle { margin-top: 48px; }
-.editorial-case-study :is(.points, .terms, .charts, figure, .pair, .journey, .priority, .notebooks, .prototype-row) + .note { margin-top: 14px; }
-/* Narrow column (phones, small tablets): one column for lists. */
-@container study (min-width: 600px) {
-  .editorial-case-study :is(.points, .terms):not(.row) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .editorial-case-study .charts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-/* Wide column: very short items sit in one row, one column each. */
-@container study (min-width: 860px) {
-  .editorial-case-study :is(.points, .terms).row { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
-}
+.editorial-case-study :is(.plain-list, .chart-block, figure, .pair, .journey, .notebooks, .prototype-row) + .note { margin-top: 14px; }
+.editorial-case-study .subtitle { margin-top: 40px; }
 @container study (max-width: 599px) {
   .editorial-case-study .pair--stack-mobile { grid-template-columns: minmax(0, 1fr); }
-  /* On a narrow column each finding is one line: the number on the left, what it means beside it. */
-  .editorial-case-study .stats { grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  .editorial-case-study .stats li { display: grid; grid-template-columns: 4.75rem minmax(0, 1fr); column-gap: 12px; }
-  .editorial-case-study .stats__value { grid-row: span 2; }
 }
 @container study (max-width: 859px) {
   .editorial-case-study .sketch-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
