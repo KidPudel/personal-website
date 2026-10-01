@@ -13,7 +13,6 @@ import Decision from '../../../components/case-studies/Decision.astro';
 import DotStat from '../../../components/case-studies/DotStat.astro';
 import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
-import StepCompare from '../../../components/case-studies/StepCompare.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
@@ -21,7 +20,7 @@ import '../../../styles/case-study.css';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
+const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 260px';
 const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
 ---
 
@@ -29,7 +28,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
   title={t('SuperGood case study | Igor Kupchinenko', 'Кейс SuperGood | Игорь Купчиненко')}
   description={t(
     'How I redesigned ordering in SuperGood, a homemade food delivery app, and rebuilt its iOS and Android apps as one Flutter app. Repeating a usual order went from about a minute to about 5 seconds, and the store rating went from 3.1 to 3.7.',
-    'Как я переделал заказ в SuperGood, приложении доставки домашней еды, и собрал вместо двух нативных приложений одно на Flutter. Повторить привычный заказ теперь можно примерно за 5 секунд вместо минуты, а рейтинг в сторах вырос с 3,1 до 3,7.',
+    'Как я переделал заказ в SuperGood, приложении доставки домашней еды, и собрал вместо двух нативных приложений одно на Flutter. Повторить привычный заказ теперь можно примерно за 5 секунд вместо минуты, а рейтинг в магазинах приложений вырос с 3,1 до 3,7.',
   )}
   pageClass="supergood-case-study editorial-case-study"
   ogImage={menuLight.src}
@@ -64,16 +63,16 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       )}
       action={t(
         'I read about 150 store reviews, ran a contextual inquiry with 10 people ordering at work, and checked my changes in a comparative usability test with 10 colleagues. Then I redesigned the menu, the dish card, and reordering, and built it all in Flutter.',
-        'Разобрал около 150 отзывов в сторах, провёл контекстное исследование с 10 людьми, которые заказывают еду на работе, и проверял изменения сравнительным юзабилити-тестированием на 10 коллегах. Переделал меню, карточку блюда и повтор заказа и собрал всё на Flutter.',
+        'Разобрал около 150 отзывов в магазинах приложений, провёл контекстное исследование с 10 людьми, которые заказывают еду на работе, и проверял изменения сравнительным юзабилити-тестированием на 10 коллегах. Переделал меню, карточку блюда и повтор заказа и собрал всё на Flutter.',
       )}
       metrics={[
         { value: t('≈60 s → ≈5 s', '≈60 с → ≈5 с'), label: t('to repeat a usual order', 'на повтор привычного заказа'), basis: t('Usability test, 10 colleagues', 'Юзабилити-тест, 10 коллег') },
-        { value: t('3.1 → 3.7', '3,1 → 3,7'), label: t('store rating after the release', 'рейтинг в сторах после релиза'), basis: t('Public App Store and Google Play rating', 'Публичный рейтинг в App Store и Google Play') },
+        { value: t('3.1 → 3.7', '3,1 → 3,7'), label: t('store rating after the release', 'рейтинг в магазинах приложений после релиза'), basis: t('Public App Store and Google Play rating', 'Публичный рейтинг в App Store и Google Play') },
         { value: '2 → 1', label: t('codebases for iOS and Android', 'кодовые базы для iOS и Android'), basis: t('Built alone in 11 months', 'Собрал один за 11 месяцев') },
       ]}
       caption={t(
         'The usability test was small and internal, so its numbers show direction, not proof. The store rating is public.',
-        'Юзабилити-тест был маленьким и внутренним, поэтому его цифры показывают направление, а не доказывают результат. Рейтинг в сторах публичный.',
+        'Юзабилити-тест был маленьким и внутренним, поэтому его цифры показывают направление, а не доказывают результат. Рейтинг в магазинах приложений публичный.',
       )}
     />
 
@@ -99,24 +98,17 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       </figure>
 
       <p>{t('The complaints about the app came down to three things:', 'Претензии к приложению сводились к трём вещам:')}</p>
-      <ul class="points" role="list">
-        <li><strong>{t('Time and total were hidden', 'Время и сумма были спрятаны')}</strong><p>{t('You couldn’t see the delivery time or the total while choosing dishes.', 'Пока выбираешь блюда, не видно ни времени доставки, ни итоговой суммы.')}</p></li>
-        <li><strong>{t('Scrolling was tiring', 'Листать было утомительно')}</strong><p>{t('Categories moved around as you scrolled, so it was easy to lose your place.', 'Категории сдвигались при прокрутке, и было легко потеряться.')}</p></li>
-        <li><strong>{t('The usual order was a chore', 'Привычный заказ превращался в рутину')}</strong><p>{t('Every weekday lunch meant finding the same dishes again, one by one.', 'Каждый будний обед приходилось заново искать те же блюда, по одному.')}</p></li>
+      <ul class="points row" role="list">
+        <li><strong>{t('Time and total were hidden', 'Время и сумма были спрятаны')}</strong><p>{t('You couldn’t see them while choosing dishes.', 'Пока выбираешь блюда, их не видно.')}</p></li>
+        <li><strong>{t('Scrolling was tiring', 'Листать было утомительно')}</strong><p>{t('Categories moved as you scrolled, so it was easy to lose your place.', 'Категории сдвигались при прокрутке, и было легко потеряться.')}</p></li>
+        <li><strong>{t('The usual order was a chore', 'Привычный заказ превращался в рутину')}</strong><p>{t('Every weekday lunch meant finding the same dishes again.', 'Каждый будний обед приходилось заново искать те же блюда.')}</p></li>
       </ul>
     </StudySection>
 
-    <StudySection
-      part="task"
-      title={t('Make the everyday order effortless.', 'Сделать повседневный заказ лёгким.')}
-      lead={t(
-        'I joined as a mobile engineer and took on the whole ordering experience: research, design, and rebuilding both apps in Flutter.',
-        'Я пришёл мобильным разработчиком и взял на себя весь процесс заказа: исследование, дизайн и пересборку обоих приложений на Flutter.',
-      )}
-    >
-      <dl class="terms">
+    <StudySection part="task" title={t('Make the everyday order effortless.', 'Сделать повседневный заказ лёгким.')}>
+      <dl class="terms row">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Remove the reasons to hesitate before paying, and make the usual order take seconds.', 'Убрать причины сомневаться перед оплатой и сделать так, чтобы привычный заказ занимал секунды.')}</dd></div>
-        <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Time, success rate, and ease rating (SEQ) for repeating an order. Fewer complaints about the app in reviews. A higher store rating.', 'Время, доля успешных попыток и оценка лёгкости (SEQ) при повторе заказа. Меньше жалоб на приложение в отзывах. Выше рейтинг в сторах.')}</dd></div>
+        <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Time, success rate, and ease (SEQ) for repeating an order. Fewer app complaints in reviews. A higher store rating.', 'Время, доля успешных попыток и лёгкость (SEQ) при повторе заказа. Меньше жалоб на приложение в отзывах. Выше рейтинг в магазинах приложений.')}</dd></div>
         <div><dt>{t('Constraints', 'Ограничения')}</dt><dd>{t('No say over the food or prices. One engineer, two platforms.', 'Никакого влияния на еду и цены. Один разработчик на две платформы.')}</dd></div>
       </dl>
     </StudySection>
@@ -126,11 +118,11 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       title={t('I watched people order, then removed what slowed them down.', 'Посмотрел, как люди заказывают, и убрал то, что им мешало.')}
       lead={t('Four kinds of research shaped the redesign.', 'Редизайн вырос из четырёх видов исследования.')}
     >
-      <ul class="points" role="list">
-        <li><strong>{t('Review analysis', 'Анализ отзывов')}</strong><p>{t('I sorted about 150 App Store and Google Play reviews by what people complained about.', 'Разложил около 150 отзывов из App Store и Google Play по темам жалоб.')}</p></li>
-        <li><strong>{t('Contextual inquiry', 'Контекстное исследование')}</strong><p>{t('I watched 10 people order at work, in an office and a call center, asked them about it, and noted where they hesitated.', 'Смотрел, как заказывают 10 человек на работе, в офисе и колл-центре, расспрашивал их и отмечал, где они сомневаются.')}</p></li>
-        <li><strong>{t('Competitive analysis', 'Конкурентный анализ')}</strong><p>{t('Кухня на районе for how to present the menu. Самокат and Яндекс Лавка for patterns our customers already knew.', '«Кухня на районе» для подачи меню. «Самокат» и «Яндекс Лавка» для паттернов, которые наши клиенты уже знали.')}</p></li>
-        <li><strong>{t('Comparative usability testing', 'Сравнительное юзабилити-тестирование')}</strong><p>{t('I compared the old app with prototypes, and later with the built app, in person with 10 colleagues who didn’t work on it.', 'Сравнивал старое приложение с прототипами, а потом с готовым, вживую на 10 коллегах, которые над ним не работали.')}</p></li>
+      <ul class="stats" role="list">
+        <li><span class="stats__value">≈150</span><span class="stats__label">{t('App Store and Google Play reviews, sorted by complaint', 'отзывов из App Store и Google Play, разложенных по темам жалоб')}</span><span class="stats__method">{t('Review analysis', 'Анализ отзывов')}</span></li>
+        <li><span class="stats__value">10</span><span class="stats__label">{t('people watched ordering at work, in an office and a call center', 'человек, за которыми я наблюдал на работе, в офисе и колл-центре')}</span><span class="stats__method">{t('Contextual inquiry', 'Контекстное исследование')}</span></li>
+        <li><span class="stats__value">3</span><span class="stats__label">{t('apps: Кухня на районе for the menu, Самокат and Яндекс Лавка for familiar patterns', 'приложения: «Кухня на районе» для меню, «Самокат» и «Яндекс Лавка» для знакомых паттернов')}</span><span class="stats__method">{t('Competitive analysis', 'Конкурентный анализ')}</span></li>
+        <li><span class="stats__value">10</span><span class="stats__label">{t('colleagues trying the old app, the prototypes, and the built app', 'коллег пробовали старое приложение, прототипы и готовое приложение')}</span><span class="stats__method">{t('Comparative usability testing', 'Сравнительное юзабилити-тестирование')}</span></li>
       </ul>
 
       <p class="insight">{t(
@@ -139,22 +131,22 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       )}</p>
 
       <h3 class="subtitle">{t('Job stories (Jobs to be Done)', 'Job stories (Jobs to be Done)')}</h3>
-      <dl class="terms">
+      <dl class="terms row">
         <div><dt>{t('Repeat the usual lunch', 'Повторить привычный обед')}</dt><dd>{t('When it’s lunchtime at work, I want my usual meal again with no effort, so ordering takes seconds.', 'Когда на работе время обеда, я хочу без усилий заказать то же, что обычно, чтобы заказ занимал секунды.')}</dd></div>
         <div><dt>{t('Know before paying', 'Знать всё до оплаты')}</dt><dd>{t('When I’m deciding whether to order, I want to know when the food arrives and what it costs, so nothing surprises me after I pay.', 'Когда я решаю, заказывать ли, я хочу знать, когда привезут и сколько это будет стоить, чтобы после оплаты не было сюрпризов.')}</dd></div>
         <div><dt>{t('Judge the value', 'Понять, стоит ли оно того')}</dt><dd>{t('When I pick a dish, I want to be sure it’s worth the price, so I don’t feel I overpaid.', 'Когда я выбираю блюдо, я хочу быть уверен, что оно стоит своих денег, чтобы не чувствовать, что переплатил.')}</dd></div>
       </dl>
-      <p class="note">{t('These come from the interviews and reviews. Each one led to one of the first three decisions below.', 'Они собраны из интервью и отзывов. Каждая привела к одному из первых трёх решений ниже.')}</p>
+      <p class="note">{t('From the interviews and reviews. Each one led to one of the first three decisions.', 'Из интервью и отзывов. Каждая привела к одному из первых трёх решений.')}</p>
 
       <Decision
         number={1}
         title={t('Order the usual in one tap.', 'Привычный заказ в одно касание.')}
         problem={t('Rebuilding a usual lunch meant finding each dish again in a menu that kept moving.', 'Чтобы собрать привычный обед, нужно было заново искать каждое блюдо в меню, которое постоянно сдвигалось.')}
-        decision={t('I turned order history into a way to order. Open a past order, see every dish, and repeat one of them or add the whole thing. History is searchable. If a price has changed since, the app says so, and sold-out dishes show up grayed out in the basket.', 'Превратил историю заказов в способ заказать. Открываешь прошлый заказ, видишь все блюда и повторяешь одно или добавляешь всё сразу. По истории есть поиск. Если цена с тех пор изменилась, приложение об этом скажет, а закончившиеся блюда в корзине будут серыми.')}
+        decision={t('I turned order history into a way to order: open a past order and repeat one dish or the whole thing. History is searchable, changed prices are flagged, and sold-out dishes show up grayed out.', 'Превратил историю заказов в способ заказать: открываешь прошлый заказ и повторяешь одно блюдо или весь заказ. По истории есть поиск, изменившиеся цены отмечены, а закончившиеся блюда видны серыми.')}
         why={t('The fastest menu is the one you’ve already chosen from.', 'Быстрее всего выбирать из того, что ты уже однажды выбрал.')}
         instead={t('Favourites only. They’re good for one dish, but a usual lunch is a few dishes together.', 'Только избранное. Оно удобно для одного блюда, а привычный обед обычно из нескольких.')}
-        effect={t('≈60 s → ≈5 s, 2 of 10 → 10 of 10 correct orders, ease 3 → 6 of 7', '≈60 с → ≈5 с, 2 из 10 → 10 из 10 правильных заказов, лёгкость 3 → 6 из 7')}
-        effectLabel={t('Usability test', 'Юзабилити-тест')}
+        effect={t('8 steps → 3, ≈60 s → ≈5 s', '8 шагов → 3, ≈60 с → ≈5 с')}
+        effectLabel={t('Counted from the flow, timed in the usability test', 'Шаги по сценарию, время из юзабилити-теста')}
       >
         <Shot src={history} alt={t('Order history with an expanded order, a repeat button for each dish, and an add-whole-order button.', 'История заказов: раскрытый заказ, кнопка «Повторить» у каждого блюда и кнопка «Добавить весь заказ».')} caption={t('Repeat one dish, or bring back the whole order.', 'Повторить одно блюдо или вернуть весь заказ.')} />
       </Decision>
@@ -162,8 +154,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       <Decision
         number={2}
         title={t('Shop the menu without losing your place.', 'Выбирать в меню и не теряться.')}
-        problem={t('Time and total were hidden in the basket, and categories moved while you scrolled. People kept leaving the menu or losing their place.', 'Время и сумма прятались в корзине, а категории сдвигались при прокрутке. Люди то уходили из меню, то терялись в нём.')}
-        decision={t('A pinned order bar with delivery time, item count, and total. Quantity controls right on the dish. A category bar in a fixed order, with the full list one tap away.', 'Закреплённая панель заказа: время доставки, количество позиций и сумма. Количество меняется прямо на блюде. Строка категорий в постоянном порядке, а полный список в одно касание.')}
+        problem={t('People kept leaving the menu or losing their place, because time and total were hidden and categories moved.', 'Люди то уходили из меню, то терялись в нём: время и сумма были спрятаны, а категории сдвигались.')}
+        decision={t('A pinned bar with delivery time, item count, and total. Quantity controls right on the dish. Categories in a fixed order.', 'Закреплённая панель со временем доставки, количеством позиций и суммой. Количество меняется прямо на блюде. Категории в постоянном порядке.')}
         why={t('People checked time and cost before every order, and regulars shop from memory. A screen that stays still helps with both.', 'Люди проверяли время и стоимость перед каждым заказом, а постоянные клиенты выбирают по памяти. Экран, который не прыгает, помогает и тем и другим.')}
         instead={t('A basket badge with just a count. People would still have to open the basket to see time and total.', 'Значок корзины только со счётчиком. За временем и суммой всё равно пришлось бы ходить в корзину.')}
         effect={t('Time and total: 2 taps away → always visible', 'Время и сумма: в 2 касаниях → всегда на виду')}
@@ -200,7 +192,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
         number={5}
         title={t('One Flutter app instead of two native ones.', 'Одно приложение на Flutter вместо двух нативных.')}
         problem={t('With two separate apps, every change had to be built twice and could behave differently on each platform.', 'С двумя отдельными приложениями каждое изменение приходилось делать дважды, и на разных платформах оно могло работать по-разному.')}
-        decision={t('I rebuilt both apps in Flutter from one codebase: menu, basket, payment with 3DS, maps and tracking, favourites, history, promotions, loyalty, and light and dark themes on a design system I built.', 'Пересобрал оба приложения на Flutter в одной кодовой базе: меню, корзина, оплата с 3DS, карты и отслеживание, избранное, история, акции, программа лояльности и светлая и тёмная темы на дизайн-системе, которую я сделал.')}
+        decision={t('I rebuilt both apps in Flutter from one codebase, from the menu and 3DS payment to tracking, loyalty, and light and dark themes on my own design system.', 'Пересобрал оба приложения на Flutter в одной кодовой базе: от меню и оплаты с 3DS до отслеживания, лояльности и светлой и тёмной тем на моей дизайн-системе.')}
         why={t('As the only engineer, one codebase meant every fix reached iOS and Android on the same day.', 'Я был единственным разработчиком, и с одной кодовой базой каждое исправление попадало на iOS и Android в один день.')}
         instead={t('Keep improving both native apps. Every change twice, by one person.', 'Дальше дорабатывать два нативных приложения. Каждое изменение дважды, и всё одним человеком.')}
         effect={t('2 codebases → 1, built alone in 11 months', '2 кодовые базы → 1, собрано в одиночку за 11 месяцев')}
@@ -216,8 +208,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       part="result"
       title={t('Reordering took seconds, and the rating went up.', 'Повтор заказа стал занимать секунды, а рейтинг вырос.')}
       lead={t(
-        'After the release, we read the new reviews. Complaints about the food’s value stayed, but the praise was for the app.',
-        'После релиза мы читали новые отзывы. Жалобы на еду за свои деньги никуда не делись, а вот хвалили именно приложение.',
+        'After the release, we read the new reviews. Complaints about the food’s value stayed, but people praised the app: a fresher look, nothing new to learn, and an order history that actually helps.',
+        'После релиза мы читали новые отзывы. Жалобы на еду за свои деньги остались, а приложение хвалили: выглядит свежее, переучиваться не нужно, а история заказов правда помогает.',
       )}
     >
       <div class="charts">
@@ -227,7 +219,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
             { label: t('Before: find each dish again', 'До: снова искать каждое блюдо'), value: 60, display: t('≈60 s', '≈60 с') },
             { label: t('After: history, add whole order', 'После: история, добавить весь заказ'), value: 5, display: t('≈5 s', '≈5 с'), emphasis: true },
           ]}
-          note={t('Comparative usability test with 10 colleagues outside the app team.', 'Сравнительное юзабилити-тестирование, 10 коллег не из команды приложения.')}
+          note={t('Usability test with 10 colleagues outside the app team.', 'Юзабилити-тест, 10 коллег не из команды приложения.')}
         />
         <DotStat
           title={t('Rebuilt the usual order correctly', 'Правильно собрали привычный заказ')}
@@ -244,35 +236,19 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
             { label: t('Before', 'До'), value: 3, display: t('3 of 7', '3 из 7') },
             { label: t('After', 'После'), value: 6, display: t('6 of 7', '6 из 7'), emphasis: true },
           ]}
-          note={t('Single Ease Question, asked right after the task. Same 10 colleagues.', 'Single Ease Question сразу после задачи. Те же 10 коллег.')}
-        />
-        <StepCompare
-          title={t('Steps to reorder a three-dish lunch', 'Шаги, чтобы повторить обед из трёх блюд')}
-          rows={[
-            { label: t('Before', 'До'), steps: [t('Menu', 'Меню'), t('Find dish 1', 'Найти блюдо 1'), t('Add', 'Добавить'), t('Find dish 2', 'Найти блюдо 2'), t('Add', 'Добавить'), t('Find dish 3', 'Найти блюдо 3'), t('Add', 'Добавить'), t('Basket', 'Корзина')] },
-            { label: t('After', 'После'), steps: [t('History', 'История'), t('Add whole order', 'Добавить весь заказ'), t('Basket', 'Корзина')], emphasis: true },
-          ]}
-          note={t('Counted from the flows.', 'Посчитано по сценариям.')}
+          note={t('Single Ease Question, right after the task.', 'Single Ease Question сразу после задачи.')}
         />
         <BarCompare
-          title={t('Store rating (out of 5)', 'Рейтинг в сторах (из 5)')}
+          title={t('Store rating (out of 5)', 'Рейтинг в магазинах приложений (из 5)')}
           max={5}
           rows={[
             { label: t('Before the redesign', 'До редизайна'), value: 3.1, display: t('3.1', '3,1') },
             { label: t('After the release', 'После релиза'), value: 3.7, display: t('3.7', '3,7'), emphasis: true },
           ]}
-          note={t('Before and after the release, so the redesign isn’t the only possible cause. The bars start at zero, so the gap is shown at its true size.', 'Сравнение до и после релиза, так что редизайн не единственная возможная причина. Шкала начинается с нуля, поэтому разница показана в реальном масштабе.')}
+          note={t('Before and after the release, so the redesign isn’t the only possible cause.', 'Сравнение до и после релиза, так что редизайн не единственная возможная причина.')}
         />
       </div>
 
-      <h3 class="subtitle">{t('What later reviews praised', 'Что хвалили в отзывах после выхода')}</h3>
-      <ul class="points" role="list">
-        <li><strong>{t('A fresher look', 'Выглядит свежее')}</strong><p>{t('It looked better without feeling like a different app.', 'Стало лучше, но не превратилось в другое приложение.')}</p></li>
-        <li><strong>{t('Nothing to learn', 'Не нужно переучиваться')}</strong><p>{t('New parts were familiar from Самокат and Яндекс Лавка, or obvious at first glance.', 'Новое было знакомо по «Самокату» и «Яндекс Лавке» или понятно с первого взгляда.')}</p></li>
-        <li><strong>{t('Order history', 'История заказов')}</strong><p>{t('Clear details, search, every dish visible, and a way to repeat all or part of an order.', 'Понятные детали, поиск, все блюда на виду и можно повторить заказ целиком или частично.')}</p></li>
-      </ul>
-
-      <p class="note">{t('SuperGood later closed because of the company’s financial situation.', 'Позже SuperGood закрылся из-за финансового положения компании.')}</p>
     </StudySection>
 
     <StudySection
@@ -284,10 +260,10 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
       )}
     >
       <ul class="points" role="list">
-        <li><strong>{t('Agree on a metric first', 'Сначала договориться о метрике')}</strong><p>{t('Before designing, agree with stakeholders on the number we’re trying to move.', 'До начала дизайна договориться со стейкхолдерами, какую цифру мы хотим сдвинуть.')}</p></li>
-        <li><strong>{t('Bring the data', 'Приходить с данными')}</strong><p>{t('Put review counts and test results on the table instead of arguing about taste.', 'Показывать цифры по отзывам и результаты тестов, а не спорить о вкусах.')}</p></li>
-        <li><strong>{t('Prioritise together', 'Приоритизировать вместе')}</strong><p>{t('Rank ideas with the business on an impact and effort matrix, so urgency has to earn its place.', 'Раскладывать идеи вместе с бизнесом по матрице «влияние и затраты», чтобы срочность нужно было обосновать.')}</p></li>
-        <li><strong>{t('Measure more', 'Измерять больше')}</strong><p>{t('Bigger tests, an ease rating for every task instead of only reordering, and repeat orders tracked after release.', 'Тесты побольше, оценка лёгкости для каждой задачи, а не только для повтора заказа, и отслеживание повторных заказов после релиза.')}</p></li>
+        <li><strong>{t('Agree on a metric first', 'Сначала договориться о метрике')}</strong><p>{t('Before designing, agree with stakeholders on the number to move.', 'До дизайна договориться со стейкхолдерами, какую цифру двигаем.')}</p></li>
+        <li><strong>{t('Bring the data', 'Приходить с данными')}</strong><p>{t('Review counts and test results, instead of arguing about taste.', 'Цифры по отзывам и результаты тестов, а не спор о вкусах.')}</p></li>
+        <li><strong>{t('Prioritise together', 'Приоритизировать вместе')}</strong><p>{t('An impact and effort matrix with the business, so urgency has to earn its place.', 'Матрица «влияние и затраты» вместе с бизнесом, чтобы срочность приходилось обосновывать.')}</p></li>
+        <li><strong>{t('Measure more', 'Измерять больше')}</strong><p>{t('Bigger tests, ease ratings for every task, and repeat orders tracked after release.', 'Тесты побольше, оценка лёгкости для каждой задачи и отслеживание повторных заказов после релиза.')}</p></li>
       </ul>
     </StudySection>
   </main>

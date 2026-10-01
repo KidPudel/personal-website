@@ -61,10 +61,10 @@ const resultLabel = t('Result', 'Результат');
 </section>
 
 <style>
-  .summary { padding-top: 40px; }
-  .summary__title { margin: 0 0 18px; }
+  .summary { padding-top: 32px; }
+  .summary__title { margin: 0 0 12px; }
   .summary__list { margin: 0; }
-  .summary__row { display: grid; grid-template-columns: 8rem minmax(0, var(--study-measure)); gap: 4px 24px; padding: 18px 0; border-top: 1px solid var(--study-rule); }
+  .summary__row { display: grid; grid-template-columns: 8rem minmax(0, var(--study-measure)); gap: 4px 24px; padding: 14px 0; border-top: 1px solid var(--study-rule); }
   .summary__row:last-child { border-bottom: 1px solid var(--study-rule); }
   .summary__label { padding-top: 3px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.5; }
   .summary__text { margin: 0; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
@@ -78,6 +78,6 @@ const resultLabel = t('Result', 'Результат');
   .summary__caption { margin: 14px 0 0; color: var(--study-caption); font-size: var(--study-small); line-height: 1.6; }
   @media (max-width: 760px) {
     .summary__row { grid-template-columns: minmax(0, 1fr); }
-    .summary__metrics { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+    .summary__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 20px; }
   }
 </style>

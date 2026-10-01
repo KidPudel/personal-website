@@ -180,7 +180,7 @@ const categories = [
       title={t('The numbers were there. The picture wasn’t.', 'Цифры были, а картины не было.')}
       lead={t(
         'During heavy work I’d open Activity Monitor to find the app I was using. Its activity was split across lots of processes, so I had to find them, add them up in my head, and keep watching while they changed. Not exactly a calm way to check memory. And once the task ended, there was nothing to come back to.',
-        'Во время тяжёлой работы я открывал «Мониторинг системы», чтобы найти приложение, которым пользуюсь. Его активность была раскидана по куче процессов: найди их, сложи в уме и следи, пока цифры меняются. Не самый спокойный способ проверить память. А когда задача заканчивалась, вернуться было не к чему.',
+        'Во время тяжёлой работы я открывал «Мониторинг системы», чтобы найти приложение, которым пользуюсь. Его активность была раскидана по множеству процессов: найди их, сложи в уме и следи, пока цифры меняются. Не самый спокойный способ проверить память. А когда задача заканчивалась, вернуться было не к чему.',
       )}
     >
       <figure class="process-split">
@@ -213,15 +213,8 @@ const categories = [
       <p class="note">{t('The job, written as a job story (Jobs to be Done).', 'Задача в формате job story (Jobs to be Done).')}</p>
     </StudySection>
 
-    <StudySection
-      part="task"
-      title={t('See the whole app, and keep a record.', 'Видеть приложение целиком и сохранять запись.')}
-      lead={t(
-        'A personal project. I owned the product, research, design, identity, and launch, and directed AI development from my specs.',
-        'Личный проект. На мне были продукт, исследование, дизайн, айдентика и запуск, а разработкой с AI я руководил по своим спецификациям.',
-      )}
-    >
-      <dl class="terms">
+    <StudySection part="task" title={t('See the whole app, and keep a record.', 'Видеть приложение целиком и сохранять запись.')}>
+      <dl class="terms row">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Answer “what is this app using?” at a glance, and compare one run with another.', 'Отвечать на вопрос «что потребляет это приложение?» с одного взгляда и сравнивать прогоны между собой.')}</dd></div>
         <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Time to read an app’s total. Whether people can compare runs without screenshots. Whether anyone keeps using it.', 'Время, за которое виден итог по приложению. Могут ли люди сравнить прогоны без скриншотов. Продолжают ли им пользоваться.')}</dd></div>
         <div><dt>{t('Baseline', 'Точка отсчёта')}</dt><dd>{t('macOS Activity Monitor, the tool people already open.', '«Мониторинг системы» в macOS, который люди и так открывают.')}</dd></div>
@@ -275,7 +268,7 @@ const categories = [
       <div class="sketch-grid">
         {sketches.map((sketch) => (
           <figure>
-            <div class="sketch-surface"><Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 760px) calc(100vw - 40px), 504px" format="webp" loading="lazy" decoding="async" /></div>
+            <div class="sketch-surface"><Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 900px) calc((100vw - 64px) / 2), 242px" format="webp" loading="lazy" decoding="async" /></div>
             <figcaption>{sketch.caption}</figcaption>
           </figure>
         ))}
@@ -381,15 +374,14 @@ const categories = [
         <DotStat
           title={t('Colleagues still using it after two months', 'Коллеги, которые пользуются им спустя два месяца')}
           rows={[{ label: t('Using it', 'Пользуются'), value: 3, total: 3, emphasis: true }]}
-          note={t('A small group of developers. Tests is the part they use most.', 'Небольшая группа разработчиков. Чаще всего они используют «Tests».')}
+          note={t('A small group of developers.', 'Небольшая группа разработчиков.')}
         />
       </div>
 
-      <h3 class="subtitle">{t('How they use it', 'Как им пользуются')}</h3>
-      <ul class="points" role="list">
-        <li><strong>{t('Before and after a change', 'До и после изменения')}</strong><p>{t('Record a version of an app, change it, record again, and compare.', 'Записать версию приложения, изменить, записать снова и сравнить.')}</p></li>
-        <li><strong>{t('Apps of the same kind', 'Приложения одного типа')}</strong><p>{t('Compare apps in one category, like the terminals Ghostty, kitty, and Alacritty.', 'Сравнить приложения одной категории, например терминалы Ghostty, kitty и Alacritty.')}</p></li>
-      </ul>
+      <p class="usage">{t(
+        'They mostly use Tests, for two things: recording an app before and after a change, and comparing apps of one kind, like the terminals Ghostty, kitty, and Alacritty.',
+        'Чаще всего они пользуются «Tests», и для двух вещей: записать приложение до и после изменения и сравнить приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
+      )}</p>
       <p class="note">{t('Beyond the app itself, I made the telescope artwork, the identity, and the launch film.', 'Кроме самого приложения, я сделал иллюстрацию с телескопом, айдентику и ролик к запуску.')}</p>
     </StudySection>
 
@@ -507,8 +499,9 @@ const categories = [
   .process-split__caption { grid-column: 1 / -1; margin-top: 4px; }
 
   .prototype-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
-  .final-screens { display: grid; gap: 32px; margin-top: 32px; }
-  .final-screens .pair { row-gap: 32px; }
+  .final-screens { display: grid; gap: 28px; margin-top: 28px; }
+  .usage { margin-top: 28px; }
+  .final-screens .pair { row-gap: 28px; }
 
   .next-pair { align-items: stretch; margin-top: 28px; }
   .category-mock { display: flex; flex-direction: column; margin: 0; }

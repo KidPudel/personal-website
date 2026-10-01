@@ -1,6 +1,4 @@
 ---
-import '@fontsource/instrument-serif/400.css';
-
 import { toLocale, translator } from '../../i18n/locales';
 
 type Part = 'situation' | 'task' | 'action' | 'result' | 'reflection' | 'next';
@@ -34,7 +32,7 @@ const label = labels[part];
 </section>
 
 <style>
-  .study-section { padding-block: clamp(64px, 8vw, 104px) 0; }
+  .study-section { padding-block: clamp(48px, 6vw, 80px) 0; }
   .study-section .study-section__eyebrow { margin: 0 0 10px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
-  .study-section__title { margin-bottom: 22px; }
+  .study-section__title { margin-bottom: 16px; }
 </style>

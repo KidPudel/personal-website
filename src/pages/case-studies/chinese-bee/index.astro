@@ -19,7 +19,7 @@ import '../../../styles/case-study.css';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 300px';
+const phoneSizes = '(max-width: 760px) calc((100vw - 60px) / 3), 260px';
 const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 ---
 
@@ -101,8 +101,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       </figure>
 
       <p>{t(
-        'The starting point was a 2024 МПГУ diploma by Смакова, Шаталова, and Шинкарева. They studied copybooks, memorisation methods, and competing apps and bots, and ran an open-day masterclass where 15 of 20 visitors were interested in the idea. That’s a signal of interest, not a test of my product. Their research became my brief.',
-        'Всё началось с диплома МПГУ 2024 года, который написали Смакова, Шаталова и Шинкарева. Они изучили прописи, методы запоминания, конкурирующие приложения и боты и провели мастер-класс на дне открытых дверей, где идеей заинтересовались 15 из 20 гостей. Это сигнал интереса, а не проверка моего продукта. Их исследование стало моим брифом.',
+        'It started with a 2024 МПГУ diploma by Смакова, Шаталова, and Шинкарева. They studied copybooks, memorisation methods, and competing apps and bots, and 15 of 20 visitors at their open-day masterclass were interested in the idea. That’s a signal of interest, not a test of my product, but their research became my brief.',
+        'Всё началось с диплома МПГУ 2024 года, который написали Смакова, Шаталова и Шинкарева. Они изучили прописи, методы запоминания, конкурирующие приложения и боты, а на их мастер-классе в день открытых дверей идеей заинтересовались 15 из 20 гостей. Это сигнал интереса, а не проверка моего продукта, но их исследование стало моим брифом.',
       )}</p>
     </StudySection>
 
@@ -114,7 +114,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         'Я превратил бриф из диплома в продукт и сам его собрал: Telegram-бот, бэкенд на FastAPI, база слов на PostgreSQL и приложение для прописей на Vue.',
       )}
     >
-      <dl class="terms">
+      <dl class="terms row">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Connect looking up a character with practising it, in one place.', 'Связать поиск иероглифа с практикой в одном месте.')}</dd></div>
         <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Share of learners who save 5 words and unlock flashcards. Share who go on to handwriting. Scores on the same character over repeated attempts.', 'Доля учеников, которые сохранили 5 слов и открыли карточки. Доля тех, кто дошёл до прописей. Оценки за один и тот же иероглиф от попытки к попытке.')}</dd></div>
         <div><dt>{t('Constraints', 'Ограничения')}</dt><dd>{t('One developer, a student budget, and a chat interface that can’t draw.', 'Один разработчик, студенческий бюджет и интерфейс чата, в котором нельзя рисовать.')}</dd></div>
@@ -151,7 +151,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         title={t('Telegram, not a new app.', 'Telegram, а не новое приложение.')}
         problem={t('Every new app is one more thing to install, open, and remember.', 'Каждое новое приложение нужно установить, открыть и не забыть о нём.')}
         decision={t('A Telegram bot for search, saving, and flashcards, plus a Telegram Web App for handwriting.', 'Telegram-бот для поиска, сохранения и карточек и Telegram Web App для прописей.')}
-        why={t('Learners were already in Telegram every day. There’s nothing to install, and practice sits right next to their chats.', 'Ученики и так каждый день в Telegram. Ничего не нужно ставить, а практика прямо рядом с их чатами.')}
+        why={t('Learners were already in Telegram every day. There’s nothing to install, and practice sits right next to their chats.', 'Ученики и так каждый день в Telegram. Ничего не нужно устанавливать, а практика прямо рядом с их чатами.')}
         instead={t('A standalone app. More freedom in the interface, but a harder start, the same trade-off Skritter makes.', 'Отдельное приложение. Больше свободы в интерфейсе, но сложнее начать: тот же компромисс, что у Skritter.')}
       >
         <Shot src={dictationStart} alt={t('Two Sticks chat where the dictation command offers a button that opens the handwriting practice.', 'Чат «Двух палочек»: команда диктанта предлагает кнопку, которая открывает прописи.')} caption={t('Handwriting opens from the chat as a Web App.', 'Прописи открываются из чата как Web App.')} />
@@ -189,7 +189,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         why={t('The diploma research pointed to structure and mnemonics. In the chat, the sheet is always one scroll away.', 'На структуру и мнемонику указывало исследование из диплома. А в чате лист всегда в одной прокрутке.')}
       >
         <div class="sheet-pair">
-          <Shot src={sheetInChat} sizes="(max-width: 760px) min(calc(100vw - 40px), 300px), 300px" alt={t('The saved-words command sending a notebook sheet into the chat.', 'Команда сохранённых слов присылает лист-пропись в чат.')} caption={t('The sheet arrives in the chat.', 'Лист приходит прямо в чат.')} />
+          <Shot src={sheetInChat} sizes="(max-width: 760px) min(calc(100vw - 40px), 260px), 260px" alt={t('The saved-words command sending a notebook sheet into the chat.', 'Команда сохранённых слов присылает лист-пропись в чат.')} caption={t('The sheet arrives in the chat.', 'Лист приходит прямо в чат.')} />
           <Shot kind="sheet" src={notebookFilled} sizes="(max-width: 760px) calc(100vw - 40px), 740px" alt={t('Filled notebook sheet for 教 with structure, stroke order, similar characters, mnemonic, and writing grid.', 'Заполненный лист-пропись для 教 со структурой, порядком черт, похожими иероглифами, мнемоникой и сеткой для письма.')} caption={t('Structure, stroke order, look-alikes, a mnemonic, and a grid on one sheet.', 'Структура, порядок черт, похожие иероглифы, мнемоника и сетка на одном листе.')} />
         </div>
       </Decision>
@@ -225,8 +225,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         'Им пользовались несколько студентов университета, и я поговорил с ними о том, как всё прошло.',
       )}
     >
-      <ul class="points" role="list">
-        <li><strong>{t('What they liked', 'Что понравилось')}</strong><p>{t('Everything in one place: no switching between apps, and less effort just to keep up.', 'Всё в одном месте: не нужно прыгать между приложениями и тратить силы, чтобы просто не отставать.')}</p></li>
+      <ul class="points row" role="list">
+        <li><strong>{t('What they liked', 'Что понравилось')}</strong><p>{t('Everything in one place: no switching between apps, and less effort just to keep up.', 'Всё в одном месте: не нужно переключаться между приложениями и тратить силы, чтобы просто не отставать.')}</p></li>
         <li><strong>{t('What they missed', 'Чего не хватило')}</strong><p>{t('Practising pronunciation, not just writing.', 'Практики произношения, а не только письма.')}</p></li>
         <li><strong>{t('Honest limits', 'Честные ограничения')}</strong><p>{t('The handwriting score shows how similar a drawing is to the character, but it doesn’t check stroke order.', 'Оценка прописи показывает, насколько рисунок похож на иероглиф, но порядок черт она не проверяет.')}</p></li>
       </ul>
@@ -271,7 +271,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 <style>
   .phones { --phones: 3; }
 
-  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin: 28px 0 32px; }
+  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin: 24px 0 28px; }
   .tools__row { padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
   .tools__row--after { box-shadow: 0 0 0 2px var(--color-ink); }
   .tools__label { margin: 0 0 12px; font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
@@ -297,7 +297,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
   .position__point--ours::before { width: 18px; height: 18px; background: var(--color-ink); }
   .position__caption { margin-top: 14px; }
 
-  .sheet-pair { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
+  .sheet-pair { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
   .next-steps { margin-top: 28px; }
 
   @media (max-width: 760px) {

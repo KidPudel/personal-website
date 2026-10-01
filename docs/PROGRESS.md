@@ -2,6 +2,14 @@
 
 Last updated: 2026-10-01
 
+## Case studies: one typeface, shorter, steadier rhythm
+
+- One typeface: Instrument Sans for everything in the four case studies, set apart by size and weight only. Instrument Serif and the display face are gone from them; the key sentence of a section is larger regular-weight sans. The Observatory wordmark keeps its own face and texture animation, as a logo. The case-studies listing keeps its serif title, which matches the homepage's section titles.
+- Length: aimed at a four-to-five-minute read (about 800 to 1,200 words of prose), with the summary readable in under a minute, since hiring managers skim for one to three minutes on a first pass. SuperGood went from about 1,540 to 1,320 words, Observatory 1,340 to 1,290, Instagram 1,670 to 1,500 (1,220 outside its two research tables), Two Sticks stays at about 1,020. Cuts are repeats, not content: Task leads that restated the facts, "what reviews praised" (now one sentence in Result), SuperGood's closing note and step chart (its 8 → 3 steps now sit in Decision 1's effect), Observatory's usage list (one sentence), Instagram's "what I'd measure" list (it repeated the success metrics) and the descriptions under its priority list.
+- Rhythm: the long text-only run between Situation and the first decision is broken up. Research methods (SuperGood) and secondary findings (Instagram) are a number-led strip styled like the summary metrics; very short lists (three complaints, Goal, Success metrics, Constraints, job stories, student feedback) sit in one row; other short lists use two columns on wide screens. Phone shots are 260 px wide instead of 300, sketches sit four in a row, and section and decision spacing is tighter. At 1440 px SuperGood is about 7,900 px tall (was 9,500 before this round of work), Observatory 10,700 (11,900), Instagram 11,200 (12,800), Two Sticks 8,200 (9,400).
+- Russian: "домашка" is now "домашняя работа"; "в сторах", "куча", "ставить" and "прыгать между приложениями" are replaced with plain wording.
+- Verified at 1440 and 390 px in English and Russian; Astro diagnostics, the media contract, and both production builds pass.
+
 ## Case studies: one reading line, Igor's voice
 
 - Layout: every case study now shares the homepage's left edge (the page gutter, in line with the header's Home). Text keeps a 42rem measure from that edge; screenshots and charts may run to 1040 px. The old two edges (a 780 px text column and 1080 px breakouts) made the eye jump back and forth, so `.breakout` is gone.
