@@ -30,7 +30,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Contact addresses and links (header panel and page footer) | `src/config/site.ts`; footer layout in `src/components/homepage/closing/ClosingContact.astro` |
 | Case study names, pitches, roles, product tags, years (homepage cards and `/case-studies/`) | `src/content/case-studies.ts` |
 | Work caption (pitch, tag, year) on the homepage and `/case-studies/` | `src/components/homepage/showcase/WorkCaption.astro` |
-| Case-study structure: STAR summary, metric tiles, decision blocks, charts | `src/components/case-studies/`; copy lives in each page under `src/pages/case-studies/` |
+| Case-study structure: STAR summary with headline numbers, decision blocks, charts, section rail | `src/components/case-studies/`; copy lives in each page under `src/pages/case-studies/` |
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |

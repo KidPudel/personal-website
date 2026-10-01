@@ -1,6 +1,18 @@
 # Progress
 
-Last updated: 2026-09-30
+Last updated: 2026-10-01
+
+## Case studies: one reading line, Igor's voice
+
+- Layout: every case study now shares the homepage's left edge (the page gutter, in line with the header's Home). Text keeps a 42rem measure from that edge; screenshots and charts may run to 1040 px. The old two edges (a 780 px text column and 1080 px breakouts) made the eye jump back and forth, so `.breakout` is gone.
+- Type follows the homepage: the page title in the display face (Averia, as on "Product designer." and the Observatory wordmark), section titles and the one key sentence per section in Instrument Serif, everything else in Instrument Sans. No new fonts. The black S/T/A/R badges are gone; sections are named in a small grey label.
+- Text is no longer boxed. The STAR summary is a ruled list, and `MetricGrid` is merged into it: Result shows the page's three headline numbers (two on Instagram, words on Two Sticks), each with its source, and the honest note about the numbers is said once there. Research methods, findings, goals, success metrics, and job stories are plain lists with a bold first line. Only charts and before/after visuals keep a surface.
+- Decisions read as short paragraphs with bold lead-ins (Problem, What I did, Why, Alternative considered) and one effect line, instead of a label grid with a boxed effect.
+- The side rail marks only the sections (Summary, Situation, Task, Action, Result, Reflection or Next), and from 1400 px it shows their names. A jump lands on the section's label.
+- Copy is rewritten in Igor's voice in both languages: contractions, plain sentence headings instead of three-beat slogans, no repeated caveats, and frameworks named directly (Jobs to be Done, job stories, contextual inquiry, comparative usability testing, SEQ, CustDev, CJM, Gestalt common region, information architecture, guardrail metric, impact and effort matrix). Russian is adapted, not translated, and rephrased so it never needs a dash.
+- Repeats cut: each headline number appears in the summary, the decision it belongs to, and its chart, instead of four to six times. Instagram's 6 of 9 chart and nine-person table are one block, its notebook spreads are a small strip, and its priority list and hypothesis are no longer black cards. Two Sticks' "0 apps to install" and "3 → 1 tools" are design facts, so they moved to the facts list; its footer links now carry the link mark.
+- Corrections: SuperGood's dish-card result is labelled as the same comparative usability test, not an A/B test, matching the facts recorded on 2026-09-29. The Russian Observatory pitch is «Мониторинг системы» in quotes on both the case study and the cards.
+- Verified at 1920, 1440, 1024, and 390 px in English and Russian with no horizontal overflow; the English listing is pixel-identical and the Russian one differs only in the Observatory pitch. Astro diagnostics, the media contract, and both production builds pass.
 
 ## Links: a marker swipe instead of an underline
 

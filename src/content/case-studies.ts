@@ -48,7 +48,7 @@ export const caseStudies: readonly CaseStudy[] = [
   {
     slug: 'observatory',
     name: { en: 'Observatory', ru: 'Observatory' },
-    pitch: { en: 'Activity Monitor, but more.', ru: 'Как Мониторинг системы, только больше.' },
+    pitch: { en: 'Activity Monitor, but more.', ru: 'Как «Мониторинг системы», только больше.' },
     responsibility: {
       en: 'Concept to launch: product design, identity, and storytelling.',
       ru: 'От концепции до запуска: продуктовый дизайн, айдентика и сторителлинг.',

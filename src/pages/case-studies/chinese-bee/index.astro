@@ -9,7 +9,6 @@ import searchScreen from '../../../assets/case_study_images/two-sticks/search2.p
 import startScreen from '../../../assets/case_study_images/two-sticks/start1.png';
 import writeScreen from '../../../assets/case_study_images/two-sticks/write.png';
 import Decision from '../../../components/case-studies/Decision.astro';
-import MetricGrid from '../../../components/case-studies/MetricGrid.astro';
 import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
 import StepCompare from '../../../components/case-studies/StepCompare.astro';
@@ -28,7 +27,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
   title={t('Two Sticks case study | Igor Kupchinenko', 'Кейс «Две палочки» | Игорь Купчиненко')}
   description={t(
     'How I turned a university diploma’s research into Two Sticks, a Telegram product for finding Chinese characters, remembering them, and writing them by hand, in one chat instead of three tools.',
-    'Как я превратил исследование дипломной работы в «Две палочки», продукт в Telegram, чтобы находить китайские иероглифы, запоминать их и писать от руки, в одном чате вместо трёх инструментов.',
+    'Как я превратил исследование из дипломной работы в «Две палочки», продукт в Telegram, где можно найти китайский иероглиф, запомнить его и прописать от руки. Один чат вместо трёх инструментов.',
   )}
   pageClass="chinesebee-case-study editorial-case-study"
   ogImage={searchScreen.src}
@@ -40,13 +39,13 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <p class="hero__line">{t('Write the character, without leaving the chat.', 'Написать иероглиф, не выходя из чата.')}</p>
 
       <dl class="facts">
-        <div><dt>{t('Role', 'Роль')}</dt><dd>{t('Product direction, UX/UI, bot, API, and handwriting app', 'Продуктовое видение, UX/UI, бот, API и приложение для прописей')}</dd></div>
-        <div><dt>{t('Based on', 'Основа')}</dt><dd>{t('Research by an МПГУ diploma team', 'Исследование дипломной команды МПГУ')}</dd></div>
-        <div><dt>{t('When', 'Когда')}</dt><dd>2024</dd></div>
-        <div><dt>{t('Outcome', 'Результат')}</dt><dd>{t('Working prototype, used by a few students. No longer hosted.', 'Рабочий прототип, им пользовались несколько студентов. Сейчас не размещён.')}</dd></div>
+        <div><dt>{t('Role', 'Роль')}</dt><dd>{t('Product direction, UX/UI, bot, API, and handwriting app', 'Продукт, UX/UI, бот, API и приложение для прописей')}</dd></div>
+        <div><dt>{t('Based on', 'Основа')}</dt><dd>{t('A 2024 diploma by an МПГУ team', 'Дипломная работа команды МПГУ, 2024')}</dd></div>
+        <div><dt>{t('Format', 'Формат')}</dt><dd>{t('A Telegram bot and Web App, nothing to install', 'Telegram-бот и Web App, ничего не нужно устанавливать')}</dd></div>
+        <div><dt>{t('Outcome', 'Результат')}</dt><dd>{t('A working prototype a few students used. No longer hosted.', 'Рабочий прототип, им пользовались несколько студентов. Сейчас не размещён.')}</dd></div>
       </dl>
 
-      <div class="phones breakout">
+      <div class="phones">
         <Shot src={searchScreen} priority="high" sizes={phoneSizes} alt={t('Two Sticks word search result with character details and a save action.', 'Результат поиска слова в «Двух палочках» с карточкой иероглифа и кнопкой сохранения.')} />
         <Shot src={flashcardScreen} priority="eager" sizes={phoneSizes} alt={t('Two Sticks flashcard practice using the learner’s saved characters.', 'Практика с карточками в «Двух палочках» на сохранённых иероглифах ученика.')} />
         <Shot src={writeScreen} priority="eager" sizes={phoneSizes} alt={t('Two Sticks handwriting Web App with a drawn character and recognition score.', 'Web App для прописей «Две палочки» с нарисованным иероглифом и оценкой распознавания.')} />
@@ -55,41 +54,33 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 
     <StarSummary
       situation={t(
-        'Learners can recognise a Chinese character and still fail to write it. Practice was split across a dictionary, flashcards, and paper copybooks.',
-        'Ученики узнают китайский иероглиф, но не могут его написать. Практика была разбита между словарём, карточками и бумажными прописями.',
+        'Learners can recognise a Chinese character and still not be able to write it. Practice was split between a dictionary, flashcards, and paper copybooks.',
+        'Ученики узнают иероглиф, но написать его не могут. А практика разбросана между словарём, карточками и бумажными прописями.',
       )}
       task={t(
         'Turn a university diploma’s research into one working product, inside the messenger learners already use.',
-        'Превратить исследование дипломной работы в один рабочий продукт внутри мессенджера, которым ученики уже пользуются.',
+        'Превратить исследование из дипломной работы в один рабочий продукт внутри мессенджера, которым ученики и так пользуются.',
       )}
       action={t(
-        'Chose Telegram over a new app, made every saved word feed every exercise, and built the bot, the API, and the handwriting app.',
-        'Выбрал Telegram вместо нового приложения, сделал так, чтобы каждое сохранённое слово шло во все упражнения, и собрал бота, API и приложение для прописей.',
+        'I chose Telegram over a new app, made every saved word feed every exercise, and built the bot, the API, and the handwriting app myself.',
+        'Выбрал Telegram вместо нового приложения, сделал так, чтобы каждое сохранённое слово попадало во все упражнения, и сам собрал бота, API и приложение для прописей.',
       )}
       result={t(
-        'Three tools became one chat. Students liked not switching between apps. What they missed was pronunciation practice.',
-        'Три инструмента превратились в один чат. Студентам понравилось не переключаться между приложениями. Не хватало им практики произношения.',
+        'Three tools became one chat. A few students used it and liked not switching between apps. What they missed was pronunciation practice.',
+        'Три инструмента превратились в один чат. Несколько студентов пользовались им, и им нравилось не переключаться между приложениями. А не хватало им практики произношения.',
       )}
-    />
-
-    <MetricGrid
-      metrics={[
-        { value: '3 → 1', label: t('tools for one study session: dictionary, flashcards, and copybook', 'инструмента на одно занятие: словарь, карточки и прописи'), basis: t('By design', 'Так устроен продукт') },
-        { value: '0', label: t('apps to install. Everything opens in Telegram.', 'приложений для установки. Всё открывается в Telegram.'), basis: t('By design', 'Так устроен продукт') },
-        { value: t('15 of 20', '15 из 20'), label: t('open-day visitors were interested in the idea', 'гостей дня открытых дверей заинтересовались идеей'), basis: t('Diploma team’s research', 'Исследование дипломной команды') },
-      ]}
       caption={t(
-        'No usage analytics were collected. Student feedback came from conversations.',
-        'Аналитику использования не собирали. Отзывы студентов получены в разговорах.',
+        'No usage analytics were collected, so this comes from conversations with students.',
+        'Аналитику использования не собирали, это из разговоров со студентами.',
       )}
     />
 
     <StudySection
       part="situation"
-      title={t('You recognise it. Can you write it?', 'Узнаёшь его. А написать сможешь?')}
+      title={t('You recognise it. But can you write it?', 'Узнаёшь его. А написать сможешь?')}
       lead={t(
-        'A dictionary gives you the character, its sound, and its meaning. Writing it from memory takes a different kind of practice, and that practice lived in separate places.',
-        'Словарь даёт иероглиф, его звучание и значение. Чтобы написать его по памяти, нужна другая практика, а она жила в разных местах.',
+        'A dictionary gives you the character, how it sounds, and what it means. Writing it from memory takes a different kind of practice, and that practice lived somewhere else.',
+        'Словарь даёт иероглиф, его звучание и значение. А чтобы написать его по памяти, нужна другая практика, и она жила в других местах.',
       )}
     >
       <figure class="tools">
@@ -104,14 +95,14 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         <div class="tools__row tools__row--after">
           <p class="tools__label">{t('Two Sticks: 1 chat', '«Две палочки»: 1 чат')}</p>
           <ul class="tools__list" role="list">
-            <li>{t('Search, flashcards, notebook sheets, and handwriting, in Telegram', 'Поиск, карточки, листы-прописи и письмо, всё в Telegram')}</li>
+            <li>{t('Search, flashcards, notebook sheets, and handwriting, all in Telegram', 'Поиск, карточки, листы-прописи и письмо, всё в Telegram')}</li>
           </ul>
         </div>
       </figure>
 
-      <p class="situation-copy">{t(
-        'The starting point was a 2024 МПГУ diploma by Смакова, Шаталова, and Шинкарева. They studied copybooks, memorisation methods, and competing apps and bots, and ran an open-day masterclass where 15 of 20 visitors were interested. That was a signal of interest, not a test of my product. Their research became my brief.',
-        'Отправной точкой стал диплом МПГУ 2024 года, который написали Смакова, Шаталова и Шинкарева. Они изучили прописи, методы запоминания, конкурирующие приложения и боты и провели мастер-класс на дне открытых дверей, где идеей заинтересовались 15 из 20 гостей. Это был сигнал интереса, а не проверка моего продукта. Их исследование стало моим брифом.',
+      <p>{t(
+        'The starting point was a 2024 МПГУ diploma by Смакова, Шаталова, and Шинкарева. They studied copybooks, memorisation methods, and competing apps and bots, and ran an open-day masterclass where 15 of 20 visitors were interested in the idea. That’s a signal of interest, not a test of my product. Their research became my brief.',
+        'Всё началось с диплома МПГУ 2024 года, который написали Смакова, Шаталова и Шинкарева. Они изучили прописи, методы запоминания, конкурирующие приложения и боты и провели мастер-класс на дне открытых дверей, где идеей заинтересовались 15 из 20 гостей. Это сигнал интереса, а не проверка моего продукта. Их исследование стало моим брифом.',
       )}</p>
     </StudySection>
 
@@ -120,21 +111,28 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       title={t('One place to find, remember, and write.', 'Одно место, чтобы найти, запомнить и написать.')}
       lead={t(
         'I turned the diploma’s brief into a product and built it: a Telegram bot, a FastAPI backend, a PostgreSQL word database, and a Vue handwriting app.',
-        'Я превратил бриф диплома в продукт и собрал его: Telegram-бот, бэкенд на FastAPI, базу слов на PostgreSQL и приложение для прописей на Vue.',
+        'Я превратил бриф из диплома в продукт и сам его собрал: Telegram-бот, бэкенд на FastAPI, база слов на PostgreSQL и приложение для прописей на Vue.',
       )}
     >
-      <dl class="goal breakout">
+      <dl class="terms">
         <div><dt>{t('Goal', 'Цель')}</dt><dd>{t('Connect looking up a character with practising it, in one place.', 'Связать поиск иероглифа с практикой в одном месте.')}</dd></div>
-        <div><dt>{t('How I would know', 'Как понять, что получилось')}</dt><dd>{t('Share of learners who save 5 words and unlock flashcards. Share who go on to handwriting. Scores on the same character over repeated attempts.', 'Доля учеников, которые сохранили 5 слов и открыли карточки. Доля тех, кто дошёл до прописей. Оценки на одном и том же иероглифе от попытки к попытке.')}</dd></div>
-        <div><dt>{t('Constraints', 'Ограничения')}</dt><dd>{t('One developer, a student budget, and a chat interface that cannot draw.', 'Один разработчик, студенческий бюджет и интерфейс чата, в котором нельзя рисовать.')}</dd></div>
+        <div><dt>{t('Success metrics', 'Метрики успеха')}</dt><dd>{t('Share of learners who save 5 words and unlock flashcards. Share who go on to handwriting. Scores on the same character over repeated attempts.', 'Доля учеников, которые сохранили 5 слов и открыли карточки. Доля тех, кто дошёл до прописей. Оценки за один и тот же иероглиф от попытки к попытке.')}</dd></div>
+        <div><dt>{t('Constraints', 'Ограничения')}</dt><dd>{t('One developer, a student budget, and a chat interface that can’t draw.', 'Один разработчик, студенческий бюджет и интерфейс чата, в котором нельзя рисовать.')}</dd></div>
       </dl>
     </StudySection>
 
-    <StudySection part="action" title={t('Decisions that turned a brief into a product.', 'Решения, которые превратили бриф в продукт.')}>
+    <StudySection
+      part="action"
+      title={t('Decisions that turned a brief into a product.', 'Решения, которые превратили бриф в продукт.')}
+      lead={t(
+        'The diploma team’s competitive analysis showed a gap. Serious writing practice lived in separate apps, and Telegram bots were easy to start but mostly about vocabulary.',
+        'Конкурентный анализ дипломной команды показал пробел. Серьёзная практика письма была только в отдельных приложениях, а боты в Telegram легко начать, но они в основном про слова.',
+      )}
+    >
       <figure class="position">
         <div class="position__plot" role="img" aria-label={t(
-          'Positioning chart. Skritter offers deep writing practice but is a separate app. Telegram bots are easy to start but focus on vocabulary. Two Sticks is easy to start and includes writing practice.',
-          'Карта позиционирования. Skritter даёт серьёзную практику письма, но это отдельное приложение. Боты в Telegram легко начать, но они про словарь. «Две палочки» легко начать, и в них есть практика письма.',
+          'Positioning map. Skritter offers deep writing practice but is a separate app. Telegram bots are easy to start but focus on vocabulary. Two Sticks is easy to start and includes writing practice.',
+          'Карта позиционирования. Skritter даёт серьёзную практику письма, но это отдельное приложение. Боты в Telegram легко начать, но они про слова. «Две палочки» легко начать, и в них есть практика письма.',
         )}>
           <span class="position__axis position__axis--y" aria-hidden="true">{t('↑ More writing practice', '↑ Больше практики письма')}</span>
           <span class="position__axis position__axis--x" aria-hidden="true">{t('Easier to start →', 'Проще начать →')}</span>
@@ -143,20 +141,18 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
           <span class="position__point position__point--ours position__point--end" style="--x: 74%; --y: 26%" aria-hidden="true">{t('Two Sticks', 'Две палочки')}</span>
         </div>
         <figcaption class="position__caption">{t(
-          'From the diploma team’s competitor review: Skritter for dedicated writing practice in a separate app, Telegram bots for an easy start with mostly vocabulary. Two Sticks aims for both.',
-          'По конкурентному анализу дипломной команды: Skritter для отдельной практики письма в своём приложении, боты в Telegram для лёгкого старта, но в основном со словарём. «Две палочки» стремятся к обоим.',
+          'Positioning map, based on the diploma team’s competitive analysis. Two Sticks aims for both: easy to start, with real writing practice.',
+          'Карта позиционирования по конкурентному анализу дипломной команды. «Две палочки» целятся в оба: легко начать и есть настоящая практика письма.',
         )}</figcaption>
       </figure>
 
       <Decision
         number={1}
         title={t('Telegram, not a new app.', 'Telegram, а не новое приложение.')}
-        problem={t('Every new app is one more thing to install, open, and remember.', 'Каждое новое приложение это ещё одна установка, ещё одна иконка и ещё одна привычка.')}
-        decision={t('A Telegram bot for search, saving, and flashcards, with a Telegram Web App for handwriting.', 'Telegram-бот для поиска, сохранения и карточек и Telegram Web App для прописей.')}
-        why={t('Learners were already in Telegram every day. Nothing to install, and practice sits next to their chats.', 'Ученики и так каждый день в Telegram. Ничего не нужно устанавливать, а практика рядом с их чатами.')}
-        instead={t('A standalone app. More freedom in the interface, but a harder start: the same trade-off as Skritter.', 'Отдельного приложения. Больше свободы в интерфейсе, но сложнее начать: тот же компромисс, что у Skritter.')}
-        effect={t('0 apps to install', '0 приложений для установки')}
-        effectLabel={t('By design', 'Так устроено')}
+        problem={t('Every new app is one more thing to install, open, and remember.', 'Каждое новое приложение нужно установить, открыть и не забыть о нём.')}
+        decision={t('A Telegram bot for search, saving, and flashcards, plus a Telegram Web App for handwriting.', 'Telegram-бот для поиска, сохранения и карточек и Telegram Web App для прописей.')}
+        why={t('Learners were already in Telegram every day. There’s nothing to install, and practice sits right next to their chats.', 'Ученики и так каждый день в Telegram. Ничего не нужно ставить, а практика прямо рядом с их чатами.')}
+        instead={t('A standalone app. More freedom in the interface, but a harder start, the same trade-off Skritter makes.', 'Отдельное приложение. Больше свободы в интерфейсе, но сложнее начать: тот же компромисс, что у Skritter.')}
       >
         <Shot src={dictationStart} alt={t('Two Sticks chat where the dictation command offers a button that opens the handwriting practice.', 'Чат «Двух палочек»: команда диктанта предлагает кнопку, которая открывает прописи.')} caption={t('Handwriting opens from the chat as a Web App.', 'Прописи открываются из чата как Web App.')} />
       </Decision>
@@ -164,9 +160,9 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={2}
         title={t('One saved list feeds every exercise.', 'Один список сохранённого для всех упражнений.')}
-        problem={t('Learners had to build a separate list for each tool.', 'Ученикам приходилось собирать отдельный список для каждого инструмента.')}
-        decision={t('Save sits on the character card, next to pinyin, meaning, and HSK level. Flashcards, notebook sheets, and handwriting all draw from that one list.', 'Кнопка сохранения на карточке иероглифа, рядом с пиньинем, значением и уровнем HSK. Карточки, листы-прописи и письмо берут слова из этого одного списка.')}
-        why={t('Every lookup can lead somewhere useful, with no extra setup.', 'Каждый поиск может привести к практике без лишней настройки.')}
+        problem={t('Learners had to build a separate word list for each tool.', 'Ученикам приходилось собирать отдельный список слов для каждого инструмента.')}
+        decision={t('Save sits on the character card, next to pinyin, meaning, and HSK level. Flashcards, notebook sheets, and handwriting all pull from that one list.', 'Кнопка сохранения на карточке иероглифа, рядом с пиньинем, значением и уровнем HSK. Карточки, листы-прописи и письмо берут слова из этого одного списка.')}
+        why={t('Every lookup can turn into practice, with no extra setup.', 'Каждый поиск может превратиться в практику без лишней настройки.')}
       >
         <div class="pair">
           <Shot src={searchResults} sizes={pairSizes} alt={t('Search for a Russian word returning a list of matching Chinese words.', 'Поиск по русскому слову возвращает список подходящих китайских слов.')} caption={t('Search by a Russian word.', 'Поиск по русскому слову.')} />
@@ -177,8 +173,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={3}
         title={t('Flashcards unlock at five words.', 'Карточки открываются после пяти слов.')}
-        problem={t('A multiple-choice card with one or two saved words has no real wrong answers.', 'В карточке с выбором ответа при одном-двух сохранённых словах нет настоящих неправильных вариантов.')}
-        decision={t('Flashcards open once five words are saved. Until then, the empty state says how many more to add.', 'Карточки открываются, когда сохранено пять слов. До этого пустое состояние подсказывает, сколько ещё добавить.')}
+        problem={t('A multiple-choice card with only one or two saved words has no real wrong answers.', 'Если сохранено одно-два слова, в карточке с вариантами ответа нет настоящих неправильных вариантов.')}
+        decision={t('Flashcards open once five words are saved. Until then, the empty state says how many more to add.', 'Карточки открываются, когда сохранено пять слов. До этого пустое состояние подсказывает, сколько ещё осталось.')}
         why={t('The quiz only works with real alternatives, and the countdown turns the wait into a small goal.', 'Тест работает только с настоящими вариантами, а обратный отсчёт превращает ожидание в маленькую цель.')}
       >
         <Shot src={flashcardScreen} alt={t('Flashcard practice built from the learner’s saved characters.', 'Практика с карточками на сохранённых иероглифах ученика.')} caption={t('Questions come from your own saved words.', 'Вопросы строятся из твоих сохранённых слов.')} />
@@ -190,7 +186,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         title={t('Understand the shape before writing it.', 'Понять форму, прежде чем писать.')}
         problem={t('Copying a character without knowing its parts makes it hard to remember.', 'Если переписывать иероглиф, не зная его частей, его трудно запомнить.')}
         decision={t('One notebook sheet with structure, stroke order, similar characters, a mnemonic, examples, and a writing grid, sent right into the chat.', 'Один лист-пропись со структурой, порядком черт, похожими иероглифами, мнемоникой, примерами и сеткой для письма, прямо в чат.')}
-        why={t('Structure and mnemonics were the methods the diploma research pointed to. In the chat, the sheet is always one scroll away.', 'На структуру и мнемонику указывало исследование диплома. В чате лист всегда в одной прокрутке.')}
+        why={t('The diploma research pointed to structure and mnemonics. In the chat, the sheet is always one scroll away.', 'На структуру и мнемонику указывало исследование из диплома. А в чате лист всегда в одной прокрутке.')}
       >
         <div class="sheet-pair">
           <Shot src={sheetInChat} sizes="(max-width: 760px) min(calc(100vw - 40px), 300px), 300px" alt={t('The saved-words command sending a notebook sheet into the chat.', 'Команда сохранённых слов присылает лист-пропись в чат.')} caption={t('The sheet arrives in the chat.', 'Лист приходит прямо в чат.')} />
@@ -201,7 +197,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       <Decision
         number={5}
         title={t('Let experienced learners skip the basics.', 'Дать опытным пропустить основы.')}
-        problem={t('A primer on how characters work helps beginners and slows everyone else down.', 'Вводный курс о том, как устроены иероглифы, помогает новичкам и тормозит остальных.')}
+        problem={t('A primer on how characters work helps beginners and slows everyone else down.', 'Вводный курс о том, как устроены иероглифы, помогает новичкам и тормозит всех остальных.')}
         decision={t('The bot asks first: “Yes, show me” or “I already know”.', 'Бот сначала спрашивает: «Да, хочу!» или «Уже знаю».')}
         why={t('Respect what people already know. The primer is there, but never in the way.', 'Уважать то, что человек уже знает. Курс есть, но не мешает.')}
       >
@@ -215,9 +211,9 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
         number={6}
         layout="stack"
         title={t('Ship the core loop first.', 'Сначала выпустить основной цикл.')}
-        problem={t('The diploma brief also included live teacher supervision, an HSK statistics dashboard, and audience growth plans.', 'В брифе диплома были ещё живое сопровождение преподавателем, панель статистики HSK и планы по росту аудитории.')}
-        decision={t('Shipped the learner’s loop first: find, save, recall, understand, write. Left the rest for later.', 'Сначала выпустил цикл ученика: найти, сохранить, вспомнить, понять, написать. Остальное оставил на потом.')}
-        why={t('Teacher tools only matter once learners come back on their own. Prove that first.', 'Инструменты для преподавателя важны, только когда ученики возвращаются сами. Сначала нужно доказать это.')}
+        problem={t('The diploma brief also included live teacher supervision, an HSK statistics dashboard, and audience growth plans.', 'В брифе из диплома были ещё живое сопровождение преподавателем, панель статистики HSK и планы по росту аудитории.')}
+        decision={t('I shipped the learner’s core loop first: find, save, recall, understand, write. The rest could wait.', 'Сначала выпустил основной цикл ученика: найти, сохранить, вспомнить, понять, написать. Остальное могло подождать.')}
+        why={t('Teacher tools only matter once learners come back on their own, so that had to be proven first.', 'Инструменты для преподавателя нужны, только когда ученики возвращаются сами, поэтому сначала нужно было доказать это.')}
       />
     </StudySection>
 
@@ -225,19 +221,18 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       part="result"
       title={t('One chat instead of three tools.', 'Один чат вместо трёх инструментов.')}
       lead={t(
-        'A few students at the university used it. They liked having everything in one place: no switching between apps, and less effort just to keep up. What they missed was practising pronunciation.',
-        'Им пользовались несколько студентов университета. Им понравилось, что всё в одном месте: не нужно переключаться между приложениями и тратить силы, чтобы не отставать. Не хватало им практики произношения.',
+        'A few students at the university used it, and I talked with them about how it went.',
+        'Им пользовались несколько студентов университета, и я поговорил с ними о том, как всё прошло.',
       )}
     >
-      <ul class="tiles breakout" role="list">
-        <li><strong>{t('Built', 'Собрано')}</strong><p>{t('A Russian-language Telegram bot, a FastAPI backend, a PostgreSQL word database, and a Vue handwriting app.', 'Русскоязычный Telegram-бот, бэкенд на FastAPI, база слов на PostgreSQL и приложение для прописей на Vue.')}</p></li>
-        <li><strong>{t('Liked', 'Понравилось')}</strong><p>{t('Everything in one place, with no switching between tools.', 'Всё в одном месте, не нужно переключаться между инструментами.')}</p></li>
-        <li><strong>{t('Missed', 'Не хватило')}</strong><p>{t('Practising pronunciation, not just writing.', 'Практики произношения, а не только письма.')}</p></li>
-        <li><strong>{t('Honest limits', 'Честные ограничения')}</strong><p>{t('No usage analytics. The score shows how similar a drawing is to the character; it does not check stroke order.', 'Аналитики использования нет. Оценка показывает, насколько рисунок похож на иероглиф; порядок черт она не проверяет.')}</p></li>
+      <ul class="points" role="list">
+        <li><strong>{t('What they liked', 'Что понравилось')}</strong><p>{t('Everything in one place: no switching between apps, and less effort just to keep up.', 'Всё в одном месте: не нужно прыгать между приложениями и тратить силы, чтобы просто не отставать.')}</p></li>
+        <li><strong>{t('What they missed', 'Чего не хватило')}</strong><p>{t('Practising pronunciation, not just writing.', 'Практики произношения, а не только письма.')}</p></li>
+        <li><strong>{t('Honest limits', 'Честные ограничения')}</strong><p>{t('The handwriting score shows how similar a drawing is to the character, but it doesn’t check stroke order.', 'Оценка прописи показывает, насколько рисунок похож на иероглиф, но порядок черт она не проверяет.')}</p></li>
       </ul>
-      <p class="note result-note">{t(
-        'The prototype is no longer hosted because the bot, API, and Web App need paid infrastructure. The public source code documents the working version, under its working name, Chinese Bee.',
-        'Прототип больше не размещён, потому что боту, API и Web App нужна платная инфраструктура. Рабочую версию документирует открытый исходный код под рабочим названием Chinese Bee.',
+      <p class="note">{t(
+        'The prototype is no longer hosted, because the bot, API, and Web App need paid infrastructure. The public source code shows the working version, under its working name, Chinese Bee.',
+        'Прототип больше не размещён, потому что боту, API и Web App нужна платная инфраструктура. Рабочую версию можно посмотреть в открытом коде, под рабочим названием Chinese Bee.',
       )}</p>
     </StudySection>
 
@@ -245,8 +240,8 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
       part="next"
       title={t('Add the voice.', 'Добавить голос.')}
       lead={t(
-        'Students missed pronunciation practice. Telegram already has voice messages, so the next step fits the chat: hear a word, record it, and get feedback on the tones.',
-        'Студентам не хватало практики произношения. В Telegram уже есть голосовые сообщения, так что следующий шаг вписывается в чат: послушать слово, записать его и получить отзыв о тонах.',
+        'Students missed pronunciation practice, and Telegram already has voice messages. So the next step fits right into the chat: hear a word, record it, and get feedback on the tones.',
+        'Студентам не хватало произношения, а в Telegram уже есть голосовые. Так что следующий шаг ложится прямо в чат: послушать слово, записать его и получить отзыв о тонах.',
       )}
     >
       <div class="next-steps">
@@ -255,7 +250,7 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
           rows={[
             { label: t('In the chat', 'Прямо в чате'), steps: [t('Hear the word', 'Послушать слово'), t('Record a voice message', 'Записать голосовое'), t('See which tones were off', 'Увидеть, какие тоны не получились'), t('Try again', 'Попробовать снова')], emphasis: true },
           ]}
-          note={t('Not built yet. Success would mean tone scores improving on the same word over attempts.', 'Пока не сделано. Успех это рост оценки тонов на одном и том же слове от попытки к попытке.')}
+          note={t('Not built yet. Success would mean tone scores improving on the same word over attempts.', 'Пока не сделано. Успехом будет рост оценки тонов на одном и том же слове от попытки к попытке.')}
         />
       </div>
     </StudySection>
@@ -263,9 +258,9 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 
   <footer class="case-footer">
     <nav aria-label={t('Two Sticks project links', 'Ссылки проекта «Две палочки»')}>
-      <a href="https://github.com/KidPudel/chinesebee_bot">{t('Bot source ↗', 'Код бота ↗')}</a>
-      <a href="https://github.com/KidPudel/chinesebee_api">{t('API source ↗', 'Код API ↗')}</a>
-      <a href="https://github.com/KidPudel/chinese-bee-dictation">{t('Dictation source ↗', 'Код прописей ↗')}</a>
+      <a href="https://github.com/KidPudel/chinesebee_bot"><span class="link-mark">{t('Bot source ↗', 'Код бота ↗')}</span></a>
+      <a href="https://github.com/KidPudel/chinesebee_api"><span class="link-mark">{t('API source ↗', 'Код API ↗')}</span></a>
+      <a href="https://github.com/KidPudel/chinese-bee-dictation"><span class="link-mark">{t('Dictation source ↗', 'Код прописей ↗')}</span></a>
       <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
       <a href={localePath('/case-studies/supergood/', locale)}><span class="link-mark">{t('SuperGood case study →', 'Кейс SuperGood →')}</span></a>
@@ -276,17 +271,16 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 <style>
   .phones { --phones: 3; }
 
-  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin: 28px 0 0; }
+  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin: 28px 0 32px; }
   .tools__row { padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-  .tools__row--after { background: var(--color-ink); color: var(--color-field); box-shadow: none; }
+  .tools__row--after { box-shadow: 0 0 0 2px var(--color-ink); }
   .tools__label { margin: 0 0 12px; font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
   .tools__list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
   .tools__list li { padding: 6px 11px; border-radius: 999px; background: #efeee9; color: #4e4b45; font-size: .9375rem; line-height: 1.3; }
-  .tools__row--after .tools__list li { border-radius: 10px; background: rgb(248 248 248 / 14%); color: var(--color-field); }
-  .situation-copy { margin-top: 28px; }
+  .tools__row--after .tools__list li { border-radius: 10px; background: var(--color-ink); color: var(--color-field); }
 
   /* A two-by-two positioning map: ease of starting against depth of writing practice. */
-  .position { margin: 8px 0 0; }
+  .position { max-width: var(--study-measure); margin: 28px 0 0; }
   .position__plot { position: relative; aspect-ratio: 2 / 1; border-radius: 14px; background:
       linear-gradient(to right, transparent calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% + .5px), transparent calc(50% + .5px)),
       linear-gradient(to bottom, transparent calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% + .5px), transparent calc(50% + .5px)),
@@ -304,7 +298,6 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
   .position__caption { margin-top: 14px; }
 
   .sheet-pair { display: grid; grid-template-columns: minmax(0, 260px) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
-  .result-note { margin-top: 24px; }
   .next-steps { margin-top: 28px; }
 
   @media (max-width: 760px) {

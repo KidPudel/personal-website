@@ -1,57 +1,75 @@
 /* Shared editorial presentation for the four case studies and their listing. */
 html.editorial-case-study { background: var(--color-field); color: var(--color-ink); }
 .editorial-case-study body { background: var(--color-field); }
+/* One left edge, shared with the header and the homepage: the page gutter. Text keeps a readable
+   measure from that edge; visuals may run to --study-frame. */
 .editorial-case-study main,
-.editorial-case-study .case-footer { --study-body: clamp(1.125rem, 1.5vw, 1.5rem); --study-small: clamp(1rem, 1.15vw, 1.125rem); font-family: var(--font-reading); color: var(--color-ink); }
-.editorial-case-study main { width: min(780px, calc(100% - 48px)); margin-inline: auto; }
+.editorial-case-study .case-footer {
+  --study-frame: 1040px;
+  --study-measure: 42rem;
+  --study-body: clamp(1.0625rem, 0.95rem + 0.35vw, 1.1875rem);
+  --study-small: clamp(0.9375rem, 0.9rem + 0.1vw, 1rem);
+  --study-rule: rgb(17 17 15 / 11%);
+  --study-caption: #656560;
+  --study-serif: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
+  font-family: var(--font-reading);
+  color: var(--color-ink);
+}
+.editorial-case-study main { width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)); margin-inline: auto; }
+.editorial-case-study main:not(.case-index) > * { max-width: var(--study-frame); }
 .editorial-case-study :is(h1, h2, h3) { font-family: var(--font-reading); font-weight: 700; text-wrap: balance; }
-.editorial-case-study h1 { margin: 0 0 24px; font-size: clamp(2.5rem, 5vw, 4rem); letter-spacing: -.045em; line-height: 1.12; }
-.editorial-case-study h2 { margin: 0 0 24px; font-size: clamp(1.55rem, 2.25vw, 2.125rem); letter-spacing: -.025em; line-height: 1.3; }
-.editorial-case-study h3 { margin: 0 0 18px; font-size: clamp(1.25rem, 1.9vw, 1.65rem); letter-spacing: -.015em; line-height: 1.4; }
-.editorial-case-study p { margin: 0 0 24px; font-size: var(--study-body); line-height: 1.65; }
+/* Titles speak the homepage's language: the display face for the page title, Instrument Serif for sections. */
+.editorial-case-study h1 { margin: 0 0 18px; font-family: var(--font-display); font-size: clamp(2.6rem, 4.6vw, 4rem); font-weight: 700; letter-spacing: -.04em; line-height: 1.05; }
+.editorial-case-study h2 { margin: 0 0 20px; font-family: var(--study-serif); font-size: clamp(1.9rem, 2.9vw, 2.6rem); font-weight: 400; letter-spacing: -.03em; line-height: 1.1; }
+.editorial-case-study h3 { margin: 0 0 14px; font-size: clamp(1.2rem, 1.6vw, 1.375rem); letter-spacing: -.01em; line-height: 1.35; }
+.editorial-case-study :where(main:not(.case-index)) p { margin: 0 0 20px; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
+.editorial-case-study main :is(h1, h2, h3, p, blockquote) { max-width: var(--study-measure); }
 .editorial-case-study figure { margin: 36px 0; min-width: 0; }
 .editorial-case-study img { display: block; max-width: 100%; height: auto; }
-.editorial-case-study figcaption { margin-top: 16px; color: #656560; font-size: var(--study-small); line-height: 1.6; }
+.editorial-case-study figcaption { margin-top: 14px; max-width: var(--study-measure); color: var(--study-caption); font-size: var(--study-small); line-height: 1.6; }
 /* Links carry the marker swipe (.link-mark). A link in running ink text can't be set apart by color, so it also keeps the faint mark at rest and the swipe is drawn over it on hover. None exists yet; this covers future writing. */
 .editorial-case-study a { color: inherit; text-decoration: none; }
 .editorial-case-study :is(p, li, blockquote) a:not([class]) { background: var(--link-mark-rest) no-repeat 0 calc(100% - 0.02em) / 100% 0.62em; }
 .editorial-case-study :is(p, li, blockquote) a:not([class]):is(:hover, :focus-visible) { animation: link-mark-draw var(--link-mark-draw) step-end forwards; }
 .editorial-case-study [id] { scroll-margin-top: 40px; }
-.editorial-case-study .hero { padding: 48px 0 50px; }
-.editorial-case-study .hero__line { color: #656560; }
-.editorial-case-study .hero__intro { margin-top: 28px; }
-.editorial-case-study .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 32px; margin: 32px 0 44px; font-size: var(--study-small); line-height: 1.6; }
-.editorial-case-study .facts dt { color: #656560; margin-bottom: 4px; }
+/* A section jump lands on its label, not on the space above it. */
+.editorial-case-study .study-section { scroll-margin-top: calc(40px - clamp(64px, 8vw, 104px)); }
+.editorial-case-study .hero { padding: 48px 0 24px; }
+.editorial-case-study .hero__line { color: var(--color-copy); }
+.editorial-case-study .facts { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 32px; max-width: var(--study-measure); margin: 28px 0 40px; font-size: var(--study-small); line-height: 1.55; }
+.editorial-case-study .facts dt { margin-bottom: 2px; color: var(--study-caption); }
 .editorial-case-study .facts dd { margin: 0; }
-.editorial-case-study blockquote { margin: 28px 0 0; font-size: var(--study-body); line-height: 1.6; color: #656560; }
+.editorial-case-study blockquote { margin: 28px 0 0; font-size: var(--study-body); line-height: 1.6; color: var(--study-caption); }
 .editorial-case-study .research-portraits { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-block: 32px; }
 .editorial-case-study .research-portraits figure { margin: 0; }
 .editorial-case-study .research-portraits img { width: 180px; }
-.editorial-case-study .research-portraits p { margin-top: 18px; }
+.editorial-case-study .research-portraits figcaption { margin-top: 18px; color: var(--color-ink); font-size: var(--study-body); font-weight: 700; }
+.editorial-case-study .research-portraits figcaption + p { margin: 2px 0 12px; color: var(--color-copy); }
 .editorial-case-study .sketch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 32px; }
 .editorial-case-study .sketch-grid figure { margin: 0; }
 .editorial-case-study .sketch-grid img { width: 100%; }
-.editorial-case-study .case-footer { width: min(780px, calc(100% - 48px)); margin: 40px auto 0; padding-bottom: 100px; }
+.editorial-case-study .case-footer { width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)); margin: 72px auto 0; padding-bottom: 100px; }
 .editorial-case-study .case-footer nav { display: flex; flex-wrap: wrap; gap: 12px 28px; font-size: var(--study-small); }
 .editorial-case-study .case-footer a { display: inline-flex; align-items: center; min-height: 44px; }
-/* STAR case-study building blocks, shared by all four studies. */
-/* Wider than the reading column: 1080px on desktop, the full gutter-to-gutter width on phones. */
-.editorial-case-study .breakout { width: auto; margin-inline: calc(50% - min(540px, 50vw - 20px)); }
-.editorial-case-study .goal { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-block: 28px 0; }
-.editorial-case-study .goal > div { padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-.editorial-case-study .goal dt { margin-bottom: 8px; color: #656560; font-size: .9375rem; line-height: 1.4; }
-.editorial-case-study .goal dd { margin: 0; font-size: 1.0625rem; line-height: 1.55; }
-.editorial-case-study .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-block: 28px 0; padding: 0; list-style: none; }
-.editorial-case-study .tiles > li { padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-.editorial-case-study .tiles strong { display: block; margin-bottom: 6px; font-size: 1.0625rem; line-height: 1.4; }
-.editorial-case-study .tiles p { margin: 0; color: var(--color-copy); font-size: 1.0625rem; line-height: 1.55; }
-.editorial-case-study .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-top: 28px; }
-.editorial-case-study .phones { display: grid; grid-template-columns: repeat(var(--phones, 3), minmax(0, 1fr)); gap: clamp(12px, 3vw, 40px); align-items: start; margin-top: 36px; }
+
+/* STAR building blocks, shared by all four studies. Text groups are lists, not boxes; only charts keep a surface. */
+/* Short items with a bold first line: research methods, findings, what reviews praised. */
+.editorial-case-study .points { display: grid; gap: 18px; max-width: var(--study-measure); margin: 24px 0 0; padding: 0; list-style: none; }
+.editorial-case-study .points strong { display: block; margin-bottom: 2px; font-size: var(--study-body); letter-spacing: .012em; line-height: 1.45; }
+.editorial-case-study .points p { margin: 0; color: var(--color-copy); }
+/* Term and definition pairs: goal, success metrics, constraints, job stories. */
+.editorial-case-study .terms { display: grid; gap: 18px; max-width: var(--study-measure); margin: 24px 0 0; }
+.editorial-case-study .terms dt { margin-bottom: 2px; font-size: var(--study-body); font-weight: 700; letter-spacing: .012em; line-height: 1.45; }
+.editorial-case-study .terms dd { margin: 0; color: var(--color-copy); font-size: var(--study-body); letter-spacing: .012em; line-height: 1.6; }
+.editorial-case-study .charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 32px; }
+.editorial-case-study .phones { display: grid; grid-template-columns: repeat(var(--phones, 3), minmax(0, 1fr)); gap: clamp(12px, 3vw, 40px); align-items: start; margin-top: 32px; }
 .editorial-case-study .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); align-items: start; }
-.editorial-case-study .insight { margin: 36px 0 0; padding: 0 0 0 20px; border-left: 3px solid var(--color-ink); font-size: clamp(1.25rem, 2vw, 1.6rem); font-weight: 700; line-height: 1.4; text-wrap: balance; }
-.editorial-case-study .note { color: #656560; font-size: var(--study-small); line-height: 1.6; }
+/* The one sentence a section turns on, set like the homepage's section titles. */
+.editorial-case-study :where(main:not(.case-index)) .insight { margin: 44px 0 0; font-family: var(--study-serif); font-size: clamp(1.6rem, 2.4vw, 2.1rem); letter-spacing: -.02em; line-height: 1.2; text-wrap: balance; }
+.editorial-case-study .note { color: var(--study-caption); font-size: var(--study-small); line-height: 1.6; }
+.editorial-case-study .subtitle { margin-top: 64px; }
+.editorial-case-study :is(.points, .terms, .charts, figure, .pair, .journey, .priority, .notebooks, .prototype-row) + .note { margin-top: 14px; }
 @media (max-width: 760px) {
-  .editorial-case-study .goal { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .editorial-case-study .charts { grid-template-columns: minmax(0, 1fr); }
   .editorial-case-study .phones { gap: 10px; }
   .editorial-case-study .pair--stack-mobile { grid-template-columns: minmax(0, 1fr); }
@@ -64,8 +82,7 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .editorial-case-study .hero-introduction__play { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 64px; height: 64px; border-radius: 50%; background: var(--color-field); }
 .editorial-case-study .hero-introduction__play::after { content: ''; position: absolute; left: 52%; top: 50%; translate: -40% -50%; border-style: solid; border-width: 9px 0 9px 16px; border-color: transparent transparent transparent var(--color-ink); }
 @media (max-width: 760px) {
-  .editorial-case-study main, .editorial-case-study .case-footer { width: calc(100% - 40px); }
-  .editorial-case-study .hero { padding: 38px 0 20px; }
+  .editorial-case-study .hero { padding: 38px 0 12px; }
   .editorial-case-study :is(.research-portraits, .sketch-grid) { grid-template-columns: 1fr; gap: 28px; }
-  .editorial-case-study .facts { gap: 20px; }
+  .editorial-case-study .facts { gap: 18px; }
 }

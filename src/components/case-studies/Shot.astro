@@ -21,7 +21,7 @@ const candidates = phone ? [240, 360, 480, 600] : [480, 720, 960, 1280, 1600];
 const widths = [...new Set([...candidates.filter((width) => width < src.width), Math.min(src.width, candidates.at(-1)!)])];
 const defaultSizes = phone
   ? '(max-width: 760px) min(calc(100vw - 40px), 300px), 300px'
-  : '(max-width: 1120px) calc(100vw - 40px), 1080px';
+  : '(max-width: 1008px) calc(100vw - 40px), 960px';
 ---
 
 <figure class:list={['shot', `shot--${kind}`]}>
@@ -46,6 +46,6 @@ const defaultSizes = phone
   .shot--screen img { border-radius: 24px; box-shadow: 0 0 0 1px rgb(25 20 28 / 8%), 0 18px 40px -20px rgb(25 20 28 / 25%); }
   .shot--desktop img { border-radius: 10px; box-shadow: 0 0 0 1px rgb(17 17 15 / 8%), 0 24px 48px -28px rgb(17 17 15 / 30%); }
   .shot--sheet img { border-radius: 6px; box-shadow: 0 0 0 1px rgb(17 17 15 / 8%); }
-  .shot__caption { margin-top: 14px; color: #656560; font-size: .9375rem; line-height: 1.5; text-align: center; }
+  .shot__caption { margin-top: 14px; color: var(--study-caption, #656560); font-size: var(--study-small, .9375rem); line-height: 1.5; text-align: center; }
   .shot--desktop .shot__caption, .shot--wireframe .shot__caption, .shot--sheet .shot__caption { text-align: left; }
 </style>

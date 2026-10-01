@@ -22,33 +22,31 @@ const t = translator(toLocale(Astro.currentLocale));
       const main = document.querySelector('main');
       const nav = this.querySelector('nav');
       if (!main || !nav) return;
-      const headings = Array.from(main.querySelectorAll<HTMLElement>('h2, h3'));
-      if (!headings.length) return;
+      // One stop per section (the summary and each STAR part), named by its part, not every heading.
+      const sections = Array.from(main.querySelectorAll<HTMLElement>('[data-index-section]'));
+      if (!sections.length) return;
+      const headings = sections.map((section) => section.querySelector<HTMLElement>('h2') ?? section);
       nav.replaceChildren();
-      const links = headings.map((heading, index) => {
-        if (!heading.id) {
-          const stem = `study-${heading.textContent?.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || index}`;
-          let id = stem;
-          let suffix = 1;
-          while (document.getElementById(id)) id = `${stem}-${suffix++}`;
-          heading.id = id;
-        }
+      const links = sections.map((section, index) => {
+        const heading = headings[index];
+        if (!section.id) section.id = `study-section-${index + 1}`;
+        const name = section.dataset.indexLabel ?? `${this.dataset.sectionLabel ?? 'Section'} ${index + 1}`;
         const link = document.createElement('a');
-        link.href = `#${heading.id}`;
-        link.setAttribute('aria-label', heading.textContent?.trim() || `${this.dataset.sectionLabel ?? 'Section'} ${index + 1}`);
+        link.href = `#${section.id}`;
+        link.setAttribute('aria-label', `${name}: ${heading.textContent?.trim() ?? ''}`);
         const tick = document.createElement('span');
         tick.className = 'tick';
         tick.setAttribute('aria-hidden', 'true');
         const label = document.createElement('span');
         label.className = 'label';
-        label.textContent = heading.textContent;
+        label.textContent = name;
         label.setAttribute('aria-hidden', 'true');
         link.append(tick, label);
         link.addEventListener('click', (event) => {
           if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
           event.preventDefault();
-          history.replaceState(null, '', `#${heading.id}`);
-          heading.scrollIntoView({ block: 'start', behavior: 'instant' });
+          history.replaceState(null, '', `#${section.id}`);
+          section.scrollIntoView({ block: 'start', behavior: 'instant' });
           heading.setAttribute('tabindex', '-1');
           heading.focus({ preventScroll: true });
           heading.addEventListener('blur', () => heading.removeAttribute('tabindex'), { once: true });
@@ -63,7 +61,7 @@ const t = translator(toLocale(Astro.currentLocale));
         headings.forEach((heading, index) => {
           if (heading.getBoundingClientRect().top <= Math.min(180, innerHeight * 0.25)) active = index;
         });
-        if (main.getBoundingClientRect().bottom <= innerHeight + 2) active = headings.length - 1;
+        if (main.getBoundingClientRect().bottom <= innerHeight + 2) active = sections.length - 1;
         if (active !== this.active && window.matchMedia('(max-width: 1000px)').matches) {
           const link = links[active];
           nav.scrollTo({ left: link.offsetLeft - nav.clientWidth / 2 + link.clientWidth / 2, behavior: 'instant' });
@@ -105,6 +103,17 @@ const t = translator(toLocale(Astro.currentLocale));
   reading-progress a:focus-visible .label { opacity: 1; visibility: visible; }
   reading-progress a:focus-visible .tick { transition: none; }
   @media (hover: hover) { reading-progress a:hover .label { opacity: 1; visibility: visible; } reading-progress a:hover .tick { opacity: 1; } }
+  /* Wide screens have room beside the frame, so the section names stay in view. */
+  @media (min-width: 1400px) {
+    reading-progress { width: 140px; }
+    reading-progress nav { gap: 2px; }
+    reading-progress a { justify-content: flex-start; gap: 12px; width: auto; height: 28px; flex-basis: 28px; padding-left: 14px; }
+    reading-progress .label { position: static; padding: 0; background: none; color: var(--color-ink); font-size: 14px; opacity: .45; visibility: visible; transition: opacity 120ms ease-out; }
+    reading-progress a[aria-current] .label { opacity: 1; }
+    reading-progress a[aria-current] .tick { transform: none; width: 24px; }
+    reading-progress .tick { flex: none; }
+  }
+  @media (min-width: 1400px) and (hover: hover) { reading-progress a:hover .label { opacity: 1; } }
   @media (max-width: 1000px) {
     reading-progress { left: 50%; top: auto; bottom: 8px; transform: translateX(-50%); width: min(calc(100% - 32px), 360px); padding: 0 8px; border-radius: 24px; background: var(--color-field); }
     reading-progress nav { flex-direction: row; height: 44px; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; }
