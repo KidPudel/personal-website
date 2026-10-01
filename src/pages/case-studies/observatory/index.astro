@@ -492,16 +492,15 @@ const categories = [
   }
 
   /* One app in Activity Monitor versus Observatory. */
-  .process-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-block: 32px 0; }
-  .process-split + .insight + .note { margin-top: 12px; }
-  .process-split__side { display: flex; flex-direction: column; padding: 22px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
+  .process-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px 48px; margin-block: 32px 0; }
+  .process-split__side { display: flex; flex-direction: column; }
   .process-split__tool { margin: 0 0 14px; color: #656560; font-size: .9375rem; line-height: 1.4; }
   .process-split__rows { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; font-size: .8125rem; line-height: 1.35; }
   .process-split__rows li { padding: 2px 8px; border-radius: 4px; background: #f1f0ec; color: #4e4b45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .process-split__app { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 8px; background: var(--color-ink); color: var(--color-field); font-size: 1rem; line-height: 1.3; }
   .process-split__name { font-weight: 700; }
   .process-split__procs { color: rgb(248 248 248 / 70%); font-size: .875rem; }
-  .process-split__count { margin: auto 0 0; padding-top: 16px; font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
+  .process-split__count { margin: auto 0 0; padding-top: 14px; font-size: var(--study-small); font-weight: 700; line-height: 1.4; }
   .process-split__caption { grid-column: 1 / -1; margin-top: 4px; }
 
   .prototype-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 8px; }
@@ -521,7 +520,10 @@ const categories = [
 
   @media (max-width: 760px) {
     .hero h1 { font-size: clamp(56px, 15vw, 61px); letter-spacing: -0.055em; }
+  }
+  @container study (max-width: 599px) {
     .process-split, .prototype-row { grid-template-columns: minmax(0, 1fr); }
+    .process-split__count { padding-top: 10px; }
   }
   @media (prefers-reduced-motion: reduce) { .hero-title__letter::after { animation: none; } }
 </style>

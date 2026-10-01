@@ -414,7 +414,8 @@ const journey = [
 
   .films { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 3vw, 32px); margin-top: 28px; }
 
-  @media (max-width: 900px) {
+  /* The journey table needs a wide column; narrower, each stage becomes a short labelled block. */
+  @container study (max-width: 759px) {
     .people__row { grid-template-columns: minmax(0, 1fr); }
     .journey thead { display: none; }
     .journey table, .journey tbody, .journey tr, .journey th, .journey td { display: block; }
@@ -425,10 +426,12 @@ const journey = [
   }
   @media (max-width: 760px) {
     .hero-screens > :global(* + *) { margin-top: 28px; }
+  }
+  @container study (max-width: 599px) {
     .situation-pair { grid-template-columns: minmax(0, 1fr); }
-    .situation-pair > :global(figure) { width: min(100%, 280px); }
+    .situation-pair > :global(figure) { width: min(100%, 260px); margin-inline: 0; }
     .priority li { grid-template-columns: 5.5rem minmax(0, 1fr); column-gap: 12px; }
-    .films { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+    .films { grid-template-columns: minmax(0, 1fr); justify-items: start; }
     .films > :global(*) { width: min(100%, 320px); }
   }
 </style>

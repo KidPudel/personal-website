@@ -291,17 +291,20 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 214px';
 
 <style>
   .phones { --phones: 3; }
-  .split { margin: 28px 0 32px; padding: 22px 22px 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-  .split__title { margin: 0 0 16px; color: var(--color-ink); font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
-  .split__bar { display: flex; gap: 2px; height: 18px; }
-  .split__part { flex: var(--share) 1 0; border-radius: 4px 0 0 4px; background: #bdb9b1; }
+  /* Drawn like the other charts: no card, a thin bar, ink for the part that was mine. */
+  .split { max-width: var(--study-measure); margin: 32px 0; }
+  .split__title { margin: 0 0 16px; color: var(--color-ink); font-size: var(--study-body); font-weight: 700; letter-spacing: -.015em; line-height: 1.35; }
+  .split__bar { display: flex; gap: 2px; height: 10px; }
+  .split__part { flex: var(--share) 1 0; border-radius: 4px 0 0 4px; background: #d0d0d3; }
   .split__part--mine { border-radius: 0 4px 4px 0; background: var(--color-ink); }
   .split__legend { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0 0; }
   .split__key { display: grid; grid-template-columns: 12px minmax(0, 1fr); column-gap: 10px; }
-  .split__key::before { content: ''; grid-row: 1 / 3; width: 12px; height: 12px; margin-top: 6px; border-radius: 3px; background: #bdb9b1; }
+  .split__key::before { content: ''; grid-row: 1 / 3; width: 10px; height: 10px; margin-top: 7px; border-radius: 50%; background: #d0d0d3; }
   .split__key--mine::before { background: var(--color-ink); }
-  .split__key dt { font-size: 1.0625rem; font-weight: 700; line-height: 1.5; }
-  .split__key dd { margin: 0; color: var(--color-copy); font-size: 1rem; line-height: 1.5; }
-  .split__note { margin: 16px 0 0; color: #656560; font-size: .9375rem; line-height: 1.5; }
-  @media (max-width: 560px) { .split__legend { grid-template-columns: minmax(0, 1fr); } }
+  .split__key { color: var(--study-caption); }
+  .split__key--mine { color: var(--color-ink); }
+  .split__key dt { font-size: var(--study-small); font-weight: 700; line-height: 1.5; }
+  .split__key dd { margin: 0; font-size: var(--study-small); line-height: 1.5; }
+  .split__note { margin: 14px 0 0; color: var(--study-caption); font-size: .875rem; line-height: 1.55; }
+  @container study (max-width: 599px) { .split__legend { grid-template-columns: minmax(0, 1fr); } }
 </style>

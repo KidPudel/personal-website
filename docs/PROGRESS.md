@@ -2,6 +2,16 @@
 
 Last updated: 2026-10-01
 
+## Case studies: the blog's visual language
+
+- Reference: the "Turn off one sound" post, which has no elements beyond text, one chart, and one film. The case studies now borrow its chart style and drop the remaining "UI kit" look.
+- Charts (`BarCompare`, `DotStat`, `StepCompare`, and the page-level review split, process comparison, tools comparison, and positioning map) have no white cards. They are drawn like the blog's snoring chart: a bold title at reading size, thin 10 px bars, grey for context and ink for what the chart is about, the value at the end of the bar, a small grey note. Steps are plain words with thin arrows instead of black pills. The positioning map keeps only its two axes.
+- Decisions: Problem, What I did, Why, and Alternative considered are named in grey instead of bold, so a decision reads as prose first. The effect is one bold line with its source under it in grey, without the black side bar.
+- Headline numbers in the summary and the number strips are smaller (about 1.3rem), reading as emphasis rather than dashboard figures.
+- Layout responds to the width of the column (`container: study`) instead of the window, so two- and three-column lists only appear when each column has room. On a narrow column the number strip becomes one line per finding, and a phone shot stacked under its decision keeps the text's left edge. Checked at 320, 390, 820, 1024, 1280, 1440, and 1920 px in English and Russian: no overflow, no column under 200 px, no overlaps.
+- Fixed a leak: the blog shares `case-study.css`, and the earlier case-study rounds had widened and restyled the "Turn off one sound" post. The blog now gets its original column and type back; its computed layout, and the case-studies listing's, match the version before this work element for element.
+- Astro diagnostics, the media contract, and both production builds pass.
+
 ## Case studies: each part leads into the next
 
 - Read end to end for flow. The jumps were of five kinds: sections opening straight into a list, explanations placed after the thing they explain, blocks out of order, Result openings that pointed at the wrong thing, and SuperGood's Reflection arriving unannounced. Each is fixed with one connecting sentence built from facts already on the page, or by moving the block.

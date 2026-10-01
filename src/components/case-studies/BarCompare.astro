@@ -3,7 +3,7 @@ interface Row {
   label: string;
   value: number;
   display: string;
-  /** The row the chart is about. The rest are context in gray. */
+  /** The row the chart is about. The rest are context in grey. */
   emphasis?: boolean;
 }
 
@@ -18,16 +18,15 @@ interface Props {
 const { title, rows, note, max = Math.max(...rows.map((row) => row.value)) } = Astro.props;
 ---
 
+<!-- Drawn like the blog's chart: no card, thin bars, the value at the end of the bar. -->
 <figure class="bars">
   <figcaption class="bars__title">{title}</figcaption>
   <dl class="bars__rows">
     {rows.map((row) => (
       <div class:list={['bars__row', row.emphasis && 'bars__row--emphasis']}>
         <dt class="bars__label">{row.label}</dt>
-        <dd class="bars__measure">
-          <span class="bars__track" aria-hidden="true">
-            <span class="bars__bar" style={`--share: ${row.value / max}`}></span>
-          </span>
+        <dd class="bars__plot">
+          <span class="bars__bar" style={`--share: ${row.value / max}`} aria-hidden="true"></span>
           <span class="bars__value">{row.display}</span>
         </dd>
       </div>
@@ -37,16 +36,16 @@ const { title, rows, note, max = Math.max(...rows.map((row) => row.value)) } = A
 </figure>
 
 <style>
-  .bars { margin: 0; padding: 22px 22px 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-  .bars__title { margin: 0 0 18px; color: var(--color-ink); font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
-  .bars__rows { display: grid; gap: 14px; margin: 0; }
-  .bars__row { display: grid; gap: 6px; }
-  .bars__label { color: #656560; font-size: .9375rem; line-height: 1.4; }
-  .bars__measure { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; margin: 0; }
-  .bars__track { display: block; }
-  /* A thin mark with a rounded data end, anchored to the start. */
-  .bars__bar { display: block; width: max(4px, calc(var(--share) * 100%)); height: 14px; border-radius: 0 4px 4px 0; background: #bdb9b1; }
+  .bars { margin: 0; }
+  .bars__title { margin: 0 0 16px; color: var(--color-ink); font-size: var(--study-body); font-weight: 700; letter-spacing: -.015em; line-height: 1.35; text-wrap: balance; }
+  .bars__rows { display: grid; gap: 12px; margin: 0; }
+  .bars__row { display: grid; gap: 4px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
+  .bars__row--emphasis { color: var(--color-ink); }
+  .bars__label { margin: 0; }
+  .bars__plot { display: flex; align-items: center; gap: 10px; margin: 0; }
+  /* Scaled to the top of the scale, so a short bar is really short. */
+  .bars__bar { display: block; flex: none; width: calc((100% - 4.5rem) * var(--share)); min-width: 2px; height: 10px; border-radius: 0 4px 4px 0; background: #d0d0d3; }
   .bars__row--emphasis .bars__bar { background: var(--color-ink); }
-  .bars__value { min-width: 4.5em; font-size: 1.0625rem; font-weight: 700; line-height: 1.3; text-align: right; }
-  .bars__note { margin: 16px 0 0; color: #656560; font-size: .9375rem; line-height: 1.5; }
+  .bars__value { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bars__note { margin: 14px 0 0; color: var(--study-caption); font-size: .875rem; line-height: 1.55; }
 </style>

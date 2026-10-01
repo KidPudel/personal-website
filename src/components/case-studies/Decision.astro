@@ -31,11 +31,11 @@ const parts = [
   <div class="decision__text">
     <p class="decision__number">{t('Decision', 'Решение')} {number}</p>
     <h3 class="decision__title">{title}</h3>
-    {parts.map((part) => <p class="decision__part"><strong>{part.label}</strong> {part.text}</p>)}
+    {parts.map((part) => <p class="decision__part"><span class="decision__term">{part.label}</span> {part.text}</p>)}
     {effect && (
       <p class="decision__effect">
-        <span class="decision__effect-label">{effectLabel ?? t('Effect', 'Эффект')}</span>
         <strong>{effect}</strong>
+        <span class="decision__effect-label">{effectLabel ?? t('Effect', 'Эффект')}</span>
       </p>
     )}
   </div>
@@ -48,12 +48,17 @@ const parts = [
   .decision__number { margin: 0 0 6px; color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
   .decision__title { margin: 0 0 14px; font-size: clamp(1.3rem, 1.8vw, 1.6rem); line-height: 1.25; }
   .decision__part { margin: 0 0 10px; }
-  .decision__part strong { font-weight: 700; }
-  .decision__effect { display: flex; flex-direction: column; gap: 2px; margin: 16px 0 0; padding-left: 16px; border-left: 3px solid var(--color-ink); }
-  .decision__effect-label { color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
+  /* The parts are named in grey, so the decision reads as text first and as a template second. */
+  .decision__term { color: var(--study-caption); }
+  /* The effect is the decision's outcome: one bold line, its source under it in grey. */
+  .decision__effect { display: flex; flex-direction: column; gap: 2px; margin: 18px 0 0; }
   .decision__effect strong { font-size: var(--study-body); line-height: 1.45; }
+  .decision__effect-label { color: var(--study-caption); font-size: var(--study-small); line-height: 1.4; }
   .decision__visual { min-width: 0; }
-  @media (max-width: 900px) {
-    .decision--side { grid-template-columns: minmax(0, 1fr); }
+  @container study (max-width: 859px) {
+    .decision--side { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    .decision--side .decision__visual { justify-self: start; width: min(100%, 520px); }
+    /* Stacked under the text, a single phone keeps the text's left edge instead of floating in the middle. */
+    .decision__visual > :global(.shot--device), .decision__visual > :global(.shot--screen) { margin-inline: 0; }
   }
 </style>

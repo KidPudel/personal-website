@@ -270,36 +270,34 @@ const pairSizes = '(max-width: 760px) calc((100vw - 56px) / 2), 250px';
 <style>
   .phones { --phones: 3; }
 
-  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin: 24px 0 28px; }
-  .tools__row { padding: 20px; border-radius: 14px; background: #fff; box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-  .tools__row--after { box-shadow: 0 0 0 2px var(--color-ink); }
-  .tools__label { margin: 0 0 12px; font-size: 1.0625rem; font-weight: 700; line-height: 1.4; }
-  .tools__list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-  .tools__list li { padding: 6px 11px; border-radius: 999px; background: #efeee9; color: #4e4b45; font-size: .9375rem; line-height: 1.3; }
-  .tools__row--after .tools__list li { border-radius: 10px; background: var(--color-ink); color: var(--color-field); }
+  /* Before and after as two plain lists: grey for what learners had, ink for what they got. */
+  .tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px 48px; max-width: var(--study-measure); margin: 24px 0 28px; }
+  .tools__row { color: var(--study-caption); }
+  .tools__row--after { color: var(--color-ink); }
+  .tools .tools__label { margin: 0 0 4px; font-size: var(--study-body); font-weight: 700; line-height: 1.4; }
+  .tools__list { margin: 0; padding: 0; list-style: none; font-size: var(--study-small); line-height: 1.55; }
 
   /* A two-by-two positioning map: ease of starting against depth of writing practice. */
   .position { max-width: var(--study-measure); margin: 28px 0 0; }
-  .position__plot { position: relative; aspect-ratio: 2 / 1; border-radius: 14px; background:
-      linear-gradient(to right, transparent calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% + .5px), transparent calc(50% + .5px)),
-      linear-gradient(to bottom, transparent calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% - .5px), rgb(17 17 15 / 12%) calc(50% + .5px), transparent calc(50% + .5px)),
-      #fff;
-    box-shadow: 0 0 0 1px rgb(17 17 15 / 7%); }
-  .position__axis { position: absolute; color: #656560; font-size: .875rem; line-height: 1.3; }
-  .position__axis--y { top: 12px; left: 14px; }
-  .position__axis--x { right: 14px; bottom: 12px; }
-  .position__point { position: absolute; left: var(--x); top: var(--y); display: inline-flex; align-items: center; gap: 8px; translate: -8px -50%; font-size: 1rem; line-height: 1.2; white-space: nowrap; }
-  .position__point::before { content: ''; width: 14px; height: 14px; flex: none; border-radius: 50%; background: #bdb9b1; }
+  /* Only the two axes, no card: the same quiet line weight as the charts. */
+  .position__plot { position: relative; aspect-ratio: 2 / 1; background:
+      linear-gradient(to right, transparent calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% + .5px), transparent calc(50% + .5px)),
+      linear-gradient(to bottom, transparent calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% - .5px), rgb(17 17 15 / 14%) calc(50% + .5px), transparent calc(50% + .5px)); }
+  .position__axis { position: absolute; color: var(--study-caption); font-size: .875rem; line-height: 1.3; }
+  .position__axis--y { top: 0; left: calc(50% + 10px); }
+  .position__axis--x { right: 0; top: calc(50% + 8px); }
+  .position__point { position: absolute; left: var(--x); top: var(--y); display: inline-flex; align-items: center; gap: 8px; translate: -8px -50%; color: var(--study-caption); font-size: var(--study-small); line-height: 1.2; white-space: nowrap; }
+  .position__point::before { content: ''; width: 10px; height: 10px; flex: none; border-radius: 50%; background: #d0d0d3; }
   /* Points on the right half put the label before the dot, so it never runs off the edge. */
   .position__point--end { flex-direction: row-reverse; translate: calc(8px - 100%) -50%; }
-  .position__point--ours { font-weight: 700; }
-  .position__point--ours::before { width: 18px; height: 18px; background: var(--color-ink); }
+  .position__point--ours { color: var(--color-ink); font-weight: 700; }
+  .position__point--ours::before { width: 12px; height: 12px; background: var(--color-ink); }
   .position__caption { margin-top: 14px; }
 
   .sheet-pair { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: clamp(20px, 4vw, 48px); align-items: center; }
   .next-steps { margin-top: 28px; }
 
-  @media (max-width: 760px) {
+  @container study (max-width: 599px) {
     .tools, .sheet-pair { grid-template-columns: minmax(0, 1fr); }
     .position__plot { aspect-ratio: 4 / 3; }
     .position__point { font-size: .875rem; }
