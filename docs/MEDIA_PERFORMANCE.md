@@ -45,6 +45,10 @@ On GitHub Pages, even a very small cold asset request can add a separate network
 
 User-authorized exception: the three Instagram prototype walkthroughs play silently and loop only while substantially visible. Keep parser-discoverable sources and `preload="none"`; start playback through a visibility observer, not an HTML autoplay attribute. Pause offscreen and on hidden documents. Reduced-motion and data-saver visits retain posters until explicit play. Provide a small keyboard-accessible Play/Pause button without native timeline controls. Failed playback keeps the poster and Play action. No-JavaScript visits retain posters and direct video links.
 
+### Observatory archive footage
+
+User-authorized exception (Igor, 2026-10-02): the archive footage on Observatory's cover is shown as a two-colour ordered dither, the print of the launch film's artwork, drawn to a canvas from a small silent MP4 while it plays. The dithered still (`archive-telescope-dither.png`, a two-colour PNG of a few kilobytes) is the first-viewport image and the only one with high priority; it stays in place without JavaScript, under reduced motion, data saver, or a slow connection, and until the first frame is drawn. The MP4 keeps a parser-discoverable source and `preload="none"`, and plays only while the cover is on screen and the document is visible. `scripts/prepare-observatory-footage.mjs` makes the MP4 from the original GIF (H.264, yuv420p, faststart, no audio) and dithers the still with the same algorithm the page uses (`src/components/case-studies/observatory/dither.mjs`).
+
 ## Flipbooks and animated image sequences
 
 - Do not eagerly fetch or decode every frame when a component connects.

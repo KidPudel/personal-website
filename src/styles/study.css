@@ -206,11 +206,14 @@ html.js .study-document main [data-arrive]:not(.is-here) :is(mark, strong) {
 }
 
 /* The lines joining notes to their words, drawn over the page. */
+/* Sized to the page's content box by CSS, never by its own content, so it can't add scroll. */
 .note-lines {
   position: absolute;
   z-index: 2;
-  top: 0;
-  left: 0;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100%;
   overflow: visible;
   pointer-events: none;
 }

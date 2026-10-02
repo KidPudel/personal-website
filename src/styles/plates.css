@@ -1,0 +1,799 @@
+/* Case studies told in focus.
+
+   One left edge for headings, text, plates, and the large sentence. On wide pages a reading column
+   sits on that edge and a side column beside it carries what supports the words: a chart next to
+   the paragraph it proves, a decision's name next to the complaint it answered. Each decision puts
+   its screen on a bloom of its own colours (Plate.astro) with what changed in focus and named.
+   Each study opens with its own moment, chosen for its subject (SuperGood: supergood/FocusCover).
+
+   Fonts keep their roles: Crimson Text 400 for headings and the one large sentence, Instrument Sans
+   for everything else, Instrument Sans Semibold for emphasis. The live parts (StudyLife.astro and
+   the plates) only add motion; without them every mark is in place. */
+
+html.study-plates {
+  --gutter: clamp(20px, 5vw, 72px);
+  --measure: 36rem;
+  --wide: 72rem;
+  --text: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --small: 0.875rem;
+  --space-part: clamp(5.5rem, 3.5rem + 6vw, 9rem);
+  --context: #c6cfd6;
+  --marker: #ffe25c;
+  /* The names the film, chart, and image components read. */
+  --page-gutter: var(--gutter);
+  --study-body: var(--text);
+  --study-small: var(--small);
+  --study-caption: var(--color-muted);
+}
+
+html.study--supergood { --marker: #ffdf55; }
+html.study--observatory { --marker: #cfe89a; }
+html.study--instagram { --marker: #ffc8df; }
+html.study--two-sticks { --marker: #d9d0fc; }
+
+/* Each study's opening clears the fixed header itself. */
+.study-plates .portfolio-navigation-spacer {
+  display: none;
+}
+
+/* ---- The page: one left edge, a reading column, a side column, plates to the page edge ---------- */
+
+.study-plates main {
+  display: grid;
+  /* Narrow pages: one centred column; the side column's lines sit on the text column's, so side
+     material simply follows the words it belongs to. */
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [wide-start] minmax(0, calc((var(--wide) - var(--measure)) / 2))
+    [text-start side-start] min(var(--measure), 100% - 2 * var(--gutter))
+    [text-end side-end] minmax(0, calc((var(--wide) - var(--measure)) / 2))
+    [wide-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  color: var(--color-ink);
+  font-family: var(--font-reading);
+  container: study / inline-size;
+  /* Blooms spill past the page edge; clip them there without making main a scroller. */
+  overflow-x: clip;
+}
+
+/* On a page where soft means unchanged, the header never blurs what passes under it: it only
+   lays the field's own colour over the top of the window, fading out. */
+.study-plates .portfolio-navigation:not(:has(.contact-disclosure[open]))::before {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-field) 88%, transparent) 0,
+    color-mix(in srgb, var(--color-field) 55%, transparent) 50%,
+    transparent 100%
+  );
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+.study-plates .portfolio-navigation:not(:has(.contact-disclosure[open]))::after {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* The section ticks keep their contrast where a bloom passes under them. */
+.study-plates reading-progress .tick {
+  box-shadow: 0 0 0 1.5px rgb(255 255 255 / 55%);
+}
+
+.study-plates main > *,
+.study-plates :is(.part, .decision) > * {
+  grid-column: text;
+  min-width: 0;
+}
+
+.study-plates main > :is(.part, .decision),
+.study-plates .part > .decision {
+  display: grid;
+  grid-column: full;
+  grid-template-columns: subgrid;
+  align-content: start;
+}
+
+/* Wide pages: the reading column takes the left edge and the side column the space beside it. */
+@media (min-width: 1100px) {
+  .study-plates main {
+    /* The outer columns never get narrower than the section ticks at the window's left edge. */
+    grid-template-columns:
+      [full-start] minmax(6.5rem, 1fr)
+      [wide-start text-start] minmax(0, var(--measure))
+      [text-end] minmax(2rem, 4rem)
+      [side-start] minmax(0, 32rem)
+      [side-end wide-end] minmax(6.5rem, 1fr)
+      [full-end];
+  }
+}
+
+/* Words with what supports them: the words in the reading column, the support beside them. */
+.study-plates main .beside {
+  display: grid;
+  grid-column: text-start / side-end;
+  grid-template-columns: subgrid;
+  align-items: start;
+}
+
+.study-plates main .beside > * {
+  grid-row: 1;
+  grid-column: text;
+  min-width: 0;
+}
+
+.study-plates main .beside > .beside__side {
+  grid-column: side;
+}
+
+@media (max-width: 1099px) {
+  .study-plates main .beside {
+    display: block;
+  }
+
+  .study-plates main .beside {
+    margin-bottom: 2rem;
+  }
+
+  .study-plates main .beside > .beside__side {
+    margin-top: 2rem;
+  }
+}
+
+/* The study's opening owns the whole width. */
+.study-plates main > header {
+  grid-column: full;
+}
+
+.study-plates .col-wide {
+  grid-column: wide;
+}
+
+/* The large sentence keeps the left edge and runs into the side column. */
+.study-plates main .statement {
+  grid-column: text-start / side-end;
+}
+
+.study-plates .col-full {
+  grid-column: full;
+}
+
+/* A plate leaves the column: from the wide line to the page edge, on its own side. */
+.study-plates .decision > .decision__visual,
+.study-plates .part > .plate {
+  grid-column: wide-start / full-end;
+  margin-block: clamp(2rem, 4vw, 3.25rem);
+}
+
+.study-plates .decision > .decision__visual:has(.plate--left),
+.study-plates .part > .plate--left {
+  grid-column: full-start / wide-end;
+}
+
+/* Margin-note lines from the older layout: nothing to join here. */
+.study-plates .note-lines {
+  display: none;
+}
+
+.study-plates main img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.study-plates [id] {
+  scroll-margin-top: 6rem;
+}
+
+/* ---- Rhythm --------------------------------------------------------------------------------- */
+
+.study-plates .part {
+  margin-top: var(--space-part);
+}
+
+.study-plates .part--summary {
+  margin-top: clamp(4rem, 3rem + 4vw, 7rem);
+}
+
+.study-plates .decision {
+  margin-top: clamp(4.5rem, 3rem + 5vw, 8rem);
+}
+
+.study-plates .part > h2 + .decision {
+  margin-top: clamp(2.5rem, 4vw, 3.5rem);
+}
+
+/* ---- Type ----------------------------------------------------------------------------------- */
+
+.study-plates main :is(h1, h2, h3, .statement) {
+  color: var(--color-ink);
+  font-family: var(--font-study-heading);
+  font-weight: 400;
+  font-synthesis: none;
+  text-wrap: balance;
+}
+
+.study-plates :is(.part, .finale) > h2 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2rem, 1.65rem + 1.1vw, 2.75rem);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.study-plates main h3 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.75rem);
+  letter-spacing: -0.012em;
+  line-height: 1.2;
+}
+
+.study-plates main :is(p, li) {
+  color: var(--color-copy);
+  font-size: var(--text);
+  line-height: 1.68;
+}
+
+.study-plates main p {
+  margin-block: 0 1em;
+}
+
+.study-plates main .part__lead {
+  color: var(--color-ink);
+}
+
+.study-plates main :is(strong, b, .summary__label) {
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-weight: 600;
+}
+
+.study-plates main :is(.note, figcaption) {
+  color: var(--color-muted);
+  font-size: var(--small);
+  line-height: 1.55;
+}
+
+.study-plates main figure {
+  min-width: 0;
+  margin-inline: 0;
+}
+
+.study-plates .plain-list {
+  margin-block: 0 1.25rem;
+  padding-left: 1.2em;
+}
+
+.study-plates .plain-list li + li {
+  margin-top: 0.5rem;
+}
+
+.study-plates .plain-list li::marker {
+  color: var(--color-muted);
+}
+
+/* The one sentence a study turns on, set across the wide measure. */
+.study-plates main .statement {
+  max-width: 24ch;
+  margin-block: clamp(3rem, 5vw, 4.5rem);
+  font-size: clamp(2rem, 1.35rem + 2.3vw, 3.25rem);
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+
+.study-plates main .statement mark {
+  padding-inline: 0.06em;
+}
+
+/* A result, then where it comes from: a quiet line under what it qualifies. */
+.study-plates main .decision__effect {
+  margin: 1.5rem 0 0;
+  color: var(--color-ink);
+}
+
+.study-plates main :is(.callout, .decision__source) {
+  margin: 0.5rem 0 0;
+  color: var(--color-muted);
+  font-size: var(--small);
+  line-height: 1.5;
+}
+
+.study-plates main :is(.callout, .decision__source)::first-letter {
+  text-transform: uppercase;
+}
+
+/* ---- Links in running text ------------------------------------------------------------------- */
+
+.study-plates main a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.study-plates main :is(p, li) a:not([class]) {
+  background: var(--link-mark-rest) no-repeat 0 calc(100% - 0.02em) / 100% 0.62em;
+}
+
+.study-plates main :is(p, li) a:not([class]):is(:hover, :focus-visible) {
+  animation: link-mark-draw var(--link-mark-draw) step-end forwards;
+}
+
+/* ---- The highlighter, drawn left to right as a result arrives -------------------------------- */
+
+.study-plates main mark,
+.study-plates main .marked strong {
+  padding: 0.04em 0.14em;
+  margin-inline: -0.06em;
+  color: var(--color-ink);
+  background: linear-gradient(var(--marker), var(--marker)) 0 50% / var(--mark-size, 100%) 100% no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition: background-size 650ms var(--ease-out);
+}
+
+html.js.study-plates main [data-arrive]:not(.is-here) :is(mark, strong) {
+  --mark-size: 0%;
+}
+
+/* ---- Igor's pen circle, drawn in five frames like the homepage's drawings -------------------- */
+
+@property --sweep {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 360deg;
+}
+
+.study-plates .pen-circle {
+  -webkit-mask-image: conic-gradient(from 200deg, #000 var(--sweep), transparent 0);
+  mask-image: conic-gradient(from 200deg, #000 var(--sweep), transparent 0);
+  transition: --sweep 410ms steps(5, end) 300ms;
+}
+
+html.js.study-plates [data-arrive]:not(.is-here) .pen-circle {
+  --sweep: 0deg;
+}
+
+/* ---- Charts play once as they arrive (see BarCompare and DotStat) ----------------------------- */
+
+html.js.study-plates .chart--units:not(.is-here) .chart__unit {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--context);
+}
+
+html.js.study-plates .chart--units:not(.is-here) .chart__value {
+  opacity: 0;
+}
+
+.study-plates .chart--units.is-here .chart__unit {
+  animation: plates-unit-on 1ms steps(1, end) both;
+  animation-delay: calc(var(--i) * 170ms);
+}
+
+.study-plates .chart--units.is-here .chart__value {
+  animation: plates-value-on 240ms ease-out both;
+  animation-delay: calc(var(--count) * 170ms);
+}
+
+html.js.study-plates .people:not(.is-here) .people__dot--on {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--context);
+}
+
+.study-plates .people.is-here .people__dot--on {
+  animation: plates-unit-on 1ms steps(1, end) both;
+  animation-delay: calc(var(--i) * 140ms);
+}
+
+html.js.study-plates .chart--scale:not(.is-here) .chart__dot--emphasis {
+  left: var(--from);
+}
+
+@keyframes plates-unit-on {
+  from { background: transparent; box-shadow: inset 0 0 0 1px var(--context); }
+}
+
+@keyframes plates-value-on {
+  from { opacity: 0; }
+}
+
+/* ---- Pinned decision: the words scroll past a screen that stays put -------------------------- */
+
+.study-plates .decision__visual--pinned {
+  display: grid;
+  grid-template: 1fr / 1fr;
+}
+
+.study-plates .decision__visual--pinned > * {
+  grid-area: 1 / 1;
+}
+
+.study-plates .decision__beside {
+  z-index: 1;
+  justify-self: start;
+  width: min(20rem, 30cqw);
+  /* Clear of the section ticks fixed at the window's left edge. */
+  margin-left: max(6.5rem, calc((100cqw - var(--wide)) / 2));
+  padding-block: 26svh;
+}
+
+.study-plates .decision__visual--pinned:not(:has(.plate--left)) .decision__beside {
+  justify-self: end;
+  margin-right: max(6.5rem, calc((100cqw - var(--wide)) / 2));
+  margin-left: 0;
+}
+
+.study-plates main .decision__beside p {
+  margin: 0 0 24svh;
+  color: var(--color-ink);
+}
+
+.study-plates main .decision__beside p:last-child {
+  margin-bottom: 0;
+}
+
+/* Below the width where words and screen fit side by side, it reads like any other plate. */
+@media (max-width: 1199px) {
+  .study-plates .decision > .decision__visual--pinned {
+    display: contents;
+  }
+
+  .study-plates .decision__visual--pinned > .plate {
+    grid-area: auto;
+    grid-column: wide-start / full-end;
+    margin-block: clamp(2rem, 4vw, 3.25rem);
+  }
+
+  .study-plates .decision__visual--pinned > .plate--left {
+    grid-column: full-start / wide-end;
+  }
+
+  .study-plates .decision__beside {
+    grid-area: auto;
+    grid-column: text;
+    width: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  .study-plates main .decision__beside p {
+    margin: 0 0 1em;
+    color: var(--color-copy);
+  }
+}
+
+/* ---- What people complained about, and the decision that answered each ----------------------- */
+
+/* Each complaint sits in the reading column; its line runs out across to the decision that
+   answered it, in the side column. */
+.study-plates main .answers {
+  display: grid;
+  grid-column: text-start / side-end;
+  grid-template-columns: subgrid;
+  row-gap: 1.25rem;
+  margin: 0.5rem 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.study-plates .answers li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.study-plates .answers__from {
+  display: flex;
+  grid-column: text-start / side-start;
+  align-items: center;
+  min-width: 0;
+}
+
+.study-plates .answers__problem {
+  flex: 0 1 24rem;
+  color: var(--color-ink);
+  font-size: var(--text);
+  line-height: 1.6;
+}
+
+/* The same line as on the plates: a dot where it starts, a hairline to where it lands. */
+.study-plates .answers__line {
+  flex: 1 1 3rem;
+  height: 7px;
+  margin-inline: 1rem 0.75rem;
+  background:
+    radial-gradient(circle at 3.5px 50%, var(--color-ink) 2.5px, transparent 3px) no-repeat,
+    linear-gradient(var(--color-ink), var(--color-ink)) 0 50% / 100% 1px no-repeat;
+  transform-origin: left center;
+  transition: scale 420ms var(--ease-out) calc(var(--i) * 160ms + 150ms);
+}
+
+html.js.study-plates .answers:not(.is-here) .answers__line {
+  scale: 0 1;
+}
+
+.study-plates main .answers__to {
+  display: inline-flex;
+  grid-column: side;
+  align-items: center;
+  min-height: 44px;
+  color: var(--color-ink);
+  font-size: var(--text);
+  line-height: 1.4;
+}
+
+@media (max-width: 1099px) {
+  .study-plates main .answers,
+  .study-plates .answers li {
+    display: block;
+  }
+
+  .study-plates .answers li + li {
+    margin-top: 1.25rem;
+  }
+
+  /* One line of reading: the complaint, a short line, the decision that answered it. */
+  .study-plates .answers__from {
+    display: contents;
+  }
+
+  .study-plates .answers__problem {
+    display: inline;
+  }
+
+  .study-plates .answers__line {
+    display: inline-block;
+    width: 2.25rem;
+    margin: 0 0.5rem 0 0.6rem;
+    vertical-align: middle;
+  }
+
+  .study-plates main .answers__to {
+    display: inline;
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-plates .answers__line {
+    transition: none;
+  }
+}
+
+/* ---- The decisions at a glance: each with its result, each a way in ----------------------------- */
+
+.study-plates main .index {
+  display: grid;
+  grid-column: text-start / side-end;
+  grid-template-columns: subgrid;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.study-plates .index li {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+.study-plates main .index a {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  padding-block: 1.1rem;
+  color: var(--color-ink);
+}
+
+.study-plates .index__title {
+  grid-column: text;
+  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  line-height: 1.4;
+}
+
+.study-plates .index__number {
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.study-plates main .index__result {
+  grid-column: side;
+  color: var(--color-copy);
+  font-size: var(--text);
+  line-height: 1.5;
+}
+
+.study-plates main .index a:is(:hover, :focus-visible) .link-mark {
+  animation: link-mark-draw var(--link-mark-draw) step-end forwards;
+}
+
+@media (max-width: 1099px) {
+  .study-plates main .index,
+  .study-plates .index li,
+  .study-plates main .index a {
+    display: block;
+  }
+
+  .study-plates main .index a {
+    padding-block: 0.85rem;
+  }
+
+  .study-plates .index__title,
+  .study-plates main .index__result {
+    display: block;
+  }
+
+  .study-plates main .index__result {
+    margin-top: 0.2rem;
+    font-size: var(--small);
+  }
+}
+
+/* Evidence beside a decision's words is drawn at a size it can be read at. */
+.study-plates .decision__evidence .chart {
+  margin-block: 0;
+}
+
+.study-plates .decision__evidence .chart .chart__units {
+  --unit: min(2.25rem, calc((100cqi - 5.5rem - (var(--most) - 1) * 0.45rem) / var(--most)));
+  gap: 0.45rem;
+}
+
+.study-plates .decision__evidence .chart .chart__unit {
+  height: calc(var(--unit) * 2);
+  border-radius: 0.4rem;
+}
+
+.study-plates .decision__evidence .chart .chart__row {
+  font-size: 1rem;
+}
+
+.study-plates .decision__evidence .chart .chart__value {
+  font-family: var(--font-study-emphasis);
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+/* ---- Results: the page ends in a bloom of every plate's colours, and the result comes into focus - */
+
+.study-plates .finale {
+  --color-muted: #2f2b26;
+  --color-copy: var(--color-ink);
+  --context: rgb(255 255 255 / 62%);
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-column: full;
+  grid-template-columns: subgrid;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  padding-block: clamp(5rem, 9vw, 8rem);
+}
+
+.study-plates .finale > * {
+  grid-column: text;
+}
+
+.study-plates .finale > .finale__bloom {
+  position: absolute;
+  z-index: -1;
+  inset: -6rem 0 -4rem;
+  grid-area: auto;
+  background: var(--washes);
+  background-repeat: no-repeat;
+  filter: saturate(1.2);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 22%, #000 78%, transparent);
+  transition: opacity 1400ms ease-out, scale 2000ms var(--ease-out);
+}
+
+.study-plates .finale > .finale__bloom::after {
+  position: absolute;
+  inset: 0;
+  background: var(--grain) 0 0 / 192px;
+  content: '';
+  -webkit-mask-image: var(--washes);
+  mask-image: var(--washes);
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+}
+
+html.js.study-plates .finale:not(.is-here) > .finale__bloom {
+  opacity: 0;
+  scale: 1 0.9;
+}
+
+.study-plates main .finale > .chart:first-of-type {
+  grid-column: text-start / side-end;
+}
+
+.study-plates main .finale > .chart {
+  margin-block: 2.5rem;
+  transition: filter 1100ms var(--ease-out), opacity 700ms ease;
+}
+
+html.js.study-plates .finale:not(.is-here) > .chart {
+  filter: blur(10px);
+  opacity: 0.45;
+}
+
+.study-plates .finale .chart .chart__title {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+}
+
+.study-plates .finale .chart .chart__row {
+  gap: 0.6rem;
+  font-size: 1rem;
+}
+
+.study-plates .finale .chart .chart__units {
+  --unit: min(2.6rem, calc((100cqi - 5.5rem - (var(--most) - 1) * 0.45rem) / var(--most)));
+  gap: 0.45rem;
+}
+
+.study-plates .finale .chart .chart__unit {
+  height: calc(var(--unit) * 2);
+  border-radius: 0.45rem;
+}
+
+.study-plates .finale .chart .chart__row:not(.chart__row--emphasis) .chart__unit {
+  background: var(--context);
+}
+
+.study-plates .finale .chart .chart__value {
+  font-family: var(--font-study-emphasis);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-plates main .finale > :is(.chart, .finale__bloom) {
+    transition: none;
+  }
+}
+
+/* ---- Footer --------------------------------------------------------------------------------- */
+
+.study-plates .case-footer {
+  width: min(calc(100% - 2 * var(--gutter)), var(--measure));
+  margin: var(--space-part) auto 0;
+  padding: 1.5rem 0 5rem;
+  background: linear-gradient(90deg, rgb(17 17 15 / 45%) 50%, transparent 0) 0 0 / 14px 1px repeat-x;
+  font-family: var(--font-reading);
+}
+
+.study-plates .case-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 2.5rem;
+  font-size: var(--small);
+}
+
+.study-plates .case-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---- Narrow pages: plates span the page -------------------------------------------------------- */
+
+@media (max-width: 759px) {
+  .study-plates .finale > .finale__bloom {
+    inset: -6rem -45% -4rem;
+  }
+
+  .study-plates .decision > .decision__visual,
+  .study-plates .decision > .decision__visual:has(.plate--left),
+  .study-plates .part > .plate {
+    grid-column: full;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .study-plates main :is(mark, .marked strong) {
+    transition: none;
+  }
+
+  .study-plates :is(.chart--units, .people).is-here :is(.chart__unit, .chart__value, .people__dot--on) {
+    animation: none;
+  }
+}

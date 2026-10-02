@@ -16,30 +16,68 @@ interface Props {
   effect?: string;
   /** Where the outcome comes from, set as a note in the margin beside it. */
   source?: string;
-  /** side: the screen in the margin beside the story. stack: a wide visual after it. */
-  layout?: 'side' | 'stack';
+  /** side: the screen in the margin beside the story. stack: a wide visual after it.
+   *  plate: the problem, then the plate, then what I did, why, and the result.
+   *  pinned: like plate, but what I did and why scroll past the screen on the plate itself. */
+  layout?: 'side' | 'stack' | 'plate' | 'pinned';
 }
 
 const { number, title, navLabel, problem, decision, why, instead, effect, source, layout = 'side' } = Astro.props;
 const even = number % 2 === 0;
 // The note goes in whichever margin the screen leaves free.
 const noteSide = layout === 'side' && !even ? 'right' : layout === 'side' ? 'left' : 'right';
+const shown = layout === 'plate' || layout === 'pinned';
 ---
 
-<!-- Written as a short story: the problem, what I did, why, the alternative, the outcome. -->
-<article class:list={['decision', `decision--${layout}`, even && 'decision--even']} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
-  <div class:list={['decision__story', `decision__story--${noteSide}`]}>
+<!-- plate and pinned: shown first, then told. In plate, the words take the reading column and the
+     optional evidence slot sits beside them.
+     side and stack: written as a short story, with the screen beside it or under it. -->
+{shown ? (
+  <article class:list={['decision', 'decision--plate', layout === 'pinned' && 'decision--pinned']} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
     <h3>{number}. {title}</h3>
     <p>{problem}</p>
-    <p>{decision}</p>
-    <p>{why}</p>
-    {instead && <p>{instead}</p>}
-    {effect && (
-      <div class:list={['outcome', `outcome--${noteSide}`]}>
-        <p class="decision__effect marked" id={`outcome-${number}`} data-arrive><Rich text={effect} /></p>
-        {source && <p class="callout" data-note-for={`outcome-${number}`}>{source}</p>}
+    {layout === 'pinned' ? (
+      <div class="decision__visual decision__visual--pinned">
+        <slot />
+        <div class="decision__beside">
+          <p>{decision}</p>
+          <p>{why}</p>
+          {instead && <p>{instead}</p>}
+        </div>
       </div>
+    ) : (
+      <>
+        {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
+        <div class="decision__body beside">
+          <div class="decision__story">
+            <p>{decision}</p>
+            <p>{why}</p>
+            {instead && <p>{instead}</p>}
+            {effect && <p class="decision__effect marked" data-arrive><Rich text={effect} /></p>}
+            {source && <p class="decision__source">{source}</p>}
+          </div>
+          {Astro.slots.has('evidence') && <div class="decision__evidence beside__side"><slot name="evidence" /></div>}
+        </div>
+      </>
     )}
-  </div>
-  {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
-</article>
+    {layout === 'pinned' && effect && <p class="decision__effect marked" data-arrive><Rich text={effect} /></p>}
+    {layout === 'pinned' && source && <p class="decision__source">{source}</p>}
+  </article>
+) : (
+  <article class:list={['decision', `decision--${layout}`, even && 'decision--even']} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
+    <div class:list={['decision__story', `decision__story--${noteSide}`]}>
+      <h3>{number}. {title}</h3>
+      <p>{problem}</p>
+      <p>{decision}</p>
+      <p>{why}</p>
+      {instead && <p>{instead}</p>}
+      {effect && (
+        <div class:list={['outcome', `outcome--${noteSide}`]}>
+          <p class="decision__effect marked" id={`outcome-${number}`} data-arrive><Rich text={effect} /></p>
+          {source && <p class="callout" data-note-for={`outcome-${number}`}>{source}</p>}
+        </div>
+      )}
+    </div>
+    {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
+  </article>
+)}

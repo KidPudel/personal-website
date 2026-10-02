@@ -27,8 +27,6 @@
     const draw = () => {
       const origin = main.getBoundingClientRect();
       const wide = getComputedStyle(main).getPropertyValue('--note-lines').trim() === '1';
-      layer.setAttribute('width', String(origin.width));
-      layer.setAttribute('height', String(main.scrollHeight));
       layer.replaceChildren();
       const line = (x1: number, y1: number, x2: number, y2: number) => {
         const path = document.createElementNS(svgNS, 'path');

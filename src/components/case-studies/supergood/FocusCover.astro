@@ -1,0 +1,332 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import groundPoster from '../../../assets/showcase-cards/card2-poster.webp?inline';
+import Rich from '../Rich.astro';
+
+// SuperGood opens on its own texture, out of focus, the way an order felt before: a guess.
+// Scrolling pulls the camera back and brings the screens into focus, until the blur is a plate
+// holding what you actually get. Without the live layer, or with reduced motion, it is the title
+// and that plate, in focus.
+
+interface Phone {
+  src: ImageMetadata;
+  alt: string;
+}
+
+interface Props {
+  title: string;
+  pitch: string;
+  /** The result, numbers in **bold**. */
+  outcome: string;
+  facts: string[];
+  ground: ImageMetadata;
+  phones: Phone[];
+}
+
+const { title, pitch, outcome, facts, ground, phones } = Astro.props;
+const phoneWidths = (src: ImageMetadata) => [...new Set([240, 360, 480].filter((width) => width < src.width).concat(Math.min(src.width, 600)))];
+const phoneSizes = '(max-width: 759px) 46vw, 21rem';
+---
+
+<header class="focus-cover" data-focus-cover>
+  <div class="focus-cover__stage">
+    <!-- A 326-byte copy of the texture paints with the page, so the field is never empty while the
+         full texture loads. The texture is a blur already, so the two read the same. -->
+    <div class="focus-cover__field" style={`background-image: url(${groundPoster})`}>
+      <Image src={ground} alt="" widths={[800, 1200, 1600]} sizes="100vw" format="webp" quality={78} loading="eager" decoding="async" fetchpriority="high" />
+    </div>
+
+    <div class="focus-cover__text">
+      <h1>{title}</h1>
+      <p class="focus-cover__pitch">{pitch}</p>
+      <p class="focus-cover__outcome"><Rich text={outcome} /></p>
+      <p class="focus-cover__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
+    </div>
+
+    <!-- The same screens twice: once out of focus, once sharp. They trade places as you scroll. -->
+    <div class="focus-cover__phones focus-cover__phones--soft" aria-hidden="true">
+      {phones.map((phone) => (
+        <span class="focus-cover__phone"><Image src={phone.src} alt="" widths={phoneWidths(phone.src)} sizes={phoneSizes} format="webp" quality={85} loading="eager" decoding="async" /></span>
+      ))}
+    </div>
+    <div class="focus-cover__phones focus-cover__phones--sharp">
+      {phones.map((phone) => (
+        <span class="focus-cover__phone"><Image src={phone.src} alt={phone.alt} widths={phoneWidths(phone.src)} sizes={phoneSizes} format="webp" quality={85} loading="eager" decoding="async" /></span>
+      ))}
+    </div>
+  </div>
+</header>
+
+<script>
+  // Only sets how far the pull has gone, eased, as --p on the stage. The CSS does the rest.
+  const cover = document.querySelector<HTMLElement>('[data-focus-cover]');
+  const stage = cover?.querySelector<HTMLElement>('.focus-cover__stage');
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (cover && stage) {
+    let frame = 0;
+    let travel = 1;
+    let watching = false;
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+
+    const measure = () => {
+      travel = Math.max(1, cover.offsetHeight - window.innerHeight);
+    };
+
+    const update = () => {
+      frame = 0;
+      const progress = Math.min(1, Math.max(0, -cover.getBoundingClientRect().top / travel));
+      stage.style.setProperty('--p', ease(progress).toFixed(4));
+    };
+
+    const schedule = () => {
+      if (watching && !frame) frame = requestAnimationFrame(update);
+    };
+
+    new IntersectionObserver(([entry]) => {
+      watching = entry.isIntersecting && !still.matches;
+      schedule();
+    }).observe(cover);
+
+    new ResizeObserver(() => {
+      measure();
+      schedule();
+    }).observe(cover);
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', () => {
+      measure();
+      schedule();
+    }, { passive: true });
+    measure();
+    update();
+  }
+</script>
+
+<style>
+  /* ---- In focus: the title, then the plate. Without the live layer or with reduced motion. -- */
+
+  .focus-cover {
+    --gutter: clamp(20px, 5vw, 72px);
+    --plate-w: min(100cqw - 2 * var(--gutter), 72rem);
+    container-type: inline-size;
+    color: var(--color-ink);
+  }
+
+  .focus-cover__stage {
+    display: grid;
+    grid-template-areas: 'text' 'plate';
+    justify-items: center;
+  }
+
+  .focus-cover__text {
+    grid-area: text;
+    width: min(100% - 2 * var(--gutter), 72rem);
+    padding-top: clamp(7rem, 12vw, 10rem);
+  }
+
+  .focus-cover__field,
+  .focus-cover__phones--sharp {
+    grid-area: plate;
+    width: var(--plate-w);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .focus-cover__field {
+    overflow: hidden;
+    border-radius: 28px;
+    background-color: #f2d9bd;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .focus-cover__field :global(img) {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .focus-cover__phones {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: clamp(0.75rem, 3cqw, 3rem);
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1.75rem, 5cqw, 4.5rem) clamp(1rem, 4cqw, 4rem);
+  }
+
+  .focus-cover__phones--soft {
+    display: none;
+  }
+
+  .focus-cover__phone {
+    position: relative;
+    display: block;
+    flex: 0 1 21rem;
+    aspect-ratio: 587 / 1116;
+  }
+
+  .focus-cover__phone :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: contain;
+    object-position: center top;
+  }
+
+  /* Clear of the section ticks while they run down the window's left edge. */
+  @media (min-width: 1001px) {
+    .focus-cover {
+      --gutter: max(clamp(20px, 5vw, 72px), 6.5rem);
+    }
+  }
+
+  /* ---- Words: the name, the promise, the result, then who did what ------------------------- */
+
+  .focus-cover h1 {
+    margin: 0;
+    font-family: var(--font-study-heading);
+    font-size: clamp(3.25rem, 2rem + 5vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+  }
+
+  .focus-cover .focus-cover__pitch {
+    max-width: 30rem;
+    margin: 1.1rem 0 0;
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+    line-height: 1.38;
+  }
+
+  .focus-cover .focus-cover__outcome {
+    max-width: 31rem;
+    margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+
+  .focus-cover__outcome :global(strong) {
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  .focus-cover .focus-cover__facts {
+    max-width: 24rem;
+    margin: 1.5rem 0 0;
+    color: var(--color-copy);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  /* ---- The pull: a tall stretch of page with the stage pinned while you scroll through it -- */
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .focus-cover {
+      --travel: 75svh;
+      --plate-h: min(100svh - 12rem, 46rem, var(--plate-w) * 0.6);
+      height: calc(100svh + var(--travel));
+    }
+
+    :global(html.js) .focus-cover__stage {
+      --p: 0;
+      --plate-x: calc((100cqw - var(--plate-w)) / 2);
+      --plate-y: calc((100svh - var(--plate-h)) / 2 + 1.5rem);
+      position: sticky;
+      top: 0;
+      display: block;
+      height: 100svh;
+      overflow: hidden;
+    }
+
+    /* The field fills the window, then closes in to the plate. */
+    :global(html.js) .focus-cover__field {
+      position: absolute;
+      inset: 0;
+      width: auto;
+      margin: 0;
+      border-radius: 0;
+      clip-path: inset(
+        calc(max(0, var(--p) * 2 - 1) * var(--plate-y)) calc(var(--p) * var(--plate-x))
+        calc(var(--p) * (100svh - var(--plate-y) - var(--plate-h))) calc(var(--p) * var(--plate-x))
+        round calc(var(--p) * 28px)
+      );
+    }
+
+    /* The words are read first, then make way. */
+    :global(html.js) .focus-cover__text {
+      --color-copy: var(--color-ink);
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      left: var(--plate-x);
+      width: min(100cqw - 2 * var(--gutter), 34rem);
+      padding-top: clamp(7rem, 17svh, 11rem);
+      opacity: calc(1 - min(1, var(--p) * 2.2));
+      translate: 0 calc(var(--p) * -3rem);
+    }
+
+    /* The screens start close and out of focus, low in the frame, and settle on the plate. */
+    :global(html.js) .focus-cover__phones {
+      position: absolute;
+      top: var(--plate-y);
+      left: var(--plate-x);
+      display: flex;
+      width: var(--plate-w);
+      height: var(--plate-h);
+      margin: 0;
+      padding: calc(var(--plate-h) * 0.08) clamp(1rem, 4cqw, 4rem);
+      transform: translateY(calc((1 - var(--p)) * 48svh)) scale(calc(1 + (1 - var(--p)) * 0.2));
+      transform-origin: 50% 0;
+      will-change: transform;
+    }
+
+    :global(html.js) .focus-cover__phone {
+      flex: 0 1 auto;
+      height: 100%;
+    }
+
+    :global(html.js) .focus-cover__phones--soft {
+      display: flex;
+      filter: blur(18px) saturate(1.1);
+      opacity: calc(1 - min(1, max(0, (var(--p) - 0.12) / 0.7)));
+    }
+
+    :global(html.js) .focus-cover__phones--sharp {
+      opacity: min(1, max(0, (var(--p) - 0.12) / 0.7));
+    }
+  }
+
+  /* On phones the middle screen is shown at a readable size and the other two crop off the plate. */
+  @media (max-width: 759px) {
+    .focus-cover__phones {
+      overflow: hidden;
+      gap: 3cqw;
+    }
+
+    .focus-cover__phone,
+    :global(html.js) .focus-cover__phone {
+      flex: 0 0 46cqw;
+      height: auto;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) and (max-width: 759px) {
+    :global(html.js) .focus-cover {
+      --travel: 55svh;
+      --plate-h: calc(100cqw * 1.04);
+    }
+
+    :global(html.js) .focus-cover__phones {
+      transform: translateY(calc((1 - var(--p)) * 30svh)) scale(calc(1 + (1 - var(--p)) * 0.16));
+    }
+  }
+</style>

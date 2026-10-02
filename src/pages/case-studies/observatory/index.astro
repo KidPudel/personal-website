@@ -2,6 +2,7 @@
 import { getImage, Image } from 'astro:assets';
 
 import observatoryTitleTexture from '../../../assets/case_study_images/ditchered_observatory_bg.png';
+import archiveFootageFrame from '../../../assets/case_study_images/observatory/archive-telescope-frame.webp';
 import launchFilmPoster from '../../../assets/software-showcases/observatory/launch-film.png';
 import outcomeComparison from '../../../assets/case_study_images/outcome_screenshots/results-comparison.png';
 import outcomeNow from '../../../assets/case_study_images/outcome_screenshots/main.png';
@@ -33,6 +34,7 @@ import StarSummary from '../../../components/case-studies/StarSummary.astro';
 import StepCompare from '../../../components/case-studies/StepCompare.astro';
 import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
+import ArchiveFilm from '../../../components/case-studies/observatory/ArchiveFilm.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 import '../../../styles/study.css';
@@ -127,31 +129,7 @@ const categories = [
         ))}
       </h1>
 
-      <figure class="film">
-        <a
-          class="film__link"
-          href={launchFilmURL}
-          data-introduction-film
-          data-embed-src={launchFilmEmbedURL}
-          data-embed-title={t('Observatory product introduction', 'Презентация Observatory')}
-        >
-          <span class="film__stage">
-            <Image
-              src={launchFilmPoster}
-              alt=""
-              widths={[720, 1080, 1280]}
-              sizes="(max-width: 1100px) calc(100vw - 40px), 1100px"
-              format="webp"
-              loading="eager"
-              decoding="async"
-              fetchpriority="high"
-            />
-            <span class="film__play" aria-hidden="true"></span>
-          </span>
-          <span class="sr-only">{t('Watch the Observatory product introduction on YouTube', 'Смотреть презентацию Observatory на YouTube')}</span>
-        </a>
-        <figcaption>{t('Product introduction', 'Презентация продукта')}</figcaption>
-      </figure>
+      <ArchiveFilm poster={archiveFootageFrame} />
     </Cover>
 
     <StarSummary
@@ -367,6 +345,31 @@ const categories = [
         'Observatory 0.1.1 работает на macOS 14 и новее. Живой просмотр держит перед глазами последние 60 секунд. «Tests» записывает от одного до четырёх приложений, с прогревом и повторными раундами по желанию, а записи остаются на Mac.',
       )}
     >
+      <figure class="film col-full">
+        <a
+          class="film__link"
+          href={launchFilmURL}
+          data-introduction-film
+          data-embed-src={launchFilmEmbedURL}
+          data-embed-title={t('Observatory product introduction', 'Презентация Observatory')}
+        >
+          <span class="film__stage">
+            <Image
+              src={launchFilmPoster}
+              alt=""
+              widths={[720, 1080, 1280]}
+              sizes="(max-width: 1100px) calc(100vw - 40px), 1100px"
+              format="webp"
+              loading="lazy"
+              decoding="async"
+            />
+            <span class="film__play" aria-hidden="true"></span>
+          </span>
+          <span class="sr-only">{t('Watch the Observatory product introduction on YouTube', 'Смотреть презентацию Observatory на YouTube')}</span>
+        </a>
+        <figcaption>{t('Product introduction', 'Презентация продукта')}</figcaption>
+      </figure>
+
       <div class="final-screens col-full">
         <Shot kind="desktop" src={outcomeNow} sizes="(max-width: 1240px) calc(100vw - 40px), 1100px" alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} caption={t('Every app is one row. The live chart keeps the last 60 seconds.', 'Каждое приложение одной строкой. Живой график хранит последние 60 секунд.')} />
         <div class="pair pair--wide">

@@ -1,0 +1,536 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import grain from '../../assets/case_study_images/grain.png';
+import { bloom } from './bloom';
+
+// A screen laid large on a bloom of its own colours, the way the cover ends: in focus. The bloom
+// spreads as the plate arrives, past the plate and into the page; then the parts that changed rack
+// sharp while the rest of the screen stays a little out of focus, and each is named on the open
+// side. Hovering the screen brings all of it into focus. The names are real text in reading order;
+// the bloom, the focus, and the lines are only drawn.
+
+interface Note {
+  /** The region that changed, in percent of the whole screen image: left, top, width, height. */
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  label: string;
+  /** More regions that changed the same way, sharp too; the line points at the first. */
+  also?: { x: number; y: number; w: number; h: number }[];
+}
+
+interface Shot {
+  src: ImageMetadata;
+  alt: string;
+  /** A short name under the screen, for plates that hold more than one. */
+  label?: string;
+}
+
+interface Props {
+  /** The bloom's colours, taken from the food or map on this plate's own screen, strongest first. */
+  pigments: string[];
+  /** Makes this plate's bloom its own. */
+  seed: number;
+  shots: Shot[];
+  /** Regions on the first screen that rack into focus, with their names. */
+  notes?: Note[];
+  /** Show only this part of the first screen, large, without the phone around it (percent). */
+  crop?: { x: number; y: number; w: number; h: number };
+  /** The page edge the plate runs off. The names sit on that side. */
+  bleed?: 'right' | 'left';
+  /** The screen stays put while the decision's words scroll past it (see Decision, layout pinned). */
+  pinned?: boolean;
+  /** One line about the whole plate, under the screen. */
+  caption?: string;
+}
+
+const { pigments, seed, shots, notes = [], crop, bleed = 'right', pinned = false, caption } = Astro.props;
+// The washes gather where the screen sits and reach toward the open side.
+// The bloom is sized from the screen, not the plate, so it keeps its shape on any width: the
+// screen sits this far across it, and the washes reach toward the open side.
+const centre = shots.length > 1 ? 50 : bleed === 'right' ? 32 : 68;
+const washes = bloom({ pigments, seed, centre, reach: shots.length > 1 ? 'both' : bleed });
+const widthsFor = (src: ImageMetadata) => [...new Set([320, 480, 640].filter((width) => width < src.width).concat(Math.min(src.width, 640)))];
+const round = (value: number) => Math.round(value * 100) / 100;
+
+// The names are placed against the screen as shown, so a cropped screen moves them into its frame.
+const shown = (note: Note) => (crop
+  ? { x: ((note.x - crop.x) / crop.w) * 100, y: ((note.y - crop.y) / crop.h) * 100, w: (note.w / crop.w) * 100, h: (note.h / crop.h) * 100 }
+  : note);
+const boxes = notes.map((note) => ({ ...shown(note), label: note.label }));
+const place = (box: { x: number; y: number; w: number; h: number }, at: number) => `--x: ${round(box.x)}; --y: ${round(box.y)}; --w: ${round(box.w)}; --h: ${round(box.h)}; --i: ${at}`;
+// The sharp copies are clipped in the whole screen's own coordinates.
+const sharpClip = (note: { x: number; y: number; w: number; h: number }) => `inset(${round(note.y)}% ${round(100 - note.x - note.w)}% ${round(100 - note.y - note.h)}% ${round(note.x)}% round 10px)`;
+
+const sharpRegions = notes.flatMap((note, at) => [note, ...(note.also ?? [])].map((region) => ({ region, at })));
+const first = shots[0];
+const cropFrame = crop && first
+  ? `aspect-ratio: ${round(crop.w * first.src.width)} / ${round(crop.h * first.src.height)}`
+  : undefined;
+const cropLayers = crop
+  ? `width: ${round(10000 / crop.w)}%; left: ${round((-crop.x / crop.w) * 100)}%; top: ${round((-crop.y / crop.h) * 100)}%`
+  : undefined;
+const screenSizes = crop ? '(max-width: 759px) 100vw, 40rem' : '(max-width: 759px) 68vw, min(27vw, 25rem)';
+---
+
+<figure class:list={['plate', `plate--${bleed}`, shots.length > 1 && 'plate--many', crop && 'plate--crop', pinned && 'plate--pinned']} data-plate>
+  <div class="plate__bloom" aria-hidden="true" style={`--washes: ${washes}; --grain: url(${grain.src}); --at: ${centre}%; --c: ${centre / 100}`}></div>
+  <div class="plate__stage">
+    {shots.map((shot, index) => {
+      const focused = index === 0 && notes.length > 0;
+      return (
+        <div class="plate__shot">
+          <div class:list={['plate__screen', focused && 'plate__screen--focus']} style={index === 0 ? cropFrame : undefined}>
+            <div class="plate__frame">
+            <div class="plate__layers" style={index === 0 ? cropLayers : undefined}>
+              <Image class="plate__base" src={shot.src} alt={shot.alt} widths={widthsFor(shot.src)} sizes={screenSizes} format="webp" quality={85} loading="lazy" decoding="async" />
+              {focused && sharpRegions.map(({ region, at }) => (
+                <Image class="plate__sharp" src={shot.src} alt="" widths={widthsFor(shot.src)} sizes={screenSizes} format="webp" quality={85} loading="lazy" decoding="async" style={`clip-path: ${sharpClip(region)}; --i: ${at}`} />
+              ))}
+            </div>
+            </div>
+            {focused && (
+              <ol class="plate__marks" aria-hidden="true">
+                {boxes.map((box, at) => <li style={place(box, at)}></li>)}
+              </ol>
+            )}
+          </div>
+          {focused && (
+            <ol class="plate__notes">
+              {boxes.map((box, at) => <li style={place(box, at)}><span>{box.label}</span></li>)}
+            </ol>
+          )}
+          {shot.label && <p class="plate__label">{shot.label}</p>}
+        </div>
+      );
+    })}
+  </div>
+  {caption && <figcaption class="plate__caption">{caption}</figcaption>}
+</figure>
+
+<script>
+  // Racks a plate into focus once it is in view and its screens are decoded, so the focus never
+  // lands before the picture does.
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const plates = document.querySelectorAll<HTMLElement>('[data-plate]');
+  const rack = (plate: HTMLElement) => {
+    const screens = Array.from(plate.querySelectorAll<HTMLImageElement>('.plate__layers img'));
+    Promise.all(screens.map((image) => image.decode().catch(() => undefined))).then(() => plate.classList.add('is-here'));
+  };
+  const watch = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      watch.unobserve(entry.target);
+      rack(entry.target as HTMLElement);
+    });
+  }, { rootMargin: '0px 0px -20% 0px', threshold: 0.3 });
+  plates.forEach((plate) => (still.matches ? plate.classList.add('is-here') : watch.observe(plate)));
+</script>
+
+<style>
+  /* The plate has no box of its own: its bloom spills past it into the page and fades out. */
+  .plate {
+    --gap: clamp(2.5rem, 4.5vw, 4.5rem);
+    --pad: clamp(2.5rem, 5vw, 4.5rem);
+    /* Large, but never taller than the window can show below the header (screens are about 0.56
+       as wide as they are tall). */
+    --phone: min(clamp(16rem, 27vw, 25rem), (100svh - 17rem) * 0.56);
+    /* Unchanged parts stay readable: just off focus, and quieter in colour. */
+    --soft: blur(0.8px) saturate(0.55) brightness(0.97) contrast(0.92);
+    position: relative;
+    isolation: isolate;
+    margin: 0;
+  }
+
+  /* Washes of colour, feathered on every edge, with a fine grain like the references' film. */
+  /* Where the screen's centre is across the plate. */
+  .plate {
+    --screen-x: calc(clamp(2rem, 14%, 14rem) + var(--phone) / 2);
+    --bloom-w: calc(var(--phone) * 4.6);
+  }
+
+  .plate--left {
+    --screen-x: calc(100% - clamp(2rem, 14%, 14rem) - var(--phone) / 2);
+  }
+
+  .plate--many {
+    --screen-x: 50%;
+    --bloom-w: calc(var(--phone) * 6.5);
+  }
+
+  .plate__bloom {
+    position: absolute;
+    z-index: -1;
+    top: -18%;
+    bottom: -18%;
+    left: calc(var(--screen-x) - var(--bloom-w) * var(--c));
+    width: var(--bloom-w);
+    background: var(--washes);
+    background-repeat: no-repeat;
+    filter: saturate(1.2);
+    -webkit-mask-image: radial-gradient(ellipse 46% 46% at var(--at) 50%, #000 35%, transparent 100%);
+    mask-image: radial-gradient(ellipse 46% 46% at var(--at) 50%, #000 35%, transparent 100%);
+    transition: opacity 1200ms ease-out, scale 1800ms var(--ease-out);
+  }
+
+  /* Film grain, only inside the colour: the washes themselves mask it. */
+  .plate__bloom::after {
+    position: absolute;
+    inset: 0;
+    background: var(--grain) 0 0 / 192px;
+    content: '';
+    -webkit-mask-image: var(--washes);
+    mask-image: var(--washes);
+    mix-blend-mode: overlay;
+    opacity: 0.55;
+  }
+
+  :global(html.js) .plate:not(:global(.is-here)) .plate__bloom {
+    opacity: 0;
+    scale: 0.88;
+  }
+
+  /* The screen sits off-centre toward the page, leaving the bleed side open for its names. */
+  .plate__stage {
+    display: flex;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: flex-start;
+    padding: var(--pad) 0;
+    padding-left: clamp(2rem, 14%, 14rem);
+  }
+
+  .plate--left .plate__stage {
+    justify-content: flex-end;
+    padding-right: clamp(2rem, 14%, 14rem);
+    padding-left: 0;
+  }
+
+  .plate--many .plate__stage {
+    justify-content: center;
+    padding-inline: var(--gap);
+  }
+
+  /* The names are placed against the shot, which is exactly the screen's size. */
+  .plate__shot {
+    position: relative;
+    flex: 0 0 var(--phone);
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .plate__screen {
+    position: relative;
+  }
+
+  .plate__layers {
+    position: relative;
+  }
+
+  .plate__layers :global(img) {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+  }
+
+  .plate__layers :global(.plate__sharp) {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* A close crop: the part of the screen that matters, larger, without the phone around it. */
+  .plate--crop {
+    --phone: min(clamp(18rem, 30vw, 27rem), (100svh - 17rem) * 0.655);
+  }
+
+  /* The frame clips the crop; the marks sit beside it, so their numbers can sit outside. */
+  .plate--crop .plate__frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 22px;
+    box-shadow: 0 1.5rem 3rem -1rem rgb(40 20 0 / 35%), 0 0.25rem 0.75rem rgb(40 20 0 / 12%);
+  }
+
+  .plate--crop .plate__layers {
+    position: absolute;
+  }
+
+  /* Two screens: the second sits a little lower, so the pair reads as two moments, not a row. */
+  @media (min-width: 760px) {
+    .plate--many .plate__shot:nth-child(2) {
+      margin-top: clamp(2rem, 5vw, 4.5rem);
+    }
+  }
+
+  .plate .plate__label,
+  .plate .plate__caption {
+    margin: 1rem 0 0;
+    color: var(--color-ink);
+    font-size: var(--small, 0.875rem);
+    line-height: 1.45;
+    text-align: center;
+  }
+
+  .plate .plate__caption {
+    margin: 0;
+    padding: 0 var(--gap) var(--pad);
+  }
+
+  .plate__stage:has(+ .plate__caption) {
+    padding-bottom: 1.5rem;
+  }
+
+  /* Pinned: the plate is as tall as the words beside it, and the screen stays put while they pass. */
+  @media (min-width: 1200px) {
+    .plate--pinned {
+      height: 100%;
+    }
+
+    .plate--pinned .plate__stage {
+      box-sizing: border-box;
+      height: 100%;
+    }
+
+    .plate--pinned .plate__shot {
+      position: sticky;
+      top: max(7rem, calc(50svh - var(--phone) * 0.89));
+    }
+  }
+
+  /* ---- Focus ---------------------------------------------------------------------------------- */
+
+  /* What changed stays sharp; the rest of the screen sits just out of focus. */
+  .plate__screen--focus :global(.plate__base) {
+    filter: var(--soft);
+  }
+
+  .plate__layers :global(img) {
+    transition: filter 900ms var(--ease-out), opacity 500ms ease;
+  }
+
+  .plate__layers :global(.plate__sharp) {
+    transition-delay: calc(250ms + var(--i, 0) * 140ms);
+  }
+
+  /* Before it arrives the whole plate is out of focus, like the cover before the pull. */
+  :global(html.js) .plate:not(:global(.is-here)) .plate__layers :global(img) {
+    filter: blur(8px) saturate(0.8);
+  }
+
+  :global(html.js) .plate:not(:global(.is-here)) .plate__layers :global(.plate__sharp) {
+    opacity: 0;
+  }
+
+  /* Pointing at the screen brings all of it into focus, to read the rest. */
+  @media (hover: hover) and (pointer: fine) {
+    :global(.is-here) .plate__screen--focus:hover :global(.plate__base) {
+      filter: none;
+      transition-duration: 300ms;
+    }
+  }
+
+  /* ---- Names: a line from the sharp region out to its name ----------------------------------- */
+
+  .plate__marks,
+  .plate__notes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plate__marks li {
+    position: absolute;
+    top: calc(var(--y) * 1%);
+    left: calc(var(--x) * 1%);
+    width: calc(var(--w) * 1%);
+    height: calc(var(--h) * 1%);
+  }
+
+  .plate__notes li {
+    position: absolute;
+    top: calc((var(--y) + var(--h) / 2) * 1%);
+    left: calc(100% + var(--gap));
+    width: max-content;
+    max-width: 15rem;
+    translate: 0 -50%;
+    color: var(--color-ink);
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+
+  /* The line starts with a dot on the region's edge and ends at the name. */
+  .plate__notes li::before {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 0.6rem);
+    width: calc(var(--gap) - 0.6rem + (100 - var(--x) - var(--w)) * 1cqw + 3px);
+    height: 7px;
+    background:
+      radial-gradient(circle at 3.5px 50%, var(--color-ink) 2.5px, rgb(255 255 255 / 90%) 3px 3.5px, transparent 4px) no-repeat,
+      linear-gradient(var(--color-ink), var(--color-ink)) 0 50% / 100% 1px no-repeat;
+    content: '';
+    translate: 0 -50%;
+    transform-origin: left center;
+  }
+
+  .plate--left .plate__notes li {
+    right: calc(100% + var(--gap));
+    left: auto;
+    text-align: right;
+  }
+
+  .plate--left .plate__notes li::before {
+    right: auto;
+    left: calc(100% + 0.6rem);
+    width: calc(var(--gap) - 0.6rem + var(--x) * 1cqw + 3px);
+    background:
+      radial-gradient(circle at calc(100% - 3.5px) 50%, var(--color-ink) 2.5px, rgb(255 255 255 / 90%) 3px 3.5px, transparent 4px) no-repeat,
+      linear-gradient(var(--color-ink), var(--color-ink)) 0 50% / 100% 1px no-repeat;
+    transform-origin: right center;
+  }
+
+  .plate__notes li {
+    transition: opacity 260ms ease calc(var(--i) * 140ms + 700ms);
+  }
+
+  .plate__notes li::before {
+    transition: scale 360ms var(--ease-out) calc(var(--i) * 140ms + 480ms);
+  }
+
+  :global(html.js) .plate:not(:global(.is-here)) .plate__notes li {
+    opacity: 0;
+  }
+
+  :global(html.js) .plate:not(:global(.is-here)) .plate__notes li::before {
+    scale: 0 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plate__layers :global(img),
+    .plate__bloom,
+    .plate__notes li,
+    .plate__notes li::before {
+      transition: none;
+    }
+  }
+
+  /* ---- Narrow: the plate spans the page, names listed under the screen by number ---------- */
+
+  @media (max-width: 759px) {
+    .plate,
+    .plate--left {
+      --phone: min(68vw, 17rem);
+      --pad: 2.25rem;
+      --soft: blur(0.4px) saturate(0.55) brightness(0.97) contrast(0.92);
+      border-radius: 0;
+    }
+
+    .plate--crop {
+      --phone: min(80vw, 22rem);
+    }
+
+    /* On a narrow page the screen is centred and the washes spread past the page edges. */
+    .plate,
+    .plate--left,
+    .plate--many {
+      --screen-x: 50%;
+      --bloom-w: 190%;
+    }
+
+    .plate__bloom {
+      top: -12%;
+      bottom: -12%;
+    }
+
+    .plate__stage,
+    .plate--left .plate__stage {
+      justify-content: center;
+      padding-inline: 1.25rem;
+    }
+
+    .plate--many .plate__stage {
+      gap: 1rem;
+    }
+
+    .plate--many .plate__shot {
+      flex: 1 1 0;
+    }
+
+    .plate__marks {
+      counter-reset: mark;
+    }
+
+    .plate__marks li {
+      counter-increment: mark;
+    }
+
+    /* The number sits in the margin beside the screen, level with its region, so it never covers
+       anything on the screen. */
+    .plate__marks li::after {
+      position: absolute;
+      top: 50%;
+      left: calc(var(--x) / var(--w) * -100% - 1.75rem);
+      display: grid;
+      width: 1.35rem;
+      height: 1.35rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-ink);
+      box-shadow: 0 0 0 2px rgb(255 255 255 / 85%);
+      color: #fff;
+      content: counter(mark);
+      font-family: var(--font-study-emphasis);
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1;
+      translate: 0 -50%;
+    }
+
+    .plate__notes {
+      counter-reset: note;
+      display: grid;
+      gap: 0.5rem;
+      width: max-content;
+      max-width: 100%;
+      margin: 1.75rem auto 0;
+    }
+
+    .plate__notes li,
+    .plate--left .plate__notes li {
+      position: static;
+      display: flex;
+      gap: 0.6rem;
+      align-items: baseline;
+      width: auto;
+      max-width: none;
+      counter-increment: note;
+      translate: none;
+      text-align: left;
+    }
+
+    .plate__notes li::before,
+    .plate--left .plate__notes li::before {
+      position: static;
+      display: grid;
+      flex: 0 0 1.35rem;
+      width: 1.35rem;
+      height: 1.35rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--color-ink);
+      color: #fff;
+      content: counter(note);
+      font-family: var(--font-study-emphasis);
+      font-size: 0.75rem;
+      font-weight: 600;
+      line-height: 1;
+      scale: 1;
+      translate: 0 0.2rem;
+    }
+  }
+</style>
