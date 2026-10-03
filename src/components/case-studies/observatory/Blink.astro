@@ -1,0 +1,294 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import { toLocale, translator } from '../../../i18n/locales';
+
+// A blink comparator, the instrument astronomers used to find what changed between two plates of
+// the same sky: both plates in one eyepiece, shown in turn, so anything that moved jumps out. Here
+// the plates are the screen before and after a decision. While it is on screen it blinks on its own;
+// the two plate names are buttons to hold either one, and the third button starts or stops the
+// blinking. Without the live layer, or with reduced motion, it does not blink on its own; without
+// JavaScript the two plates sit side by side.
+
+interface Plate {
+  src: ImageMetadata;
+  alt: string;
+  /** What this plate shows, as its name: "Before: a card per app". */
+  name: string;
+}
+
+interface Props {
+  before: Plate;
+  after: Plate;
+  /** Where on the night paper this frame starts. */
+  paperAt?: string;
+}
+
+const { before, after, paperAt } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const widthsFor = (src: ImageMetadata) => [...new Set([640, 960, 1280, 1600].filter((width) => width < src.width).concat(Math.min(src.width, 2000)))];
+const sizes = '(max-width: 759px) 88vw, min(80vw, 64rem)';
+const plates = [
+  { ...before, key: 'a', letter: 'A' },
+  { ...after, key: 'b', letter: 'B' },
+];
+---
+
+<figure class="blink" data-blink data-show="b">
+  <div class="blink__frame" style={paperAt ? `background-position: ${paperAt}` : undefined}>
+    <div class="blink__plates">
+      {plates.map((plate) => (
+        <div class:list={['blink__plate', `blink__plate--${plate.key}`]}>
+          <Image src={plate.src} alt={plate.alt} widths={widthsFor(plate.src)} sizes={sizes} format="webp" quality={85} loading="lazy" decoding="async" />
+          <span class="blink__letter" aria-hidden="true">{plate.letter}</span>
+          <span class="blink__name">{plate.name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="blink__bar" hidden>
+    {plates.map((plate) => (
+      <button class="blink__show" type="button" data-plate={plate.key} aria-pressed={plate.key === 'b' ? 'true' : 'false'}>
+        <span class="blink__key" aria-hidden="true">{plate.letter}</span>{plate.name}
+      </button>
+    ))}
+    <button class="blink__toggle" type="button" aria-pressed="false" data-on={t('Blinking', 'Мигает')} data-off={t('Blink', 'Мигать')}>{t('Blink', 'Мигать')}</button>
+  </div>
+</figure>
+
+<script>
+  // Swaps the two plates with a hard cut, like the instrument, about once a second while the
+  // figure is on screen. Holding a plate stops the blinking until it is started again.
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-blink]').forEach((figure) => {
+    const bar = figure.querySelector<HTMLElement>('.blink__bar');
+    const shows = Array.from(figure.querySelectorAll<HTMLButtonElement>('.blink__show'));
+    const toggle = figure.querySelector<HTMLButtonElement>('.blink__toggle');
+    if (!bar || !toggle) return;
+
+    figure.classList.add('is-live');
+    bar.hidden = false;
+    let timer = 0;
+    let blinking = !still.matches;
+    let visible = false;
+
+    const show = (key: string) => {
+      figure.dataset.show = key;
+      shows.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.plate === key)));
+    };
+
+    const run = () => {
+      window.clearInterval(timer);
+      timer = 0;
+      toggle.setAttribute('aria-pressed', String(blinking));
+      toggle.textContent = (blinking ? toggle.dataset.on : toggle.dataset.off) ?? '';
+      if (blinking && visible && !document.hidden) {
+        timer = window.setInterval(() => show(figure.dataset.show === 'a' ? 'b' : 'a'), 1100);
+      }
+    };
+
+    shows.forEach((button) => button.addEventListener('click', () => {
+      blinking = false;
+      show(button.dataset.plate ?? 'b');
+      run();
+    }));
+
+    toggle.addEventListener('click', () => {
+      blinking = !blinking;
+      run();
+    });
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      run();
+    }, { threshold: 0.6 }).observe(figure);
+
+    document.addEventListener('visibilitychange', run);
+  });
+</script>
+
+<style>
+  /* Never taller than the window can show, so both plates are seen whole while they blink. */
+  .blink {
+    width: min(100%, (100svh - 17rem) * 1.48 + 5.5rem);
+    margin: 0;
+  }
+
+  /* The eyepiece: a frame of the night paper around the plates. */
+  .blink__frame {
+    padding: clamp(1rem, 3vw, 2.75rem);
+    border-radius: clamp(1rem, 1.6vw, 1.5rem);
+    background: var(--plate-paper, #0b0c0a);
+  }
+
+  /* Without the live layer, the two plates side by side, each named. */
+  .blink__plates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+  }
+
+  .blink__plate {
+    position: relative;
+    min-width: 0;
+  }
+
+  .blink__plate :global(img) {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    border-radius: 0.5rem;
+    background: #f4f4f2;
+  }
+
+  .blink__letter {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    display: grid;
+    width: 1.6rem;
+    height: 1.6rem;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-study-emphasis);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .blink__name {
+    display: block;
+    margin-top: 0.75rem;
+    color: #dfe8c8;
+    font-size: var(--small, 0.875rem);
+    line-height: 1.4;
+  }
+
+  /* Live: both plates in one place, one shown at a time, swapped with a cut. The hidden one keeps
+     its space, so the frame never changes size. */
+  .blink.is-live .blink__plates {
+    grid-template: 1fr / 1fr;
+  }
+
+  .blink.is-live .blink__plate {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+
+  .blink.is-live .blink__name {
+    display: none;
+  }
+
+  .blink.is-live[data-show='a'] .blink__plate--b,
+  .blink.is-live[data-show='b'] .blink__plate--a {
+    visibility: hidden;
+  }
+
+  /* The plate names are the controls: the one on view in ink with its letter filled. */
+  .blink__bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .blink__bar[hidden] {
+    display: none;
+  }
+
+  .blink__show,
+  .blink__toggle {
+    display: inline-flex;
+    gap: 0.55rem;
+    align-items: center;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--small, 0.875rem);
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .blink__show[aria-pressed='true'] {
+    color: var(--color-ink);
+  }
+
+  .blink__key {
+    display: grid;
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px currentColor;
+    font-family: var(--font-study-emphasis);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .blink__show[aria-pressed='true'] .blink__key {
+    background: var(--color-ink);
+    box-shadow: none;
+    color: #fff;
+  }
+
+  .blink__toggle {
+    margin-left: auto;
+    padding-inline: 0.9rem;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px rgb(17 17 15 / 18%);
+    color: var(--color-ink);
+  }
+
+  .blink__toggle::before {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-muted);
+    content: '';
+  }
+
+  .blink__toggle[aria-pressed='true']::before {
+    background: #6f9a2d;
+    animation: blink-lamp 1100ms steps(1, end) infinite;
+  }
+
+  @keyframes blink-lamp {
+    50% { opacity: 0.25; }
+  }
+
+  .blink :is(button):focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 759px) {
+    .blink__frame {
+      border-radius: 0;
+    }
+
+    .blink__bar {
+      padding-inline: var(--gutter, 20px);
+    }
+
+    .blink__toggle {
+      margin-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blink__toggle[aria-pressed='true']::before {
+      animation: none;
+    }
+  }
+</style>

@@ -31,8 +31,10 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Case study names, pitches, roles, product tags, years (homepage cards and `/case-studies/`) | `src/content/case-studies.ts` |
 | Work caption (pitch, tag, year) on the homepage and `/case-studies/` | `src/components/homepage/showcase/WorkCaption.astro` |
 | Case-study structure: STAR summary, functional section headings (Problem, Goal, Research, Decisions, Results), decisions, charts, contents navigation | `src/components/case-studies/`; copy lives in each page under `src/pages/case-studies/` |
-| Case-study layout, highlighter colours, margin notes, and the large sentence | `src/styles/study.css` |
-| Case-study live moments (highlights drawing in, chart replay, gathering rows, pen circle, note lines) | `src/components/case-studies/StudyLife.astro`; states in `src/styles/study.css` |
+| Case-study layout, grid, spreads, highlighter colours, and the large sentence | `src/styles/plates.css` |
+| A framed screen with its named, in-focus changes | `src/components/case-studies/Plate.astro` |
+| Each study's opening and frame paper | SuperGood `supergood/FocusCover.astro`; Observatory `observatory/EyepieceCover.astro`, `night.ts`, comparator `Blink.astro`; Instagram `instagram-saves/PileCover.astro`; Two Sticks `two-sticks/CopybookCover.astro`, `copybook.ts` |
+| Case-study live moments (highlights drawing in, chart replay, gathering rows, pen circle) | `src/components/case-studies/StudyLife.astro`; states in `src/styles/plates.css` |
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |

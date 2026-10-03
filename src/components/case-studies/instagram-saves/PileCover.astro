@@ -1,0 +1,316 @@
+---
+import { getImage } from 'astro:assets';
+
+import pileImage from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.webp';
+import pile from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.json';
+import Rich from '../Rich.astro';
+
+// Instagram Saves opens on its problem: the pile. Beside the title, the prototype's saved posts
+// scroll past as you scroll, and keep scrolling. Then a search for "spider" is typed into Saved,
+// and the pile gives way to the two posts it finds, as in the prototype. Without the live layer,
+// with reduced motion, or on a phone, the pile simply sits beside the title, waiting.
+
+interface Props {
+  title: string;
+  pitch: string;
+  /** The result, numbers in **bold**. */
+  outcome: string;
+  facts: string[];
+}
+
+const { title, pitch, outcome, facts } = Astro.props;
+const sprite = await getImage({ src: pileImage, format: 'webp' });
+const tile = (name: string) => {
+  const index = pile.names.indexOf(name);
+  const column = index % pile.columns;
+  const row = Math.floor(index / pile.columns);
+  return `--tile-x: ${(column / (pile.columns - 1)) * 100}%; --tile-y: ${(row / (pile.rows - 1)) * 100}%`;
+};
+
+// The pile in a fixed shuffle, twice over, so it is long enough to keep scrolling.
+let seed = 76;
+const next = () => {
+  seed = (seed * 16807) % 2147483647;
+  return seed / 2147483647;
+};
+const shuffled = [...pile.names].map((name) => ({ name, at: next() })).sort((a, b) => a.at - b.at).map(({ name }) => name);
+const wall = [...shuffled, ...shuffled.slice().reverse()];
+const found = ['spiderman-red', 'spiderman-2'];
+const query = 'spider';
+---
+
+<header class="pile" data-pile style={`--sprite: url('${sprite.src}'); --sprite-size: ${pile.columns * 100}% ${pile.rows * 100}%`}>
+  <div class="pile__stage">
+    <div class="pile__text">
+      <h1>{title}</h1>
+      <p class="pile__pitch">{pitch}</p>
+      <p class="pile__outcome"><Rich text={outcome} /></p>
+      <p class="pile__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
+    </div>
+
+    <!-- Saved, as the prototype draws it: the search field, then the pile, then what it found. -->
+    <div class="pile__window" aria-hidden="true">
+      <div class="pile__wall">
+        {wall.map((name) => <span class="pile__tile" style={tile(name)}></span>)}
+      </div>
+      <div class="pile__found">
+        <p class="pile__results"><span>Results for “{query}”</span><span>2 · Latest</span></p>
+        <div class="pile__found-tiles">
+          {found.map((name) => <span class="pile__tile" style={tile(name)}></span>)}
+        </div>
+      </div>
+      <p class="pile__search">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4.5 4.5" /></svg>
+        <span class="pile__placeholder">Search with AI, titles, or your notes</span>
+        <span class="pile__query">{query}</span>
+      </p>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Only sets how far through the cover you are, as --p on the stage. The CSS does the rest.
+  const cover = document.querySelector<HTMLElement>('[data-pile]');
+  const stage = cover?.querySelector<HTMLElement>('.pile__stage');
+
+  if (cover && stage) {
+    let frame = 0;
+    let travel = 1;
+    let watching = false;
+    const measure = () => {
+      travel = Math.max(1, cover.offsetHeight - window.innerHeight);
+    };
+    const update = () => {
+      frame = 0;
+      stage.style.setProperty('--p', Math.min(1, Math.max(0, -cover.getBoundingClientRect().top / travel)).toFixed(4));
+    };
+    const schedule = () => {
+      if (watching && !frame) frame = requestAnimationFrame(update);
+    };
+    new IntersectionObserver(([entry]) => {
+      watching = entry.isIntersecting;
+      schedule();
+    }).observe(cover);
+    new ResizeObserver(() => {
+      measure();
+      schedule();
+    }).observe(cover);
+    window.addEventListener('scroll', schedule, { passive: true });
+    measure();
+    update();
+  }
+</script>
+
+<style>
+  /* ---- At rest: the title, and Saved beside it ------------------------------------------------ */
+
+  .pile {
+    --gutter: clamp(20px, 5vw, 72px);
+    container-type: inline-size;
+  }
+
+  .pile__stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    width: min(100% - 2 * var(--gutter), var(--wide, 76rem));
+    margin: 0 auto;
+    padding-top: clamp(7rem, 12vw, 10rem);
+  }
+
+  .pile h1 {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-study-heading);
+    font-size: clamp(2.75rem, 1.6rem + 3.6vw, 5rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .pile .pile__pitch {
+    max-width: 30rem;
+    margin: 1.1rem 0 0;
+    color: var(--color-ink);
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+    line-height: 1.38;
+  }
+
+  .pile .pile__outcome {
+    max-width: 31rem;
+    margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+
+  .pile .pile__facts {
+    max-width: 26rem;
+    margin: 1.5rem 0 0;
+    color: var(--color-copy);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  /* Saved: a tall window onto the pile, the search field over its top edge. */
+  .pile__window {
+    position: relative;
+    height: min(78svh, 46rem);
+    overflow: hidden;
+    border-radius: clamp(1rem, 1.6vw, 1.5rem);
+    background: #fff;
+    box-shadow: 0 0 0 1.5px var(--color-ink);
+  }
+
+  .pile__wall,
+  .pile__found {
+    position: absolute;
+    inset: 0 0 auto;
+    padding: 5.25rem 0.9rem 0.9rem;
+  }
+
+  .pile__wall {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3px;
+  }
+
+  .pile__tile {
+    display: block;
+    aspect-ratio: 4 / 5;
+    background-color: #efeeea;
+    background-image: var(--sprite);
+    background-position: var(--tile-x) var(--tile-y);
+    background-size: var(--sprite-size);
+  }
+
+  .pile__found {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .pile .pile__results {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0.1rem 0.9rem;
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  .pile__results span + span {
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: 0.875rem;
+    font-weight: 400;
+  }
+
+  .pile__found-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3px;
+    width: 75%;
+  }
+
+  .pile .pile__search {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    left: 0.9rem;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    margin: 0;
+    padding: 0.8rem 1rem;
+    border-radius: 0.75rem;
+    background: #efefef;
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+    line-height: 1.2;
+  }
+
+  .pile__query {
+    display: none;
+    color: var(--color-ink);
+  }
+
+  /* Clear of the section ticks at the window's left edge. */
+  @media (min-width: 1001px) {
+    .pile {
+      --gutter: max(clamp(20px, 5vw, 72px), 6.5rem);
+    }
+  }
+
+  /* ---- The pull: scrolling, still scrolling, then a search -------------------------------------- */
+
+  @media (prefers-reduced-motion: no-preference) and (min-width: 760px) {
+    :global(html.js) .pile {
+      --travel: 140svh;
+      height: calc(100svh + var(--travel));
+    }
+
+    :global(html.js) .pile__stage {
+      --p: 0;
+      /* 0 to 0.6: the pile scrolls past. 0.55 to 0.72: the query is typed. 0.74 to 0.9: found. */
+      --move: min(1, var(--p) / 0.6);
+      --typed: round(down, min(1, max(0, (var(--p) - 0.55) / 0.17)) * 6, 1);
+      --found: min(1, max(0, (var(--p) - 0.74) / 0.16));
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      padding-top: 0;
+    }
+
+    :global(html.js) .pile__window {
+      height: calc(100svh - 8.5rem);
+      margin-top: 5.5rem;
+    }
+
+    :global(html.js) .pile__wall {
+      opacity: calc(1 - var(--found));
+      transform: translateY(calc(var(--move) * (-100% + 100svh - 8.5rem)));
+      will-change: transform;
+    }
+
+    :global(html.js) .pile__found {
+      opacity: var(--found);
+      visibility: visible;
+      translate: 0 calc((1 - var(--found)) * 1.5rem);
+    }
+
+    /* The placeholder until the first letter, then the query, a letter at a time, with a caret. */
+    :global(html.js) .pile__placeholder {
+      position: absolute;
+      left: calc(1rem + 18px + 0.6rem);
+      opacity: calc(1 - min(1, var(--typed)));
+    }
+
+    :global(html.js) .pile__query {
+      display: block;
+      width: calc(var(--typed) * 1ch + 1.5px);
+      overflow: hidden;
+      border-right: 1.5px solid rgb(17 17 15 / calc(min(1, var(--typed)) * 100%));
+      white-space: nowrap;
+    }
+  }
+
+  /* ---- Phones: the title, then a short window onto the pile --------------------------------- */
+
+  @media (max-width: 759px) {
+    .pile__stage {
+      grid-template-columns: minmax(0, 1fr);
+      padding-top: 7rem;
+    }
+
+    .pile__window {
+      height: 26rem;
+    }
+
+    .pile__wall {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

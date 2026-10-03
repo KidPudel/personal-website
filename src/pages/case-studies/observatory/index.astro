@@ -1,8 +1,6 @@
 ---
-import { getImage, Image } from 'astro:assets';
+import { Image } from 'astro:assets';
 
-import observatoryTitleTexture from '../../../assets/case_study_images/ditchered_observatory_bg.png';
-import archiveFootageFrame from '../../../assets/case_study_images/observatory/archive-telescope-frame.webp';
 import launchFilmPoster from '../../../assets/software-showcases/observatory/launch-film.png';
 import outcomeComparison from '../../../assets/case_study_images/outcome_screenshots/results-comparison.png';
 import outcomeNow from '../../../assets/case_study_images/outcome_screenshots/main.png';
@@ -26,18 +24,20 @@ import wireframeSavedResults from '../../../assets/case_study_images/validation_
 import wireframeTestComplex from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 8.png';
 import wireframeTestSetup from '../../../assets/case_study_images/validation_screenshots_of_wireframes/image 10.png';
 import BarCompare from '../../../components/case-studies/BarCompare.astro';
-import Cover from '../../../components/case-studies/Cover.astro';
 import Decision from '../../../components/case-studies/Decision.astro';
+import Plate from '../../../components/case-studies/Plate.astro';
 import Rich from '../../../components/case-studies/Rich.astro';
 import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
 import StepCompare from '../../../components/case-studies/StepCompare.astro';
 import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
-import ArchiveFilm from '../../../components/case-studies/observatory/ArchiveFilm.astro';
+import Blink from '../../../components/case-studies/observatory/Blink.astro';
+import EyepieceCover from '../../../components/case-studies/observatory/EyepieceCover.astro';
+import { nightPaper } from '../../../components/case-studies/observatory/night';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
-import '../../../styles/study.css';
+import '../../../styles/plates.css';
 
 const repositoryURL = 'https://github.com/KidPudel/Observatory';
 const releaseURL = 'https://github.com/KidPudel/Observatory/releases/latest';
@@ -45,16 +45,12 @@ const launchFilmURL = 'https://www.youtube.com/watch?v=6LWORcxVZmY&t=5s';
 const launchFilmEmbedURL = 'https://www.youtube-nocookie.com/embed/6LWORcxVZmY?start=5&autoplay=1';
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-const heroTitle = 'Observatory';
-const optimizedTitleTexture = await getImage({
-  src: observatoryTitleTexture,
-  width: 1600,
-  format: 'webp',
-  quality: 80,
-});
-const wideSizes = '(max-width: 1100px) calc(100vw - 40px), 940px';
-const halfSizes = '(max-width: 760px) calc(100vw - 40px), 460px';
-const thirdSizes = '(max-width: 760px) calc(100vw - 40px), 300px';
+const thirdSizes = '(max-width: 759px) calc(100vw - 40px), 24rem';
+const halfSizes = '(max-width: 759px) calc(100vw - 40px), 36rem';
+const result = t(
+  'Reading one app’s total went from **17 rows to 1** (Brave Browser), which takes **about 3 seconds instead of 60**. **All 3 colleagues** who tried it still use it two months later.',
+  'Чтобы увидеть итог одного приложения, теперь нужна **1 строка вместо 17** (Brave Browser), и это **примерно 3 секунды вместо 60**. **Все 3 коллеги**, которые попробовали Observatory, пользуются им и спустя два месяца.',
+);
 
 const sketches = [
   {
@@ -99,38 +95,22 @@ const categories = [
     'How I designed Observatory, a macOS activity monitor that shows each app as one row, records tests, and compares runs. Three colleagues have used it for two months.',
     'Как я проектировал Observatory, монитор активности для macOS: он показывает каждое приложение одной строкой, записывает тесты и сравнивает прогоны. Три коллеги пользуются им уже два месяца.',
   )}
-  pageClass="study-document study--observatory"
+  pageClass="study-plates study--observatory"
   ogImage={outcomeNow.src}
 >
-  <main id="main-content">
-    <Cover
+  <main id="main-content" style={`--plate-paper: ${nightPaper}`}>
+    <EyepieceCover
+      title="Observatory"
       pitch={t('Activity Monitor, but more.', 'Как «Мониторинг системы», только больше.')}
+      outcome={result}
       facts={[
         t('Product design, research, identity, and the launch film. I wrote the specs and directed AI development', 'Продуктовый дизайн, исследование, айдентика и ролик к запуску. Писал спецификации и руководил разработкой с AI'),
         '2026',
         t('Release 0.1.1 for macOS 14 and later, used by 3 colleagues for about two months.', 'Релиз 0.1.1 для macOS 14 и новее, им около двух месяцев пользуются 3 коллеги.'),
       ]}
-    >
-      <h1
-        slot="title"
-        class="cover__title wordmark"
-        aria-label={heroTitle}
-        style={`--hero-title-texture: url('${optimizedTitleTexture.src}')`}
-      >
-        {heroTitle.split('').map((letter, index) => (
-          <span
-            class="wordmark__letter"
-            aria-hidden="true"
-            data-letter={letter}
-            style={`--letter-index: ${index}; --texture-position: ${(index / (heroTitle.length - 1)) * 100}%`}
-          >
-            {letter}
-          </span>
-        ))}
-      </h1>
-
-      <ArchiveFilm poster={archiveFootageFrame} />
-    </Cover>
+      view={outcomeNow}
+      viewAlt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')}
+    />
 
     <StarSummary
       situation={t(
@@ -145,10 +125,8 @@ const categories = [
         'I ran 5 customer development interviews framed around Jobs to be Done, to check it wasn’t just my problem. Then I sketched, made a rough prototype, and changed three things after walking through it.',
         'Провёл 5 CustDev-интервью в логике Jobs to be Done, чтобы проверить, что проблема не только у меня. Потом скетчи, черновой прототип и три изменения после разбора сценариев.',
       )}
-      result={t(
-        'Reading one app’s total went from **17 rows to 1** (Brave Browser), which takes **about 3 seconds instead of 60**. **All 3 colleagues** who tried it still use it two months later.',
-        'Чтобы увидеть итог одного приложения, теперь нужна **1 строка вместо 17** (Brave Browser), и это **примерно 3 секунды вместо 60**. **Все 3 коллеги**, которые попробовали Observatory, пользуются им и спустя два месяца.',
-      )}
+      result={result}
+      beside
       caption={t(
         'The time estimate comes from walking through both apps, not from a formal study.',
         'Оценка времени получена при проходе по обоим приложениям, а не в формальном исследовании.',
@@ -163,7 +141,7 @@ const categories = [
       )}
     >
       <!-- The same app in both tools. As it arrives, the 17 rows gather into Observatory's one. -->
-      <figure class="process-split col-wide gather" data-arrive>
+      <figure class="process-split gather" data-arrive>
         <div class="process-split__side">
           <p class="process-split__tool">{t('Activity Monitor', 'Мониторинг системы')}</p>
           <ol class="process-split__rows" aria-hidden="true">
@@ -189,11 +167,14 @@ const categories = [
         )}</figcaption>
       </figure>
 
-      <p>{t('So the job, written as a job story (Jobs to be Done):', 'Если записать это как job story (Jobs to be Done):')}</p>
-      <p class="job-story">{t(
-        'When I’m doing heavy work, I want to see what an app is using and keep a record, so I can come back to it and compare.',
-        'Когда я делаю тяжёлую работу, я хочу видеть, что потребляет приложение, и сохранять запись, чтобы вернуться к ней и сравнить.',
-      )}</p>
+      <!-- The job, in its own words, beside the line that introduces it. -->
+      <div class="beside job">
+        <p>{t('So the job, written as a job story (Jobs to be Done):', 'Если записать это как job story (Jobs to be Done):')}</p>
+        <p class="job-story beside__side">{t(
+          'When I’m doing heavy work, I want to see what an app is using and keep a record, so I can come back to it and compare.',
+          'Когда я делаю тяжёлую работу, я хочу видеть, что потребляет приложение, и сохранять запись, чтобы вернуться к ней и сравнить.',
+        )}</p>
+      </div>
     </StudySection>
 
     <StudySection
@@ -216,7 +197,8 @@ const categories = [
         'Сначала я проверил, что проблема не только у меня. Прежде чем что-то делать, я провёл CustDev-интервью в логике Jobs to be Done. Пять человек рассказали, как в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти. По их ответам стало ясно, что это стоит делать.',
       )}
     >
-      <div class="personas col-wide">
+      <!-- The two people behind the interviews: one in the reading column, one beside it. -->
+      <div class="personas beside">
         <figure class="persona">
           <Image
             src={personaIndependentTroubleshooter}
@@ -231,7 +213,7 @@ const categories = [
           <p>{t('Checks their own Mac.', 'Проверяет свой Mac.')}</p>
           <p><strong>{t('Job story.', 'Job story.')}</strong> {t('When I check what my Mac is doing, I want to see the whole app and catch a spike, so I don’t have to piece it together from a changing list.', 'Когда я смотрю, что происходит с Mac, я хочу видеть приложение целиком и замечать пики, чтобы не собирать картину по меняющемуся списку.')}</p>
         </figure>
-        <figure class="persona">
+        <figure class="persona beside__side">
           <Image
             src={personaPerformanceVerifier}
             alt={t('Hand-drawn portrait of the performance verifier persona writing on a clipboard.', 'Нарисованный от руки портрет персоны «проверяющий производительность»: человек делает записи на планшете для бумаг.')}
@@ -252,17 +234,17 @@ const categories = [
         'Оба начинали с приложения или задачи, ==а не с процесса==. Поэтому интерфейс, а с ним и мои первые скетчи, начинаются с приложения.',
       )} /></p>
 
-      <div class="sketches col-full">
+      <div class="sketches">
         {sketches.map((sketch) => (
           <figure class="sketch">
-            <Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 900px) calc((100vw - 64px) / 2), 270px" format="webp" loading="lazy" decoding="async" />
+            <Image src={sketch.src} alt={sketch.alt} widths={[320, 480, 640]} sizes="(max-width: 1099px) calc((100vw - 64px) / 2), 20rem" format="webp" loading="lazy" decoding="async" />
             <figcaption>{sketch.caption}</figcaption>
           </figure>
         ))}
       </div>
 
       <p>{t('From the sketches I made a first prototype with three places to go: Now, Tests, and History.', 'По скетчам я собрал первый прототип с тремя разделами: «Now», «Tests» и «History».')}</p>
-      <div class="prototype-row col-wide">
+      <div class="prototype-row">
         <Shot kind="desktop" src={prototypeNow} sizes={thirdSizes} alt={t('Initial low-fidelity Now screen with application cards.', 'Первый черновой экран «Now» с карточками приложений.')} caption={t('Now: a quick look', '«Now»: быстрый взгляд')} />
         <Shot kind="desktop" src={prototypeTest} sizes={thirdSizes} alt={t('Initial low-fidelity test setup screen.', 'Первый черновой экран настройки теста.')} caption={t('Tests: record a run', '«Tests»: записать прогон')} />
         <Shot kind="desktop" src={prototypeHistory} sizes={thirdSizes} alt={t('Initial low-fidelity History screen with saved recordings.', 'Первый черновой экран «History» с сохранёнными записями.')} caption={t('History: return to results', '«History»: вернуться к результатам')} />
@@ -276,7 +258,8 @@ const categories = [
     <StudySection part="decisions">
       <Decision
         number={1}
-        layout="stack"
+        layout="plate"
+        screen="wide"
         title={t('Group processes under their app', 'Процессы под своим приложением')}
         navLabel={t('Group by app', 'По приложениям')}
         problem={t('One app showed up as lots of rows, so its real cost was hidden.', 'Одно приложение занимало много строк, и его реальная нагрузка терялась.')}
@@ -286,12 +269,16 @@ const categories = [
         effect={t('Brave Browser went from **17 rows to 1**.', 'Brave Browser занимает **1 строку вместо 17**.')}
         source={t('measured in the live view', 'измерено в живом просмотре')}
       >
-        <Shot kind="desktop" src={outcomeProcessDetails} sizes={wideSizes} alt={t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.')} caption={t('Totals first. Processes when you need them.', 'Сначала итоги, процессы по запросу.')} />
+        <Plate kind="desktop" paperAt="-40px -12px" caption={t('Totals first. Processes when you need them.', 'Сначала итоги, процессы по запросу.')} shots={[{ src: outcomeProcessDetails, alt: t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.') }]} notes={[
+          { x: 1, y: 2, w: 98, h: 12, label: t('One row, with the app’s totals', 'Одна строка с итогами приложения') },
+          { x: 1.5, y: 20, w: 97, h: 79, label: t('Its processes, one level below', 'Процессы уровнем ниже') },
+        ]} />
       </Decision>
 
       <Decision
         number={2}
-        layout="stack"
+        layout="plate"
+        screen="wide"
         title={t('An aligned list instead of cards', 'Выровненный список вместо карточек')}
         navLabel={t('Aligned list', 'Список')}
         problem={t('Cards grouped the processes, but comparing apps meant your eyes jumping between boxes.', 'Карточки группировали процессы, но чтобы сравнить приложения, взгляд прыгал между блоками.')}
@@ -299,30 +286,32 @@ const categories = [
         why={t('With aligned columns, you can compare one metric down a column in a single glance.', 'В выровненных колонках одну метрику можно сравнить одним взглядом сверху вниз.')}
         instead={t('The card grid from the first prototype kept the groups clear, but comparing was slow.', 'Сетка карточек из первого прототипа хорошо показывала группы, но сравнивать в ней было медленно.')}
       >
-        <div class="pair pair--wide">
-          <Shot kind="wireframe" src={wireframeNowCards} sizes={halfSizes} alt={t('Wireframe of a card-based live application view.', 'Вайрфрейм живого просмотра приложений на карточках.')} caption={t('Before: a card per app', 'До: карточка на приложение')} />
-          <Shot kind="wireframe" src={wireframeNowList} sizes={halfSizes} alt={t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.')} caption={t('After: an aligned list with a live chart', 'После: выровненный список с живым графиком')} />
-        </div>
+        <Blink paperAt="-200px -80px"
+          before={{ src: wireframeNowCards, alt: t('Wireframe of a card-based live application view.', 'Вайрфрейм живого просмотра приложений на карточках.'), name: t('Before: a card per app', 'До: карточка на приложение') }}
+          after={{ src: wireframeNowList, alt: t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.'), name: t('After: an aligned list with a live chart', 'После: выровненный список с живым графиком') }}
+        />
       </Decision>
 
       <Decision
         number={3}
-        layout="stack"
+        layout="plate"
+        screen="wide"
         title={t('Pick apps before the recording mode', 'Сначала приложения, потом режим записи')}
         navLabel={t('Test setup', 'Настройка теста')}
         problem={t('Test setup asked for manual or automated mode before you’d even picked an app.', 'Настройка теста спрашивала про ручной или автоматический режим ещё до выбора приложения.')}
         decision={t('Now you pick the apps first, then the recording mode, and setup and the running recording are separate screens.', 'Теперь сначала выбираешь приложения, потом режим записи, а настройка и идущая запись стали отдельными экранами.')}
         why={t('People start from what they want to watch. How the tool records it comes second.', 'Люди начинают с того, за чем хотят наблюдать. Как инструмент это записывает, для них вторично.')}
       >
-        <div class="pair pair--wide">
-          <Shot kind="wireframe" src={wireframeTestComplex} sizes={halfSizes} alt={t('Wireframe combining test setup, recent tests, and an active recording.', 'Вайрфрейм, где на одном экране настройка теста, недавние тесты и идущая запись.')} caption={t('Before: everything on one screen', 'До: всё на одном экране')} />
-          <Shot kind="wireframe" src={wireframeTestSetup} sizes={halfSizes} alt={t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.')} caption={t('After: choose, set up, start', 'После: выбрать, настроить, запустить')} />
-        </div>
+        <Blink paperAt="-120px -210px"
+          before={{ src: wireframeTestComplex, alt: t('Wireframe combining test setup, recent tests, and an active recording.', 'Вайрфрейм, где на одном экране настройка теста, недавние тесты и идущая запись.'), name: t('Before: everything on one screen', 'До: всё на одном экране') }}
+          after={{ src: wireframeTestSetup, alt: t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.'), name: t('After: choose, set up, start', 'После: выбрать, настроить, запустить') }}
+        />
       </Decision>
 
       <Decision
         number={4}
-        layout="stack"
+        layout="plate"
+        screen="wide"
         title={t('Saved results inside Tests', 'Результаты внутри «Tests»')}
         navLabel={t('Saved results', 'Результаты тестов')}
         problem={t('A test ended in Tests, but its result lived in History, a separate section.', 'Тест заканчивался в «Tests», а результат жил в «History», отдельном разделе.')}
@@ -331,21 +320,58 @@ const categories = [
         effect={t('Top-level sections went from **3 to 2**.', 'Разделов верхнего уровня стало **2 вместо 3**.')}
         source={t('counted from the prototypes', 'посчитано по прототипам')}
       >
-        <div class="pair pair--wide">
-          <Shot kind="wireframe" src={wireframeHistory} sizes={halfSizes} alt={t('Wireframe of a separate History destination.', 'Вайрфрейм отдельного раздела «History».')} caption={t('Before: History as its own section', 'До: «History» отдельным разделом')} />
-          <Shot kind="wireframe" src={wireframeSavedResults} sizes={halfSizes} alt={t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».')} caption={t('After: Saved Results inside Tests', 'После: «Saved Results» внутри «Tests»')} />
-        </div>
+        <Blink paperAt="-300px -150px"
+          before={{ src: wireframeHistory, alt: t('Wireframe of a separate History destination.', 'Вайрфрейм отдельного раздела «History».'), name: t('Before: History as its own section', 'До: «History» отдельным разделом') }}
+          after={{ src: wireframeSavedResults, alt: t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».'), name: t('After: Saved Results inside Tests', 'После: «Saved Results» внутри «Tests»') }}
+        />
       </Decision>
     </StudySection>
 
-    <StudySection
-      part="results"
-      lead={t(
-        'Observatory 0.1.1 runs on macOS 14 and later. The live view keeps the last 60 seconds in sight. Tests record one to four apps, with optional warm-up and repeated rounds, and recordings stay on your Mac.',
-        'Observatory 0.1.1 работает на macOS 14 и новее. Живой просмотр держит перед глазами последние 60 секунд. «Tests» записывает от одного до четырёх приложений, с прогревом и повторными раундами по желанию, а записи остаются на Mac.',
-      )}
-    >
-      <figure class="film col-full">
+    <!-- Results: the time it takes comes into focus as it arrives; then what shipped. -->
+    <section class="part part--results" id="results" data-index-section data-index-label={t('Results', 'Результаты')}>
+      <div class="finale" data-arrive>
+        <h2>{t('Results', 'Результаты')}</h2>
+        <p class="part__lead">{t(
+          'Observatory 0.1.1 runs on macOS 14 and later. The live view keeps the last 60 seconds in sight. Tests record one to four apps, with optional warm-up and repeated rounds, and recordings stay on your Mac.',
+          'Observatory 0.1.1 работает на macOS 14 и новее. Живой просмотр держит перед глазами последние 60 секунд. «Tests» записывает от одного до четырёх приложений, с прогревом и повторными раундами по желанию, а записи остаются на Mac.',
+        )}</p>
+        <BarCompare
+          title={t('Time to answer “how much memory is Brave using?”', 'Время, чтобы ответить «сколько памяти ест Brave?»')}
+          unit={3}
+          unitLabel={t('One mark is 3 seconds.', 'Одна отметка: 3 секунды.')}
+          rows={[
+            { label: t('Activity Monitor: find and add 17 rows', '«Мониторинг системы»: найти и сложить 17 строк'), value: 60, display: t('≈60 s', '≈60 с') },
+            { label: t('Observatory: read one row', 'Observatory: прочитать одну строку'), value: 3, display: t('≈3 s', '≈3 с'), emphasis: true },
+          ]}
+          note={t('Estimate from walking through both apps. Activity Monitor also keeps refreshing while you add.', 'Оценка по проходу через оба приложения. К тому же «Мониторинг системы» обновляет цифры, пока ты складываешь.')}
+        />
+        <p class="marked" data-arrive><Rich text={t(
+          '**All 3 colleagues** who tried it still use it after two months. They mostly use Tests, for two things: recording an app before and after a change, and comparing apps of one kind, like the terminals Ghostty, kitty, and Alacritty.',
+          '**Все 3 коллеги**, которые попробовали Observatory, пользуются им и спустя два месяца. Чаще всего они берут «Tests», и для двух вещей: записать приложение до и после изменения и сравнить приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
+        )} /></p>
+      </div>
+
+      <!-- What shipped: the live view, then the four steps of a test, on the night paper. -->
+      <Plate kind="desktop" paperAt="-260px -30px" caption={t('Every app is one row. The live chart keeps the last 60 seconds.', 'Каждое приложение одной строкой. Живой график хранит последние 60 секунд.')} shots={[{ src: outcomeNow, alt: t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.') }]} />
+      <ol class="shipped" role="list">
+        {[
+          { src: outcomeTestSetup, alt: t('Final Observatory controlled test setup screen.', 'Финальный экран настройки контролируемого теста в Observatory.'), caption: t('Choose apps, then the mode, then the run.', 'Выбрать приложения, затем режим, затем прогон.'), at: '-30px -90px' },
+          { src: outcomeRecording, alt: t('Final Observatory guided recording screen.', 'Финальный экран записи с подсказками в Observatory.'), caption: t('Manual mode guides you through one app at a time.', 'Ручной режим ведёт по одному приложению за раз.'), at: '-170px -10px' },
+          { src: outcomeSavedResults, alt: t('Final Observatory Saved Results screen.', 'Финальный экран «Saved Results» в Observatory.'), caption: t('Saved results keep their context.', 'Сохранённые результаты хранят контекст.'), at: '-90px -250px' },
+          { src: outcomeComparison, alt: t('Final Observatory comparison screen showing synchronized metric timelines.', 'Финальный экран сравнения в Observatory с синхронизированными таймлайнами метрик.'), caption: t('Synchronized timelines make runs comparable.', 'Синхронизированные таймлайны делают прогоны сравнимыми.'), at: '-310px -170px' },
+        ].map((screen) => (
+          <li>
+            <figure>
+              <span class="shipped__frame" style={`background-position: ${screen.at}`}>
+                <Image src={screen.src} alt={screen.alt} widths={[640, 960, 1280, 1600]} sizes={halfSizes} format="webp" quality={85} loading="lazy" decoding="async" />
+              </span>
+              <figcaption>{screen.caption}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ol>
+
+      <figure class="film">
         <a
           class="film__link"
           href={launchFilmURL}
@@ -358,7 +384,7 @@ const categories = [
               src={launchFilmPoster}
               alt=""
               widths={[720, 1080, 1280]}
-              sizes="(max-width: 1100px) calc(100vw - 40px), 1100px"
+              sizes="(max-width: 759px) calc(100vw - 40px), min(80vw, 66rem)"
               format="webp"
               loading="lazy"
               decoding="async"
@@ -367,36 +393,9 @@ const categories = [
           </span>
           <span class="sr-only">{t('Watch the Observatory product introduction on YouTube', 'Смотреть презентацию Observatory на YouTube')}</span>
         </a>
-        <figcaption>{t('Product introduction', 'Презентация продукта')}</figcaption>
+        <figcaption>{t('Product introduction', 'Презентация продукта')}. {t('Beyond the app itself, I made the telescope artwork, the identity, and the launch film.', 'Кроме самого приложения, я сделал иллюстрацию с телескопом, айдентику и ролик к запуску.')}</figcaption>
       </figure>
-
-      <div class="final-screens col-full">
-        <Shot kind="desktop" src={outcomeNow} sizes="(max-width: 1240px) calc(100vw - 40px), 1100px" alt={t('Final Observatory Now screen with live application data and a chart.', 'Финальный экран «Now» в Observatory с живыми данными приложений и графиком.')} caption={t('Every app is one row. The live chart keeps the last 60 seconds.', 'Каждое приложение одной строкой. Живой график хранит последние 60 секунд.')} />
-        <div class="pair pair--wide">
-          <Shot kind="desktop" src={outcomeTestSetup} sizes={halfSizes} alt={t('Final Observatory controlled test setup screen.', 'Финальный экран настройки контролируемого теста в Observatory.')} caption={t('Choose apps, then the mode, then the run.', 'Выбрать приложения, затем режим, затем прогон.')} />
-          <Shot kind="desktop" src={outcomeRecording} sizes={halfSizes} alt={t('Final Observatory guided recording screen.', 'Финальный экран записи с подсказками в Observatory.')} caption={t('Manual mode guides you through one app at a time.', 'Ручной режим ведёт по одному приложению за раз.')} />
-          <Shot kind="desktop" src={outcomeSavedResults} sizes={halfSizes} alt={t('Final Observatory Saved Results screen.', 'Финальный экран «Saved Results» в Observatory.')} caption={t('Saved results keep their context.', 'Сохранённые результаты хранят контекст.')} />
-          <Shot kind="desktop" src={outcomeComparison} sizes={halfSizes} alt={t('Final Observatory comparison screen showing synchronized metric timelines.', 'Финальный экран сравнения в Observatory с синхронизированными таймлайнами метрик.')} caption={t('Synchronized timelines make runs comparable.', 'Синхронизированные таймлайны делают прогоны сравнимыми.')} />
-        </div>
-      </div>
-
-      <BarCompare
-        title={t('Time to answer “how much memory is Brave using?”', 'Время, чтобы ответить «сколько памяти ест Brave?»')}
-        unit={3}
-        unitLabel={t('One mark is 3 seconds.', 'Одна отметка: 3 секунды.')}
-        rows={[
-          { label: t('Activity Monitor: find and add 17 rows', '«Мониторинг системы»: найти и сложить 17 строк'), value: 60, display: t('≈60 s', '≈60 с') },
-          { label: t('Observatory: read one row', 'Observatory: прочитать одну строку'), value: 3, display: t('≈3 s', '≈3 с'), emphasis: true },
-        ]}
-        note={t('Estimate from walking through both apps. Activity Monitor also keeps refreshing while you add.', 'Оценка по проходу через оба приложения. К тому же «Мониторинг системы» обновляет цифры, пока ты складываешь.')}
-      />
-
-      <p class="marked" data-arrive><Rich text={t(
-        '**All 3 colleagues** who tried it still use it after two months. They mostly use Tests, for two things: recording an app before and after a change, and comparing apps of one kind, like the terminals Ghostty, kitty, and Alacritty.',
-        '**Все 3 коллеги**, которые попробовали Observatory, пользуются им и спустя два месяца. Чаще всего они берут «Tests», и для двух вещей: записать приложение до и после изменения и сравнить приложения одного типа, например терминалы Ghostty, kitty и Alacritty.',
-      )} /></p>
-      <p class="note">{t('Beyond the app itself, I made the telescope artwork, the identity, and the launch film.', 'Кроме самого приложения, я сделал иллюстрацию с телескопом, айдентику и ролик к запуску.')}</p>
-    </StudySection>
+    </section>
 
     <StudySection
       part="next"
@@ -405,7 +404,7 @@ const categories = [
         'Я бы сгруппировал приложения по назначению. Коллеги уже сравнивали приложения одного типа и выбирали их по одному. Группировка по категориям применяет ту же идею уровнем выше: похожее рядом с похожим.',
       )}
     >
-      <div class="next-pair col-wide">
+      <div class="next-pair beside">
         <figure class="category-mock">
           <div class="category-mock__window">
             {categories.map((category) => (
@@ -417,6 +416,7 @@ const categories = [
           </div>
           <figcaption>{t('Concept: one pick adds a whole category to a test.', 'Концепция: один выбор добавляет в тест всю категорию.')}</figcaption>
         </figure>
+        <div class="beside__side">
         <StepCompare
           title={t('Setting up a terminal comparison', 'Настроить сравнение терминалов')}
           rows={[
@@ -425,6 +425,7 @@ const categories = [
           ]}
           note={t('Proposed, not built yet.', 'Предложение, пока не сделано.')}
         />
+        </div>
       </div>
       <p>{t(
         'After that, I want to test with people outside my team: can they tell what happened in a run, and which recordings are worth comparing?',
@@ -469,112 +470,26 @@ const categories = [
 </script>
 
 <style>
-  /* The wordmark keeps its own face and the texture that flashes through its letters, as a logo. */
-  :global(.cover) .wordmark {
-    font-family: var(--font-display);
-    font-size: clamp(3.5rem, 2rem + 6vw, 7rem);
-    font-weight: 700;
-    font-synthesis: none;
-    letter-spacing: -0.06em;
-    line-height: 0.9;
-    white-space: nowrap;
-  }
-
-  .wordmark__letter {
-    position: relative;
-    display: inline-block;
-  }
-
-  .wordmark__letter::after {
-    content: attr(data-letter);
-    position: absolute;
-    inset: -0.14em -0.05em -0.2em;
-    box-sizing: border-box;
-    padding: 0.14em 0.05em 0.2em;
-    background-image: var(--hero-title-texture);
-    background-position: var(--texture-position) 50%;
-    background-size: 900% auto;
-    background-clip: text;
-    color: transparent;
-    opacity: 0;
-    transform: translateY(0.035em) scale(0.985);
-    transform-origin: 50% 70%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: wordmark-texture-flash 820ms cubic-bezier(0.22, 0.75, 0.28, 1) both;
-    animation-delay: calc(180ms + var(--letter-index) * 82ms);
-    will-change: opacity, transform;
-  }
-
-  @keyframes wordmark-texture-flash {
-    0%, 16%, 100% { opacity: 0; transform: translateY(0.035em) scale(0.985); }
-    38%, 68% { opacity: 1; transform: translateY(0) scale(1); }
-  }
-
-  /* The launch film: a poster that becomes the player on request. */
-  .film__link {
-    display: block;
-  }
-
-  .film__stage {
-    position: relative;
-    display: block;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    background: #111;
-  }
-
-  .film__stage :global(img),
-  .film__stage :global(.film__player) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    object-fit: cover;
-    border: 0;
-  }
-
-  .film__play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    background: var(--color-field);
-    translate: -50% -50%;
-  }
-
-  .film__play::after {
-    position: absolute;
-    top: 50%;
-    left: 52%;
-    border-style: solid;
-    border-width: 9px 0 9px 16px;
-    border-color: transparent transparent transparent var(--color-ink);
-    translate: -40% -50%;
-    content: '';
-  }
-
-  .film figcaption {
-    margin-top: 0.85rem;
-  }
-
-  /* One app in Activity Monitor versus Observatory. */
-  .process-split {
+  /* One app in Activity Monitor versus Observatory, across both columns: the 17 rows on the
+     reading column, the one row beside them. */
+  :global(.study-plates) main .process-split {
     --gather-step: 1.4rem;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 1.5rem clamp(2rem, 5vw, 4rem);
+    grid-column: text-start / side-end;
+    grid-template-columns: subgrid;
+    row-gap: 1.5rem;
     margin-block: 2.5rem 2.75rem;
   }
 
   .process-split__side {
     display: flex;
     flex-direction: column;
+    grid-column: text;
     min-width: 0;
+  }
+
+  .process-split__side + .process-split__side {
+    grid-column: side;
   }
 
   .process-split .process-split__tool {
@@ -641,22 +556,25 @@ const categories = [
   }
 
   .process-split__caption {
-    grid-column: 1 / -1;
+    grid-column: text-start / side-end;
   }
 
-  /* The job story, said once in its own words. */
-  .study-document main .job-story {
+  /* The job story, said once in its own words, beside the line that introduces it. */
+  :global(.study-plates) main .job-story {
+    margin: 0;
     color: var(--color-ink);
-    font-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.4rem);
-    line-height: 1.45;
+    font-family: var(--font-study-heading);
+    font-size: clamp(1.35rem, 1.1rem + 0.7vw, 1.75rem);
+    line-height: 1.3;
   }
 
   /* The two people behind the interviews, drawn by hand. */
-  .personas {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.5rem clamp(2rem, 5vw, 4rem);
+  :global(.study-plates) main .personas {
     margin-block: 2.5rem 0;
+  }
+
+  .persona {
+    margin: 0;
   }
 
   .persona :global(img) {
@@ -675,43 +593,138 @@ const categories = [
     margin: 0.2rem 0 0.75rem;
   }
 
-  /* The four first sketches, across the page. */
-  .sketches {
+  /* The four first sketches, and the first prototype's three screens, across both columns. */
+  :global(.study-plates) main :is(.sketches, .prototype-row) {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-column: text-start / side-end;
     gap: clamp(1rem, 2.5vw, 2rem);
+  }
+
+  :global(.study-plates) main .sketches {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     margin-block: 0 3rem;
+  }
+
+  :global(.study-plates) main .prototype-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-block: 1rem 1.5rem;
+  }
+
+  .sketch {
+    margin: 0;
   }
 
   .sketch figcaption {
     margin-top: 0.75rem;
   }
 
-  .prototype-row {
+  /* What shipped: four screens in two rows on the night paper, each with its line. */
+  :global(.study-plates) main .shipped {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
-    margin-block: 1rem 1.5rem;
+    grid-column: text-start / side-end;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 2.5rem);
+    margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .final-screens {
-    display: grid;
-    gap: 2.5rem;
-    margin-block: 2.5rem 1rem;
+  .shipped figure {
+    margin: 0;
   }
 
-  .study-document .pair--wide {
+  .shipped__frame {
+    display: block;
+    padding: clamp(1rem, 2.4vw, 2rem);
+    border-radius: clamp(1rem, 1.6vw, 1.5rem);
+    background: var(--plate-paper);
+  }
+
+  .shipped__frame :global(img) {
+    display: block;
+    width: 100%;
     max-width: none;
-    row-gap: 2.5rem;
+    height: auto;
+    border-radius: 0.5rem;
   }
 
-  /* The category concept beside the steps it saves. */
-  .next-pair {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: start;
+  .shipped figcaption {
+    margin-top: 0.85rem;
+  }
+
+  :global(.study-plates) main .part--results > :global(.plate) {
+    grid-column: text-start / side-end;
+    margin-block: 0;
+  }
+
+  /* The launch film: a poster that becomes the player on request. */
+  :global(.study-plates) main .film {
+    grid-column: text-start / side-end;
+    margin: clamp(3rem, 6vw, 5rem) 0 0;
+  }
+
+  .film__link {
+    display: block;
+  }
+
+  .film__stage {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: clamp(1rem, 1.6vw, 1.5rem);
+    background: #0b0c0a;
+  }
+
+  .film__stage :global(img),
+  .film__stage :global(.film__player) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+  }
+
+  .film__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: #dfe8c8;
+    translate: -50% -50%;
+    transition: scale 200ms var(--ease-out);
+  }
+
+  .film__link:is(:hover, :focus-visible) .film__play {
+    scale: 1.08;
+  }
+
+  .film__play::after {
+    position: absolute;
+    top: 50%;
+    left: 52%;
+    border-style: solid;
+    border-width: 10px 0 10px 17px;
+    border-color: transparent transparent transparent #0b0c0a;
+    translate: -40% -50%;
+    content: '';
+  }
+
+  .film figcaption {
+    margin-top: 0.85rem;
+  }
+
+  /* Next: the category concept in the reading column, the steps it saves beside it. */
+  :global(.study-plates) main .next-pair {
     margin-block: 2.5rem;
+  }
+
+  .category-mock {
+    margin: 0;
   }
 
   .category-mock__window {
@@ -763,27 +776,30 @@ const categories = [
   }
 
   @media (max-width: 1099px) {
-    .sketches {
+    :global(.study-plates) main .process-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .process-split__side,
+    .process-split__side + .process-split__side,
+    .process-split__caption {
+      grid-column: auto;
+    }
+
+    .process-split__caption {
+      grid-column: 1 / -1;
+    }
+
+    :global(.study-plates) main .sketches {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
   @media (max-width: 699px) {
-    .process-split,
-    .personas,
-    .prototype-row,
-    .next-pair {
+    :global(.study-plates) main :is(.process-split, .prototype-row, .shipped) {
       grid-template-columns: minmax(0, 1fr);
-    }
-
-    :global(.cover) .wordmark {
-      font-size: clamp(3.25rem, 15vw, 4rem);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .wordmark__letter::after {
-      animation: none;
     }
   }
 </style>

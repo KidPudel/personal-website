@@ -110,7 +110,7 @@ const phoneSizes = '(max-width: 759px) 46vw, 21rem';
 
   .focus-cover {
     --gutter: clamp(20px, 5vw, 72px);
-    --plate-w: min(100cqw - 2 * var(--gutter), 72rem);
+    --plate-w: min(100cqw - 2 * var(--gutter), var(--wide, 72rem));
     container-type: inline-size;
     color: var(--color-ink);
   }

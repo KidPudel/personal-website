@@ -13,13 +13,14 @@ import menuHero from '../../../assets/case_study_images/supergood/menu-light-her
 import dishHero from '../../../assets/case_study_images/supergood/dish-sheet-light-hero.png';
 import orderTracking from '../../../assets/case_study_images/supergood/order-tracking.png';
 import texture from '../../../assets/showcase-cards/card2.png';
+import groundGlass from '../../../assets/case_study_images/supergood/grounds/glass.webp';
+import groundKitchen from '../../../assets/case_study_images/supergood/grounds/kitchen.webp';
+import groundStreet from '../../../assets/case_study_images/supergood/grounds/street.webp';
 import BarCompare from '../../../components/case-studies/BarCompare.astro';
 import Decision from '../../../components/case-studies/Decision.astro';
 import Plate from '../../../components/case-studies/Plate.astro';
 import Rich from '../../../components/case-studies/Rich.astro';
 import FocusCover from '../../../components/case-studies/supergood/FocusCover.astro';
-import { bloom } from '../../../components/case-studies/bloom';
-import grain from '../../../assets/case_study_images/grain.png';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
 import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
@@ -48,8 +49,6 @@ const complaints = [
   { text: t('Categories moved as you scrolled, so it was easy to lose your place.', 'Категории сдвигаются при прокрутке, и легко потеряться.'), decision: 2, label: decisions[1].title },
   { text: t('Every weekday lunch meant finding the same dishes again.', 'Каждый будний обед приходится заново искать те же блюда.'), decision: 1, label: decisions[0].title },
 ];
-// The results close in every colour the plates used, gathered into one bloom.
-const finaleBloom = bloom({ pigments: ['#f0a648', '#e36414', '#ebad0b', '#97d5fb', '#708818', '#e3c19e'], seed: 67, count: 9 });
 const facts = [
   t('Product designer and the only mobile engineer at PizzaSushiWok, a small company', 'Продуктовый дизайнер и единственный мобильный разработчик в PizzaSushiWok, небольшой компании'),
   t('11 months, 2024', '11 месяцев, 2024'),
@@ -104,6 +103,7 @@ const methods = [
         'Разобрал около 150 отзывов в магазинах приложений, провёл контекстное исследование с 10 людьми, которые заказывают еду на работе, и проверял изменения сравнительным юзабилити-тестированием на 10 коллегах. Переделал меню, карточку блюда и повтор заказа и собрал всё на Flutter.',
       )}
       result={result}
+      beside
       caption={t(
         'The usability test was small and internal, so its numbers show direction rather than proof. The store rating is public.',
         'Юзабилити-тест был маленьким и внутренним, поэтому его цифры показывают направление, но ничего не доказывают. Рейтинг в магазинах публичный.',
@@ -177,17 +177,21 @@ const methods = [
         ))}
       </ul>
 
-      <p class="statement" data-arrive><Rich text={t(
-        'Watching people order made one thing clear: ==weekday orders repeat==. People already knew what they wanted, but the app made them look for it again every time.',
-        'Когда я смотрел, как люди заказывают, стало ясно главное: ==будничные заказы повторяются==. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.',
-      )} /></p>
-
-      <p>{t('I wrote what I heard as three job stories (Jobs to be Done). Each one led to one of the first three decisions:', 'Услышанное я записал в виде трёх job stories (Jobs to be Done). Каждая привела к одному из первых трёх решений:')}</p>
-      <ul class="plain-list">
-        <li>{t('When it’s lunchtime at work, I want my usual meal again with no effort, so ordering takes seconds.', 'Когда на работе время обеда, я хочу без усилий заказать то же, что обычно, чтобы заказ занимал секунды.')}</li>
-        <li>{t('When I’m deciding whether to order, I want to know when the food arrives and what it costs, so nothing surprises me after I pay.', 'Когда я решаю, заказывать ли, я хочу знать, когда привезут и сколько это будет стоить, чтобы после оплаты не было сюрпризов.')}</li>
-        <li>{t('When I pick a dish, I want to be sure it’s worth the price, so I don’t feel I overpaid.', 'Когда я выбираю блюдо, я хочу быть уверен, что оно стоит своих денег, чтобы не чувствовать, что переплатил.')}</li>
-      </ul>
+      <!-- The insight, and beside it the job stories it became. -->
+      <div class="beside insight">
+        <p class="statement" data-arrive><Rich text={t(
+          'Watching people order made one thing clear: ==weekday orders repeat==. People already knew what they wanted, but the app made them look for it again every time.',
+          'Когда я смотрел, как люди заказывают, стало ясно главное: ==будничные заказы повторяются==. Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.',
+        )} /></p>
+        <div class="beside__side insight__stories">
+          <p>{t('I wrote what I heard as three job stories (Jobs to be Done). Each one led to one of the first three decisions:', 'Услышанное я записал в виде трёх job stories (Jobs to be Done). Каждая привела к одному из первых трёх решений:')}</p>
+          <ul class="plain-list">
+            <li>{t('When it’s lunchtime at work, I want my usual meal again with no effort, so ordering takes seconds.', 'Когда на работе время обеда, я хочу без усилий заказать то же, что обычно, чтобы заказ занимал секунды.')}</li>
+            <li>{t('When I’m deciding whether to order, I want to know when the food arrives and what it costs, so nothing surprises me after I pay.', 'Когда я решаю, заказывать ли, я хочу знать, когда привезут и сколько это будет стоить, чтобы после оплаты не было сюрпризов.')}</li>
+            <li>{t('When I pick a dish, I want to be sure it’s worth the price, so I don’t feel I overpaid.', 'Когда я выбираю блюдо, я хочу быть уверен, что оно стоит своих денег, чтобы не чувствовать, что переплатил.')}</li>
+          </ul>
+        </div>
+      </div>
     </StudySection>
 
     <StudySection part="decisions">
@@ -206,6 +210,7 @@ const methods = [
       <Decision
         number={1}
         layout="plate"
+        screen="right"
         title={decisions[0].title}
         navLabel={t('Reorder from history', 'Повтор из истории')}
         problem={t('Rebuilding a usual lunch meant finding each dish again in a menu that kept moving.', 'Чтобы собрать привычный обед, нужно было заново искать каждое блюдо в меню, которое постоянно сдвигалось.')}
@@ -215,7 +220,7 @@ const methods = [
         effect={decisions[0].effect}
         source={t('steps counted from the flow, time from the usability test', 'шаги посчитаны по сценарию, время из юзабилити-теста')}
       >
-        <Plate pigments={["#e5a151", "#be5b0e", "#e3c19e", "#708818"]} seed={11} bleed="right" shots={[{ src: history, alt: t('Order history with an expanded order, a repeat button for each dish, and an add-whole-order button.', 'История заказов: раскрытый заказ, кнопка «Повторить» у каждого блюда и кнопка «Добавить весь заказ».') }]} notes={[
+        <Plate ground={groundKitchen} groundAt="50% 20%" bleed="left" shots={[{ src: history, alt: t('Order history with an expanded order, a repeat button for each dish, and an add-whole-order button.', 'История заказов: раскрытый заказ, кнопка «Повторить» у каждого блюда и кнопка «Добавить весь заказ».') }]} notes={[
           { x: 60.6, y: 43.3, w: 22.6, h: 4.4, label: t('Repeat one dish', 'Повторить одно блюдо'), also: [{ x: 60.6, y: 52.3, w: 22.6, h: 4.4 }] },
           { x: 17.1, y: 72.8, w: 65.8, h: 3.8, label: t('Or bring back the whole order', 'Или вернуть весь заказ') },
         ]} />
@@ -242,7 +247,7 @@ const methods = [
         effect={decisions[1].effect}
         source={t('counted from the flow', 'посчитано по сценарию')}
       >
-        <Plate pigments={["#f0a648", "#e36414", "#edd6b6", "#6e8e4a"]} seed={23} bleed="left" pinned shots={[{ src: menuDark, alt: t('Dark menu with a fixed category bar and a pinned order bar showing time, items, and total.', 'Тёмное меню со строкой категорий и закреплённой панелью заказа: время, позиции, сумма.') }]} notes={[
+        <Plate ground={groundGlass} groundAt="50% 30%" bleed="left" pinned shots={[{ src: menuDark, alt: t('Dark menu with a fixed category bar and a pinned order bar showing time, items, and total.', 'Тёмное меню со строкой категорий и закреплённой панелью заказа: время, позиции, сумма.') }]} notes={[
           { x: 14, y: 38.8, w: 72.7, h: 3.4, label: t('Categories stay in order', 'Категории не прыгают') },
           { x: 16.7, y: 86.2, w: 66.7, h: 4.8, label: t('Time, items, and total stay pinned', 'Время, позиции и сумма всегда на виду') },
         ]} />
@@ -251,6 +256,7 @@ const methods = [
       <Decision
         number={3}
         layout="plate"
+        screen="right"
         title={decisions[2].title}
         navLabel={t('Dish card details', 'Карточка блюда')}
         problem={t('A photo didn’t tell people enough to judge whether a dish was worth its price.', 'По одной фотографии было не понять, стоит ли блюдо своих денег.')}
@@ -259,7 +265,7 @@ const methods = [
         effect={decisions[2].effect}
         source={t('same usability test', 'тот же юзабилити-тест')}
       >
-        <Plate pigments={["#e16308", "#e99e37", "#e7c3a2", "#688616"]} seed={37} bleed="right" crop={{ x: 12, y: 23.5, w: 77, h: 66.5 }} shots={[{ src: dishSheetDark, alt: t('Dark dish card with extra cooking time, weight, the price next to Add, nutrition, and ingredients.', 'Тёмная карточка блюда: дополнительное время приготовления, вес, цена рядом с «В корзину», КБЖУ и состав.') }]} notes={[
+        <Plate ground={groundKitchen} groundAt="50% 85%" bleed="left" crop={{ x: 12, y: 23.5, w: 77, h: 66.5 }} shots={[{ src: dishSheetDark, alt: t('Dark dish card with extra cooking time, weight, the price next to Add, nutrition, and ingredients.', 'Тёмная карточка блюда: дополнительное время приготовления, вес, цена рядом с «В корзину», КБЖУ и состав.') }]} notes={[
           { x: 73, y: 25.7, w: 13.2, h: 3.7, label: t('Extra cooking time', 'Дополнительное время приготовления') },
           { x: 14.3, y: 55.2, w: 71.8, h: 10, label: t('Weight, and the price right next to Add', 'Вес, и цена прямо рядом с «В корзину»') },
           { x: 12.3, y: 68.1, w: 76, h: 21, label: t('Nutrition and ingredients', 'КБЖУ и состав') },
@@ -269,6 +275,7 @@ const methods = [
       <Decision
         number={4}
         layout="plate"
+        screen="left"
         title={decisions[3].title}
         navLabel={t('Familiar patterns', 'Знакомые паттерны')}
         problem={t('A redesign can make loyal customers relearn an app they use every week.', 'После редизайна постоянным клиентам часто приходится заново привыкать к приложению, которым они пользуются каждую неделю.')}
@@ -277,7 +284,7 @@ const methods = [
         effect={decisions[3].effect}
         source={t('store reviews', 'отзывы в магазинах приложений')}
       >
-        <Plate pigments={["#7a8457", "#beae5b", "#beb6a3", "#a8b48a"]} seed={41} bleed="left" caption={t('Basket patterns customers already knew from grocery apps.', 'Корзина по паттернам, знакомым по приложениям доставки продуктов.')} shots={[{ src: basket, alt: t('Basket with quantity controls, promo code, minimum order warning, payment methods, and total.', 'Корзина с количеством, промокодом, предупреждением о минимальной сумме, способами оплаты и итогом.') }]} notes={[
+        <Plate ground={groundGlass} groundAt="50% 80%" bleed="right" caption={t('Basket patterns customers already knew from grocery apps.', 'Корзина по паттернам, знакомым по приложениям доставки продуктов.')} shots={[{ src: basket, alt: t('Basket with quantity controls, promo code, minimum order warning, payment methods, and total.', 'Корзина с количеством, промокодом, предупреждением о минимальной сумме, способами оплаты и итогом.') }]} notes={[
           { x: 42, y: 27, w: 23.5, h: 3.9, label: t('Quantity controls', 'Выбор количества') },
           { x: 14, y: 46.9, w: 72, h: 9.8, label: t('Promo code and minimum order warning', 'Промокод и предупреждение о минимальной сумме') },
           { x: 14, y: 61.4, w: 72, h: 18.3, label: t('Payment methods', 'Способы оплаты') },
@@ -287,6 +294,7 @@ const methods = [
       <Decision
         number={5}
         layout="plate"
+        screen="right"
         title={decisions[4].title}
         navLabel={t('One Flutter app', 'Одно приложение')}
         problem={t('With two separate apps, every change had to be built twice and could behave differently on each platform.', 'С двумя отдельными приложениями каждое изменение приходилось делать дважды, и на разных платформах оно могло работать по-разному.')}
@@ -295,18 +303,16 @@ const methods = [
         instead={t('Keeping both native apps would have meant doing every change twice, by one person.', 'Если оставить два нативных приложения, каждое изменение пришлось бы делать дважды, и всё одному.')}
         effect={decisions[4].effect}
       >
-        <Plate pigments={["#ebad0b", "#97d5fb", "#f7deaa", "#aec5c6"]} seed={53} bleed="right" shots={[
+        <Plate ground={groundStreet} shots={[
           { src: deliveryMap, alt: t('Address picker on a map with the delivery zone and a confirmation that the address is inside it.', 'Выбор адреса на карте с зоной доставки и подтверждением, что адрес в неё входит.'), label: t('Delivery zone check', 'Проверка зоны доставки') },
           { src: orderTracking, alt: t('Order tracking with expected time, order stages, a route map, and courier contact.', 'Отслеживание заказа: ожидаемое время, этапы, карта маршрута и связь с курьером.'), label: t('Order tracking', 'Отслеживание заказа') },
         ]} />
       </Decision>
     </StudySection>
 
-    <!-- Results end in one bloom of every plate's colours, and the time result racks into focus
-         as it arrives: the page ends in the world it began in. -->
+    <!-- Results: the time result racks into focus as it arrives. -->
     <section class="part part--results" id="results" data-index-section data-index-label={t('Results', 'Результаты')}>
       <div class="finale" data-arrive>
-        <div class="finale__bloom" aria-hidden="true" style={`--washes: ${finaleBloom}; --grain: url(${grain.src})`}></div>
         <h2>{t('Results', 'Результаты')}</h2>
         <p class="part__lead">{t('I checked the redesign twice: in the usability test with colleagues, and in the stores after the release.', 'Я проверил редизайн дважды: на юзабилити-тесте с коллегами и в магазинах приложений после релиза.')}</p>
       <BarCompare

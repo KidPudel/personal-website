@@ -1,0 +1,397 @@
+---
+import { getImage, Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import titleTexture from '../../../assets/case_study_images/ditchered_observatory_bg.png';
+import footage from '../../../assets/case_study_images/observatory/archive-telescope.mp4?url';
+import footageFrame from '../../../assets/case_study_images/observatory/archive-telescope-frame.webp';
+import footageStill from '../../../assets/case_study_images/observatory/archive-telescope-dither.png';
+import Rich from '../Rich.astro';
+
+// Observatory opens at night, on the archive film of an astronomer at a telescope, printed in the
+// launch film's two inks and seen through a round eyepiece. Scrolling brings the eyepiece to the
+// middle of the window, and what is in it changes from the sky to your apps: Observatory's live
+// view. Then the eyepiece opens to the whole window. Without the live layer, or with reduced
+// motion, it is the title beside the eyepiece, and the film is its dithered still. On phones it is
+// the title over the eyepiece, the film playing in it.
+
+interface Props {
+  title: string;
+  pitch: string;
+  /** The result, numbers in **bold**. */
+  outcome: string;
+  facts: string[];
+  /** Observatory's live view, what the eyepiece turns to. */
+  view: ImageMetadata;
+  viewAlt: string;
+}
+
+const { title, pitch, outcome, facts, view, viewAlt } = Astro.props;
+const texture = await getImage({ src: titleTexture, width: 1600, format: 'webp', quality: 80 });
+const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width < view.width).concat(Math.min(view.width, 2400)))];
+---
+
+<header class="eyepiece" data-eyepiece>
+  <div class="eyepiece__stage">
+    <div class="eyepiece__text">
+      <h1 class="eyepiece__title wordmark" aria-label={title} style={`--title-texture: url('${texture.src}')`}>
+        {title.split('').map((letter, index) => (
+          <span class="wordmark__letter" aria-hidden="true" data-letter={letter} style={`--letter-index: ${index}; --texture-position: ${(index / (title.length - 1)) * 100}%`}>{letter}</span>
+        ))}
+      </h1>
+      <p class="eyepiece__pitch">{pitch}</p>
+      <p class="eyepiece__outcome"><Rich text={outcome} /></p>
+      <p class="eyepiece__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
+    </div>
+
+    <!-- The eyepiece: the dithered still at once, then the film, dithered frame by frame. -->
+    <div class="eyepiece__lens" aria-hidden="true">
+      <div class="eyepiece__film">
+        <img class="eyepiece__still" src={footageStill.src} width={footageStill.width} height={footageStill.height} alt="" loading="eager" decoding="async" fetchpriority="high" />
+        <canvas class="eyepiece__canvas" width="470" height="320"></canvas>
+        <video class="eyepiece__video" src={footage} poster={footageFrame.src} width="470" height="320" muted loop playsinline preload="none" tabindex="-1"></video>
+      </div>
+    </div>
+
+    <div class="eyepiece__view">
+      <Image src={view} alt={viewAlt} widths={viewWidths} sizes="(max-width: 759px) 96vw, min(88vw, 72rem)" format="webp" quality={85} loading="lazy" decoding="async" />
+    </div>
+  </div>
+</header>
+
+<script>
+  import { dither } from './dither.mjs';
+
+  const cover = document.querySelector<HTMLElement>('[data-eyepiece]');
+  const stage = cover?.querySelector<HTMLElement>('.eyepiece__stage');
+  const video = cover?.querySelector<HTMLVideoElement>('.eyepiece__video');
+  const canvas = cover?.querySelector<HTMLCanvasElement>('.eyepiece__canvas');
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  const light = Boolean(connection?.saveData) || /(^|-)2g$/.test(connection?.effectiveType ?? '');
+
+  if (cover && stage) {
+    // ---- The pull: how far through the cover, eased, as --p on the stage. -----------------------
+    let frame = 0;
+    let travel = 1;
+    let watching = false;
+    const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+    const measure = () => {
+      travel = Math.max(1, cover.offsetHeight - window.innerHeight);
+    };
+    // While the night is under the site's header, the header takes the night's inks.
+    const root = document.documentElement;
+    const update = () => {
+      frame = 0;
+      const box = cover.getBoundingClientRect();
+      const progress = Math.min(1, Math.max(0, -box.top / travel));
+      stage.style.setProperty('--p', ease(progress).toFixed(4));
+      root.classList.toggle('is-night', box.bottom > 72);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    // ---- The film: plays only while the cover is on screen, dithered into the canvas. ---------
+    const film = video && canvas && !still.matches && !light ? { video, canvas } : null;
+    const context = film?.canvas.getContext('2d', { willReadFrequently: true });
+    let drawing = false;
+    const draw = () => {
+      if (!film || !context || film.video.paused) {
+        drawing = false;
+        return;
+      }
+      context.drawImage(film.video, 0, 0, film.canvas.width, film.canvas.height);
+      const pixels = context.getImageData(0, 0, film.canvas.width, film.canvas.height);
+      dither(pixels.data, pixels.width, pixels.height);
+      context.putImageData(pixels, 0, 0);
+      cover.classList.add('is-rolling');
+      if ('requestVideoFrameCallback' in film.video) film.video.requestVideoFrameCallback(draw);
+      else requestAnimationFrame(draw);
+    };
+    const play = () => {
+      if (!film) return;
+      if (watching && !document.hidden) {
+        film.video.preload = 'auto';
+        film.video.play().then(() => {
+          if (!drawing) {
+            drawing = true;
+            draw();
+          }
+        }).catch(() => undefined);
+      } else {
+        film.video.pause();
+      }
+    };
+
+    new IntersectionObserver(([entry]) => {
+      watching = entry.isIntersecting;
+      schedule();
+      play();
+    }).observe(cover);
+
+    new ResizeObserver(() => {
+      measure();
+      schedule();
+    }).observe(cover);
+
+    document.addEventListener('visibilitychange', play);
+    window.addEventListener('scroll', () => {
+      if (watching || root.classList.contains('is-night')) schedule();
+    }, { passive: true });
+    window.addEventListener('resize', () => {
+      measure();
+      schedule();
+    }, { passive: true });
+    measure();
+    update();
+  }
+</script>
+
+<style>
+  /* ---- At rest: night, the title, and the eyepiece beside it ---------------------------------- */
+
+  /* Night inks: the page's own colour names, so every rule inside reads on the dark. */
+  .eyepiece {
+    --night-ink: #dfe8c8;
+    --color-ink: var(--night-ink);
+    --color-copy: rgb(223 232 200 / 84%);
+    --color-muted: rgb(223 232 200 / 62%);
+    --gutter: clamp(20px, 5vw, 72px);
+    container-type: inline-size;
+    background: var(--plate-paper, #0b0c0a);
+    color: var(--night-ink);
+  }
+
+  .eyepiece__stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    width: min(100% - 2 * var(--gutter), var(--wide, 76rem));
+    margin: 0 auto;
+    padding-block: clamp(8rem, 14vw, 11rem) clamp(4rem, 8vw, 7rem);
+  }
+
+  .eyepiece__lens {
+    position: relative;
+    width: min(100%, 34rem);
+    aspect-ratio: 1;
+    justify-self: center;
+  }
+
+  .eyepiece__film {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 50%;
+    background: #0b0c0a;
+    box-shadow: 0 0 0 1.5px rgb(223 232 200 / 55%), 0 0 0 0.6rem rgb(11 12 10 / 80%), 0 0 0 calc(0.6rem + 1px) rgb(223 232 200 / 18%);
+  }
+
+  .eyepiece__still,
+  .eyepiece__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    object-fit: cover;
+    /* The astronomer's eye at the telescope stays in the eyepiece. */
+    object-position: 16% 50%;
+    image-rendering: pixelated;
+  }
+
+  .eyepiece__canvas {
+    opacity: 0;
+  }
+
+  .eyepiece:global(.is-rolling) .eyepiece__canvas {
+    opacity: 1;
+  }
+
+  .eyepiece__video {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .eyepiece__view {
+    display: none;
+  }
+
+  /* ---- Words: the name in the launch film's lettering, the promise, the result, who did what --- */
+
+  :global(.study-plates main) .eyepiece__title {
+    margin: 0;
+    color: var(--night-ink);
+    font-family: var(--font-display);
+    font-size: clamp(3.25rem, 1.5rem + 6vw, 7rem);
+    font-weight: 700;
+    font-synthesis: none;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+    white-space: nowrap;
+  }
+
+  .wordmark__letter {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* The artwork's texture flashes through each letter once, as the name is set. */
+  .wordmark__letter::after {
+    position: absolute;
+    inset: -0.14em -0.05em -0.2em;
+    box-sizing: border-box;
+    padding: 0.14em 0.05em 0.2em;
+    background-image: var(--title-texture);
+    background-position: var(--texture-position) 50%;
+    background-size: 900% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    content: attr(data-letter);
+    opacity: 0;
+    -webkit-text-fill-color: transparent;
+    transform: translateY(0.035em) scale(0.985);
+    transform-origin: 50% 70%;
+    animation: wordmark-flash 820ms cubic-bezier(0.22, 0.75, 0.28, 1) both;
+    animation-delay: calc(180ms + var(--letter-index) * 82ms);
+  }
+
+  @keyframes wordmark-flash {
+    0%, 16%, 100% { opacity: 0; transform: translateY(0.035em) scale(0.985); }
+    38%, 68% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .eyepiece .eyepiece__pitch {
+    max-width: 26rem;
+    margin: 1.25rem 0 0;
+    color: var(--night-ink);
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+    line-height: 1.38;
+  }
+
+  .eyepiece .eyepiece__outcome {
+    max-width: 30rem;
+    margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
+    color: var(--night-ink);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+
+  :global(.study-plates main) .eyepiece__outcome :global(strong) {
+    color: #fff;
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  .eyepiece .eyepiece__facts {
+    max-width: 26rem;
+    margin: 1.5rem 0 0;
+    color: rgb(223 232 200 / 70%);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  /* Clear of the section ticks at the window's left edge. */
+  @media (min-width: 1001px) {
+    .eyepiece {
+      --gutter: max(clamp(20px, 5vw, 72px), 6.5rem);
+    }
+  }
+
+  /* ---- The pull: the eyepiece comes to the middle, turns to your apps, and opens -------------- */
+
+  @media (prefers-reduced-motion: no-preference) and (min-width: 760px) {
+    :global(html.js) .eyepiece {
+      --travel: 130svh;
+      height: calc(100svh + var(--travel));
+    }
+
+    :global(html.js) .eyepiece__stage {
+      --p: 0;
+      /* The window the eyepiece opens to, and the eyepiece's size at rest and in the middle. */
+      --view-w: min(100cqw - 2 * var(--gutter), 72rem, (100svh - 7rem) / 0.645);
+      --view-h: calc(var(--view-w) * 0.645);
+      --r0: min(17rem, 23cqw, 36svh);
+      --r1: min(21rem, 30cqw, 38svh);
+      /* Phases: 0 to 0.45 the eyepiece travels to the middle; 0.35 to 0.6 the film gives way to
+         the apps; 0.6 to 1 the eyepiece opens to the whole window. */
+      --move: min(1, var(--p) / 0.45);
+      --turn: min(1, max(0, (var(--p) - 0.35) / 0.25));
+      --open: min(1, max(0, (var(--p) - 0.6) / 0.4));
+      --r: calc(var(--r0) + (var(--r1) - var(--r0)) * var(--move));
+      --cx: calc(75cqw + (50cqw - 75cqw) * var(--move));
+      --cy: calc(55svh + (50svh - 55svh) * var(--move));
+      position: sticky;
+      top: 0;
+      display: block;
+      width: auto;
+      height: 100svh;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    :global(html.js) .eyepiece__text {
+      position: absolute;
+      top: 50%;
+      left: var(--gutter);
+      width: min(44cqw, 34rem);
+      opacity: calc(1 - min(1, var(--p) * 3));
+      translate: 0 calc(-50% - var(--p) * 6rem);
+    }
+
+    /* The eyepiece is drawn at its size in the middle and scaled, so only transform changes. */
+    :global(html.js) .eyepiece__lens {
+      position: absolute;
+      top: calc(var(--cy) - var(--r1));
+      left: calc(var(--cx) - var(--r1));
+      width: calc(2 * var(--r1));
+      opacity: calc(1 - var(--open) * 1.4);
+      scale: calc(var(--r) / var(--r1));
+    }
+
+    /* Your apps, in the same circle at first, then the whole window. */
+    :global(html.js) .eyepiece__view {
+      position: absolute;
+      top: calc(50svh - var(--view-h) / 2);
+      left: calc(50cqw - var(--view-w) / 2);
+      display: block;
+      width: var(--view-w);
+      opacity: var(--turn);
+      clip-path: circle(calc(var(--r1) + (var(--view-w) * 0.62 - var(--r1)) * var(--open)) at 50% 50%);
+    }
+
+    :global(html.js) .eyepiece__view :global(img) {
+      display: block;
+      width: 100%;
+      max-width: none;
+      height: auto;
+    }
+  }
+
+  /* ---- Phones: the title, then the eyepiece under it ------------------------------------------ */
+
+  @media (max-width: 759px) {
+    .eyepiece__stage {
+      grid-template-columns: minmax(0, 1fr);
+      padding-top: 7rem;
+    }
+
+    .eyepiece__title {
+      font-size: clamp(3rem, 15vw, 4rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark__letter::after {
+      animation: none;
+    }
+  }
+</style>

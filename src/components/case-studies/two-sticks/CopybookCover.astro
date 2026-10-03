@@ -1,0 +1,182 @@
+---
+import { copybookCell } from './copybook';
+import Rich from '../Rich.astro';
+
+// Two Sticks opens on a copybook, the practice its notebook sheets end with: the character 教 (from
+// the project's own sheet) written once as the model, then again and again from faint traces, until
+// it can be written from memory. As the page arrives the rows write themselves, one square at a
+// time, each character appearing in strokes; the last row is left as traces, still to practise.
+// With reduced motion, the rows are simply written.
+
+interface Props {
+  title: string;
+  pitch: string;
+  /** The result, the key words in **bold**. */
+  outcome: string;
+  facts: string[];
+}
+
+const { title, pitch, outcome, facts } = Astro.props;
+const character = '教';
+// Three rows of six: the model and five copies, then six copies, then six traces left to write.
+const rows = [
+  ['model', 'copy', 'copy', 'copy', 'copy', 'copy'],
+  ['copy', 'copy', 'copy', 'copy', 'copy', 'copy'],
+  ['trace', 'trace', 'trace', 'trace', 'trace', 'trace'],
+];
+let order = 0;
+---
+
+<header class="copybook" data-copybook>
+  <div class="copybook__stage">
+    <div class="copybook__text">
+      <h1>{title}</h1>
+      <p class="copybook__pitch">{pitch}</p>
+      <p class="copybook__outcome"><Rich text={outcome} /></p>
+      <p class="copybook__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
+    </div>
+
+    <div class="copybook__sheet" aria-hidden="true" style={`--cell: ${copybookCell}`}>
+      {rows.map((row) => (
+        <div class="copybook__row">
+          {row.map((kind) => (
+            <span class:list={['copybook__square', `copybook__square--${kind}`]}>
+              <span class="copybook__trace">{character}</span>
+              {kind !== 'trace' && <span class="copybook__ink" style={`--i: ${order++}`}>{character}</span>}
+            </span>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+</header>
+
+<style>
+  .copybook {
+    --gutter: clamp(20px, 5vw, 72px);
+    --ink-purple: #4d3a99;
+  }
+
+  .copybook__stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    width: min(100% - 2 * var(--gutter), var(--wide, 76rem));
+    min-height: min(100svh, 56rem);
+    margin: 0 auto;
+    padding-block: clamp(7rem, 12vw, 9rem) clamp(2rem, 5vw, 4rem);
+  }
+
+  .copybook h1 {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-study-heading);
+    font-size: clamp(3.25rem, 2rem + 5vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+  }
+
+  .copybook .copybook__pitch {
+    max-width: 28rem;
+    margin: 1.1rem 0 0;
+    color: var(--color-ink);
+    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
+    line-height: 1.38;
+  }
+
+  .copybook .copybook__outcome {
+    max-width: 31rem;
+    margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+
+  .copybook .copybook__facts {
+    max-width: 26rem;
+    margin: 1.5rem 0 0;
+    color: var(--color-copy);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  /* The sheet: squares of the writing grid, edged like the project's notebook sheets. */
+  .copybook__sheet {
+    --square: min(6.5rem, (50vw - 8rem) / 6);
+    display: grid;
+    gap: 0;
+    width: fit-content;
+    justify-self: center;
+    padding: clamp(0.75rem, 1.5vw, 1.25rem);
+    border-radius: clamp(1rem, 1.6vw, 1.5rem);
+    background: #fbfaf6;
+    box-shadow: inset 0 0 0 1.5px var(--color-ink);
+  }
+
+  .copybook__row {
+    display: flex;
+  }
+
+  .copybook__row + .copybook__row {
+    margin-top: 0.75rem;
+  }
+
+  .copybook__square {
+    position: relative;
+    display: grid;
+    width: var(--square);
+    aspect-ratio: 1;
+    place-items: center;
+    background: var(--cell) 0 0 / 100% 100%;
+    color: var(--color-ink);
+    font-family: 'Kaiti SC', STKaiti, KaiTi, 'PingFang SC', 'Hiragino Sans GB', 'Noto Serif CJK SC', 'Songti SC', serif;
+    font-size: calc(var(--square) * 0.74);
+    line-height: 1;
+  }
+
+  .copybook__trace,
+  .copybook__ink {
+    grid-area: 1 / 1;
+  }
+
+  .copybook__trace {
+    color: rgb(17 17 15 / 13%);
+  }
+
+  .copybook__square--model .copybook__ink {
+    color: var(--ink-purple);
+  }
+
+  /* Each character arrives in strokes, top to bottom, a square at a time. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .copybook__ink {
+      animation: copybook-write 640ms steps(5, end) both;
+      animation-delay: calc(500ms + var(--i) * 190ms);
+    }
+  }
+
+  @keyframes copybook-write {
+    from { clip-path: inset(0 0 100% 0); }
+    to { clip-path: inset(0); }
+  }
+
+  /* Clear of the section ticks at the window's left edge. */
+  @media (min-width: 1001px) {
+    .copybook {
+      --gutter: max(clamp(20px, 5vw, 72px), 6.5rem);
+    }
+  }
+
+  @media (max-width: 759px) {
+    .copybook__stage {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    .copybook__sheet {
+      --square: calc((100vw - 2 * var(--gutter) - 2rem) / 6);
+    }
+  }
+</style>

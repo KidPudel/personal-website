@@ -10,9 +10,11 @@ interface Props {
   result: string;
   /** One honest note about the numbers, set as a note in the margin beside the result. */
   caption?: string;
+  /** On wide pages, the result and its note sit in the side column beside the rest. */
+  beside?: boolean;
 }
 
-const { situation, task, action, result, caption } = Astro.props;
+const { situation, task, action, result, caption, beside = false } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
 const parts = [
   { label: t('Situation.', 'Ситуация.'), text: situation },
@@ -23,9 +25,21 @@ const parts = [
 
 <section class="part part--summary" id="summary" data-index-section data-index-label={t('Summary', 'Коротко')} aria-labelledby="summary-title">
   <h2 id="summary-title">{t('The short version', 'Коротко')}</h2>
-  {parts.map((part) => <p><span class="summary__label">{part.label}</span> <Rich text={part.text} /></p>)}
-  <div class="outcome outcome--right">
-    <p class="marked" id="summary-result" data-arrive><span class="summary__label">{t('Result.', 'Результат.')}</span> <Rich text={result} /></p>
-    {caption && <p class="callout" data-note-for="summary-result">{caption}</p>}
-  </div>
+  {beside ? (
+    <div class="beside">
+      <div>{parts.map((part) => <p><span class="summary__label">{part.label}</span> <Rich text={part.text} /></p>)}</div>
+      <div class="beside__side summary__result">
+        <p class="marked" id="summary-result" data-arrive><span class="summary__label">{t('Result.', 'Результат.')}</span> <Rich text={result} /></p>
+        {caption && <p class="callout">{caption}</p>}
+      </div>
+    </div>
+  ) : (
+    <>
+      {parts.map((part) => <p><span class="summary__label">{part.label}</span> <Rich text={part.text} /></p>)}
+      <div class="outcome outcome--right">
+        <p class="marked" id="summary-result" data-arrive><span class="summary__label">{t('Result.', 'Результат.')}</span> <Rich text={result} /></p>
+        {caption && <p class="callout" data-note-for="summary-result">{caption}</p>}
+      </div>
+    </>
+  )}
 </section>
