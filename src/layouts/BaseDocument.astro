@@ -55,6 +55,12 @@ const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 // Individual case studies get the section index; the case-studies listing does not.
 const showReadingProgress = /\/case-studies\/[^/]+\//.test(Astro.url.pathname);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
+// The homepage and the case studies open into each other: a work card grows into its study's
+// opening, and the study shrinks back into the card on the way home (see the script below).
+const isHome = pagePath === '/';
+const opensIntoStudy = isHome || showReadingProgress;
+// The new page holds its first paint until the element it morphs into has been parsed.
+const renderAfter = isHome ? '#side-projects' : '#summary';
 const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
 ---
@@ -122,6 +128,101 @@ const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {opensIntoStudy && <link rel="expect" href={renderAfter} blocking="render" />}
+    {opensIntoStudy && (
+      <script is:inline>
+        // A work card and the case study it opens are one object across the two pages: the
+        // card's panel and the study's opening carry data-study-transition with the study's slug,
+        // and are named only for a navigation between the homepage and that study. If the element
+        // is off screen (the reader scrolled deep into a study before going back), it isn't named,
+        // and the pages simply crossfade.
+        (() => {
+          const base = document.documentElement.dataset.base ?? '/';
+          const pathOf = (url) => new URL(url, location.href).pathname;
+          const isHome = (url) => [base, `${base}ru/`].includes(pathOf(url));
+          const studyOf = (url) => pathOf(url).match(/\/case-studies\/([^/]+)\/?$/)?.[1] ?? null;
+          const slugFor = (here, there) =>
+            isHome(here) ? studyOf(there) : isHome(there) ? studyOf(here) : null;
+
+          const name = (slug, transition) => {
+            const element = slug && document.querySelector(`[data-study-transition="${slug}"]`);
+            if (!element) return;
+            const box = element.getBoundingClientRect();
+            if (box.bottom < 0 || box.top > innerHeight) return;
+            element.style.viewTransitionName = `study-${slug}`;
+            element.style.viewTransitionClass = 'study';
+            transition.finished.finally(() => {
+              element.style.viewTransitionName = '';
+              element.style.viewTransitionClass = '';
+            });
+          };
+
+          addEventListener('pageswap', (event) => {
+            const to = event.activation?.entry?.url;
+            if (event.viewTransition && to) name(slugFor(location.href, to), event.viewTransition);
+          });
+          addEventListener('pagereveal', (event) => {
+            const from = window.navigation?.activation?.from?.url;
+            if (event.viewTransition && from) name(slugFor(location.href, from), event.viewTransition);
+          });
+        })();
+      </script>
+    )}
+    {opensIntoStudy && (
+      <style is:inline>
+        @view-transition {
+          navigation: auto;
+        }
+
+        /* The page around the work crossfades; the work itself travels. */
+        ::view-transition-old(root) {
+          animation: 200ms cubic-bezier(0.23, 1, 0.32, 1) both study-page-out;
+        }
+
+        ::view-transition-new(root) {
+          animation: 360ms cubic-bezier(0.23, 1, 0.32, 1) 120ms both study-page-in;
+        }
+
+        ::view-transition-group(*.study) {
+          animation-duration: 620ms;
+          animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        /* Both pictures fill the travelling box, so neither stretches as it changes shape. */
+        ::view-transition-old(*.study),
+        ::view-transition-new(*.study) {
+          height: 100%;
+          object-fit: cover;
+          animation-duration: 620ms;
+          animation-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        @keyframes study-page-out {
+          to { opacity: 0; }
+        }
+
+        @keyframes study-page-in {
+          from { opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          ::view-transition-group(*),
+          ::view-transition-old(*),
+          ::view-transition-new(*) {
+            animation-duration: 0s !important;
+            animation-delay: 0s !important;
+          }
+
+          ::view-transition-old(root) {
+            animation: 160ms linear both study-page-out !important;
+          }
+
+          ::view-transition-new(root) {
+            animation: 160ms linear both study-page-in !important;
+          }
+        }
+      </style>
+    )}
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}

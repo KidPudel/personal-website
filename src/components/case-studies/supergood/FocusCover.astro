@@ -34,7 +34,7 @@ const phoneSizes = '(max-width: 759px) 46vw, 21rem';
   <div class="focus-cover__stage">
     <!-- A 326-byte copy of the texture paints with the page, so the field is never empty while the
          full texture loads. The texture is a blur already, so the two read the same. -->
-    <div class="focus-cover__field" style={`background-image: url(${groundPoster})`}>
+    <div class="focus-cover__field" data-study-transition="supergood" style={`background-image: url(${groundPoster})`}>
       <Image src={ground} alt="" widths={[800, 1200, 1600]} sizes="100vw" format="webp" quality={78} loading="eager" decoding="async" fetchpriority="high" />
     </div>
 

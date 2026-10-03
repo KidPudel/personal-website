@@ -45,7 +45,7 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
     </div>
 
     <!-- The eyepiece: the dithered still at once, then the film, dithered frame by frame. -->
-    <div class="eyepiece__lens" aria-hidden="true">
+    <div class="eyepiece__lens" aria-hidden="true" data-study-transition="observatory">
       <div class="eyepiece__film">
         <img class="eyepiece__still" src={footageStill.src} width={footageStill.width} height={footageStill.height} alt="" loading="eager" decoding="async" fetchpriority="high" />
         <canvas class="eyepiece__canvas" width="470" height="320"></canvas>

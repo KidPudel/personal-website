@@ -49,6 +49,10 @@ User-authorized exception: the three Instagram prototype walkthroughs play silen
 
 User-authorized exception (Igor, 2026-10-02): the archive footage on Observatory's cover is shown as a two-colour ordered dither, the print of the launch film's artwork, drawn to a canvas from a small silent MP4 while it plays. The dithered still (`archive-telescope-dither.png`, a two-colour PNG of a few kilobytes) is the first-viewport image and the only one with high priority; it stays in place without JavaScript, under reduced motion, data saver, or a slow connection, and until the first frame is drawn. The MP4 keeps a parser-discoverable source and `preload="none"`, and plays only while the cover is on screen and the document is visible. `scripts/prepare-observatory-footage.mjs` makes the MP4 from the original GIF (H.264, yuv420p, faststart, no audio) and dithers the still with the same algorithm the page uses (`src/components/case-studies/observatory/dither.mjs`). The original GIF is not kept in the repository; pass its path to the script (`node scripts/prepare-observatory-footage.mjs path/to/telescope.gif`). The live view the eyepiece turns to is lazy, so phones, where it is not shown, never fetch it.
 
+### Homepage opening sky
+
+The opening sky offers AV1 first and H.264 after it, for each screen size: browsers that decode AV1 load about half the bytes (0.71 MB instead of 1.38 MB on desktop, 120 KB instead of 203 KB on phones), and the rest play the H.264 files as before. `scripts/prepare-opening-sky.mjs` makes the AV1 files from the original sky video. Their quality is set where the sky's dither dots survive (CRF 30): smaller encodes smooth the dither away, which is the texture the opening is made of.
+
 ### Instagram Saves pile
 
 The pile of saves on the Instagram Saves cover, and the faint paper of its frames, is one generated sprite (`pile/pile.webp`, about 300 KB, 54 tiles of 160 × 200) made by `scripts/prepare-instagram-pile.mjs` from the prototype's thumbnails, so the wall costs one request instead of fifty-four. It is decorative (`aria-hidden`); the search it shows is told in the text.

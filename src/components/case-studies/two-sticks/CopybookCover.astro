@@ -36,7 +36,7 @@ let order = 0;
       <p class="copybook__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
     </div>
 
-    <div class="copybook__sheet" aria-hidden="true" style={`--cell: ${copybookCell}`}>
+    <div class="copybook__sheet" aria-hidden="true" data-study-transition="two-sticks" style={`--cell: ${copybookCell}`}>
       {rows.map((row) => (
         <div class="copybook__row">
           {row.map((kind) => (

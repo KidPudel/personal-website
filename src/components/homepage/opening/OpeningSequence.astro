@@ -1,7 +1,9 @@
 ---
 import skyPosterInline from '../../../assets/art/dithered-sky-poster.webp?inline';
 import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
+import skyMobileAv1VideoUrl from '../../../assets/art/dithered-sky-mobile-av1.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
+import skyAv1VideoUrl from '../../../assets/art/dithered-sky-av1.mp4?url';
 import { identity } from '../../../content/homepage/identity';
 import { toLocale } from '../../../i18n/locales';
 import HelloAnimation from '../identity/HelloAnimation.astro';
@@ -35,10 +37,22 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
         disableRemotePlayback
         tabindex="-1"
       >
+        <!-- AV1 first, at about half the bytes, for browsers that decode it; H.264 for the rest
+             (scripts/prepare-opening-sky.mjs). -->
+        <source
+          src={skyMobileAv1VideoUrl}
+          type='video/mp4; codecs="av01.0.01M.08"'
+          media="(max-width: 44.999rem) and (prefers-reduced-motion: no-preference)"
+        />
         <source
           src={skyMobileVideoUrl}
           type="video/mp4"
           media="(max-width: 44.999rem) and (prefers-reduced-motion: no-preference)"
+        />
+        <source
+          src={skyAv1VideoUrl}
+          type='video/mp4; codecs="av01.0.05M.08"'
+          media="(min-width: 45rem) and (prefers-reduced-motion: no-preference)"
         />
         <source
           src={skyVideoUrl}

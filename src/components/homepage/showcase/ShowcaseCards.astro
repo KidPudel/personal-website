@@ -31,6 +31,7 @@ const cards = caseStudies
     tag: study.tag[locale],
     year: study.year,
     href: localePath(caseStudyPath(study.slug), locale),
+    slug: study.slug,
     ...layout[study.slug as keyof typeof layout],
   }))
   .sort((a, b) => a.position - b.position);
@@ -66,7 +67,8 @@ const cards = caseStudies
           card.portrait && 'showcase__card--portrait',
         ]}
       >
-        <div class="showcase__panel">
+        <!-- The panel grows into its case study's opening when the study opens (BaseDocument). -->
+        <div class="showcase__panel" data-study-transition={card.slug}>
           <Image
             class="showcase__background"
             src={card.background}
@@ -235,6 +237,40 @@ const cards = caseStudies
     box-shadow:
       0 1px 0 rgb(17 17 15 / 0.06),
       0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+  }
+
+  /* Pointing at the pitch (the case-study link) lifts the panel above it a little, so the small
+     line and the big picture read as one thing to open. */
+  .showcase__panel {
+    transition:
+      transform 280ms var(--ease-out),
+      box-shadow 280ms var(--ease-out);
+  }
+
+  .showcase__card:has(.work-caption__link:focus-visible) .showcase__panel {
+    transform: translateY(-0.2rem) scale(1.012);
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.75rem 4.25rem rgb(17 17 15 / 0.14);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .showcase__card:has(.work-caption__link:hover) .showcase__panel {
+      transform: translateY(-0.2rem) scale(1.012);
+      box-shadow:
+        0 1px 0 rgb(17 17 15 / 0.06),
+        0 1.75rem 4.25rem rgb(17 17 15 / 0.14);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .showcase__panel {
+      transition: box-shadow 200ms linear;
+    }
+
+    .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) .showcase__panel {
+      transform: none;
+    }
   }
 
   .showcase__panel::after {
