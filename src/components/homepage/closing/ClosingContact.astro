@@ -1,12 +1,14 @@
 ---
-import { connectLinks, publicEmail } from '../../../config/site';
+import { connectLinks, publicEmail, resumeLink } from '../../../config/site';
 import { toLocale, translator } from '../../../i18n/locales';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 // The header already says "Get in touch", so the heading here is for assistive tech only.
 // Email leads as the address itself; the rest follow as a quiet line.
-const [email, ...elsewhere] = connectLinks(locale);
+const [email, ...others] = connectLinks(locale);
+const resume = resumeLink(locale);
+const elsewhere = [...others, { label: resume.file, href: resume.href }];
 ---
 
 <footer id="contact" class="closing-contact" aria-labelledby="closing-contact-title">
@@ -56,8 +58,10 @@ const [email, ...elsewhere] = connectLinks(locale);
     list-style: none;
   }
 
+  /* Every link is at least a fingertip wide, even a one-letter name like X. */
   .closing-contact__links a {
     display: inline-flex;
+    min-width: 2.75rem;
     min-height: 2.75rem;
     align-items: center;
     color: inherit;

@@ -53,11 +53,13 @@ import BaseDocument from '../layouts/BaseDocument.astro';
       if (contactLabel) contactLabel.textContent = 'Связаться';
       header?.querySelectorAll('.contact-disclosure__panel a').forEach((link) => {
         if (link.textContent === 'Email') link.textContent = 'Почта';
-        if (link.textContent === 'Résumé PDF') {
-          link.textContent = 'Резюме PDF';
-          link.setAttribute('href', russianResume);
-        }
       });
+      const resume = header?.querySelector('[data-resume-link]');
+      const resumeLabel = resume?.querySelector('.navigation-action__label');
+      if (resume && resumeLabel) {
+        resumeLabel.textContent = 'Резюме';
+        resume.setAttribute('href', russianResume);
+      }
     }
   </script>
 </BaseDocument>

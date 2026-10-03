@@ -16,6 +16,12 @@ export const sitePath = (path: string) => {
   return relativePath ? `${base}${relativePath}` : base;
 };
 
+/** The résumé in the reader's language: its own link in the header, and in the footer. */
+export const resumeLink = (locale: 'en' | 'ru') =>
+  locale === 'ru'
+    ? { label: 'Резюме', file: 'Резюме PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume-ru.pdf') }
+    : { label: 'Résumé', file: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume.pdf') };
+
 export const connectLinks = (locale: 'en' | 'ru') =>
   [
     { label: locale === 'ru' ? 'Почта' : 'Email', href: publicLinks.email },
@@ -24,7 +30,4 @@ export const connectLinks = (locale: 'en' | 'ru') =>
     { label: 'X', href: publicLinks.x },
     { label: 'itch.io', href: publicLinks.itch },
     { label: 'GitHub', href: publicLinks.github },
-    locale === 'ru'
-      ? { label: 'Резюме PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume-ru.pdf') }
-      : { label: 'Résumé PDF', href: sitePath('/resume/igor-kupchinenko-product-designer-resume.pdf') },
   ] as const;

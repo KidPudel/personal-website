@@ -46,14 +46,14 @@ type ClosingPart = string | { reveal: PersonalReveal; text: string };
 export const personalNote = {
   en: {
     heading: 'A few more things about me',
+    // Where the view comes from, the path, and how I work now.
     columns: [
       [
         'From a young age, I’ve seen much of life through a lens shaped by the games, films, and music that stayed with me. They showed me how something made by another person can come alive, grow beyond itself, and become part of your own life.',
-        'I chose to pursue software engineering, but over the years something kept feeling off. The moments that felt right were the ones when I was shaping experiences: making games, experimenting with interactions, and creating things people could feel something through.',
+        'I started in software engineering, then designed games, and found in product design the place where both meet. Engineering taught me to treat code as a creative material. Game design taught me how interaction, motivation, and psychology shape what people do.',
       ],
       [
-        'Eventually, I saw the pattern and took time away to pursue what I actually care about. None of those years feel wasted. Software engineering taught me to treat code as a creative material. Game design taught me how interaction, motivation, and psychology shape what people do. Both make me a better product designer.',
-        'I have a strong instinct for atmosphere, and product design gives it direction. It begins with the people I’m designing for and what they really need. I think about visuals, interaction, movement, sound, and small details as parts of one whole experience, one that, at its best, leaves something behind in how a person sees the world.',
+        'I have a strong instinct for atmosphere, and product design gives it direction. It begins with the people I’m designing for and what they need. I think about visuals, interaction, movement, sound, and small details as parts of one whole experience, one that, at its best, leaves something behind in how a person sees the world.',
       ],
     ],
     closing: [
@@ -72,12 +72,11 @@ export const personalNote = {
     heading: 'Ещё немного обо мне',
     columns: [
       [
-        'С детства я во многом смотрю на жизнь сквозь игры, фильмы и музыку, которые меня зацепили. Они показали, как то, что сделал другой человек, может ожить, перерасти себя и стать частью твоей жизни.',
-        'Я пошёл в разработку, но с годами меня не отпускало ощущение, что что-то не так. На своём месте я чувствовал себя, только когда создавал впечатления: делал игры, экспериментировал со взаимодействием и придумывал вещи, через которые люди могли бы что-то почувствовать.',
+        'С детства я смотрю на жизнь сквозь игры, фильмы и музыку, которые меня зацепили. Они показали, как то, что сделал другой человек, может ожить, перерасти себя и стать частью твоей жизни.',
+        'Я начинал в разработке, потом делал игры и нашёл в продуктовом дизайне место, где одно встречается с другим. Разработка научила меня относиться к коду как к творческому материалу. Геймдизайн научил понимать, как взаимодействие, мотивация и психология влияют на поступки людей.',
       ],
       [
-        'Со временем я понял, в чём дело, взял паузу и позволил себе заняться тем, что мне по-настоящему важно. Те годы не прошли зря. Разработка научила меня относиться к коду как к творческому материалу. Геймдизайн научил понимать, как взаимодействие, мотивация и психология влияют на поступки людей. И то и другое делает меня сильнее как продуктового дизайнера.',
-        'У меня сильное чутьё на атмосферу, и продуктовый дизайн даёт ему направление. Он начинается с людей, для которых я проектирую, и с того, что им действительно нужно. Визуал, взаимодействие, движение, звук и мелочи для меня части одного целого, и в лучшем случае оно немного меняет то, как человек смотрит на мир.',
+        'У меня сильное чутьё на атмосферу, и продуктовый дизайн даёт ему направление. Он начинается с людей, для которых я проектирую, и с того, что им нужно. Визуал, взаимодействие, движение, звук и мелочи для меня части одного целого, и в лучшем случае оно меняет то, как человек смотрит на мир.',
       ],
     ],
     closing: [

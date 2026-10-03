@@ -4,8 +4,9 @@ import { Image } from 'astro:assets';
 import connectIcon from '../../assets/art/icons/Doodles_connect.png';
 
 import homeIcon from '../../assets/art/doodles/Doodles_home.png';
+import resumeIcon from '../../assets/art/doodles/Doodles_work 01.09.34.png';
 
-type IconName = 'connect' | 'home';
+type IconName = 'connect' | 'home' | 'resume';
 
 interface Props {
   icon: IconName;
@@ -16,6 +17,7 @@ const { icon, loading = 'lazy' } = Astro.props;
 const icons = {
   connect: connectIcon,
   home: homeIcon,
+  resume: resumeIcon,
 };
 ---
 
@@ -48,6 +50,11 @@ const icons = {
   .drawn-icon--home :global(img) {
     width: 300%;
     transform: translate(-32%, -30%);
+  }
+
+  .drawn-icon--resume :global(img) {
+    width: 340%;
+    transform: translate(-32.3%, -33.5%);
   }
 
   @media (hover: hover) and (pointer: fine) {

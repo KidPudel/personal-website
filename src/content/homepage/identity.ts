@@ -19,8 +19,8 @@ export const identity: Record<Locale, Identity> = {
     experience: {
       before: 'I shape ',
       word: 'products',
-      after: ' that give people something to keep,',
-      continuation: ' even beyond the moment they use them.',
+      after: ' so their value stays with people,',
+      continuation: ' even after they stop using them.',
     },
     purpose: {
       before: 'My work is my attempt to make the world a',
@@ -38,7 +38,7 @@ export const identity: Record<Locale, Identity> = {
     experience: {
       before: 'Я делаю ',
       word: 'продукты',
-      after: ', после которых что-то остаётся,',
+      after: ', ценность которых остаётся с людьми,',
       continuation: ' даже когда ими уже не пользуются.',
     },
     purpose: {

@@ -1,5 +1,5 @@
 ---
-import { connectLinks } from '../../config/site';
+import { connectLinks, resumeLink } from '../../config/site';
 import { localeDetails, localePath, localeStorageKey, locales, toLocale, translator } from '../../i18n/locales';
 import DrawnIcon from './DrawnIcon.astro';
 
@@ -13,6 +13,7 @@ const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 // Each language is named in its own script, so either reader can find theirs.
 const switchLabels = { en: 'en', ru: 'ру' } as const;
+const resume = resumeLink(locale);
 ---
 
 <portfolio-navigation class:list={["portfolio-navigation", { "portfolio-navigation--with-home": showHome }]} data-site-header>
@@ -48,6 +49,11 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
         ))}
       </span>
     )}
+    <!-- The résumé in plain sight for anyone who wants the facts in its usual form. -->
+    <a class="navigation-action drawn-icon-trigger" href={resume.href} data-resume-link>
+      <span class="navigation-action__label">{resume.label}</span>
+      <span class="navigation-action__art" aria-hidden="true"><DrawnIcon icon="resume" loading="eager" /></span>
+    </a>
     <details id="site-contact" class="contact-disclosure">
       <summary class="navigation-action drawn-icon-trigger">
         <span class="navigation-action__label">{t('Get in touch', 'Связаться')}</span>
@@ -58,7 +64,7 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       <div class="contact-disclosure__panel">
         {connectLinks(locale).map((link, index) => (
           <>
-            {index === 4 && <span class="contact-disclosure__break" aria-hidden="true"></span>}
+            {index === 3 && <span class="contact-disclosure__break" aria-hidden="true"></span>}
             <a href={link.href}><span class="link-mark">{link.label}</span></a>
           </>
         ))}
@@ -489,8 +495,8 @@ const switchLabels = { en: 'en', ru: 'ру' } as const;
       padding-left: 0.5rem;
     }
 
-    /* Seven links don't fit one row on a phone; breaking them four and
-       three keeps one word from sitting alone on the second row. */
+    /* Six links don't fit one row on a phone; three and three keep one word
+       from sitting alone on the second row. */
     .contact-disclosure__break {
       display: block;
       flex-basis: 100%;

@@ -22,6 +22,8 @@ const destination = host.endsWith('itch.io') ? 'itch.io' : host === 'github.com'
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
+    /* Tall enough for a fingertip without moving the words. */
+    min-height: 2.75rem;
     padding-top: clamp(0.8rem, 1.1vw, 1rem);
     color: var(--color-muted);
     font-family: var(--font-reading);
