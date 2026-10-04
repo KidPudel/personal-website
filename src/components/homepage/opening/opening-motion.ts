@@ -5,7 +5,6 @@ export const openingMotion = {
   contentRevealDelayMs: 90,
   contentRevealDurationMs: 720,
   greetingCrossfadeStart: 0.82,
-  thermalHintDelayMs: 500,
   skipFadeMs: 240,
   skyOpacityAtStart: 0.5,
   skyOpacityAtIntro: 0.25,

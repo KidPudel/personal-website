@@ -46,14 +46,14 @@ type ClosingPart = string | { reveal: PersonalReveal; text: string };
 export const personalNote = {
   en: {
     heading: 'A few more things about me',
-    // Where the view comes from, the path, and how I work now.
+    // What stays with people, how I work with them, and the path that led here.
     columns: [
       [
-        'From a young age, I’ve seen much of life through a lens shaped by the games, films, and music that stayed with me. They showed me how something made by another person can come alive, grow beyond itself, and become part of your own life.',
-        'I started in software engineering, then designed games, and found in product design the place where both meet. Engineering taught me to treat code as a creative material. Game design taught me how interaction, motivation, and psychology shape what people do.',
+        'The games, films and music I grew up with stayed with me long after I finished them. That’s what I want from the things I design: something people keep, even after they stop using it.',
+        'I can’t design what people do, only the conditions they act in. So I’d rather understand people first and leave them in control than force a path on them. The most useful moments in my work are when someone does something I didn’t expect, because that’s usually where the real problem is.',
       ],
       [
-        'I have a strong instinct for atmosphere, and product design gives it direction. It begins with the people I’m designing for and what they need. I think about visuals, interaction, movement, sound, and small details as parts of one whole experience, one that, at its best, leaves something behind in how a person sees the world.',
+        'I started in software engineering, then designed games. Engineering lets me build and ship ideas myself. Game design taught me how interaction and motivation shape what people do. I care about the whole feel of it: visuals, motion, sound and small details working as one.',
       ],
     ],
     closing: [
@@ -72,11 +72,11 @@ export const personalNote = {
     heading: 'Ещё немного обо мне',
     columns: [
       [
-        'С детства я смотрю на жизнь сквозь игры, фильмы и музыку, которые меня зацепили. Они показали, как то, что сделал другой человек, может ожить, перерасти себя и стать частью твоей жизни.',
-        'Я начинал в разработке, потом делал игры и нашёл в продуктовом дизайне место, где одно встречается с другим. Разработка научила меня относиться к коду как к творческому материалу. Геймдизайн научил понимать, как взаимодействие, мотивация и психология влияют на поступки людей.',
+        'Игры, фильмы и музыка, на которых я вырос, оставались со мной ещё долго после финала. Того же я хочу от вещей, которые проектирую: чтобы у людей что-то оставалось, даже когда они перестали ими пользоваться.',
+        'Я не могу спроектировать то, что делают люди, только условия, в которых они действуют. Поэтому мне важнее понять людей и оставить им контроль, чем навязать им путь. Самые полезные моменты в работе случаются, когда человек делает то, чего я не ожидал: обычно именно там и прячется настоящая проблема.',
       ],
       [
-        'У меня сильное чутьё на атмосферу, и продуктовый дизайн даёт ему направление. Он начинается с людей, для которых я проектирую, и с того, что им нужно. Визуал, взаимодействие, движение, звук и мелочи для меня части одного целого, и в лучшем случае оно меняет то, как человек смотрит на мир.',
+        'Я начинал в разработке, потом делал игры. Разработка позволяет мне самому собирать и выпускать идеи. Геймдизайн научил понимать, как взаимодействие и мотивация влияют на поступки людей. Мне важно ощущение целиком: визуал, движение, звук и мелочи, которые работают как одно целое.',
       ],
     ],
     closing: [

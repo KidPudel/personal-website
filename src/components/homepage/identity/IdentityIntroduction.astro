@@ -6,13 +6,17 @@ import { identity as identityCopy } from '../../../content/homepage/identity';
 import { toLocale } from '../../../i18n/locales';
 import { essenceChannel } from '../opening/pigment-field';
 import HelloAnimation from './HelloAnimation.astro';
-import PlayfulWord from './PlayfulWord.astro';
 
 const identity = identityCopy[toLocale(Astro.currentLocale)];
-// The pigments of the "products" word and the page edge, in order, without
-// the near-white one. The letters of "joyful" take them in turn on hover.
+// The pigments of the page edge, in order, without the near-white one. The
+// letters of "joyful" take them in turn on hover.
 const joyfulPigments = [0, 1, 3, 4, 5, 6].map((index) => `rgb(${essenceChannel(index)})`);
 const joyfulLetters = [...identity.purpose.word];
+// The word before "joyful" stays on its line, so the circled word never ends
+// the statement alone.
+const purposeBreak = identity.purpose.before.trimEnd().lastIndexOf(' ') + 1;
+const purposeLead = identity.purpose.before.slice(0, purposeBreak);
+const purposeTail = identity.purpose.before.slice(purposeBreak);
 ---
 
 <identity-introduction class="identity-shell">
@@ -24,14 +28,11 @@ const joyfulLetters = [...identity.purpose.word];
           <span class="identity__role">{identity.role}</span>
         </h1>
         <div class="identity__summary">
-          <p class="identity__passage">{identity.research}</p>
+          <p class="identity__passage">{identity.promise}</p>
+          {/* The claim, how I work, and why it matters. */}
+          <p class="identity__passage">{identity.research} {identity.practice}</p>
           <p class="identity__passage">
-            {identity.experience.before}<PlayfulWord word={identity.experience.word} />{identity.experience.after}<br
-              class="identity__figma-break"
-            />{identity.experience.continuation}
-          </p>
-          <p class="identity__passage identity__passage--purpose">
-            {identity.purpose.before}<br class="identity__figma-break" />{identity.purpose.continuation}<a
+            {purposeLead}<span class="identity__keep">{purposeTail}<a
               class="identity__joyful-link"
               href={identity.purpose.href}
             ><span class="sr-only">{identity.purpose.word}</span><span class="identity__joyful-word" aria-hidden="true">{joyfulLetters.map((letter, index) => (
@@ -47,9 +48,8 @@ const joyfulLetters = [...identity.purpose.word];
                 aria-hidden="true"
                 loading="lazy"
                 decoding="async"
-              /></a>{identity.purpose.after}
+              /></a>{identity.purpose.after}</span>
           </p>
-          <p class="identity__passage">{identity.practice}</p>
         </div>
       </div>
     </div>
@@ -68,7 +68,7 @@ const joyfulLetters = [...identity.purpose.word];
     isolation: isolate;
     display: grid;
     min-height: 0;
-    grid-template-columns: min(36rem, 100%);
+    grid-template-columns: min(42rem, 100%);
     justify-content: start;
     align-content: start;
     align-items: start;
@@ -114,26 +114,31 @@ const joyfulLetters = [...identity.purpose.word];
   }
 
   .identity__summary {
-    max-width: 35rem;
-    margin: clamp(2.375rem, 4.5vw, 3.25rem) 0 0;
+    /* About 72 characters a line: wide enough for the claim to sit on one
+       line, and in ems so the measure holds at every type size. */
+    max-width: 35.5em;
+    margin: clamp(1.125rem, 1.6vw, 1.5rem) 0 0;
     color: var(--color-ink);
     font-family: var(--font-reading);
     font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
     font-weight: 400;
     letter-spacing: 0.025em;
-    line-height: 1.3;
+    line-height: 1.4;
   }
 
   .identity__passage {
     margin: 0;
+    /* No lone word on a statement's last line ("control.", "joyful."). */
+    text-wrap: pretty;
   }
 
+  .identity__keep {
+    white-space: nowrap;
+  }
+
+  /* One blank line between paragraphs. */
   .identity__passage + .identity__passage {
-    margin-top: 1.25lh;
-  }
-
-  .identity__figma-break {
-    display: block;
+    margin-top: 1lh;
   }
 
   .identity__joyful-link {
@@ -229,10 +234,6 @@ const joyfulLetters = [...identity.purpose.word];
   }
 
   @media (max-width: 52rem) {
-    .identity__figma-break {
-      display: none;
-    }
-
     .identity {
       padding:
         clamp(2.8rem, 6.5svh, 3.8rem)
@@ -255,9 +256,9 @@ const joyfulLetters = [...identity.purpose.word];
 
     .identity__summary {
       max-width: 36em;
-      margin-top: 1.875rem;
+      margin-top: 1.125rem;
       font-size: 1.0625rem;
-      line-height: 1.3;
+      line-height: 1.4;
     }
   }
 
@@ -272,7 +273,7 @@ const joyfulLetters = [...identity.purpose.word];
     }
 
     .identity__summary {
-      margin-top: 1.25rem;
+      margin-top: 0.875rem;
     }
   }
 
@@ -281,13 +282,8 @@ const joyfulLetters = [...identity.purpose.word];
       font-size: clamp(2.2rem, 3.2vw, 3.15rem);
     }
 
-    /* The title stays about one and a half times as far from the statements
-       as they are from each other, as on taller screens. The measure matches
-       theirs in characters (35rem at 1.16rem), so lines break in the same
-       places instead of leaving "code." alone on the last line. */
     .identity__summary {
-      max-width: 30em;
-      margin-top: 2.5rem;
+      margin-top: 1.125rem;
       font-size: 0.95rem;
     }
   }

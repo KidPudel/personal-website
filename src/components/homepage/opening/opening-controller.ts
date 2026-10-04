@@ -6,7 +6,6 @@ class OpeningSequence extends HTMLElement {
   private animations = new Set<Animation>();
   private greetingTimer = 0;
   private handoffTimer = 0;
-  private hintTimer = 0;
   private scrollFrame = 0;
   private pageTopFrame = 0;
   private skyVideo?: HTMLVideoElement;
@@ -350,14 +349,6 @@ class OpeningSequence extends HTMLElement {
         (animation) => this.animations.add(animation),
       );
       syncPageTop();
-      this.hintTimer = window.setTimeout(() => {
-        this.hintTimer = 0;
-        documentSurface
-          .querySelector('playful-word')
-          ?.dispatchEvent(new CustomEvent('thermal-hint'));
-      }, openingMotion.contentRevealDelayMs +
-        openingMotion.contentRevealDurationMs +
-        openingMotion.thermalHintDelayMs);
       void greetingMove.finished
         .then(() => {
           skipAbort.abort();
@@ -407,8 +398,6 @@ class OpeningSequence extends HTMLElement {
     this.greetingTimer = 0;
     window.clearTimeout(this.handoffTimer);
     this.handoffTimer = 0;
-    window.clearTimeout(this.hintTimer);
-    this.hintTimer = 0;
     this.animations.forEach((animation) => animation.cancel());
     this.animations.clear();
     this.skyVideo?.pause();
