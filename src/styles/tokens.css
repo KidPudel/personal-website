@@ -75,6 +75,25 @@
   font-display: swap;
 }
 
+/* The weight of a door: words that open something in place (the introduction,
+   the beliefs, "A few more things about me"). */
+@font-face {
+  font-family: 'Instrument Sans Medium';
+  src: url('../assets/fonts/instrument-sans-latin-500-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Golos Text Medium';
+  src: url('../assets/fonts/golos-text-cyrillic-500-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
 @font-face {
   font-family: 'Golos Text Semibold';
   src: url('../assets/fonts/golos-text-cyrillic-600-normal.woff2') format('woff2');
@@ -180,6 +199,7 @@
     --font-display: 'Averia Serif Libre', 'Alegreya', Georgia, serif;
     --font-study-heading: 'Crimson Text', 'Alegreya Study', Georgia, serif;
     --font-study-emphasis: 'Instrument Sans Semibold', 'Golos Text Semibold', Arial, sans-serif;
+    --font-door: 'Instrument Sans Medium', 'Golos Text Medium', Arial, sans-serif;
     --font-editorial: 'Crimson Text', 'Alegreya', Georgia, serif;
     --font-special: 'Bright Chalk', 'Delius', 'Caveat', Arial, sans-serif;
     --font-distinctive: 'Cartoon Relief', 'Delius', 'Caveat', Arial, sans-serif;

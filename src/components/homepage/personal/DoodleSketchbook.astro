@@ -21,24 +21,24 @@ interface Place {
 
 // Two hand-placed pages. `compact` is a small sketchbook page under the
 // sentence on narrow screens. `wide` spreads across both columns on wide
-// screens and keeps clear of the sentence in the top-left corner (roughly
-// x < 48 and y < 34). Recompose freely; the order only affects overlap.
+// screens and keeps clear of the sentence in the top-right corner (roughly
+// x > 52 and y < 34). Recompose freely; the order only affects overlap.
 const composition: Record<string, { compact: Place; wide: Place }> = {
-  bird: { compact: { x: 12, y: 24, size: 17, tilt: -6 }, wide: { x: 55, y: 38, size: 8, tilt: -6 } },
-  reader: { compact: { x: 33, y: 16, size: 15, tilt: 8 }, wide: { x: 75, y: 8, size: 6.5, tilt: 8 } },
-  burger: { compact: { x: 52, y: 26, size: 15, tilt: -4 }, wide: { x: 84, y: 36, size: 7, tilt: -4 } },
-  camera: { compact: { x: 73, y: 16, size: 18, tilt: 5 }, wide: { x: 60, y: 10, size: 8.5, tilt: 5 } },
-  campfire: { compact: { x: 90, y: 30, size: 16, tilt: -3 }, wide: { x: 94, y: 14, size: 7.5, tilt: -3 } },
-  'fish-bones': { compact: { x: 11, y: 56, size: 18, tilt: 10 }, wide: { x: 23, y: 48, size: 8.5, tilt: 10 } },
-  disk: { compact: { x: 32, y: 52, size: 20, tilt: -12 }, wide: { x: 6, y: 58, size: 9, tilt: -12 } },
-  fish: { compact: { x: 55, y: 58, size: 20, tilt: 4 }, wide: { x: 40, y: 62, size: 9, tilt: 4 } },
-  controller: { compact: { x: 76, y: 50, size: 13, tilt: -9 }, wide: { x: 69, y: 57, size: 6.5, tilt: -9 } },
-  house: { compact: { x: 92, y: 62, size: 13, tilt: 6 }, wide: { x: 96, y: 60, size: 5.5, tilt: 6 } },
-  robot: { compact: { x: 14, y: 86, size: 15, tilt: 7 }, wide: { x: 15, y: 87, size: 7, tilt: 7 } },
-  scribble: { compact: { x: 36, y: 84, size: 17, tilt: -5 }, wide: { x: 62, y: 83, size: 8, tilt: -5 } },
-  computer: { compact: { x: 56, y: 87, size: 15, tilt: 10 }, wide: { x: 45, y: 90, size: 7, tilt: 10 } },
-  figure: { compact: { x: 74, y: 84, size: 12, tilt: -8 }, wide: { x: 80, y: 80, size: 6, tilt: -8 } },
-  tools: { compact: { x: 91, y: 88, size: 12, tilt: 14 }, wide: { x: 93, y: 92, size: 6, tilt: 14 } },
+  bird: { compact: { x: 12, y: 24, size: 17, tilt: -6 }, wide: { x: 45, y: 38, size: 8, tilt: -6 } },
+  reader: { compact: { x: 33, y: 16, size: 15, tilt: 8 }, wide: { x: 25, y: 8, size: 6.5, tilt: 8 } },
+  burger: { compact: { x: 52, y: 26, size: 15, tilt: -4 }, wide: { x: 16, y: 36, size: 7, tilt: -4 } },
+  camera: { compact: { x: 73, y: 16, size: 18, tilt: 5 }, wide: { x: 40, y: 10, size: 8.5, tilt: 5 } },
+  campfire: { compact: { x: 90, y: 30, size: 16, tilt: -3 }, wide: { x: 6, y: 14, size: 7.5, tilt: -3 } },
+  'fish-bones': { compact: { x: 11, y: 56, size: 18, tilt: 10 }, wide: { x: 77, y: 48, size: 8.5, tilt: 10 } },
+  disk: { compact: { x: 32, y: 52, size: 20, tilt: -12 }, wide: { x: 94, y: 58, size: 9, tilt: -12 } },
+  fish: { compact: { x: 55, y: 58, size: 20, tilt: 4 }, wide: { x: 60, y: 62, size: 9, tilt: 4 } },
+  controller: { compact: { x: 76, y: 50, size: 13, tilt: -9 }, wide: { x: 31, y: 57, size: 6.5, tilt: -9 } },
+  house: { compact: { x: 92, y: 62, size: 13, tilt: 6 }, wide: { x: 4, y: 60, size: 5.5, tilt: 6 } },
+  robot: { compact: { x: 14, y: 86, size: 15, tilt: 7 }, wide: { x: 85, y: 87, size: 7, tilt: 7 } },
+  scribble: { compact: { x: 36, y: 84, size: 17, tilt: -5 }, wide: { x: 38, y: 83, size: 8, tilt: -5 } },
+  computer: { compact: { x: 56, y: 87, size: 15, tilt: 10 }, wide: { x: 55, y: 90, size: 7, tilt: 10 } },
+  figure: { compact: { x: 74, y: 84, size: 12, tilt: -8 }, wide: { x: 20, y: 80, size: 6, tilt: -8 } },
+  tools: { compact: { x: 91, y: 88, size: 12, tilt: 14 }, wide: { x: 7, y: 92, size: 6, tilt: 14 } },
 };
 
 const placeStyle = (prefix: string, place: Place) =>
@@ -156,12 +156,12 @@ const boilFrames = [3, 11, 23];
     100% { filter: url(#doodle-boil-strong-0); }
   }
 
-  /* Wide screens: the page spans both columns and runs into the space below,
-     around the sentence (see PersonalNote.astro). */
+  /* Wide screens: the page spans both columns from the sentence's top line,
+     around it and over the faded story (see PersonalNote.astro). */
   @media (width > 75rem) {
     .doodle-sketchbook {
-      --origin-x: 22%;
-      --origin-y: 10%;
+      --origin-x: 74%;
+      --origin-y: 8%;
     }
 
     .doodle-sketchbook__page {

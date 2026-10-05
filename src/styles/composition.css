@@ -42,3 +42,27 @@ html.homepage-document body {
     overscroll-behavior-y: auto;
   }
 }
+
+/* Doors: words that open something in place (AnnotatedText.astro and
+   PersonalNote.astro). While one is open, <html> has data-annotating and the
+   homepage section holding it has data-annotating-host: the rest of the page
+   fades, and that section comes forward so what opened lies over what
+   follows instead of pushing it down. */
+[data-site-header] > *,
+#main-content > *,
+#main-content :is(h1, h2),
+#contact {
+  transition: opacity 220ms ease;
+}
+
+html[data-annotating] [data-site-header] > *,
+html[data-annotating] #main-content > :not([data-annotating-host]),
+html[data-annotating] [data-annotating-host] :is(h1, h2),
+html[data-annotating] #contact {
+  opacity: 0.2;
+}
+
+html[data-annotating] [data-annotating-host] {
+  position: relative;
+  z-index: 3;
+}

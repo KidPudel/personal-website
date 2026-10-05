@@ -24,6 +24,9 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Identity composition, including “Three things important to me.” | `src/components/homepage/identity/IdentityIntroduction.astro` |
 | Opening scene (box and identity column together) | `src/components/homepage/opening/OpeningSequence.astro` |
 | Personal note copy | `src/content/homepage/values.ts` |
+| Beliefs section copy and its notes | `beliefs` in `src/content/homepage/values.ts`; section in `src/components/homepage/beliefs/Beliefs.astro` |
+| Hero claim and its notes | `claim` in `src/content/homepage/identity.ts` |
+| Coloured phrases with notes (hero and beliefs), page dimming | `src/components/homepage/AnnotatedText.astro`; phrase tones in `src/content/homepage/annotated.ts` |
 | Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |
 | Blog posts (local or linked out) | `src/content/writing/`; list in `src/components/blog/WritingList.astro`, pages in `src/pages/blog/` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
@@ -39,7 +42,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
 | Link hover mark (the stop-motion marker swipe) | `.link-mark` and its frames in `src/styles/foundations.css`; timing and the faint rest mark in `src/styles/tokens.css` |
-| The "joyful" hover (pigment letters that hop, wobbling circle) | `src/components/homepage/identity/IdentityIntroduction.astro` |
+| The "joyful" hover (pigment letters that hop, wobbling circle) | `src/components/homepage/JoyfulWord.astro` |
 | Russian translation of any copy | The `t('English', 'Русский')` pair next to the English text, or the `ru` entry in `src/content/homepage/`; Russian posts in `src/content/writing/ru/` |
 | Language switcher and default-language redirect | `src/components/homepage/PortfolioHeader.astro`, `src/layouts/BaseDocument.astro` |
 

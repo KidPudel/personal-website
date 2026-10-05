@@ -1,0 +1,342 @@
+---
+import type { AnnotatedPart, Tone } from '../../content/homepage/annotated';
+import foundations from '../../styles/foundations.css?raw';
+import JoyfulWord from './JoyfulWord.astro';
+
+interface Props {
+  parts: AnnotatedPart[];
+  /** Prefix for the notes' ids, unique on the page. */
+  id: string;
+}
+
+const { parts, id } = Astro.props;
+// Each door has a marker colour, the pigment its swipe is drawn in, and a
+// text colour for its note, deep enough to read (4.5:1) on the sky and the
+// field.
+const tones: Record<Tone, { mark: string; text: string }> = {
+  green: { mark: '#7aa83a', text: '#406417' },
+  blue: { mark: '#3f99ed', text: '#265d90' },
+  orange: { mark: '#fc5629', text: '#a1371a' },
+  pink: { mark: '#fd36ed', text: '#9c2192' },
+};
+
+// The site's marker swipe is three hand-drawn frames in lavender
+// (foundations.css). A door draws the same frames in its own colour.
+const swipeFrames = [
+  ...(foundations.match(/@keyframes link-mark-draw \{[\s\S]*?\n {2}\}/)?.[0] ?? '').matchAll(/url\("([^"]+)"\)/g),
+].map((match) => match[1]);
+if (swipeFrames.length !== 3) throw new Error('AnnotatedText: expected the three link-mark frames in foundations.css');
+const tintFrames = (color: string) =>
+  swipeFrames.map((frame) => frame.replaceAll('%238c93ee', `%23${color.slice(1)}`));
+const usedTones = [...new Set(parts.flatMap((part) => (typeof part === 'object' && 'tone' in part ? [part.tone] : [])))];
+const toneStyles = usedTones
+  .map((tone) => {
+    const [first, second, third] = tintFrames(tones[tone].mark);
+    return `.door-tone--${tone}{--door:${tones[tone].text};--door-mark-0:url("${first}");--door-mark-1:url("${second}");--door-mark-2:url("${third}")}`;
+  })
+  .join('');
+
+type Item =
+  | { kind: 'text'; value: string }
+  | { kind: 'phrase'; text: string; tone: string; noteId: string }
+  | { kind: 'joyful'; lead: string; word: string; href: string; trail: string };
+
+const items: Item[] = [];
+const notes: { id: string; text: string; tone: string }[] = [];
+
+parts.forEach((part, index) => {
+  if (typeof part === 'string') {
+    const last = items.at(-1);
+    // Punctuation right after "joyful" stays on its line.
+    if (last?.kind === 'joyful' && !last.trail) {
+      const trail = part.match(/^[^\s]*/)?.[0] ?? '';
+      last.trail = trail;
+      part = part.slice(trail.length);
+    }
+    if (part) items.push({ kind: 'text', value: part });
+  } else if ('joyful' in part) {
+    // The word before "joyful" stays with it, so the circled word never ends
+    // the sentence alone on its line.
+    const previous = items.at(-1);
+    let lead = '';
+    if (previous?.kind === 'text') {
+      const cut = previous.value.trimEnd().lastIndexOf(' ') + 1;
+      lead = previous.value.slice(cut);
+      previous.value = previous.value.slice(0, cut);
+    }
+    items.push({ kind: 'joyful', lead, word: part.joyful, href: part.href, trail: '' });
+  } else {
+    const noteId = `${id}-note-${index}`;
+    const tone = `door-tone--${part.tone}`;
+    items.push({ kind: 'phrase', text: part.text, tone, noteId });
+    notes.push({ id: noteId, text: part.note, tone });
+  }
+});
+---
+
+<style is:inline set:html={toneStyles}></style>
+<annotated-text class="annotated">
+  <p class="annotated__text">
+    {items.map((item) =>
+      item.kind === 'text' ? (
+        item.value
+      ) : item.kind === 'phrase' ? (
+        <span class:list={['annotated__phrase link-mark', item.tone]} aria-controls={item.noteId} data-phrase>{item.text}</span>
+      ) : (
+        <span class="annotated__keep">{item.lead}<JoyfulWord word={item.word} href={item.href} />{item.trail}</span>
+      ),
+    )}
+  </p>
+
+  <div class="annotated__notes">
+    {notes.map((note) => (
+      <div id={note.id} class:list={['annotated__note', note.tone]} data-note>
+        <div class="annotated__note-inner">
+          <p class="annotated__note-text">{note.text}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</annotated-text>
+
+<script>
+  // The doors of a sentence, like the ones in "A few more things about me":
+  // grey text, ink words that open something. Opening one fades the rest of
+  // the page, colours the door, and unfolds its note under the sentence.
+  // Without this script the notes simply follow the sentence.
+  const OPEN_EVENT = 'annotation-open';
+
+  class AnnotatedText extends HTMLElement {
+    private abort?: AbortController;
+    private active?: HTMLElement;
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      const { signal } = this.abort;
+
+      this.querySelectorAll<HTMLElement>('[data-phrase]').forEach((phrase) => {
+        phrase.setAttribute('role', 'button');
+        phrase.setAttribute('tabindex', '0');
+        phrase.setAttribute('aria-expanded', 'false');
+        phrase.addEventListener('click', () => this.toggle(phrase), { signal });
+        phrase.addEventListener('keydown', (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return;
+          event.preventDefault();
+          this.toggle(phrase);
+        }, { signal });
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || !this.active) return;
+        const phrase = this.active;
+        this.close();
+        phrase.focus();
+      }, { signal });
+      document.addEventListener('pointerdown', (event) => {
+        if (!this.active) return;
+        const target = event.target as Node;
+        if (this.active.contains(target) || this.noteFor(this.active)?.contains(target)) return;
+        this.close();
+      }, { signal });
+      document.addEventListener(OPEN_EVENT, (event) => {
+        if ((event as CustomEvent).detail !== this && this.active) this.close();
+      }, { signal });
+
+      this.setAttribute('data-enhanced', '');
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      if (this.active) this.close();
+    }
+
+    private noteFor(phrase: HTMLElement) {
+      return document.getElementById(phrase.getAttribute('aria-controls') ?? '');
+    }
+
+    private toggle(phrase: HTMLElement) {
+      if (this.active === phrase) {
+        this.close();
+        return;
+      }
+      if (this.active) this.reset(this.active);
+      this.active = phrase;
+      phrase.setAttribute('aria-expanded', 'true');
+      this.noteFor(phrase)?.setAttribute('data-open', '');
+      this.setAttribute('data-active', '');
+      this.closest('#main-content > *')?.setAttribute('data-annotating-host', '');
+      document.documentElement.setAttribute('data-annotating', '');
+      document.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: this }));
+    }
+
+    private close() {
+      if (this.active) this.reset(this.active);
+      this.active = undefined;
+      this.removeAttribute('data-active');
+      this.closest('#main-content > *')?.removeAttribute('data-annotating-host');
+      if (!document.querySelector('annotated-text[data-active], personal-note-reveals[data-active]')) {
+        document.documentElement.removeAttribute('data-annotating');
+      }
+    }
+
+    private reset(phrase: HTMLElement) {
+      phrase.setAttribute('aria-expanded', 'false');
+      this.noteFor(phrase)?.removeAttribute('data-open');
+    }
+  }
+
+  if (!customElements.get('annotated-text')) {
+    customElements.define('annotated-text', AnnotatedText);
+  }
+</script>
+
+<style>
+  .annotated {
+    position: relative;
+    display: block;
+    --door-fade: rgb(17 17 15 / 0.2);
+  }
+
+  .annotated__text {
+    margin: 0;
+    /* The sentence's grey, About's; the introduction sets a darker one for
+       the sky (--door-grey). */
+    color: var(--door-grey, var(--color-muted));
+    text-wrap: pretty;
+    transition: color 220ms ease;
+  }
+
+  /* A door, as in "A few more things about me": ink in the grey sentence.
+     Hover draws the marker swipe, in the door's colour; while its note is
+     open the swipe stays. */
+  .annotated__phrase {
+    color: var(--color-ink);
+    font-family: var(--font-door);
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 220ms ease;
+  }
+
+  .annotated__phrase:focus-visible,
+  .annotated__phrase[aria-expanded='true'] {
+    animation: door-mark-draw var(--link-mark-draw) step-end forwards;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .annotated__phrase:hover {
+      animation: door-mark-draw var(--link-mark-draw) step-end forwards;
+    }
+  }
+
+  @keyframes door-mark-draw {
+    0% { background-image: var(--door-mark-0); }
+    33.33% { background-image: var(--door-mark-1); }
+    66.67%, 100% { background-image: var(--door-mark-2); }
+  }
+
+  .annotated__phrase:focus-visible {
+    border-radius: 0.08em;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  .annotated__keep {
+    white-space: nowrap;
+  }
+
+  /* "joyful" is a door of its own kind, in ink like the others. */
+  .annotated__keep :global(.joyful) {
+    color: var(--color-ink);
+    transition: opacity 220ms ease;
+  }
+
+  /* Open: everything but the door and its note fades. */
+  .annotated[data-active] .annotated__text,
+  .annotated[data-active] .annotated__phrase {
+    color: var(--door-fade);
+  }
+
+  .annotated[data-active] .annotated__phrase[aria-expanded='true'] {
+    color: var(--color-ink);
+  }
+
+  .annotated[data-active] .annotated__keep :global(.joyful) {
+    opacity: 0.2;
+  }
+
+  /* The note: its letters in the door's colour, set in from the sentence's
+     edge. */
+  .annotated__note-text {
+    position: relative;
+    max-width: 34em;
+    margin: 0;
+    margin-left: clamp(1.5rem, 7vw, 7.5rem);
+    padding-top: 0.9lh;
+    color: var(--door);
+    font-style: italic;
+    text-wrap: pretty;
+  }
+
+  /* Whatever the open note lies over melts into a soft blur behind it, like
+     the content under the header, so faded text never collides with it. */
+  .annotated[data-enhanced] .annotated__note-text::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0 -2rem -3rem;
+    content: '';
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    /* Feathered on every side, fully covering behind the text. */
+    --feather-y: linear-gradient(to bottom, transparent, black 0.6lh, black calc(100% - 2.25rem), transparent);
+    --feather-x: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
+    mask-image: var(--feather-y), var(--feather-x);
+    mask-composite: intersect;
+    -webkit-mask-image: var(--feather-y), var(--feather-x);
+    -webkit-mask-composite: source-in;
+    pointer-events: none;
+  }
+
+  /* Without the script the notes follow the sentence in the page. With it,
+     the open note lies over the faded page under the sentence, so nothing
+     moves. */
+  .annotated[data-enhanced] .annotated__notes {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+  }
+
+  .annotated[data-enhanced] .annotated__note {
+    position: absolute;
+    isolation: isolate;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.25rem);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease,
+      visibility 0s 160ms;
+  }
+
+  .annotated[data-enhanced] .annotated__note[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 220ms var(--ease-out),
+      transform 260ms var(--ease-out),
+      visibility 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .annotated[data-enhanced] .annotated__note,
+    .annotated[data-enhanced] .annotated__note[data-open] {
+      transform: none;
+    }
+  }
+</style>

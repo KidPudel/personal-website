@@ -1,0 +1,124 @@
+---
+import { Image } from 'astro:assets';
+
+import joyfulCircle from '../../assets/art/elements/circled.png';
+import { essenceChannel } from './opening/pigment-field';
+
+interface Props {
+  word: string;
+  href: string;
+}
+
+const { word, href } = Astro.props;
+// The pigments of the page edge, in order, without the near-white one. The
+// letters take them in turn on hover.
+const pigments = [0, 1, 3, 4, 5, 6].map((index) => `rgb(${essenceChannel(index)})`);
+const letters = [...word];
+---
+
+<a class="joyful" href={href}
+  ><span class="sr-only">{word}</span><span class="joyful__word" aria-hidden="true">{letters.map((letter, index) => (
+    <span class="joyful__letter" style={`--letter: ${index}; --pigment: ${pigments[index % pigments.length]}`}>{letter}</span>
+  ))}</span><Image
+    class="joyful__circle"
+    src={joyfulCircle}
+    alt=""
+    width={180}
+    aria-hidden="true"
+    loading="lazy"
+    decoding="async"
+  /></a>
+
+<style>
+  .joyful {
+    position: relative;
+    display: inline-block;
+    isolation: isolate;
+    color: inherit;
+    font-family: var(--font-special);
+    font-style: normal;
+    line-height: 1.05;
+    text-decoration: none;
+  }
+
+  .joyful__word {
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+  }
+
+  .joyful__letter {
+    display: inline-block;
+    transform-origin: 50% 80%;
+  }
+
+  /* "joyful" has its own hover instead of the link swipe: its letters take
+     the pigments one by one and hop in turn, frame by frame at the hello
+     animation's 82 ms, while the pen circle wobbles like the drawn icons in
+     the header. With reduced motion only the colors change (motion.css). */
+  .joyful:focus-visible .joyful__letter {
+    color: var(--pigment);
+    animation: joyful-hop 1400ms step-end calc(var(--letter) * 82ms) infinite;
+  }
+
+  .joyful:focus-visible .joyful__circle {
+    animation: joyful-wobble 820ms step-end infinite;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .joyful:hover .joyful__letter {
+      color: var(--pigment);
+      animation: joyful-hop 1400ms step-end calc(var(--letter) * 82ms) infinite;
+    }
+
+    .joyful:hover .joyful__circle {
+      animation: joyful-wobble 820ms step-end infinite;
+    }
+  }
+
+  /* Frames of 82 ms: up, higher, landing, then a rest until the next hop. */
+  @keyframes joyful-hop {
+    0% { transform: translateY(0) rotate(0); }
+    5.86% { transform: translateY(-0.12em) rotate(-5deg); }
+    11.71% { transform: translateY(-0.24em) rotate(4deg); }
+    17.57% { transform: translateY(-0.08em) rotate(-2deg); }
+    23.43%, 100% { transform: translateY(0) rotate(0); }
+  }
+
+  @keyframes joyful-wobble {
+    0%, 100% { transform: translateY(-42%) rotate(-2deg) translate(-0.02em, -0.02em); }
+    25% { transform: translateY(-42%) rotate(1.5deg) translate(0.03em, 0); }
+    50% { transform: translateY(-42%) rotate(-1deg) translate(0, 0.02em); }
+    75% { transform: translateY(-42%) rotate(2deg) translate(-0.02em, -0.03em); }
+  }
+
+  /* The drawn loop sits in the upper part of its image, so -42% centers the
+     stroke on the word's letters. It is a little flatter than the source so
+     its top stroke stays below the line above. */
+  .joyful__circle {
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    left: -34%;
+    display: block;
+    width: 185%;
+    height: 1.95em;
+    max-width: none;
+    opacity: 1;
+    pointer-events: none;
+    transform: translateY(-42%);
+  }
+
+  /* The Russian word is much longer. Keep the English circle's height and
+     overhang, and let the loop stretch horizontally instead of growing taller. */
+  .joyful:lang(ru) .joyful__circle {
+    left: -0.83em;
+    width: calc(100% + 2.1em);
+  }
+
+  .joyful:focus-visible {
+    border-radius: 0.08em;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+</style>

@@ -1,22 +1,10 @@
 ---
-import { Image } from 'astro:assets';
-
-import joyfulCircle from '../../../assets/art/elements/circled.png';
 import { identity as identityCopy } from '../../../content/homepage/identity';
 import { toLocale } from '../../../i18n/locales';
-import { essenceChannel } from '../opening/pigment-field';
+import AnnotatedText from '../AnnotatedText.astro';
 import HelloAnimation from './HelloAnimation.astro';
 
 const identity = identityCopy[toLocale(Astro.currentLocale)];
-// The pigments of the page edge, in order, without the near-white one. The
-// letters of "joyful" take them in turn on hover.
-const joyfulPigments = [0, 1, 3, 4, 5, 6].map((index) => `rgb(${essenceChannel(index)})`);
-const joyfulLetters = [...identity.purpose.word];
-// The word before "joyful" stays on its line, so the circled word never ends
-// the statement alone.
-const purposeBreak = identity.purpose.before.trimEnd().lastIndexOf(' ') + 1;
-const purposeLead = identity.purpose.before.slice(0, purposeBreak);
-const purposeTail = identity.purpose.before.slice(purposeBreak);
 ---
 
 <identity-introduction class="identity-shell">
@@ -28,28 +16,7 @@ const purposeTail = identity.purpose.before.slice(purposeBreak);
           <span class="identity__role">{identity.role}</span>
         </h1>
         <div class="identity__summary">
-          <p class="identity__passage">{identity.promise}</p>
-          {/* The claim, how I work, and why it matters. */}
-          <p class="identity__passage">{identity.research} {identity.practice}</p>
-          <p class="identity__passage">
-            {purposeLead}<span class="identity__keep">{purposeTail}<a
-              class="identity__joyful-link"
-              href={identity.purpose.href}
-            ><span class="sr-only">{identity.purpose.word}</span><span class="identity__joyful-word" aria-hidden="true">{joyfulLetters.map((letter, index) => (
-                <span
-                  class="identity__joyful-letter"
-                  style={`--letter: ${index}; --pigment: ${joyfulPigments[index % joyfulPigments.length]}`}
-                >{letter}</span>
-              ))}</span><Image
-                class="identity__joyful-circle"
-                src={joyfulCircle}
-                alt=""
-                width={180}
-                aria-hidden="true"
-                loading="lazy"
-                decoding="async"
-              /></a>{identity.purpose.after}</span>
-          </p>
+          <AnnotatedText parts={identity.claim} id="intro" />
         </div>
       </div>
     </div>
@@ -114,6 +81,9 @@ const purposeTail = identity.purpose.before.slice(purposeBreak);
   }
 
   .identity__summary {
+    /* The doors' grey, a step darker than About's so it reads on the sky
+       (4.6:1). */
+    --door-grey: #5c5952;
     /* About 72 characters a line: wide enough for the claim to sit on one
        line, and in ems so the measure holds at every type size. */
     max-width: 35.5em;
@@ -124,113 +94,6 @@ const purposeTail = identity.purpose.before.slice(purposeBreak);
     font-weight: 400;
     letter-spacing: 0.025em;
     line-height: 1.4;
-  }
-
-  .identity__passage {
-    margin: 0;
-    /* No lone word on a statement's last line ("control.", "joyful."). */
-    text-wrap: pretty;
-  }
-
-  .identity__keep {
-    white-space: nowrap;
-  }
-
-  /* One blank line between paragraphs. */
-  .identity__passage + .identity__passage {
-    margin-top: 1lh;
-  }
-
-  .identity__joyful-link {
-    position: relative;
-    display: inline-block;
-    isolation: isolate;
-    color: inherit;
-    font-family: var(--font-special);
-    font-style: normal;
-    line-height: 1.05;
-    text-decoration: none;
-  }
-
-  .identity__joyful-word {
-    position: relative;
-    z-index: 1;
-    white-space: nowrap;
-  }
-
-  .identity__joyful-letter {
-    display: inline-block;
-    transform-origin: 50% 80%;
-  }
-
-  /* "joyful" has its own hover instead of the link swipe: its letters take
-     the pigments one by one and hop in turn, frame by frame at the hello
-     animation's 82 ms, while the pen circle wobbles like the drawn icons in
-     the header. With reduced motion only the colors change (motion.css). */
-  .identity__joyful-link:focus-visible .identity__joyful-letter {
-    color: var(--pigment);
-    animation: joyful-hop 1400ms step-end calc(var(--letter) * 82ms) infinite;
-  }
-
-  .identity__joyful-link:focus-visible .identity__joyful-circle {
-    animation: joyful-wobble 820ms step-end infinite;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .identity__joyful-link:hover .identity__joyful-letter {
-      color: var(--pigment);
-      animation: joyful-hop 1400ms step-end calc(var(--letter) * 82ms) infinite;
-    }
-
-    .identity__joyful-link:hover .identity__joyful-circle {
-      animation: joyful-wobble 820ms step-end infinite;
-    }
-  }
-
-  /* Frames of 82 ms: up, higher, landing, then a rest until the next hop. */
-  @keyframes joyful-hop {
-    0% { transform: translateY(0) rotate(0); }
-    5.86% { transform: translateY(-0.12em) rotate(-5deg); }
-    11.71% { transform: translateY(-0.24em) rotate(4deg); }
-    17.57% { transform: translateY(-0.08em) rotate(-2deg); }
-    23.43%, 100% { transform: translateY(0) rotate(0); }
-  }
-
-  @keyframes joyful-wobble {
-    0%, 100% { transform: translateY(-42%) rotate(-2deg) translate(-0.02em, -0.02em); }
-    25% { transform: translateY(-42%) rotate(1.5deg) translate(0.03em, 0); }
-    50% { transform: translateY(-42%) rotate(-1deg) translate(0, 0.02em); }
-    75% { transform: translateY(-42%) rotate(2deg) translate(-0.02em, -0.03em); }
-  }
-
-  /* The drawn loop sits in the upper part of its image, so -42% centers the
-     stroke on the word's letters. It is a little flatter than the source so its top
-     stroke stays below the line above. */
-  .identity__joyful-circle {
-    position: absolute;
-    z-index: 0;
-    top: 50%;
-    left: -34%;
-    display: block;
-    width: 185%;
-    height: 1.95em;
-    max-width: none;
-    opacity: 1;
-    pointer-events: none;
-    transform: translateY(-42%);
-  }
-
-  /* The Russian word is much longer. Keep the English circle's height and
-     overhang, and let the loop stretch horizontally instead of growing taller. */
-  .identity__joyful-link:lang(ru) .identity__joyful-circle {
-    left: -0.83em;
-    width: calc(100% + 2.1em);
-  }
-
-  .identity__joyful-link:focus-visible {
-    border-radius: 0.08em;
-    outline: var(--focus-width) solid var(--color-focus);
-    outline-offset: var(--focus-offset);
   }
 
   @media (max-width: 52rem) {

@@ -14,58 +14,62 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 <section id="personal" class="personal-note" aria-labelledby="personal-title">
   <h2 id="personal-title" class="personal-note__title">{personalNote.heading}</h2>
 
-  <div class="personal-note__columns">
-    {personalNote.columns.map((column) => (
-      <div class="personal-note__column">
-        {column.map((paragraph) => <p>{paragraph}</p>)}
-      </div>
-    ))}
-  </div>
+  <personal-note-reveals class="personal-note__body">
+    <div class="personal-note__columns">
+      {personalNote.columns.map((column) => (
+        <div class="personal-note__column">
+          {column.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      ))}
+    </div>
 
-  <personal-note-reveals class="personal-note__closing-block">
-    <p class="personal-note__closing">
-      {personalNote.closing.map((part) =>
-        typeof part === 'string' ? (
-          part
-        ) : (
-          <a
-            class="personal-note__trigger link-mark"
-            href={`#${panelId(part.reveal)}`}
-            aria-controls={panelId(part.reveal)}
-            data-reveal-trigger
-          >
-            {part.text}
-          </a>
-        ),
-      )}
-    </p>
+    <div class="personal-note__closing-block">
+      <p class="personal-note__closing">
+        {personalNote.closing.map((part) =>
+          typeof part === 'string' ? (
+            part
+          ) : (
+            <a
+              class="personal-note__trigger link-mark"
+              href={`#${panelId(part.reveal)}`}
+              aria-controls={panelId(part.reveal)}
+              data-reveal-trigger
+            >
+              {part.text}
+            </a>
+          ),
+        )}
+      </p>
 
-    {reveals.map((reveal) => (
-      <div id={panelId(reveal)} class={`personal-note__panel personal-note__panel--${reveal}`} data-reveal-panel>
-        <div class="personal-note__panel-inner">
+      {reveals.map((reveal) => (
+        <div id={panelId(reveal)} class={`personal-note__panel personal-note__panel--${reveal}`} data-reveal-panel>
           <div class="personal-note__panel-content">
             {reveal === 'portrait' ? (
-            <figure class="personal-note__portrait">
-              <HoloPortrait src={couplePortrait} alt={personalNote.portraitAlt} />
-            </figure>
-          ) : reveal === 'blog' ? (
-            <WritingList class="personal-note__writing" />
-          ) : (
-            <DoodleSketchbook label={personalNote.doodlesLabel} />
-          )}
+              <figure class="personal-note__portrait">
+                <HoloPortrait src={couplePortrait} alt={personalNote.portraitAlt} />
+              </figure>
+            ) : reveal === 'blog' ? (
+              <WritingList class="personal-note__writing" />
+            ) : (
+              <DoodleSketchbook label={personalNote.doodlesLabel} />
+            )}
           </div>
         </div>
-      </div>
-    ))}
+      ))}
+    </div>
   </personal-note-reveals>
 </section>
 
 <script>
-  // Without this script every panel stays visible and each word is a plain
-  // link to its panel. With it, the words open one panel at a time: below the
-  // sentence on narrow screens, in a stage beside it on wide ones.
+  // The words of the closing sentence are doors, like the introduction's and
+  // the beliefs' (AnnotatedText.astro): opening one fades the rest of the
+  // page and lays its panel over what follows, so nothing moves. Without this
+  // script every panel stays visible and each word is a plain link to it.
+  const OPEN_EVENT = 'annotation-open';
+
   class PersonalNoteReveals extends HTMLElement {
     private abort?: AbortController;
+    private active?: HTMLAnchorElement;
 
     connectedCallback() {
       this.abort?.abort();
@@ -78,31 +82,71 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
         trigger.setAttribute('aria-expanded', 'false');
         trigger.addEventListener('click', (event) => {
           event.preventDefault();
-          this.toggle(trigger, triggers);
+          this.toggle(trigger);
         }, { signal });
         trigger.addEventListener('keydown', (event) => {
           if (event.key !== ' ') return;
           event.preventDefault();
-          this.toggle(trigger, triggers);
+          this.toggle(trigger);
         }, { signal });
       });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape' || !this.active) return;
+        const trigger = this.active;
+        this.close();
+        trigger.focus();
+      }, { signal });
+      document.addEventListener('pointerdown', (event) => {
+        if (!this.active) return;
+        const target = event.target as Node;
+        if (this.active.contains(target) || this.panelFor(this.active)?.contains(target)) return;
+        this.close();
+      }, { signal });
+      document.addEventListener(OPEN_EVENT, (event) => {
+        if ((event as CustomEvent).detail !== this && this.active) this.close();
+      }, { signal });
 
       this.setAttribute('data-enhanced', '');
     }
 
     disconnectedCallback() {
       this.abort?.abort();
+      if (this.active) this.close();
     }
 
-    private toggle(active: HTMLAnchorElement, triggers: HTMLAnchorElement[]) {
-      const opening = active.getAttribute('aria-expanded') !== 'true';
+    private panelFor(trigger: HTMLAnchorElement) {
+      return document.getElementById(trigger.getAttribute('aria-controls') ?? '');
+    }
 
-      triggers.forEach((trigger) => {
-        const open = trigger === active && opening;
-        trigger.setAttribute('aria-expanded', String(open));
-        const panel = document.getElementById(trigger.getAttribute('aria-controls') ?? '');
-        panel?.toggleAttribute('data-open', open);
-      });
+    private toggle(trigger: HTMLAnchorElement) {
+      if (this.active === trigger) {
+        this.close();
+        return;
+      }
+      if (this.active) this.reset(this.active);
+      this.active = trigger;
+      trigger.setAttribute('aria-expanded', 'true');
+      this.panelFor(trigger)?.setAttribute('data-open', '');
+      this.setAttribute('data-active', '');
+      this.closest('#main-content > *')?.setAttribute('data-annotating-host', '');
+      document.documentElement.setAttribute('data-annotating', '');
+      document.dispatchEvent(new CustomEvent(OPEN_EVENT, { detail: this }));
+    }
+
+    private close() {
+      if (this.active) this.reset(this.active);
+      this.active = undefined;
+      this.removeAttribute('data-active');
+      this.closest('#main-content > *')?.removeAttribute('data-annotating-host');
+      if (!document.querySelector('annotated-text[data-active], personal-note-reveals[data-active]')) {
+        document.documentElement.removeAttribute('data-annotating');
+      }
+    }
+
+    private reset(trigger: HTMLAnchorElement) {
+      trigger.setAttribute('aria-expanded', 'false');
+      this.panelFor(trigger)?.removeAttribute('data-open');
     }
   }
 
@@ -120,8 +164,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   }
 
   .personal-note__title,
-  .personal-note__columns,
-  .personal-note__closing-block {
+  .personal-note__body {
     width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
     margin-inline: auto;
   }
@@ -138,15 +181,21 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     text-align: left;
   }
 
-  .personal-note__columns {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 35rem));
-    gap: clamp(2.5rem, 5vw, 7rem);
+  .personal-note__body {
+    display: block;
+    --about-gap: clamp(2.5rem, 5vw, 7rem);
     color: var(--color-ink);
     font-family: var(--font-reading);
     font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
     letter-spacing: 0.025em;
     line-height: 1.3;
+  }
+
+  .personal-note__columns {
+    display: grid;
+    grid-template-columns: minmax(0, 35rem);
+    gap: 1.25lh;
+    transition: color 220ms ease;
   }
 
   .personal-note__column {
@@ -161,35 +210,34 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     margin-top: 1.25lh;
   }
 
-  /* A separate aside after the story, starting under the left column. */
+  /* An aside after the story: under it on narrow screens, beside it on wide
+     ones. */
   .personal-note__closing-block {
-    display: block;
+    position: relative;
     margin-top: clamp(2.5rem, 4vw, 4rem);
-    color: var(--color-ink);
-    font-family: var(--font-reading);
-    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
-    letter-spacing: 0.025em;
-    line-height: 1.3;
   }
 
-  /* Like the work captions: the words that open something are in ink and
-     the rest of the sentence is grey, so they stand out without a mark
-     (3.7:1 against the grey, which itself clears 4.5:1 on the field). */
+  /* Doors, as in the introduction and the beliefs: the words that open
+     something are in ink and the rest of the sentence is grey (3.7:1 against
+     the grey, which itself clears 4.5:1 on the field). */
   .personal-note__closing {
     max-width: 35rem;
     margin: 0;
     color: var(--color-muted);
+    transition: color 220ms ease;
   }
 
   .personal-note__trigger {
     color: var(--color-ink);
+    font-family: var(--font-door);
     text-decoration: none;
     cursor: pointer;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
+    transition: color 220ms ease;
   }
 
-  /* The open word keeps its mark. */
+  /* The open door keeps its mark. */
   .personal-note__trigger[aria-expanded='true'] {
     animation: link-mark-draw var(--link-mark-draw) step-end forwards;
   }
@@ -200,33 +248,65 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     outline-offset: var(--focus-offset);
   }
 
-  .personal-note__panel {
-    display: grid;
-    grid-template-rows: 1fr;
-    transition:
-      grid-template-rows 240ms var(--ease-out),
-      opacity 180ms var(--ease-out),
-      transform 240ms var(--ease-out),
-      visibility 240ms;
-  }
-
-  .personal-note__panel-inner {
-    min-height: 0;
+  /* Open: the story and the rest of the sentence fade with the page. */
+  .personal-note__body[data-active] .personal-note__columns,
+  .personal-note__body[data-active] .personal-note__closing,
+  .personal-note__body[data-active] .personal-note__trigger:not([aria-expanded='true']) {
+    color: rgb(17 17 15 / 0.2);
   }
 
   .personal-note__panel-content {
     padding-top: 1.4rem;
   }
 
-  /* Closed panels leave the reading order and focus sequence entirely. */
-  .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) {
-    grid-template-rows: 0fr;
+  /* With the script, a panel lies over the faded page under the sentence
+     instead of pushing what follows down. Closed panels leave the reading
+     order and focus sequence entirely. */
+  .personal-note__body[data-enhanced] .personal-note__panel {
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 0;
+    width: 100%;
     opacity: 0;
     visibility: hidden;
+    transform: translateY(0.5rem);
+    transition:
+      opacity 180ms var(--ease-out),
+      transform 240ms var(--ease-out),
+      visibility 0s 240ms;
   }
 
-  .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) .personal-note__panel-inner {
-    overflow: hidden;
+  .personal-note__body[data-enhanced] .personal-note__panel[data-open] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 220ms var(--ease-out),
+      transform 260ms var(--ease-out),
+      visibility 0s;
+  }
+
+  /* The blog list is text: what it lies over melts into a soft blur behind
+     it, as under the introduction's notes and the header. */
+  .personal-note__body[data-enhanced] .personal-note__panel--blog {
+    isolation: isolate;
+  }
+
+  .personal-note__body[data-enhanced] .personal-note__panel--blog::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0 -2rem -3rem;
+    content: '';
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    --feather-y: linear-gradient(to bottom, transparent, black 1.4rem, black calc(100% - 2.25rem), transparent);
+    --feather-x: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
+    mask-image: var(--feather-y), var(--feather-x);
+    mask-composite: intersect;
+    -webkit-mask-image: var(--feather-y), var(--feather-x);
+    -webkit-mask-composite: source-in;
+    pointer-events: none;
   }
 
   .personal-note__portrait {
@@ -235,84 +315,52 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     filter: drop-shadow(0 0.4rem 1rem rgb(17 17 15 / 0.12));
   }
 
-  /* Wide screens: the sentence keeps the left column and the panels share one
-     stage cell in the right column. Closed panels take no space, so the
-     closed note ends at the sentence; opening one moves the contact block
-     down, which follows from the visitor's own click. */
+  /* Wide screens: a spread, the story on the left and the aside on the right,
+     both from the same top line. The doodles spread over both columns from
+     that line, around the sentence and over the faded story, and let clicks
+     through to it. */
   @media (width > 75rem) {
-    .personal-note__closing-block[data-enhanced] {
+    .personal-note__body {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 35rem));
-      column-gap: clamp(2.5rem, 5vw, 7rem);
+      column-gap: var(--about-gap);
       align-items: start;
     }
 
-    .personal-note__closing-block[data-enhanced] .personal-note__closing {
-      grid-area: 1 / 1;
+    .personal-note__closing-block {
+      margin-top: 0;
     }
 
-    .personal-note__closing-block[data-enhanced] .personal-note__panel {
-      grid-area: 1 / 2;
-    }
-
-    .personal-note__closing-block[data-enhanced] .personal-note__panel-content {
-      padding-top: 0;
-    }
-
-    .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) {
-      transform: translateY(0.5rem);
-    }
-
-    /* The doodles spread over both columns and the space below, around the
-       sentence, and let clicks through to it. */
-    .personal-note__closing-block[data-enhanced] .personal-note__panel--doodles {
-      grid-column: 1 / -1;
-      margin-bottom: calc(-1 * clamp(2rem, 4vw, 4rem));
+    .personal-note__body[data-enhanced] .personal-note__panel--doodles {
+      top: 0;
+      left: calc(-100% - var(--about-gap));
+      width: calc(200% + var(--about-gap));
       pointer-events: none;
     }
-  }
 
-  /* Tablets: two columns would be too narrow to read comfortably, so the story
-     runs as one column across the full frame. */
-  @media (max-width: 75rem) {
-    .personal-note__columns {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.25lh;
-    }
-
-    .personal-note__closing-block {
-      margin-top: 1.25lh;
+    .personal-note__body[data-enhanced] .personal-note__panel--doodles .personal-note__panel-content {
+      padding-top: 0;
     }
   }
 
   @media (max-width: 52rem) {
     .personal-note__title,
-    .personal-note__columns,
-    .personal-note__closing-block {
+    .personal-note__body {
       width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
+    }
+
+    .personal-note__body {
+      font-size: 1.0625rem;
     }
 
     .personal-note__closing-block {
       margin-top: 1.25lh;
-      font-size: 1.0625rem;
-    }
-
-    .personal-note__columns {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.25lh;
-      font-size: 1.0625rem;
-      line-height: 1.3;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .personal-note__panel {
-      transition:
-        opacity 160ms ease,
-        visibility 160ms;
-    }
-
-    .personal-note__closing-block[data-enhanced] .personal-note__panel:not([data-open]) {
+    .personal-note__body[data-enhanced] .personal-note__panel,
+    .personal-note__body[data-enhanced] .personal-note__panel[data-open] {
       transform: none;
     }
   }

@@ -1,0 +1,71 @@
+---
+import '@fontsource/instrument-serif/400.css';
+
+import { beliefs as beliefsCopy } from '../../../content/homepage/values';
+import { toLocale } from '../../../i18n/locales';
+import AnnotatedText from '../AnnotatedText.astro';
+
+const beliefs = beliefsCopy[toLocale(Astro.currentLocale)];
+---
+
+<section id="beliefs" class="beliefs" aria-labelledby="beliefs-title">
+  <h2 id="beliefs-title" class="beliefs__title">{beliefs.heading}</h2>
+  <div class="beliefs__text">
+    <AnnotatedText parts={beliefs.parts} id="beliefs" />
+  </div>
+</section>
+
+<style>
+  .beliefs {
+    display: block;
+    width: 100%;
+    /* The same pause as between the other sections. */
+    padding: 0 0 clamp(8rem, 13vw, 12rem);
+  }
+
+  .beliefs__title,
+  .beliefs__text {
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
+    margin-inline: auto;
+  }
+
+  /* The homepage's section titles: "my work", "more things i've made". */
+  .beliefs__title {
+    margin-top: 0;
+    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+    color: var(--color-ink);
+    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+
+  /* The introduction's reading type and measure. */
+  .beliefs__text {
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
+    letter-spacing: 0.025em;
+    line-height: 1.4;
+  }
+
+  .beliefs__text > :global(annotated-text) {
+    max-width: 35.5em;
+  }
+
+  @media (max-width: 52rem) {
+    .beliefs {
+      padding-bottom: clamp(7rem, 24vw, 9rem);
+    }
+
+    .beliefs__title,
+    .beliefs__text {
+      width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
+    }
+
+    .beliefs__text {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

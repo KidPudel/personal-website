@@ -11,6 +11,8 @@ import chineseBee1 from '../../assets/case_study_images/two-sticks/search2.png';
 import chineseBee2 from '../../assets/case_study_images/two-sticks/write.png';
 import campfire1 from '../../assets/games/discourses/cover.png';
 import santaFoundation1 from '../../assets/games/santa/secret_santa_foundation1.png';
+import type { Locale } from '../../i18n/locales';
+import type { AnnotatedPart } from './annotated';
 
 export type ValueProject =
   | 'Observatory'
@@ -35,6 +37,9 @@ export interface ValuePassage {
   aspects: readonly ValueAspect[];
 }
 
+// “joyful” opens this video.
+const purposeHref = 'https://www.youtube.com/watch?v=A_u2WFTfbcg';
+
 export const valuesPremise = 'Three things important to me.';
 
 export type PersonalReveal = 'portrait' | 'doodles' | 'blog';
@@ -46,12 +51,8 @@ type ClosingPart = string | { reveal: PersonalReveal; text: string };
 export const personalNote = {
   en: {
     heading: 'A few more things about me',
-    // What stays with people, how I work with them, and the path that led here.
+    // The path that led here. What I believe has its own section (beliefs).
     columns: [
-      [
-        'The games, films and music I grew up with stayed with me long after I finished them. That’s what I want from the things I design: something people keep, even after they stop using it.',
-        'I can’t design what people do, only the conditions they act in. So I’d rather understand people first and leave them in control than force a path on them. The most useful moments in my work are when someone does something I didn’t expect, because that’s usually where the real problem is.',
-      ],
       [
         'I started in software engineering, then designed games. Engineering lets me build and ship ideas myself. Game design taught me how interaction and motivation shape what people do. I care about the whole feel of it: visuals, motion, sound and small details working as one.',
       ],
@@ -72,10 +73,6 @@ export const personalNote = {
     heading: 'Ещё немного обо мне',
     columns: [
       [
-        'Игры, фильмы и музыка, на которых я вырос, оставались со мной ещё долго после финала. Того же я хочу от вещей, которые проектирую: чтобы у людей что-то оставалось, даже когда они перестали ими пользоваться.',
-        'Я не могу спроектировать то, что делают люди, только условия, в которых они действуют. Поэтому мне важнее понять людей и оставить им контроль, чем навязать им путь. Самые полезные моменты в работе случаются, когда человек делает то, чего я не ожидал: обычно именно там и прячется настоящая проблема.',
-      ],
-      [
         'Я начинал в разработке, потом делал игры. Разработка позволяет мне самому собирать и выпускать идеи. Геймдизайн научил понимать, как взаимодействие и мотивация влияют на поступки людей. Мне важно ощущение целиком: визуал, движение, звук и мелочи, которые работают как одно целое.',
       ],
     ],
@@ -90,6 +87,50 @@ export const personalNote = {
     ] satisfies ClosingPart[],
     portraitAlt: 'Игорь и его девушка на улице',
     doodlesLabel: 'Все рисунки Игоря',
+  },
+};
+
+// What I believe, after the work. Its phrases open notes in my own words.
+export const beliefs: Record<Locale, { heading: string; parts: AnnotatedPart[] }> = {
+  en: {
+    heading: 'what i believe',
+    parts: [
+      'The most useful moments in my work are when someone does something I didn’t expect. I can’t design what people do, only the ',
+      {
+        text: 'conditions',
+        note: 'So I’d rather understand people first and leave them in control than force a path on them.',
+        tone: 'orange',
+      },
+      ' they act in. A product is only how the value reaches people, and I want that value to ',
+      {
+        text: 'stay with them',
+        note: 'The games, films and music I grew up with stayed with me long after I finished them. That’s what I want from the things I design.',
+        tone: 'pink',
+      },
+      ', and getting there to feel a little more ',
+      { joyful: 'joyful', href: purposeHref },
+      '.',
+    ],
+  },
+  ru: {
+    heading: 'во что я верю',
+    parts: [
+      'Самые полезные моменты в работе случаются, когда человек делает то, чего я не ожидал. Я не могу спроектировать то, что делают люди, только ',
+      {
+        text: 'условия',
+        note: 'Поэтому мне важнее понять людей и оставить им контроль, чем навязать им путь.',
+        tone: 'orange',
+      },
+      ', в которых они действуют. Продукт нужен лишь для того, чтобы ценность дошла до людей, и я хочу, чтобы она ',
+      {
+        text: 'оставалась с ними',
+        note: 'Игры, фильмы и музыка, на которых я вырос, оставались со мной ещё долго после финала. Того же я хочу от вещей, которые проектирую.',
+        tone: 'pink',
+      },
+      ', а путь к ней был чуть ',
+      { joyful: 'радостнее', href: purposeHref },
+      '.',
+    ],
   },
 };
 
