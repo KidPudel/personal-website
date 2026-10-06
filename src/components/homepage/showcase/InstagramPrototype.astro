@@ -33,7 +33,7 @@ const stories = [
       {stories.map(([image, label]) => (
         <div class="instagram-prototype__story">
           <span class="instagram-prototype__story-ring">
-            <img src={prototypeImage(image)} alt="" width="48" height="48" loading="lazy" decoding="async" />
+            <img src={prototypeImage(image)} alt="" width="48" height="48" loading="eager" decoding="async" />
           </span>
           <span>{label}</span>
         </div>
@@ -41,7 +41,7 @@ const stories = [
     </div>
 
     <div class="instagram-prototype__author">
-      <img src={prototypeImage('profile-music-today')} alt="" width="34" height="34" loading="lazy" decoding="async" />
+      <img src={prototypeImage('profile-music-today')} alt="" width="34" height="34" loading="eager" decoding="async" />
       <span><strong>process.practice</strong><small>Suggested for you · Health</small></span>
       <b>•••</b>
     </div>
@@ -52,7 +52,7 @@ const stories = [
       alt=""
       width="384"
       height="480"
-      loading="lazy"
+      loading="eager"
       decoding="async"
     />
 

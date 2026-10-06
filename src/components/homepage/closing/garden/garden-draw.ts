@@ -39,6 +39,8 @@ export interface Ink {
   coralLine: string;
   forget: string;
   forgetLine: string;
+  bee: string;
+  wing: string;
   soil: string;
   pebble: string;
   root: string;
@@ -58,6 +60,8 @@ export interface Frame {
   boil: number;
   lean?: (plant: number) => Pt | undefined;
   face?: (id: number, x: number, y: number) => Pt | undefined;
+  // Filled with the open flowers up front a bee could land on.
+  perches?: { id: number; x: number; y: number; R: number }[];
   from: number;
   to: number;
   snail?: number;
@@ -428,6 +432,28 @@ export const drawFlower = (
   }
 };
 
+// A bee, seen from the side and facing left: wings above a striped body.
+// `wings` opens them from folded (0) to spread (1); `facing` turns it round.
+export const drawBee = (B: Backend, ink: Ink, x: number, y: number, s: number, facing: number, wings: number) => {
+  const T: Turn = (px, py) => [x + px * s * facing, y + py * s];
+  const wing = (wx: number, wy: number, rx: number, ry: number, ph: number) => {
+    const open = 0.3 + 0.7 * wings;
+    const shape = blob((px, py) => T(px, wy + (py - wy) * open), wx, wy, rx, ry, 0, ph, 14);
+    B.fill(shape, ink.wing);
+    B.stroke([...shape, shape[0]], ink.stamen, 0.7 * s);
+  };
+  wing(3.6, -5.2, 2.8, 4.2, 1.3);
+  B.fill(blob(T, 1.4, 0.4, 7.2, 5.1, 0, 2.1, 18), ink.bee);
+  B.stroke([T(-0.4, -4.2), T(0.2, 0.4), T(-0.4, 5)], ink.stamen, 1.9 * s);
+  B.stroke([T(3.9, -3.6), T(4.4, 0.4), T(3.9, 4.4)], ink.stamen, 1.7 * s);
+  B.stroke([T(8.4, 0.7), T(10.8, 1.1)], ink.stamen, 1 * s);
+  B.fill(blob(T, -6.4, 0.3, 3.4, 3.3, 0, 2, 12), ink.stamen);
+  B.fill(blob(T, -7.4, -0.6, 0.85, 0.85, 0, 0, 8), ink.wing);
+  B.stroke([T(-7.2, -2.4), T(-8.8, -5.2), T(-10.8, -6.2)], ink.stamen, 0.75 * s);
+  B.stroke([T(-5.8, -2.8), T(-6.6, -5.6), T(-8.2, -7.4)], ink.stamen, 0.75 * s);
+  wing(0.4, -6.2, 3.4, 5.2, 0.4);
+};
+
 const drawSnail = (B: Backend, ink: Ink, x: number, y: number, s: number) => {
   const T: Turn = (px, py) => [x + px * s, y + py * s];
   B.fill([T(-10, 0), T(-9, -3), T(0, -3.6), T(8, -4.6), T(10, -7), T(13, -7.4), T(14, -4), T(11, -0.6), T(4, 0.2)], ink.snail);
@@ -513,6 +539,9 @@ export const drawScene = (B: Backend, ink: Ink, inkFar: Ink, scene: GardenScene,
           const open = openAt === Infinity ? -1 : frame.now - openAt;
           const close = opener < 0 ? 1 : withering(frame, opener);
           const look = frame.face?.(e.id, x, y);
+          if (frame.perches && depth === 1 && e.species !== 'forget' && open > 700 && close >= 1 && wither >= 1) {
+            frame.perches.push({ id: e.id, x, y, R: e.R });
+          }
           drawFlower(B, colours, e, x, y, e.R * wither, e.rot + jr + (look ? look[0] * 0.22 : 0), open, local, close, look);
         }
       });

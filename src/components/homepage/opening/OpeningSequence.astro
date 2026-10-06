@@ -4,9 +4,6 @@ import skyMobileVideoUrl from '../../../assets/art/dithered-sky-mobile.mp4?url';
 import skyMobileAv1VideoUrl from '../../../assets/art/dithered-sky-mobile-av1.mp4?url';
 import skyVideoUrl from '../../../assets/art/dithered-sky.mp4?url';
 import skyAv1VideoUrl from '../../../assets/art/dithered-sky-av1.mp4?url';
-import { identity } from '../../../content/homepage/identity';
-import { toLocale } from '../../../i18n/locales';
-import HelloAnimation from '../identity/HelloAnimation.astro';
 ---
 
 <opening-sequence class="opening-sequence">
@@ -61,10 +58,6 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
         />
       </video>
     </div>
-
-    <div class="opening-sequence__greeting" aria-hidden="true" data-opening-greeting>
-      <HelloAnimation text={identity[toLocale(Astro.currentLocale)].hello} opening />
-    </div>
   </div>
 </opening-sequence>
 
@@ -79,80 +72,29 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
     background: var(--color-field);
   }
 
-  .opening-sequence__greeting,
-  .opening-sequence__sky {
-    display: none;
-  }
-
   .opening-sequence__scene {
     position: relative;
     display: block;
   }
 
-  :global(.js:not(.opening-bypassed)) .opening-sequence__sky,
-  :global(.js:not(.opening-bypassed)) .opening-sequence__greeting {
-    position: fixed;
-    display: block;
-    pointer-events: none;
-  }
-
-  :global(.js:not(.opening-bypassed) [data-site-header]) {
-    opacity: 0;
-    pointer-events: none;
+  .opening-sequence__sky {
+    display: none;
   }
 
   /* The sky sits just above the homepage's field and beneath its content,
-     so it tints the page without tinting the cards and text; the greeting
-     keeps its own layer above it. */
-  :global(.js:not(.opening-bypassed)) .opening-sequence__sky {
-    inset: 0 0 auto;
-    z-index: -1;
-    height: calc(100vh + var(--browser-bleed-bottom));
-    height: calc(100lvh + var(--browser-bleed-bottom));
-    overflow: hidden;
-    overflow: clip;
-    opacity: 0.5;
-  }
-
-  :global(.js:not(.opening-bypassed)) .opening-sequence__greeting {
-    z-index: 101;
-    top: 50%;
-    left: 50%;
-    width: clamp(20rem, 58vw, 48rem);
-    opacity: 1;
-    transform: translate3d(-50%, -50%, 0);
-    transform-origin: top left;
-  }
-
-  :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__sky,
-  :global(.js:not(.opening-bypassed)) .opening-sequence[data-opening-live] .opening-sequence__greeting {
-    will-change: transform, opacity;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__greeting,
-  .opening-sequence[data-complete] .opening-sequence__greeting {
-    display: none;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence__sky {
-    display: none;
-  }
-
-  :global(.js.opening-bypassed) .opening-sequence[data-persist-sky] .opening-sequence__sky {
+     so it tints the page without tinting the cards and text. The controller
+     fades it out as the work comes up. */
+  :global(.js) .opening-sequence__sky {
     position: fixed;
     inset: 0 0 auto;
     z-index: -1;
+    display: block;
     height: calc(100vh + var(--browser-bleed-bottom));
     height: calc(100lvh + var(--browser-bleed-bottom));
-    display: block;
     overflow: hidden;
     overflow: clip;
     opacity: 0.25;
     pointer-events: none;
-  }
-
-  .opening-sequence__greeting :global(.hello-animation-with-text) {
-    width: 100%;
   }
 
   .opening-sequence__sky-poster,
@@ -178,14 +120,7 @@ import HelloAnimation from '../identity/HelloAnimation.astro';
     -webkit-appearance: none;
   }
 
-  @media (max-width: 44.999rem) {
-    :global(.js:not(.opening-bypassed)) .opening-sequence__greeting {
-      width: min(88vw, 34rem);
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .opening-sequence__greeting,
     :global(.js) .opening-sequence__sky {
       display: none;
     }

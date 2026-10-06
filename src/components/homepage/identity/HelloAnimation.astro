@@ -2,7 +2,6 @@
 import type { ImageMetadata } from 'astro';
 
 import completedFrameInline from '../../../assets/art/Hello-animation/hello_frame18.png?inline';
-import firstFrameInline from '../../../assets/art/Hello-animation/hello_frame1.png?inline';
 
 interface Props {
   text: string;
@@ -31,27 +30,22 @@ const frames = Object.entries(frameModules)
     data-opening={opening ? '' : undefined}
   >
     {frames.map((frame, index) => {
-      const completed = !opening && index === frames.length - 1;
-      const initial = opening && index === 0;
-      const visible = completed || initial;
-      const inlineSource = initial
-        ? firstFrameInline
-        : completed
-          ? completedFrameInline
-          : undefined;
+      // The completed hello is what shows without JavaScript and under reduced
+      // motion; the other frames load only when it is about to be written.
+      const completed = index === frames.length - 1;
 
       return (
         <img
-          src={visible ? inlineSource : undefined}
-          data-src={visible ? undefined : frame.src}
+          src={completed ? completedFrameInline : undefined}
+          data-src={completed ? undefined : frame.src}
           alt=""
           width={frame.width}
           height={frame.height}
-          loading={visible ? 'eager' : 'lazy'}
-          decoding={visible ? 'sync' : 'async'}
-          hidden={!visible}
+          loading={completed ? 'eager' : 'lazy'}
+          decoding={completed ? 'sync' : 'async'}
+          hidden={!completed}
           data-hello-frame
-          data-active={visible ? '' : undefined}
+          data-active={completed ? '' : undefined}
         />
       );
     })}
@@ -75,11 +69,10 @@ const frames = Object.entries(frameModules)
       this.addEventListener('hello-animation-play', this.play);
       this.reducedMotion.addEventListener('change', this.handleMotionChange);
 
-      if (this.reducedMotion.matches) {
-        this.showCompletedFrame();
-      } else if (this.hasAttribute('data-opening')) {
-        this.showFrame(0);
-      } else {
+      // An opening hello on a fresh arrival stays blank (see the styles) until
+      // play() writes it; every other hello shows completed.
+      const settled = document.documentElement.classList.contains('greeting-settled');
+      if (!this.hasAttribute('data-opening') || settled || this.reducedMotion.matches) {
         this.showCompletedFrame();
       }
     }
@@ -104,11 +97,12 @@ const frames = Object.entries(frameModules)
     private showCompletedFrame() {
       const frameCount = this.querySelectorAll('[data-hello-frame]').length;
       if (frameCount) this.showFrame(frameCount - 1);
+      this.setAttribute('data-started', '');
       this.removeAttribute('data-playing');
     }
 
     private completePlayback() {
-      this.removeAttribute('data-playing');
+      this.showCompletedFrame();
       this.dispatchEvent(new CustomEvent('hello-animation-complete', { bubbles: true }));
     }
 
@@ -168,6 +162,7 @@ const frames = Object.entries(frameModules)
         if (nextFrame !== activeFrame) {
           activeFrame = nextFrame;
           this.showFrame(activeFrame);
+          this.setAttribute('data-started', '');
         }
 
         if (activeFrame < frames.length - 1) {
@@ -227,9 +222,11 @@ const frames = Object.entries(frameModules)
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .hello-animation img {
-      transition: none;
+  /* On a fresh arrival the hello's place stays blank until it starts
+     writing, rather than showing a lone stroke or the finished word. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js:not(.greeting-settled)) .hello-animation[data-opening]:not([data-started]) img {
+      visibility: hidden;
     }
   }
 </style>

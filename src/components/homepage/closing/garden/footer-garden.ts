@@ -1,5 +1,5 @@
 import { frontBloom, planGarden, type Exclusion, type GardenScene, type Pt } from './garden-plan';
-import { WITHER_MS, canvasBackend, drawScene, type Frame, type Ink } from './garden-draw';
+import { WITHER_MS, canvasBackend, drawBee, drawScene, type Frame, type Ink } from './garden-draw';
 import { EDGE_PULL_EVENT, bottomPullExtent, type EdgePullDetail } from '../../edge-pull';
 
 // The footer garden: a canvas planned for the real width and footer (a new
@@ -47,6 +47,8 @@ const INK_KEYS: Record<keyof Ink, string> = {
   coralLine: 'coral-line',
   forget: 'forget',
   forgetLine: 'forget-line',
+  bee: 'bee',
+  wing: 'wing',
   soil: 'soil',
   pebble: 'pebble',
   root: 'root',
@@ -62,6 +64,41 @@ const readInk = (style: CSSStyleDeclaration, prefix: string, fallback?: Ink) =>
       style.getPropertyValue(`--fg-${prefix}${INK_KEYS[key]}`).trim() || fallback?.[key] || '#000',
     ]),
   ) as unknown as Ink;
+
+// Bees come when the garden is clicked; three at most.
+const MAX_BEES = 3;
+
+interface Flight {
+  fromX: number;
+  fromY: number;
+  cx: number;
+  cy: number;
+  toX: number;
+  toY: number;
+  start: number;
+  duration: number;
+  // How much it weaves on the way, and how often.
+  weave: number;
+  waves: number;
+}
+
+interface Bee {
+  x: number;
+  y: number;
+  facing: 1 | -1;
+  state: 'flying' | 'perched' | 'huffing' | 'leaving';
+  perch?: number;
+  flight?: Flight;
+  // When a perched bee next moves to a neighbouring flower.
+  restUntil: number;
+  // A perched bee flutters its wings now and then.
+  flutterUntil: number;
+  nextFlutter: number;
+  huffUntil: number;
+  phase: number;
+}
+
+const easeInOut = (u: number) => (u < 0.5 ? 4 * u ** 3 : 1 - (-2 * u + 2) ** 3 / 2);
 
 const smoothstep = (v: number) => {
   const t = Math.min(1, Math.max(0, v));
@@ -98,6 +135,8 @@ class FooterGarden extends HTMLElement {
   private pointer?: { x: number; y: number };
   private local?: Pt;
   private snail = 0;
+  private bees: Bee[] = [];
+  private perches: { id: number; x: number; y: number; R: number }[] = [];
 
   private pull = 0;
   private pullMaximum = 1;
@@ -165,6 +204,7 @@ class FooterGarden extends HTMLElement {
     window.addEventListener('pointerdown', this.handlePointer, { passive: true, signal });
     window.addEventListener('pointerup', this.handlePointerEnd, { passive: true, signal });
     window.addEventListener('pointercancel', this.handlePointerEnd, { passive: true, signal });
+    window.addEventListener('click', this.handleClick, { signal });
     document.documentElement.addEventListener('pointerleave', () => (this.pointer = undefined), { signal });
     this.reducedMotion.addEventListener('change', () => this.build(), { signal });
   }
@@ -320,7 +360,11 @@ class FooterGarden extends HTMLElement {
     this.dirty = false;
     g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     g.clearRect(0, 0, scene.width, scene.height);
-    drawScene(canvasBackend(g), this.ink, this.inkFar, scene, this.frame(now, 0, scene.height));
+    const frame = this.frame(now, 0, scene.height);
+    frame.perches = [];
+    drawScene(canvasBackend(g), this.ink, this.inkFar, scene, frame);
+    this.perches = frame.perches;
+    this.drawBees(g, now);
     if (this.pull > 0) this.renderGround(now);
   }
 
@@ -392,15 +436,16 @@ class FooterGarden extends HTMLElement {
       this.local = this.pointer ? [this.pointer.x - rect.left, this.pointer.y - rect.top] : undefined;
     }
     this.easeLeans(dt);
+    const buzzing = this.stepBees(now);
 
     const growing = this.births.some((birth) => birth !== Infinity && birth !== -Infinity && now - birth < SETTLE_MS);
     const step = Math.floor(now / 120);
-    if (growing || withering) this.dirty = true;
+    if (growing || withering || buzzing) this.dirty = true;
     if (this.inView && step !== this.lastStep) this.dirty = true;
     this.lastStep = step;
     if (this.dirty || this.pull > 0) this.render(now);
 
-    if (this.inView || this.pull > 0 || growing || withering) this.raf = window.requestAnimationFrame(this.tick);
+    if (this.inView || this.pull > 0 || growing || withering || buzzing) this.raf = window.requestAnimationFrame(this.tick);
   };
 
   // Each cluster leans toward the cursor, more at its top.
@@ -429,7 +474,200 @@ class FooterGarden extends HTMLElement {
     });
   }
 
+  // Bees ----------------------------------------------------------------------
+
+  // Where a bee sits on a flower: on top of its face, a little off-centre.
+  private perchPoint(id?: number) {
+    const perch = this.perches.find((p) => p.id === id);
+    return perch ? { x: perch.x + perch.R * 0.12, y: perch.y - perch.R * 0.42 } : undefined;
+  }
+
+  private freePerches(except?: Bee) {
+    const taken = new Set(this.bees.filter((b) => b !== except && b.state !== 'leaving').map((b) => b.perch));
+    return this.perches.filter((p) => !taken.has(p.id));
+  }
+
+  private fly(bee: Bee, toX: number, toY: number, now: number, duration: number) {
+    const d = Math.hypot(toX - bee.x, toY - bee.y);
+    bee.flight = {
+      fromX: bee.x,
+      fromY: bee.y,
+      cx: (bee.x + toX) / 2 + (Math.random() - 0.5) * Math.min(160, d * 0.5),
+      cy: Math.max(10, Math.min(bee.y, toY) - Math.min(90, 20 + d * 0.25)),
+      toX,
+      toY,
+      start: now,
+      duration,
+      weave: 3 + Math.random() * 4,
+      waves: 3 + Math.random() * 4,
+    };
+  }
+
+  // A click in the garden calls a bee to the open flower nearest the click.
+  private summon(x: number, y: number, now: number) {
+    const scene = this.scene;
+    if (!scene) return;
+    const staying = this.bees.filter((b) => b.state !== 'leaving' && b.state !== 'huffing');
+    // A fourth bee sends the first one off, fed up.
+    if (staying.length >= MAX_BEES) this.dismiss(staying[0], now);
+
+    const target = this.freePerches()
+      .map((p) => ({ p, d: Math.hypot(p.x - x, p.y - y) }))
+      .sort((a, b) => a.d - b.d)[0]?.p;
+    const fromLeft = x < scene.width / 2;
+    const bee: Bee = {
+      x: fromLeft ? -30 : scene.width + 30,
+      y: scene.height * (0.15 + Math.random() * 0.3),
+      facing: fromLeft ? -1 : 1,
+      state: 'flying',
+      perch: target?.id,
+      restUntil: 0,
+      flutterUntil: 0,
+      nextFlutter: 0,
+      huffUntil: 0,
+      phase: Math.random() * 10,
+    };
+    this.bees.push(bee);
+    const point = this.perchPoint(target?.id) ?? { x, y };
+    if (this.reducedMotion?.matches) {
+      bee.x = point.x;
+      bee.y = point.y;
+      this.settle(bee, now);
+      return;
+    }
+    this.fly(bee, point.x, point.y, now, Math.min(2200, Math.max(1100, Math.hypot(point.x - bee.x, point.y - bee.y) * 2.4)));
+  }
+
+  private settle(bee: Bee, now: number) {
+    bee.state = bee.perch === undefined ? 'leaving' : 'perched';
+    bee.flight = undefined;
+    bee.restUntil = now + 3500 + Math.random() * 5000;
+    bee.nextFlutter = now + 900 + Math.random() * 2500;
+    if (bee.state === 'leaving') this.dismiss(bee, now);
+  }
+
+  // It gives a little shake, then flies off the nearer side.
+  private dismiss(bee: Bee, now: number) {
+    if (this.reducedMotion?.matches) {
+      this.bees = this.bees.filter((b) => b !== bee);
+      return;
+    }
+    bee.perch = undefined;
+    bee.state = 'huffing';
+    bee.huffUntil = now + 380;
+    bee.flight = undefined;
+  }
+
+  private leave(bee: Bee, now: number) {
+    const scene = this.scene!;
+    bee.state = 'leaving';
+    const toLeft = bee.x < scene.width / 2;
+    this.fly(bee, toLeft ? -50 : scene.width + 50, Math.max(12, bee.y - 60 - Math.random() * 60), now, 1300 + Math.random() * 400);
+  }
+
+  // Moves every bee on; true while any of them is moving.
+  private stepBees(now: number) {
+    let moving = false;
+    for (const bee of [...this.bees]) {
+      if (bee.state === 'huffing') {
+        moving = true;
+        if (now >= bee.huffUntil) this.leave(bee, now);
+        continue;
+      }
+      if (bee.state === 'perched') {
+        const point = this.perchPoint(bee.perch);
+        if (!point) {
+          // Its flower withered or closed: off to another, or away.
+          const next = this.freePerches(bee).sort((a, b) => Math.hypot(a.x - bee.x, a.y - bee.y) - Math.hypot(b.x - bee.x, b.y - bee.y))[0];
+          if (next) {
+            bee.perch = next.id;
+            bee.state = 'flying';
+            const to = this.perchPoint(next.id)!;
+            this.fly(bee, to.x, to.y, now, 800 + Math.random() * 400);
+          } else this.dismiss(bee, now);
+          moving = true;
+          continue;
+        }
+        bee.x = point.x;
+        bee.y = point.y;
+        if (now >= bee.nextFlutter) {
+          bee.flutterUntil = now + 260 + Math.random() * 240;
+          bee.nextFlutter = now + 1800 + Math.random() * 3500;
+        }
+        if (now < bee.flutterUntil) moving = true;
+        if (now >= bee.restUntil && !this.reducedMotion?.matches) {
+          // Off to a neighbouring flower.
+          const near = this.freePerches(bee)
+            .filter((p) => p.id !== bee.perch)
+            .map((p) => ({ p, d: Math.hypot(p.x - bee.x, p.y - bee.y) }))
+            .filter(({ d }) => d < 260)
+            .sort((a, b) => a.d - b.d);
+          const pick = near[Math.floor(Math.random() * Math.min(3, near.length))]?.p;
+          if (pick) {
+            bee.perch = pick.id;
+            bee.state = 'flying';
+            const to = this.perchPoint(pick.id)!;
+            this.fly(bee, to.x, to.y, now, Math.min(1400, Math.max(700, Math.hypot(to.x - bee.x, to.y - bee.y) * 3)));
+          } else bee.restUntil = now + 3000 + Math.random() * 4000;
+        }
+        continue;
+      }
+      const flight = bee.flight;
+      if (!flight) continue;
+      moving = true;
+      // A flower it is heading for may sway; follow it.
+      const target = bee.state === 'flying' ? this.perchPoint(bee.perch) : undefined;
+      const toX = target?.x ?? flight.toX;
+      const toY = target?.y ?? flight.toY;
+      const u = Math.min(1, (now - flight.start) / flight.duration);
+      const t = easeInOut(u);
+      const v = 1 - t;
+      const x = v * v * flight.fromX + 2 * v * t * flight.cx + t * t * toX;
+      const y = v * v * flight.fromY + 2 * v * t * flight.cy + t * t * toY;
+      const fade = Math.sin(u * Math.PI);
+      if (Math.abs(x - bee.x) > 0.2) bee.facing = x > bee.x ? -1 : 1;
+      bee.x = x + Math.sin(u * Math.PI * flight.waves + bee.phase) * flight.weave * 0.4 * fade;
+      bee.y = y + Math.sin(u * Math.PI * flight.waves * 1.7 + bee.phase) * flight.weave * fade;
+      if (u >= 1) {
+        if (bee.state === 'leaving') this.bees = this.bees.filter((b) => b !== bee);
+        else if (target) this.settle(bee, now);
+        else this.dismiss(bee, now);
+      }
+    }
+    return moving;
+  }
+
+  private drawBees(g: CanvasRenderingContext2D, now: number) {
+    const scene = this.scene;
+    if (!scene || !this.ink || !this.bees.length) return;
+    const B = canvasBackend(g);
+    for (const bee of this.bees) {
+      const flying = bee.state === 'flying' || bee.state === 'leaving';
+      const fluttering = flying || bee.state === 'huffing' || now < bee.flutterUntil;
+      const wings = fluttering ? Math.abs(Math.cos(now / 1000 * 38 + bee.phase)) : 0.15;
+      // Fed up: a quick shake before it goes.
+      const shake = bee.state === 'huffing' ? Math.sin(now / 1000 * 70) * 1.6 : 0;
+      drawBee(B, this.ink, bee.x + shake, bee.y, 1.35 * scene.scale, bee.facing, wings);
+    }
+  }
+
   // Input ---------------------------------------------------------------------
+
+  // A click or tap in the garden (not on a link) calls a bee.
+  private handleClick = (event: MouseEvent) => {
+    if (!this.inView || !this.canvas || !this.scene) return;
+    const target = event.target instanceof Element ? event.target : undefined;
+    if (target?.closest('a, button, input, textarea, select, [role="button"]')) return;
+    const rect = this.canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    if (x < 0 || x > rect.width || y < 0 || y > rect.height) return;
+    this.summon(x, y, performance.now());
+    this.dirty = true;
+    if (this.reducedMotion?.matches) this.render(performance.now());
+    else this.wake();
+  };
+
 
   private handlePull = (event: CustomEvent<EdgePullDetail>) => {
     const scene = this.scene;

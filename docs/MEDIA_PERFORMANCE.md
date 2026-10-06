@@ -53,6 +53,10 @@ User-authorized exception (Igor, 2026-10-02): the archive footage on Observatory
 
 The opening sky offers AV1 first and H.264 after it, for each screen size: browsers that decode AV1 load about half the bytes (0.71 MB instead of 1.38 MB on desktop, 120 KB instead of 203 KB on phones), and the rest play the H.264 files as before. `scripts/prepare-opening-sky.mjs` makes the AV1 files from the original sky video. Their quality is set where the sky's dither dots survive (CRF 30): smaller encodes smooth the dither away, which is the texture the opening is made of.
 
+### Homepage showcase first row
+
+The homepage opens on the page itself, so the first row of work (SuperGood and Instagram) is in the first viewport on wide screens. Its card backgrounds, SuperGood's five visible phones, the Instagram placeholder phone, and the "try clicking around" doodle load eagerly without high priority (the sky poster stays the route's one high-priority image); the rest of the showcase stays lazy. Every card paints a 24 px copy of its own background (`src/lib/image-placeholder.ts`, about 300 bytes each, inlined at build time) until the real one arrives, so no card is ever an empty frame. This suits only soft images like the gradients; never use it for screenshots or photographs.
+
 ### Instagram Saves pile
 
 The pile of saves on the Instagram Saves cover, and the faint paper of its frames, is one generated sprite (`pile/pile.webp`, about 300 KB, 54 tiles of 160 × 200) made by `scripts/prepare-instagram-pile.mjs` from the prototype's thumbnails, so the wall costs one request instead of fifty-four. It is decorative (`aria-hidden`); the search it shows is told in the text.

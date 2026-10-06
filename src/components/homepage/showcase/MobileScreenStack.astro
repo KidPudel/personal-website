@@ -18,6 +18,7 @@ const { screens, ariaLabel } = Astro.props;
 
 // Circular distance from the active screen (index 0), so the fan is symmetric:
 // with six screens the offsets are 0, 1, 2, 3, -2, -1 and 3 waits out of view.
+// The fan sits in the first viewport, so its visible phones load with the page.
 const offsetOf = (index: number) => (index > screens.length / 2 ? index - screens.length : index);
 
 // The box is the device itself; the image is scaled and shifted inside it so
@@ -46,7 +47,7 @@ const getScreenStyle = ({ src, device: [x, y, width, height] }: Screen) =>
           alt=""
           widths={[240, 360, 480, 600]}
           sizes="(max-width: 44rem) 36vw, (max-width: 75rem) 26vw, 20vw"
-          loading="lazy"
+          loading={Math.abs(offsetOf(index)) <= 2 ? 'eager' : 'lazy'}
           decoding="async"
           format="webp"
           quality={85}

@@ -12,15 +12,15 @@ html.homepage-document body {
 }
 
 /* Above the top of the page, beneath the status bar, Safari on iOS paints
-   one flat color, taken from the theme-color tag. The opening controller and
+   one flat color, taken from the theme-color tag. The sky's controller and
    the elastic edge set --page-top-sky (the sky's opacity) and --page-top-pull
    (a top pull's strength), and src/lib/page-top-color.ts copies the root
    background below into the tag, so the strip continues the sky, or the
    rainbow, at the page's top edge. Body keeps the field, so the page itself
    is unchanged. */
 @supports (-webkit-touch-callout: none) {
-  html.homepage-document.js:not(.opening-bypassed) {
-    --page-top-sky: 0.5;
+  html.homepage-document.js {
+    --page-top-sky: 0.25;
   }
 
   html.homepage-document {

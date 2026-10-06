@@ -142,8 +142,6 @@ parts.forEach((part, index) => {
       document.addEventListener(OPEN_EVENT, (event) => {
         if ((event as CustomEvent).detail !== this && this.active) this.close();
       }, { signal });
-
-      this.setAttribute('data-enhanced', '');
     }
 
     disconnectedCallback() {
@@ -281,7 +279,7 @@ parts.forEach((part, index) => {
 
   /* Whatever the open note lies over melts into a soft blur behind it, like
      the content under the header, so faded text never collides with it. */
-  .annotated[data-enhanced] .annotated__note-text::before {
+  :global(.js) .annotated .annotated__note-text::before {
     position: absolute;
     z-index: -1;
     inset: 0 -2rem -3rem;
@@ -298,17 +296,18 @@ parts.forEach((part, index) => {
     pointer-events: none;
   }
 
-  /* Without the script the notes follow the sentence in the page. With it,
+  /* Without JavaScript the notes follow the sentence in the page. With it,
      the open note lies over the faded page under the sentence, so nothing
-     moves. */
-  .annotated[data-enhanced] .annotated__notes {
+     moves. Keyed to the root's js class, set before the first paint, so the
+     notes never show in the page and then fold away. */
+  :global(.js) .annotated .annotated__notes {
     position: absolute;
     top: 100%;
     left: 0;
     width: 100%;
   }
 
-  .annotated[data-enhanced] .annotated__note {
+  :global(.js) .annotated .annotated__note {
     position: absolute;
     isolation: isolate;
     top: 0;
@@ -323,7 +322,7 @@ parts.forEach((part, index) => {
       visibility 0s 160ms;
   }
 
-  .annotated[data-enhanced] .annotated__note[data-open] {
+  :global(.js) .annotated .annotated__note[data-open] {
     opacity: 1;
     visibility: visible;
     transform: none;
@@ -334,8 +333,8 @@ parts.forEach((part, index) => {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .annotated[data-enhanced] .annotated__note,
-    .annotated[data-enhanced] .annotated__note[data-open] {
+    :global(.js) .annotated .annotated__note,
+    :global(.js) .annotated .annotated__note[data-open] {
       transform: none;
     }
   }

@@ -19,11 +19,11 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | --- | --- |
 | Homepage identity copy | `src/content/homepage/identity.ts` |
 | Values copy or which evidence belongs to a value | `src/content/homepage/values.ts` |
-| Opening scroll timing or closed-box click phrases | `src/components/homepage/opening/opening-motion.ts` |
+| Hello handwriting speed, how long it waits for the sky, the sky's opacity | `src/components/homepage/opening/opening-motion.ts` |
 | Elastic-edge colors (top edge) | `src/components/homepage/opening/pigment-field.ts` |
 | Footer garden: drawing style, palette, placement and rhythm, pull growth and hover motion | Drawing `src/components/homepage/closing/garden/garden-draw.ts`; palette `FooterGarden.astro`; clusters and the growth queue `garden-plan.ts`; live canvas, pull and cursor `footer-garden.ts`; how far the bottom edge lifts `src/components/homepage/edge-pull.ts` |
 | Identity composition, including “Three things important to me.” | `src/components/homepage/identity/IdentityIntroduction.astro` |
-| Opening scene (box and identity column together) | `src/components/homepage/opening/OpeningSequence.astro` |
+| The sky behind the top of the homepage, and when the hello starts writing | `src/components/homepage/opening/OpeningSequence.astro`; fade on scroll and start in `opening-controller.ts` |
 | Personal note copy | `src/content/homepage/values.ts` |
 | Beliefs section copy and its notes | `beliefs` in `src/content/homepage/values.ts`; section in `src/components/homepage/beliefs/Beliefs.astro` |
 | Hero claim and its notes | `claim` in `src/content/homepage/identity.ts` |

@@ -3,11 +3,8 @@ import { syncPageTopColor } from '../../../lib/page-top-color';
 
 class OpeningSequence extends HTMLElement {
   private abort?: AbortController;
-  private animations = new Set<Animation>();
   private greetingTimer = 0;
-  private handoffTimer = 0;
   private scrollFrame = 0;
-  private pageTopFrame = 0;
   private skyVideo?: HTMLVideoElement;
 
   connectedCallback() {
@@ -15,35 +12,14 @@ class OpeningSequence extends HTMLElement {
     this.dataset.enhanced = 'true';
     this.abort = new AbortController();
 
-    const greetingStage = this.querySelector<HTMLElement>('[data-opening-greeting]');
-    const openingHello = greetingStage?.querySelector<HTMLElement>('hello-animation');
     const sky = this.querySelector<HTMLElement>('.opening-sequence__sky');
     const skyVideo = this.querySelector<HTMLVideoElement>('[data-opening-sky]');
-    const documentSurface = this.closest<HTMLElement>('[data-homepage]')
-      ?.querySelector<HTMLElement>('[data-homepage-document]');
-    const skyFadeTarget = documentSurface?.querySelector<HTMLElement>(
-      '[data-opening-sky-fade-target]',
-    );
-    const finalGreeting = documentSurface?.querySelector<HTMLElement>(
-      '.hello-animation-with-text',
-    );
-    const finalHello = finalGreeting?.querySelector<HTMLElement>('hello-animation');
-    const header = document.querySelector<HTMLElement>('[data-site-header]');
+    const skyFadeTarget = document.querySelector<HTMLElement>('[data-opening-sky-fade-target]');
+    const hello = document.querySelector<HTMLElement>('hello-animation[data-opening]');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    if (
-      !greetingStage ||
-      !openingHello ||
-      !sky ||
-      !skyVideo ||
-      !documentSurface ||
-      !skyFadeTarget ||
-      !finalGreeting ||
-      !finalHello ||
-      !header
-    ) {
-      return;
-    }
+    this.writeGreeting(hello, skyVideo, reducedMotion);
+    if (!sky || !skyVideo || !skyFadeTarget) return;
 
     this.skyVideo = skyVideo;
     skyVideo.muted = true;
@@ -67,322 +43,83 @@ class OpeningSequence extends HTMLElement {
       );
     };
 
-    let completed = false;
-    let persistSky = false;
-
-    // Hands the sky's current opacity to the strip Safari shows above the top
-    // of the page (see composition.css), following it through animations.
+    // The sky fades out as the work comes up, and hands its opacity to the
+    // strip Safari shows above the top of the page (see composition.css).
     // The strip is only in view within a status bar's height of the top, so
-    // further down it rests on the field and the root background stops
-    // repainting while the sky fades.
+    // further down it rests on the field.
     const root = document.documentElement;
-    const syncPageTop = () => {
-      window.cancelAnimationFrame(this.pageTopFrame);
-      this.pageTopFrame = 0;
-      const style = getComputedStyle(sky);
-      const visible = style.display !== 'none' && window.scrollY < 120;
-      const opacity = visible ? Number.parseFloat(style.opacity) || 0 : 0;
-      const value = opacity.toFixed(2);
-      if (root.style.getPropertyValue('--page-top-sky') !== value) {
-        root.style.setProperty('--page-top-sky', value);
-        syncPageTopColor();
-      }
-      if (sky.getAnimations().some((animation) => animation.playState === 'running')) {
-        this.pageTopFrame = window.requestAnimationFrame(syncPageTop);
-      }
-    };
-
-    const syncPersistentSky = () => {
+    const syncSky = () => {
       this.scrollFrame = 0;
-      if (!persistSky) return;
-
+      const shown = !reducedMotion.matches;
       const fadeDistance = Math.max(skyFadeTarget.offsetTop, 1);
       const progress = Math.min(Math.max(window.scrollY / fadeDistance, 0), 1);
-      const opacity = openingMotion.skyOpacityAtIntro * (1 - progress);
+      const opacity = shown ? openingMotion.skyOpacity * (1 - progress) : 0;
       sky.style.opacity = `${opacity}`;
-      syncPageTop();
       setSkyPlayback(opacity > 0 && document.visibilityState === 'visible');
-    };
 
-    const requestPersistentSkySync = () => {
-      if (!persistSky || this.scrollFrame) return;
-      this.scrollFrame = window.requestAnimationFrame(syncPersistentSky);
-    };
-
-    const hidePersistentSky = () => {
-      persistSky = false;
-      this.removeAttribute('data-persist-sky');
-      sky.style.removeProperty('opacity');
-      syncPageTop();
-      setSkyPlayback(false);
-    };
-
-    const showCompletedOpening = (keepSky = false) => {
-      if (completed) return;
-      completed = true;
-      persistSky = keepSky;
-      document.documentElement.classList.add('opening-bypassed');
-      this.removeAttribute('data-opening-live');
-      this.setAttribute('data-complete', '');
-      if (persistSky) this.setAttribute('data-persist-sky', '');
-      finalGreeting.style.removeProperty('opacity');
-      documentSurface.inert = false;
-      documentSurface.removeAttribute('aria-hidden');
-      header.inert = false;
-      header.removeAttribute('aria-hidden');
-      this.animations.forEach((animation) => animation.cancel());
-      this.animations.clear();
-      if (persistSky) {
-        syncPersistentSky();
-      } else {
-        syncPageTop();
-        setSkyPlayback(false);
+      const pageTop = (window.scrollY < 120 ? opacity : 0).toFixed(2);
+      if (root.style.getPropertyValue('--page-top-sky') !== pageTop) {
+        root.style.setProperty('--page-top-sky', pageTop);
+        syncPageTopColor();
       }
     };
 
-    const alignHash = () => {
-      if (!window.location.hash) return;
-      const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
-      if (!target) return;
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => target.scrollIntoView());
-      });
+    const requestSkySync = () => {
+      if (this.scrollFrame) return;
+      this.scrollFrame = window.requestAnimationFrame(syncSky);
     };
 
-    const bypassOpening = () =>
-      reducedMotion.matches ||
-      window.location.hash.length > 0 ||
-      document.documentElement.classList.contains('opening-bypassed');
-
-    const handleVisibilityChange = () => {
-      if (persistSky) {
-        syncPersistentSky();
-        return;
-      }
-      setSkyPlayback(document.visibilityState === 'visible' && !completed);
-    };
-    const handleHashChange = () => {
-      showCompletedOpening(!reducedMotion.matches);
-      alignHash();
-    };
-    const handleReducedMotionChange = () => {
-      if (!reducedMotion.matches) return;
-      if (completed) {
-        hidePersistentSky();
-      } else {
-        showCompletedOpening(false);
-      }
-    };
     const retryBlockedSkyPlayback = () => {
-      if ((completed && !persistSky) || !skyVideo.hasAttribute('data-autoplay-blocked')) return;
+      if (!skyVideo.hasAttribute('data-autoplay-blocked')) return;
       skyPlaybackRequested = false;
-      setSkyPlayback(true);
+      syncSky();
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange, {
-      signal: this.abort.signal,
-    });
-    window.addEventListener('hashchange', handleHashChange, { signal: this.abort.signal });
-    window.addEventListener('scroll', requestPersistentSkySync, {
-      passive: true,
-      signal: this.abort.signal,
-    });
-    window.addEventListener('resize', requestPersistentSkySync, { signal: this.abort.signal });
-    reducedMotion.addEventListener('change', handleReducedMotionChange, {
-      signal: this.abort.signal,
-    });
+    const { signal } = this.abort;
+    document.addEventListener('visibilitychange', syncSky, { signal });
+    window.addEventListener('scroll', requestSkySync, { passive: true, signal });
+    window.addEventListener('resize', requestSkySync, { signal });
+    reducedMotion.addEventListener('change', syncSky, { signal });
     window.addEventListener('pointerdown', retryBlockedSkyPlayback, {
       capture: true,
       passive: true,
-      signal: this.abort.signal,
+      signal,
     });
-    window.addEventListener('pagehide', () => setSkyPlayback(false), {
-      signal: this.abort.signal,
-    });
+    window.addEventListener('pagehide', () => setSkyPlayback(false), { signal });
 
-    const fadeFrom = (element: HTMLElement, from: string, to: string) => {
-      const animation = element.animate([{ opacity: from }, { opacity: to }], {
-        duration: openingMotion.skipFadeMs,
-        easing: openingMotion.easeOut,
-      });
-      this.animations.add(animation);
-      animation.finished.then(
-        () => this.animations.delete(animation),
-        () => this.animations.delete(animation),
-      );
-      if (element === sky) syncPageTop();
-    };
+    syncSky();
+  }
 
-    if (bypassOpening()) {
-      const keepSky = !reducedMotion.matches;
-      showCompletedOpening(keepSky);
-      if (keepSky) fadeFrom(sky, '0', sky.style.opacity || '0');
-      alignHash();
-      return;
-    }
+  // The hello writes itself in place on a fresh arrival. Its remaining frames
+  // wait until the sky can play, so they do not compete with it.
+  private writeGreeting(
+    hello: HTMLElement | null,
+    skyVideo: HTMLVideoElement | null,
+    reducedMotion: MediaQueryList,
+  ) {
+    const settled = document.documentElement.classList.contains('greeting-settled');
+    if (!hello || settled || reducedMotion.matches) return;
 
-    this.setAttribute('data-opening-live', '');
-    syncPageTopColor();
-    documentSurface.inert = true;
-    documentSurface.setAttribute('aria-hidden', 'true');
-    header.inert = true;
-    header.setAttribute('aria-hidden', 'true');
-    finalGreeting.style.opacity = '0';
-    setSkyPlayback(document.visibilityState === 'visible');
-
-    const skipAbort = new AbortController();
-    const skipOpening = (event: Event) => {
-      if (
-        event instanceof KeyboardEvent &&
-        (event.metaKey || event.ctrlKey || event.altKey ||
-          ['Shift', 'Meta', 'Control', 'Alt'].includes(event.key))
-      ) {
-        return;
-      }
-
-      skipAbort.abort();
-      if (completed) return;
-      // A key that skips the opening should not also page the document underneath it.
-      if (event instanceof KeyboardEvent) event.preventDefault();
-
-      const skyFrom = getComputedStyle(sky).opacity;
-      const documentFrom = getComputedStyle(documentSurface).opacity;
-      const headerFrom = getComputedStyle(header).opacity;
-      showCompletedOpening(true);
-      fadeFrom(sky, skyFrom, sky.style.opacity || '0');
-      fadeFrom(documentSurface, documentFrom, '1');
-      fadeFrom(header, headerFrom, '1');
-    };
-
-    this.abort.signal.addEventListener('abort', () => skipAbort.abort(), { once: true });
-    for (const type of ['wheel', 'touchstart', 'pointerdown', 'keydown']) {
-      window.addEventListener(type, skipOpening, {
-        passive: type !== 'keydown',
-        signal: skipAbort.signal,
-      });
-    }
-
-    const handoffGreeting = () => {
-      if (completed) return;
-
-      const openingRect = greetingStage.getBoundingClientRect();
-      const finalRect = finalGreeting.getBoundingClientRect();
-      const finalScaleX = finalRect.width / openingRect.width;
-      const finalScaleY = finalRect.height / openingRect.height;
-
-      greetingStage.style.top = '0';
-      greetingStage.style.left = '0';
-      greetingStage.style.width = `${openingRect.width}px`;
-      greetingStage.style.transform = `translate3d(${openingRect.left}px, ${openingRect.top}px, 0)`;
-
-      const greetingMove = greetingStage.animate(
-        [
-          {
-            opacity: 1,
-            transform: `translate3d(${openingRect.left}px, ${openingRect.top}px, 0) scale(1)`,
-          },
-          {
-            opacity: 1,
-            transform: `translate3d(${finalRect.left}px, ${finalRect.top}px, 0) scale(${finalScaleX}, ${finalScaleY})`,
-            offset: openingMotion.greetingCrossfadeStart,
-          },
-          {
-            opacity: 0,
-            transform: `translate3d(${finalRect.left}px, ${finalRect.top}px, 0) scale(${finalScaleX}, ${finalScaleY})`,
-          },
-        ],
-        {
-          duration: openingMotion.handoffDurationMs,
-          easing: openingMotion.easeHandoff,
-          fill: 'forwards',
-        },
-      );
-      const skyFade = sky.animate(
-        [
-          { opacity: openingMotion.skyOpacityAtStart },
-          { opacity: openingMotion.skyOpacityAtIntro },
-        ],
-        {
-          duration: openingMotion.handoffDurationMs,
-          easing: 'linear',
-          fill: 'forwards',
-        },
-      );
-      const documentReveal = documentSurface.animate(
-        [
-          { opacity: 0 },
-          { opacity: 1 },
-        ],
-        {
-          delay: openingMotion.contentRevealDelayMs,
-          duration: openingMotion.contentRevealDurationMs,
-          easing: openingMotion.easeOut,
-          fill: 'both',
-        },
-      );
-      const headerReveal = header.animate(
-        [
-          { opacity: 0, transform: 'translate3d(0, 0.75rem, 0)' },
-          { opacity: 1, transform: 'translate3d(0, 0, 0)' },
-        ],
-        {
-          delay: openingMotion.contentRevealDelayMs,
-          duration: openingMotion.contentRevealDurationMs,
-          easing: openingMotion.easeOut,
-          fill: 'both',
-        },
-      );
-      const finalGreetingReveal = finalGreeting.animate(
-        [
-          { opacity: 0 },
-          { opacity: 0, offset: openingMotion.greetingCrossfadeStart },
-          { opacity: 1 },
-        ],
-        {
-          duration: openingMotion.handoffDurationMs,
-          easing: openingMotion.easeOut,
-          fill: 'forwards',
-        },
-      );
-
-      [greetingMove, skyFade, documentReveal, headerReveal, finalGreetingReveal].forEach(
-        (animation) => this.animations.add(animation),
-      );
-      syncPageTop();
-      void greetingMove.finished
-        .then(() => {
-          skipAbort.abort();
-          showCompletedOpening(true);
-        })
-        .catch(() => undefined);
-    };
-
-    const holdGreeting = () => {
-      this.handoffTimer = window.setTimeout(() => {
-        this.handoffTimer = 0;
-        handoffGreeting();
-      }, openingMotion.greetingHoldMs);
-    };
-
-    openingHello.addEventListener('hello-animation-complete', holdGreeting, {
-      once: true,
-      signal: this.abort.signal,
-    });
     let greetingStarted = false;
     const startGreeting = () => {
       if (greetingStarted || !this.isConnected) return;
       greetingStarted = true;
       window.clearTimeout(this.greetingTimer);
       this.greetingTimer = 0;
-      openingHello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
-      openingHello.dispatchEvent(new CustomEvent('hello-animation-play'));
+      void customElements.whenDefined('hello-animation').then(() => {
+        hello.dispatchEvent(new CustomEvent('hello-animation-prepare'));
+        hello.dispatchEvent(new CustomEvent('hello-animation-play'));
+      });
     };
 
-    if (skyVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
+    if (!skyVideo || skyVideo.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
       startGreeting();
     } else {
-      skyVideo.addEventListener('canplay', startGreeting, { once: true, signal: this.abort.signal });
-      this.greetingTimer = window.setTimeout(startGreeting, 1_200);
+      skyVideo.addEventListener('canplay', startGreeting, {
+        once: true,
+        signal: this.abort?.signal,
+      });
+      this.greetingTimer = window.setTimeout(startGreeting, openingMotion.greetingWaitMs);
     }
   }
 
@@ -390,16 +127,10 @@ class OpeningSequence extends HTMLElement {
     this.abort?.abort();
     window.cancelAnimationFrame(this.scrollFrame);
     this.scrollFrame = 0;
-    window.cancelAnimationFrame(this.pageTopFrame);
-    this.pageTopFrame = 0;
     document.documentElement.style.removeProperty('--page-top-sky');
     syncPageTopColor();
     window.clearTimeout(this.greetingTimer);
     this.greetingTimer = 0;
-    window.clearTimeout(this.handoffTimer);
-    this.handoffTimer = 0;
-    this.animations.forEach((animation) => animation.cancel());
-    this.animations.clear();
     this.skyVideo?.pause();
     this.skyVideo = undefined;
     delete this.dataset.enhanced;
