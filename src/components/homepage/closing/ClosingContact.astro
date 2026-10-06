@@ -1,6 +1,7 @@
 ---
 import { connectLinks, publicEmail, resumeLink } from '../../../config/site';
 import { toLocale, translator } from '../../../i18n/locales';
+import BalloonReturn from '../BalloonReturn.astro';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
@@ -21,15 +22,18 @@ const elsewhere = [...others, { label: resume.file, href: resume.href }];
       <li><a href={link.href}><span class="link-mark">{link.label}</span></a></li>
     ))}
   </ul>
+
+  <BalloonReturn />
 </footer>
 
 <style>
   .closing-contact {
+    position: relative;
     width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
     margin-inline: auto;
-    /* The last thing on the page: the pause above it comes from the personal
-       note, and it ends close to the bottom edge. */
-    padding: 0 0 clamp(2.5rem, 4vw, 3.5rem);
+    /* The pause above it comes from the personal note; the garden
+       (garden/FooterGarden.astro) grows right beneath it to the page's end. */
+    padding: 0 0 clamp(0.5rem, 1vw, 1rem);
     color: var(--color-ink);
   }
 
@@ -75,11 +79,10 @@ const elsewhere = [...others, { label: resume.file, href: resume.href }];
   }
 
   @media (max-width: 52rem) {
-    /* On narrow screens the fixed balloon is inside the frame, so the
-       footer ends just above it. */
+    /* The fixed balloon floats over the garden below, so the footer needs
+       no room of its own for it. */
     .closing-contact {
       width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
-      padding-bottom: calc(clamp(5.4rem, 7.8vw, 7rem) + max(0.35rem, env(safe-area-inset-bottom)) + 0.5rem);
     }
 
     .closing-contact__links {

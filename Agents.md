@@ -20,7 +20,8 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Homepage identity copy | `src/content/homepage/identity.ts` |
 | Values copy or which evidence belongs to a value | `src/content/homepage/values.ts` |
 | Opening scroll timing or closed-box click phrases | `src/components/homepage/opening/opening-motion.ts` |
-| Elastic-edge colors | `src/components/homepage/opening/pigment-field.ts` |
+| Elastic-edge colors (top edge) | `src/components/homepage/opening/pigment-field.ts` |
+| Footer garden: drawing style, palette, placement and rhythm, pull growth and hover motion | Drawing `src/components/homepage/closing/garden/garden-draw.ts`; palette `FooterGarden.astro`; clusters and the growth queue `garden-plan.ts`; live canvas, pull and cursor `footer-garden.ts`; how far the bottom edge lifts `src/components/homepage/edge-pull.ts` |
 | Identity composition, including “Three things important to me.” | `src/components/homepage/identity/IdentityIntroduction.astro` |
 | Opening scene (box and identity column together) | `src/components/homepage/opening/OpeningSequence.astro` |
 | Personal note copy | `src/content/homepage/values.ts` |

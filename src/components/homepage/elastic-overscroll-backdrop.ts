@@ -1,6 +1,7 @@
 import { clamp, smooth } from '../../lib/motion';
 import { sampleEssenceColor, sampleEssenceNoise } from './opening/pigment-field';
 import { syncPageTopColor } from '../../lib/page-top-color';
+import { EDGE_PULL_EVENT, bottomPullExtent, type EdgePullDetail } from './edge-pull';
 
 type Placement = 'top' | 'bottom';
 
@@ -128,7 +129,9 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       }
     });
 
-    if (!documentSurface || layers.size !== 2) return;
+    // Only the top edge paints here. The bottom edge lifts the page over the
+    // footer garden, which listens for EDGE_PULL_EVENT.
+    if (!documentSurface || !layers.has('top')) return;
 
     let activePlacement: Placement | undefined;
     let pull = 0;
@@ -147,7 +150,12 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     let lastScrollY = window.scrollY;
     let lastScrollTime = performance.now();
 
-    const maximumPull = () => Math.min(180, Math.max(96, window.innerHeight * 0.18));
+    let reportedPull = 0;
+    let reportedPlacement: Placement | undefined;
+    const maximumPull = (placement: Placement = activePlacement ?? 'top') =>
+      placement === 'bottom'
+        ? bottomPullExtent()
+        : Math.min(180, Math.max(96, window.innerHeight * 0.18));
     const rubberbandDimension = () => Math.max(window.innerHeight, 1);
     const maximumScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
     const atEdge = (placement: Placement) =>
@@ -166,7 +174,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
       const pixelRatio = window.devicePixelRatio || 1;
       const visualPull = Math.round(pull * pixelRatio) / pixelRatio;
       const activeLayer = activePlacement ? layers.get(activePlacement) : undefined;
-      const scale = clamp(visualPull / maximumPull());
+      const scale = clamp(visualPull / maximumPull('top'));
 
       layers.forEach((layer) => {
         if (layer === activeLayer && visualPull > 0) {
@@ -190,6 +198,18 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         : '';
 
       document.documentElement.toggleAttribute('data-elastic-edge', visualPull > 0);
+
+      const placementNow = visualPull > 0 ? activePlacement : undefined;
+      if (visualPull !== reportedPull || placementNow !== reportedPlacement) {
+        reportedPull = visualPull;
+        reportedPlacement = placementNow;
+        const detail: EdgePullDetail = {
+          placement: placementNow,
+          pull: visualPull,
+          maximum: maximumPull(placementNow ?? 'bottom'),
+        };
+        window.dispatchEvent(new CustomEvent(EDGE_PULL_EVENT, { detail }));
+      }
 
       // The strip Safari shows above the top of the page takes on the
       // rainbow's top color as a top pull opens (see composition.css).
@@ -269,13 +289,13 @@ class ElasticOverscrollBackdrop extends HTMLElement {
 
       activePlacement = placement;
       target = Math.min(
-        maximumPull(),
+        maximumPull(placement),
         rubberband(Math.max(0, rawDistance), rubberbandDimension()),
       );
       refreshArmed =
         source === 'touch' &&
         placement === 'top' &&
-        target >= maximumPull() - 0.5;
+        target >= maximumPull(placement) - 0.5;
 
       if (source === 'touch') {
         pull = target;
@@ -286,7 +306,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
         if (source === 'momentum') {
           velocity = Math.min(
             Math.max(0, initialVelocity),
-            maximumPull() / MOMENTUM_RESPONSE_SECONDS,
+            maximumPull(placement) / MOMENTUM_RESPONSE_SECONDS,
           );
           lastTime = undefined;
         }
@@ -479,7 +499,7 @@ class ElasticOverscrollBackdrop extends HTMLElement {
     const handleMotionPreference = () => release();
 
     const updateGeometry = () => {
-      const maximum = maximumPull();
+      const maximum = maximumPull('top');
       const bleed = rayBleed();
       const feather = seamFeather();
       const fieldExtent = maximum / FIELD_SEAM;

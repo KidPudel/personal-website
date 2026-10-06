@@ -7,13 +7,8 @@
     <div class="elastic-overscroll-backdrop__seam"></div>
   </div>
 
-  <div class="elastic-overscroll-backdrop" data-elastic-layer data-placement="bottom">
-    <div class="elastic-overscroll-backdrop__backing"></div>
-    <div class="elastic-overscroll-backdrop__glow">
-      <canvas class="elastic-overscroll-backdrop__field"></canvas>
-    </div>
-    <div class="elastic-overscroll-backdrop__seam"></div>
-  </div>
+  <!-- The bottom edge has no layer of its own: the page lifts over the footer
+       garden (closing/garden/FooterGarden.astro). -->
 </elastic-overscroll-backdrop>
 
 <script>

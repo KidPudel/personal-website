@@ -1,0 +1,124 @@
+---
+// The garden is drawn by its script on a canvas (footer-garden.ts). Without
+// JavaScript the footer simply ends with a little room: the garden is
+// decoration, and a drawn copy for the server would weigh hundreds of
+// kilobytes of markup.
+---
+
+<footer-garden class="footer-garden" aria-hidden="true"></footer-garden>
+
+<script>
+  import './footer-garden';
+</script>
+
+<style is:global>
+  .footer-garden,
+  .footer-garden-ground {
+    /* Flat inks, as in an editorial print. Two greens for what grows; each
+       flower its own colour, kept to a family that sits well together:
+       sunflower yellow, soft pink cosmos, periwinkle anemone, lilac daisy,
+       coral, sky-blue forget-me-nots. Leaf veins are cut out in the page's
+       own colour. The far clusters use paler inks, as if seen through air. */
+    --fg-green: #467a38;
+    --fg-green-2: #6c9c4c;
+    --fg-vein: var(--color-field);
+    --fg-bud: #3a6a2e;
+    --fg-petal: #f5c12e;
+    --fg-petal-back: #e8a022;
+    --fg-petal-line: #c4720f;
+    --fg-disc: #573219;
+    --fg-disc-line: #f0c98c;
+    --fg-cosmos: #f2a3bb;
+    --fg-cosmos-line: #d9789a;
+    --fg-eye: #f4c23c;
+    --fg-eye-dark: #c4861a;
+    --fg-anemone: #7c88d8;
+    --fg-anemone-line: #5560b4;
+    --fg-stamen: #2b2438;
+    --fg-lilac: #c9b4e6;
+    --fg-lilac-line: #a58bcf;
+    --fg-lilac-center: #5c3b7c;
+    --fg-coral: #ef7c63;
+    --fg-coral-line: #c9503c;
+    --fg-forget: #8fb5ea;
+    --fg-forget-line: #6a93d4;
+    --fg-soil: #ece3d2;
+    --fg-pebble: #d8cfc0;
+    --fg-root: #c6ad86;
+    --fg-shell: #e9b15c;
+    --fg-shell-line: #a8692a;
+    --fg-snail: #dcc7a6;
+
+    --fg-far-green: #a6c293;
+    --fg-far-green-2: #b6cfa1;
+    --fg-far-bud: #98b886;
+    --fg-far-petal: #f8dc8a;
+    --fg-far-petal-back: #f2cb82;
+    --fg-far-petal-line: #e4b260;
+    --fg-far-disc: #a88a70;
+    --fg-far-disc-line: #f5e4c6;
+    --fg-far-cosmos: #f6cad7;
+    --fg-far-cosmos-line: #ecaec2;
+    --fg-far-eye: #f6d986;
+    --fg-far-anemone: #b8bfeb;
+    --fg-far-anemone-line: #9aa3dc;
+    --fg-far-stamen: #8b8597;
+    --fg-far-lilac: #e1d5f1;
+    --fg-far-lilac-center: #a491b8;
+    --fg-far-coral: #f5b4a4;
+    --fg-far-coral-line: #e39686;
+    --fg-far-forget: #c3d7f3;
+  }
+
+  .footer-garden {
+    position: relative;
+    display: block;
+    /* The garden's own band beneath the contact links. Tall plants rise
+       beside the links, never over them (footer-garden.ts). */
+    height: clamp(11rem, 17vw, 15rem);
+    pointer-events: none;
+  }
+
+  html:not(.js) .footer-garden {
+    height: clamp(2.5rem, 4vw, 3.5rem);
+  }
+
+  .footer-garden__canvas {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    display: block;
+  }
+
+  /* What lies beneath the page: shown only while the page is lifted past
+     its end. */
+  .footer-garden-ground {
+    position: fixed;
+    z-index: 2;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    pointer-events: none;
+    visibility: hidden;
+    contain: strict;
+  }
+
+  .footer-garden-ground[data-active] {
+    visibility: visible;
+  }
+
+  .footer-garden-ground canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    will-change: transform;
+  }
+
+  @media (max-width: 52rem) {
+    .footer-garden {
+      height: clamp(10rem, 40vw, 12rem);
+    }
+  }
+</style>

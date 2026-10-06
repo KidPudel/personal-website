@@ -36,7 +36,7 @@ const optimizedFrames = await Promise.all(
           alt=""
           width="512"
           height="512"
-          loading={index === 0 ? 'eager' : 'lazy'}
+          loading="lazy"
           decoding="async"
           hidden={index !== 0}
           data-balloon-frame
@@ -54,7 +54,6 @@ const optimizedFrames = await Promise.all(
   class BalloonReturn extends HTMLElement {
     private abort?: AbortController;
     private sequenceAbort?: AbortController;
-    private frame = 0;
     private lastFrameIndex = -1;
 
     connectedCallback() {
@@ -115,28 +114,6 @@ const optimizedFrames = await Promise.all(
         return Math.max(0, window.scrollY + intro.getBoundingClientRect().top);
       };
 
-      const syncVisibility = (force = false) => {
-        if (
-          !force &&
-          (this.hasAttribute('data-running') || this.hasAttribute('data-resetting'))
-        ) return;
-
-        const distanceFromBottom =
-          document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
-        const visible = distanceFromBottom <= balloonReturnMotion.revealFromBottomPx;
-        this.toggleAttribute('data-visible', visible);
-        this.inert = !visible;
-        this.toggleAttribute('aria-hidden', !visible);
-      };
-
-      const requestVisibility = () => {
-        if (this.frame) return;
-        this.frame = window.requestAnimationFrame(() => {
-          this.frame = 0;
-          syncVisibility();
-        });
-      };
-
       const wait = (duration: number, signal: AbortSignal) =>
         new Promise<void>((resolve, reject) => {
           const timer = window.setTimeout(resolve, duration);
@@ -161,7 +138,10 @@ const optimizedFrames = await Promise.all(
       ) => new Promise<number>((resolve, reject) => {
         const startedAt = performance.now();
         const scrollDistance = Math.max(1, startScrollY - targetScrollY);
-        const riseDistance = window.innerHeight * balloonReturnMotion.riseDistanceVh / 100;
+        // Rise from wherever it rested to the same place near the top of the
+        // screen, so the pop always happens in view, around the introduction.
+        const popTop = window.innerHeight * balloonReturnMotion.popTopVh / 100;
+        const riseDistance = Math.max(0, this.getBoundingClientRect().top - popTop);
         let lastProgressAt = startedAt;
         let previousProgress = -1;
 
@@ -246,6 +226,21 @@ const optimizedFrames = await Promise.all(
         await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
       };
 
+      // The balloon rests in the page. For the flight it lets go of the page
+      // and holds its place on screen while the page scrolls away under it.
+      const takeOff = () => {
+        const rect = this.getBoundingClientRect();
+        this.style.top = `${rect.top}px`;
+        this.style.left = `${rect.left}px`;
+        this.setAttribute('data-flying', '');
+      };
+
+      const land = () => {
+        this.removeAttribute('data-flying');
+        this.style.removeProperty('top');
+        this.style.removeProperty('left');
+      };
+
       const stopSequence = () => {
         if (!this.hasAttribute('data-running')) return;
         window.scrollTo({ top: window.scrollY, behavior: 'auto' });
@@ -256,8 +251,8 @@ const optimizedFrames = await Promise.all(
         this.sequenceAbort?.abort();
         this.sequenceAbort = new AbortController();
         const { signal } = this.sequenceAbort;
+        takeOff();
         this.setAttribute('data-running', '');
-        this.setAttribute('data-visible', '');
         trigger.setAttribute('aria-disabled', 'true');
         trigger.setAttribute('aria-label', trigger.dataset.returningLabel ?? '');
 
@@ -288,10 +283,40 @@ const optimizedFrames = await Promise.all(
           trigger.removeAttribute('aria-disabled');
           trigger.setAttribute('aria-label', trigger.dataset.returnLabel ?? '');
           if (!signal.aborted) this.sequenceAbort?.abort();
-          syncVisibility(true);
-          this.removeAttribute('data-resetting');
+          land();
+          // Back at rest, out of view at the end of the page: let it show
+          // again on the next frame without fading across the screen.
+          window.requestAnimationFrame(() => this.removeAttribute('data-resetting'));
         }
       };
+
+      // While he waits on screen, the balloon's thread wobbles: the two
+      // hanging frames trade places at a slightly uneven, hand-drawn pace.
+      let onScreen = false;
+      let wobbleTimer = 0;
+      let wobbleFrame = 0;
+      const scheduleWobble = () => {
+        window.clearTimeout(wobbleTimer);
+        if (!onScreen || reducedMotion.matches) return;
+        wobbleTimer = window.setTimeout(wobble, 180 + Math.random() * 80);
+      };
+      const wobble = () => {
+        if (!document.hidden && !this.hasAttribute('data-running')) {
+          wobbleFrame = wobbleFrame ? 0 : 1;
+          syncFrame(wobbleFrame);
+        }
+        scheduleWobble();
+      };
+      const watcher = new IntersectionObserver(([entry]) => {
+        onScreen = entry.isIntersecting;
+        if (onScreen) primeFrame(1);
+        scheduleWobble();
+      });
+      watcher.observe(this);
+      this.abort.signal.addEventListener('abort', () => {
+        watcher.disconnect();
+        window.clearTimeout(wobbleTimer);
+      });
 
       trigger.addEventListener('click', (event) => {
         if (this.hasAttribute('data-running')) {
@@ -305,10 +330,7 @@ const optimizedFrames = await Promise.all(
           window.scrollTo({ top: target, behavior: 'auto' });
           if (event.detail === 0) intro.focus({ preventScroll: true });
           syncFrame(2);
-          window.setTimeout(() => {
-            syncFrame(0);
-            syncVisibility();
-          }, balloonReturnMotion.frameDurationMs);
+          window.setTimeout(() => syncFrame(0), balloonReturnMotion.frameDurationMs);
           return;
         }
 
@@ -316,26 +338,12 @@ const optimizedFrames = await Promise.all(
         void runSequence();
       }, { signal: this.abort.signal });
 
-      window.addEventListener('scroll', requestVisibility, {
-        passive: true,
-        signal: this.abort.signal,
-      });
-      window.addEventListener('resize', requestVisibility, {
-        passive: true,
-        signal: this.abort.signal,
-      });
-      reducedMotion.addEventListener('change', requestVisibility, {
-        signal: this.abort.signal,
-      });
-      document.fonts.ready.then(requestVisibility);
       syncFrame(0);
-      syncVisibility();
     }
 
     disconnectedCallback() {
       this.sequenceAbort?.abort();
       this.abort?.abort();
-      if (this.frame) window.cancelAnimationFrame(this.frame);
       delete this.dataset.enhanced;
     }
   }
@@ -346,14 +354,34 @@ const optimizedFrames = await Promise.all(
 </script>
 
 <style>
+  /* The balloon rests at the end of the page (it lives in the footer,
+     ClosingContact.astro): on the page's right edge, level with the email
+     and links, hovering just over the garden, whose flowers grow up to his
+     feet and no further. Where the links fill the row, he waits above the
+     email instead. */
   .balloon-return {
-    position: fixed;
-    z-index: 70;
-    right: clamp(0.4rem, 1.6vw, 1.2rem);
-    bottom: max(0.35rem, env(safe-area-inset-bottom));
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    bottom: calc(100% + clamp(0.4rem, 1.2vw, 1rem));
     display: block;
     width: clamp(5.4rem, 7.8vw, 7rem);
     aspect-ratio: 1;
+  }
+
+  @media (min-width: 60rem) {
+    .balloon-return {
+      bottom: 0.4rem;
+    }
+  }
+
+  /* In flight it holds its place on screen (the script sets top and left
+     where it rested) while the page scrolls back to the introduction. */
+  .balloon-return[data-flying] {
+    position: fixed;
+    z-index: 70;
+    right: auto;
+    bottom: auto;
   }
 
   .balloon-return__trigger {
@@ -388,45 +416,60 @@ const optimizedFrames = await Promise.all(
     display: none;
   }
 
-  :global(.js) .balloon-return {
-    opacity: 0;
-    pointer-events: none;
-    transform: translate3d(0, 1.5rem, 0) scale(0.96);
-    transition:
-      opacity 180ms linear,
-      transform 180ms var(--ease-out);
-  }
-
-  /* Arriving is slower than leaving, so the balloon drifts up into place. */
-  :global(.js) .balloon-return[data-visible],
-  :global(.js) .balloon-return[data-running] {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate3d(0, 0, 0) scale(1);
-    transition:
-      opacity 320ms linear,
-      transform 900ms var(--ease-out);
-  }
-
-  /* The art floats gently while it waits. It animates the art, not the
-     trigger, so the return flight keeps the trigger's transform to itself. */
+  /* While it waits, the balloon drifts: a slow bob, and a sway that swings
+     the man under it from the balloon like a pendulum. The two run at
+     different lengths, so together they never visibly repeat. They animate
+     the art (`translate` and `rotate` compose), not the trigger, so the
+     return flight keeps the trigger's transform to itself. */
   :global(.js) .balloon-return__art {
-    animation: balloon-float 2.8s ease-in-out infinite alternate;
-    animation-play-state: paused;
+    transform-origin: 50% 14%;
   }
 
-  :global(.js) .balloon-return[data-visible]:not([data-running]) .balloon-return__art {
-    animation-play-state: running;
+  :global(.js) .balloon-return:not([data-running]) .balloon-return__art {
+    animation:
+      balloon-bob 3.7s ease-in-out infinite alternate,
+      balloon-sway 5.3s ease-in-out -1.9s infinite alternate;
   }
 
-  @keyframes balloon-float {
+  @keyframes balloon-bob {
     from {
-      transform: translate3d(0, 0.2rem, 0);
+      translate: 0 0.15rem;
     }
 
     to {
-      transform: translate3d(0, -0.2rem, 0);
+      translate: 0 -0.35rem;
     }
+  }
+
+  @keyframes balloon-sway {
+    from {
+      rotate: -2.4deg;
+    }
+
+    to {
+      rotate: 2.8deg;
+    }
+  }
+
+  /* It answers the cursor: a little lift on hover, a squeeze on press. */
+  .balloon-return__trigger {
+    transition: transform 260ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .balloon-return:not([data-running]) .balloon-return__trigger:hover {
+      transform: translate3d(0, -0.3rem, 0);
+    }
+  }
+
+  .balloon-return:not([data-running]) .balloon-return__trigger:active {
+    transform: translate3d(0, -0.2rem, 0) scale(0.96);
+    transition-duration: 120ms;
+  }
+
+  /* In flight the script moves the trigger every frame; nothing eases it. */
+  .balloon-return[data-running] .balloon-return__trigger {
+    transition: none;
   }
 
   :global(.js) .balloon-return[data-running] {
@@ -435,7 +478,6 @@ const optimizedFrames = await Promise.all(
 
   :global(.js) .balloon-return[data-resetting] {
     opacity: 0;
-    transition: none;
   }
 
   .balloon-return__trigger:focus-visible {
@@ -446,21 +488,20 @@ const optimizedFrames = await Promise.all(
 
   @media (max-width: 44rem) {
     .balloon-return {
-      right: 0.25rem;
       width: 5.65rem;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .balloon-return,
-    :global(.js) .balloon-return[data-visible],
-    :global(.js) .balloon-return[data-running] {
-      transform: none;
-      transition: opacity 180ms linear;
+    :global(.js) .balloon-return:not([data-running]) .balloon-return__art {
+      animation: none;
     }
 
-    :global(.js) .balloon-return__art {
-      animation: none;
+    .balloon-return__trigger,
+    .balloon-return:not([data-running]) .balloon-return__trigger:hover,
+    .balloon-return:not([data-running]) .balloon-return__trigger:active {
+      transform: none;
+      transition: none;
     }
   }
 </style>

@@ -261,12 +261,14 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 
   /* With the script, a panel lies over the faded page under the sentence
      instead of pushing what follows down. Closed panels leave the reading
-     order and focus sequence entirely. */
+     order and focus sequence entirely, and the layout too, so a closed
+     panel never stretches the page past the garden at its end. */
   .personal-note__body[data-enhanced] .personal-note__panel {
     position: absolute;
     z-index: 1;
     top: 100%;
     left: 0;
+    display: none;
     width: 100%;
     opacity: 0;
     visibility: hidden;
@@ -274,17 +276,25 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     transition:
       opacity 180ms var(--ease-out),
       transform 240ms var(--ease-out),
-      visibility 0s 240ms;
+      visibility 0s 240ms,
+      display 0s 240ms allow-discrete;
   }
 
   .personal-note__body[data-enhanced] .personal-note__panel[data-open] {
+    display: block;
     opacity: 1;
     visibility: visible;
     transform: none;
     transition:
       opacity 220ms var(--ease-out),
       transform 260ms var(--ease-out),
-      visibility 0s;
+      visibility 0s,
+      display 0s allow-discrete;
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
   }
 
   /* The blog list is text: what it lies over melts into a soft blur behind
