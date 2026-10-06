@@ -12,9 +12,9 @@
 // the page's bottom edge, and the ground lies at `groundY`, below it, where
 // only a pull past the end of the page reaches.
 //
-// What a pull grows is planned as a queue of growth events: a bud opens, a
-// branch flowers, a vine climbs and wraps a stem, a vine arcs from one
-// cluster to the next, a sprout comes up. The live garden gives an event a
+// What a pull grows is planned as a queue of growth events, mostly new
+// flowers: a bud opens, a flower pops out along a stem, a branch flowers, a
+// sprout comes up and blooms, now and then a vine climbs and wraps a stem. The live garden gives an event a
 // birth time while the page is pulled, and withers it again on release.
 
 export type Pt = [number, number];
@@ -72,7 +72,7 @@ export interface FlowerEl extends Element {
 
 export type GardenEl = StemEl | LeafEl | FlowerEl;
 
-export type GroupKind = 'rest' | 'open' | 'branch' | 'climb' | 'bridge' | 'sprout';
+export type GroupKind = 'rest' | 'open' | 'branch' | 'climb' | 'sprout';
 
 export interface Group {
   kind: GroupKind;
@@ -154,19 +154,6 @@ const vine = (base: Pt, dir: number, len: number, amp: number, waves: number, ph
     x += Math.cos(a) * step;
     y += Math.sin(a) * step;
     P.push([x, y]);
-  }
-  return P;
-};
-
-const bezier = (a: Pt, b: Pt, c: Pt, d: Pt, n: number) => {
-  const P: Pt[] = [];
-  for (let i = 0; i <= n; i += 1) {
-    const t = i / n;
-    const u = 1 - t;
-    P.push([
-      u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * d[0],
-      u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * d[1],
-    ]);
   }
   return P;
 };
@@ -401,9 +388,10 @@ export const planGarden = (input: GardenInput): GardenScene => {
       const dir = -Math.PI / 2 + lean * 0.6 + (i - (stems - 1) / 2) * (0.13 + r() * 0.12) + (r() - 0.5) * 0.12;
       const species: Species = hero || r() < 0.7 ? leader : pickSpecies();
       const roll = r();
+      // Every cluster leads with an open flower; buds are the minority.
       const tip: Tip = hero
-        ? r() < 0.75 ? 'flower' : 'bud'
-        : roll < 0.36 ? 'flower' : roll < 0.58 ? 'bud' : roll < 0.72 ? 'forget' : roll < 0.87 ? 'fan' : 'curl';
+        ? 'flower'
+        : roll < 0.48 ? 'flower' : roll < 0.6 ? 'bud' : roll < 0.74 ? 'forget' : roll < 0.88 ? 'fan' : 'curl';
       const R = (hero ? (24 + r() * 10) * Math.sqrt(weight) : 13 + r() * 9) * scale * size * (species === 'sun' ? 1.08 : 1);
       const reach = hero ? 0.62 + r() * 0.38 : tip === 'fan' || tip === 'curl' ? 0.08 + r() * 0.35 : 0.22 + r() * 0.5;
       const amp = 0.12 + r() * 0.16;
@@ -468,7 +456,7 @@ export const planGarden = (input: GardenInput): GardenScene => {
   gaps.forEach((x) => {
     if (r() < 0.9) plantCluster(x, 0, 0.8 + r() * 0.3);
   });
-  const nearPlants = nearX.map((x) => plantCluster(x, 1, 0.75 + r() * 0.55));
+  nearX.forEach((x) => plantCluster(x, 1, 0.75 + r() * 0.55));
 
   // Broad foliage along the page's bottom edge, rooted in the soil.
   for (let x = left + r() * 20; x < width - 6; x += (30 + r() * 26) * scale) {
@@ -503,13 +491,13 @@ export const planGarden = (input: GardenInput): GardenScene => {
 
   // Branches shoot off grown stems and flower as they arrive.
   mainStems.forEach((stem) => {
-    if (r() > (stem.depth ? 0.6 : 0.35)) return;
+    if (r() > (stem.depth ? 0.8 : 0.4)) return;
     const u = 0.4 + r() * 0.4;
     const [q, a] = pointAt(stem.P, u);
     if (q[1] > height + 10) return;
     const side = r() < 0.5 ? -1 : 1;
     const group: Group = { kind: 'branch', els: [], root: q, plant: stem.plant, depth: stem.depth, sway: side };
-    const tip: Tip = r() < 0.55 ? 'flower' : r() < 0.6 ? 'forget' : 'curl';
+    const tip: Tip = r() < 0.75 ? 'flower' : 'forget';
     const pts = vine(q, a + side * (0.55 + r() * 0.45), (46 + r() * 50) * scale, 0.3 + r() * 0.4, 1 + r() * 1.4, r() * 6.28, side * 0.3);
     grow(group.els, {
       pts,
@@ -525,11 +513,36 @@ export const planGarden = (input: GardenInput): GardenScene => {
     items.push({ group });
   });
 
+  // New flowers pop out along the stems on short stalks.
+  mainStems.forEach((stem) => {
+    const pops = stem.depth ? 2 : r() < 0.5 ? 1 : 0;
+    for (let i = 0; i < pops; i += 1) {
+      const shown = Math.max(1, stem.P.findIndex((p) => p[1] < height - 6));
+      const u = clamp(shown / (stem.P.length - 1) + 0.05 + r() * 0.4, 0.3, 0.92);
+      const [q, a] = pointAt(stem.P, u);
+      const side = r() < 0.5 ? -1 : 1;
+      const group: Group = { kind: 'branch', els: [], root: q, plant: stem.plant, depth: stem.depth, sway: side };
+      const pts = vine(q, a + side * (0.7 + r() * 0.5), (12 + r() * 16) * scale, 0.2, 1, r() * 6.28, side * 0.3, 12);
+      grow(group.els, {
+        pts,
+        d0: 0,
+        tip: 'flower',
+        w: 1.8 * scale * (stem.depth ? 1 : 0.74),
+        leafy: 0.2,
+        layers: stem.depth ? [1, 2] : [0, 1],
+        species: r() < 0.6 ? stem.species : pickSpecies(),
+        R: (11 + r() * 7) * scale * (stem.depth ? 1 : 0.74),
+        small: true,
+      });
+      items.push({ group });
+    }
+  });
+
   // Vines climb a stem from the ground, wrapping around it, and flower.
   mainStems
     .filter((stem) => stem.depth === 1)
     .forEach((stem) => {
-      if (r() > 0.55) return;
+      if (r() > 0.25) return;
       const group: Group = { kind: 'climb', els: [], root: stem.P[0], plant: stem.plant, depth: 1, sway: 1 };
       const host = stem.P;
       const cumulative = [0];
@@ -588,44 +601,16 @@ export const planGarden = (input: GardenInput): GardenScene => {
       items.push({ group });
     });
 
-  // Vines arc from one cluster to the next, passing in front of and behind
-  // the stems on their way.
-  for (let i = 0; i < nearPlants.length - 1; i += 1) {
-    const from = mainStems.filter((s) => s.plant === nearPlants[i]);
-    const to = mainStems.filter((s) => s.plant === nearPlants[i + 1]);
-    if (!from.length || !to.length) continue;
-    const bridges = 1 + (r() < 0.5 ? 1 : 0);
-    for (let b = 0; b < bridges; b += 1) {
-      const a = from[Math.floor(r() * from.length)];
-      const z = to[Math.floor(r() * to.length)];
-      const pickVisible = (P: Pt[]) => {
-        const shown = Math.max(1, P.findIndex((p) => p[1] < height - 10));
-        return pointAt(P, clamp(shown / (P.length - 1) + r() * 0.35, 0, 0.85))[0];
-      };
-      const p0 = pickVisible(a.P);
-      const p3 = pickVisible(z.P);
-      const dx = p3[0] - p0[0];
-      const bulge = -(24 + r() * 46) * scale;
-      const wave = 2 + r() * 2;
-      let pts = bezier(p0, [p0[0] + dx * 0.2, p0[1] + bulge], [p3[0] - dx * 0.2, p3[1] + bulge * 0.9], p3, 44);
-      pts = pts.map((p, k) => [p[0], p[1] + Math.sin((k / 44) * Math.PI * wave) * 3 * scale] as Pt);
-      if (r() < 0.5) pts = pts.slice(0, Math.floor(pts.length * (0.7 + r() * 0.2)));
-      const group: Group = { kind: 'bridge', els: [], root: p0, plant: a.plant, depth: 1, sway: dx > 0 ? 1 : -1 };
-      const tip: Tip = r() < 0.4 ? 'curl' : r() < 0.6 ? 'forget' : 'flower';
-      grow(group.els, { pts, d0: 0, tip, w: 1.8 * scale, leafy: 1.2, layers: [0, 2], species: pickSpecies(), R: (10 + r() * 6) * scale, small: true });
-      items.push({ group });
-    }
-  }
-
-  // Sprouts come up from the soil in the gaps.
-  gaps.forEach((x) => {
-    if (r() > 0.7) return;
+  // Sprouts come up from the soil, in the gaps and beside the clusters, and
+  // bloom as they arrive.
+  [...gaps, ...nearX.map((x) => x + (r() < 0.5 ? -1 : 1) * cell * (0.25 + r() * 0.15))].forEach((x) => {
+    if (r() > 0.85) return;
     const plant = plants.reduce((best, p, i) => (Math.abs(p.x - x) < Math.abs(plants[best].x - x) ? i : best), 0);
     const group: Group = { kind: 'sprout', els: [], root: [x, groundY], plant, depth: 1, sway: r() < 0.5 ? 1 : -1 };
     const tipY = height - band * (0.12 + r() * 0.3);
     const pts = aimed([x, groundY + 4], -Math.PI / 2 + (r() - 0.5) * 0.4, tipY, 0.15 + r() * 0.15, 1 + r(), r() * 6.28, (r() - 0.5) * 0.4);
-    const tip: Tip = r() < 0.55 ? 'flower' : r() < 0.6 ? 'forget' : 'curl';
-    grow(group.els, { pts, d0: 0, tip, w: 2.2 * scale, leafy: 1, layers: [1, 2], species: pickSpecies(), R: (12 + r() * 6) * scale, small: true });
+    const tip: Tip = r() < 0.8 ? 'flower' : 'forget';
+    grow(group.els, { pts, d0: 0, tip, w: 2.2 * scale, leafy: 1, layers: [1, 2], species: pickSpecies(), R: (12 + r() * 7) * scale, small: true });
     items.push({ group });
   });
 
@@ -677,4 +662,18 @@ export const planGarden = (input: GardenInput): GardenScene => {
     resting,
     ground: { soil, grass, pebbles, roots, snail: { x: snailX, y: soilY(snailX) + 1, s: 1.1 * scale, travel: 80 * scale } },
   };
+};
+
+// How full the near row looks at rest: open flowers up front (forget-me-nots
+// count for little), by area, per pixel of width.
+export const frontBloom = (scene: GardenScene) => {
+  let area = 0;
+  for (const group of scene.groups.slice(0, scene.resting)) {
+    if (group.depth !== 1) continue;
+    for (const e of group.els) {
+      if (e.t !== 'flower' || e.opener >= 0 || e.y > scene.height) continue;
+      area += e.R * e.R * (e.species === 'forget' ? 0.3 : 1);
+    }
+  }
+  return area / Math.max(1, scene.width) / (scene.scale * scene.scale);
 };

@@ -1,4 +1,4 @@
-import { planGarden, type Exclusion, type GardenScene, type Pt } from './garden-plan';
+import { frontBloom, planGarden, type Exclusion, type GardenScene, type Pt } from './garden-plan';
 import { WITHER_MS, canvasBackend, drawScene, type Frame, type Ink } from './garden-draw';
 import { EDGE_PULL_EVENT, bottomPullExtent, type EdgePullDetail } from '../../edge-pull';
 
@@ -17,6 +17,9 @@ const EVENTS_PER_SECOND = 9;
 // Withering runs newest first, this far apart.
 const WITHER_STAGGER_MS = 22;
 const BOIL_PX = 0.75;
+// The least open flower area up front, per pixel of width, for a garden to
+// count as full (see frontBloom).
+const FRONT_BLOOM_MIN = 8.4;
 // A group stays animated this long after its birth.
 const SETTLE_MS = 3800;
 
@@ -78,6 +81,7 @@ class FooterGarden extends HTMLElement {
   private deaths: (number | undefined)[] = [];
   private order: number[] = [];
   private seed = Math.floor(Math.random() * 2 ** 31);
+  private seedChosen = false;
   private energy = 0;
 
   private canvas?: HTMLCanvasElement;
@@ -208,15 +212,31 @@ class FooterGarden extends HTMLElement {
     this.layoutKey = JSON.stringify(layout);
     if (layout.width < 1 || layout.band < 1) return;
 
-    const scene = planGarden({
-      seed: this.seed,
-      width: layout.width,
-      band: layout.band,
-      rise: layout.rise,
-      groundDepth: Math.round(layout.underDepth * 0.58),
-      underDepth: layout.underDepth,
-      exclusions: layout.exclusions,
-    });
+    // Each visit plans a new garden, but never a thin one: an arrangement
+    // with too few open flowers up front gives way to the next.
+    const plan = (seed: number) =>
+      planGarden({
+        seed,
+        width: layout.width,
+        band: layout.band,
+        rise: layout.rise,
+        groundDepth: Math.round(layout.underDepth * 0.58),
+        underDepth: layout.underDepth,
+        exclusions: layout.exclusions,
+      });
+    let scene = plan(this.seed);
+    if (!this.seedChosen) {
+      let best = { seed: this.seed, scene, score: frontBloom(scene) };
+      for (let attempt = 1; attempt < 8 && best.score < FRONT_BLOOM_MIN; attempt += 1) {
+        const seed = this.seed + attempt * 7919;
+        const candidate = plan(seed);
+        const score = frontBloom(candidate);
+        if (score > best.score) best = { seed, scene: candidate, score };
+      }
+      this.seed = best.seed;
+      scene = best.scene;
+      this.seedChosen = true;
+    }
     this.scene = scene;
     // Only the resting garden shows until a pull.
     this.births = scene.groups.map((_, index) => (index < scene.resting ? -Infinity : Infinity));
@@ -422,13 +442,14 @@ class FooterGarden extends HTMLElement {
     else if (this.pull < was - 0.3) this.receding = true;
 
     if (was <= 0 && this.pull > 0) {
-      // A new pull grows in a fresh order and answers at once.
-      const queue = Array.from({ length: scene.groups.length - scene.resting }, (_, i) => scene.resting + i);
-      for (let i = queue.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
-      this.order = queue;
+      // A new pull grows in a fresh order and answers at once. New flowers
+      // come first (buds open, flowers pop out along the stems), then what
+      // takes longer to show: sprouts from the soil, climbing vines.
+      const lead: Record<string, number> = { open: 0, branch: 0.25, sprout: 0.6, climb: 0.9 };
+      this.order = Array.from({ length: scene.groups.length - scene.resting }, (_, i) => scene.resting + i)
+        .map((index) => ({ index, rank: (lead[scene.groups[index].kind] ?? 0.5) + Math.random() * 0.8 }))
+        .sort((a, b) => a.rank - b.rank)
+        .map(({ index }) => index);
       this.energy = Math.max(this.energy, 1.4);
     }
 
