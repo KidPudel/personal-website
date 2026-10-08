@@ -93,8 +93,16 @@ import skyAv1VideoUrl from '../../../assets/art/dithered-sky-av1.mp4?url';
     height: calc(100lvh + var(--browser-bleed-bottom));
     overflow: hidden;
     overflow: clip;
-    opacity: 0.25;
+    /* Hidden until the controller knows how far down the page is (a reload
+       can land anywhere), then it fades to the right strength once; after
+       that it follows the scroll directly. */
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 500ms ease-out;
+  }
+
+  :global(.js) .opening-sequence__sky[data-following] {
+    transition: none;
   }
 
   .opening-sequence__sky-poster,

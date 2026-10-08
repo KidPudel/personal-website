@@ -1,0 +1,291 @@
+---
+import { getImage } from 'astro:assets';
+import frame1 from '../../../assets/art/Doodles-box-opening/box_frame1.png';
+import frame2 from '../../../assets/art/Doodles-box-opening/box_frame2.png';
+import frame3 from '../../../assets/art/Doodles-box-opening/box_frame3.png';
+import frame4 from '../../../assets/art/Doodles-box-opening/box_frame4.png';
+import frame5 from '../../../assets/art/Doodles-box-opening/box_frame5.png';
+import frame6 from '../../../assets/art/Doodles-box-opening/box_frame6.png';
+import frame7 from '../../../assets/art/Doodles-box-opening/box_frame7.png';
+
+interface Props {
+  label: string;
+  line: string;
+}
+
+const { label, line } = Astro.props;
+
+const frames = [frame1, frame2, frame3, frame4, frame5, frame6, frame7];
+const optimizedFrames = await Promise.all(
+  frames.map((frame) => getImage({ src: frame, width: 384, format: 'webp', quality: 'max' })),
+);
+const lastFrame = optimizedFrames.length - 1;
+// The line is typed out letter by letter, so each letter is its own span;
+// letters stay grouped by word so the line only wraps between words.
+const words = line.split(' ').map((word) => Array.from(word));
+---
+
+<!-- The big reveal behind "sketcher": a box bursts open with sparkles and,
+     once it settles, there is only the line, typed out. Without the script,
+     or with reduced motion, the box is already open and the line already
+     there. -->
+<box-opening class="box-opening">
+  <span class="box-opening__art" role="img" aria-label={label}>
+    {optimizedFrames.map((frame, index) => (
+      <img
+        class="box-opening__frame"
+        src={frame.src}
+        alt=""
+        width="384"
+        height="384"
+        loading="lazy"
+        decoding="async"
+        hidden={index !== lastFrame}
+        data-box-frame
+      />
+    ))}
+  </span>
+  <p class="box-opening__line" data-box-line>
+    <span class="sr-only">{line}</span>
+    <span aria-hidden="true">
+      {words.map((letters, index) => (
+        <>
+          {index > 0 && ' '}
+          <span class="box-opening__word">
+            {letters.map((letter) => <span class="box-opening__letter" data-box-letter>{letter}</span>)}
+          </span>
+        </>
+      ))}
+    </span>
+    <span class="box-opening__caret" aria-hidden="true" data-box-caret></span>
+  </p>
+</box-opening>
+
+<script>
+  import { panFor, play } from '@foleyjs/core';
+
+  // Stop-motion holds, in ms, as [frame, hold], straight through the frames.
+  // The closed box waits a beat, the sparkles hang for a moment, then it
+  // settles and tips.
+  const SEQUENCE: Array<[number, number]> = [
+    [0, 420], [1, 180], [2, 150], [3, 520], [4, 200], [5, 220], [6, 0],
+  ];
+  // How long the open, empty box sits there before the caret turns up, and
+  // how long the caret blinks before the first letter.
+  const LINE_DELAY_MS = 700;
+  const CARET_LEAD_MS = 520;
+  // Typing rhythm: a base gap between letters with a little human jitter, a
+  // longer one between words, and a held beat after a comma ("Well, ...").
+  const LETTER_MS = 58;
+  const LETTER_JITTER_MS = 26;
+  const SPACE_MS = 70;
+  const COMMA_MS = 420;
+  // The caret blinks a few times after the last letter, then leaves.
+  const CARET_TAIL_MS = 1600;
+  // Frames that have not decoded by then play anyway.
+  const DECODE_TIMEOUT_MS = 1500;
+
+  class BoxOpening extends HTMLElement {
+    private observer?: MutationObserver;
+    private sequence?: AbortController;
+
+    connectedCallback() {
+      const panel = this.closest<HTMLElement>('[data-reveal-panel]');
+      const frames = Array.from(this.querySelectorAll<HTMLImageElement>('[data-box-frame]'));
+      const line = this.querySelector<HTMLElement>('[data-box-line]');
+      const caret = this.querySelector<HTMLElement>('[data-box-caret]');
+      const letters = Array.from(this.querySelectorAll<HTMLElement>('[data-box-letter]'));
+      if (!panel || !line || !caret || frames.length === 0) return;
+
+      const show = (index: number) => {
+        frames.forEach((frame, frameIndex) => { frame.hidden = frameIndex !== index; });
+      };
+
+      const resetLine = () => {
+        letters.forEach((letter) => letter.removeAttribute('data-typed'));
+        line.removeAttribute('data-typing');
+        caret.removeAttribute('data-state');
+      };
+
+      const settle = () => {
+        show(frames.length - 1);
+        resetLine();
+      };
+
+      const wait = (duration: number, signal: AbortSignal) =>
+        new Promise<void>((resolve, reject) => {
+          const timer = window.setTimeout(resolve, duration);
+          signal.addEventListener('abort', () => {
+            window.clearTimeout(timer);
+            reject(signal.reason);
+          }, { once: true });
+        });
+
+      const run = async (signal: AbortSignal) => {
+        frames.forEach((frame) => { frame.loading = 'eager'; });
+        await Promise.race([
+          Promise.all(frames.map((frame) => frame.decode().catch(() => undefined))),
+          wait(DECODE_TIMEOUT_MS, signal),
+        ]);
+
+        for (const [index, hold] of SEQUENCE) {
+          if (signal.aborted) return;
+          show(index);
+          if (index === 2) play('pop', { pan: panFor(this) });
+          await wait(hold, signal);
+        }
+        await wait(LINE_DELAY_MS, signal);
+        await type(signal);
+      };
+
+      const type = async (signal: AbortSignal) => {
+        letters[0]?.before(caret);
+        caret.setAttribute('data-state', 'blinking');
+        await wait(CARET_LEAD_MS, signal);
+        caret.setAttribute('data-state', 'typing');
+
+        for (const letter of letters) {
+          letter.setAttribute('data-typed', '');
+          letter.after(caret);
+          // A soft key tick, each at a slightly different pitch like real keys.
+          play('tick', { volume: 0.22, pitch: Math.random() * 2 - 1, pan: panFor(this) });
+
+          const wordEnds = letter === letter.parentElement?.lastElementChild;
+          const gap = letter.textContent === ','
+            ? COMMA_MS
+            : LETTER_MS + (Math.random() * 2 - 1) * LETTER_JITTER_MS + (wordEnds ? SPACE_MS : 0);
+          await wait(gap, signal);
+        }
+
+        caret.setAttribute('data-state', 'blinking');
+        await wait(CARET_TAIL_MS, signal);
+        caret.setAttribute('data-state', 'gone');
+      };
+
+      const open = () => {
+        this.sequence?.abort();
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          settle();
+          return;
+        }
+        this.sequence = new AbortController();
+        show(0);
+        resetLine();
+        line.setAttribute('data-typing', '');
+        run(this.sequence.signal).catch(() => undefined);
+      };
+
+      // The panel is opened and closed by PersonalNote.astro; every opening
+      // plays the box again from the start.
+      this.observer = new MutationObserver(() => {
+        if (panel.hasAttribute('data-open')) {
+          open();
+        } else {
+          this.sequence?.abort();
+          this.sequence = undefined;
+        }
+      });
+      this.observer.observe(panel, { attributes: true, attributeFilter: ['data-open'] });
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.sequence?.abort();
+    }
+  }
+
+  if (!customElements.get('box-opening')) {
+    customElements.define('box-opening', BoxOpening);
+  }
+</script>
+
+<style>
+  .box-opening {
+    --box-size: clamp(9rem, 14vw, 12rem);
+
+    display: flex;
+    align-items: flex-end;
+  }
+
+  /* The drawings sit inside a square canvas with empty paper around the box;
+     the negative margins line the box up with the sentence's left edge and
+     bring the line up close beside it. */
+  .box-opening__art {
+    display: block;
+    flex: none;
+    width: var(--box-size);
+    aspect-ratio: 1;
+    margin-inline: calc(var(--box-size) * -0.17) calc(var(--box-size) * -0.1);
+  }
+
+  .box-opening__frame {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .box-opening__frame[hidden] {
+    display: none;
+  }
+
+  /* Deadpan: no flourish, it is simply there. The bottom margin sits the
+     line on the box's floor rather than the empty canvas under it. It takes
+     the rest of the row: sized to fit its own letters, it came out a hair
+     narrow and dropped the last word onto a second line. */
+  .box-opening__line {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0 0 1.4em;
+    color: var(--color-ink);
+  }
+
+  .box-opening__word {
+    white-space: nowrap;
+  }
+
+  /* While typing, letters wait unseen in their places, so the line never
+     shifts. Each one settles in as it is struck: a quick lift and unblur,
+     like ink landing, fast enough to still read as typing. */
+  .box-opening__letter {
+    display: inline-block;
+    transition:
+      opacity 120ms var(--ease-out),
+      transform 180ms var(--ease-out),
+      filter 140ms var(--ease-out);
+  }
+
+  .box-opening__line[data-typing] .box-opening__letter:not([data-typed]) {
+    opacity: 0;
+    transform: translateY(0.18em);
+    filter: blur(2px);
+    transition: none;
+  }
+
+  /* The caret takes no room, so moving it along never nudges the letters. */
+  .box-opening__caret {
+    display: none;
+    width: 0;
+    height: 1.05em;
+    margin-inline-end: -0.09em;
+    vertical-align: -0.16em;
+    border-inline-start: 0.09em solid currentColor;
+    border-radius: 1px;
+  }
+
+  .box-opening__caret[data-state] {
+    display: inline-block;
+  }
+
+  .box-opening__caret[data-state='blinking'] {
+    animation: box-caret-blink 1s steps(1, end) infinite;
+  }
+
+  .box-opening__caret[data-state='gone'] {
+    opacity: 0;
+    transition: opacity 240ms var(--ease-out);
+  }
+
+  @keyframes box-caret-blink {
+    50% { opacity: 0; }
+  }
+</style>

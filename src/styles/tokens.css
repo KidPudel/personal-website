@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Delius';
-  src: url('../assets/fonts/Delius-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/Delius-Regular.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: 'Averia Serif Libre';
-  src: url('../assets/fonts/AveriaSerifLibre-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/AveriaSerifLibre-Bold.woff2') format('woff2');
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -35,7 +35,7 @@
 
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../assets/fonts/InstrumentSans-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/InstrumentSans-Regular.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -43,7 +43,7 @@
 
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../assets/fonts/InstrumentSans-Italic.ttf') format('truetype');
+  src: url('../assets/fonts/InstrumentSans-Italic.woff2') format('woff2');
   font-style: italic;
   font-weight: 400;
   font-display: swap;
@@ -51,7 +51,7 @@
 
 @font-face {
   font-family: 'Instrument Sans';
-  src: url('../assets/fonts/InstrumentSans-Bold.ttf') format('truetype');
+  src: url('../assets/fonts/InstrumentSans-Bold.woff2') format('woff2');
   font-style: normal;
   font-weight: 700;
   font-display: swap;
@@ -105,7 +105,7 @@
 
 @font-face {
   font-family: 'Crimson Text';
-  src: url('../assets/fonts/CrimsonText-Regular.ttf') format('truetype');
+  src: url('../assets/fonts/CrimsonText-Regular.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -113,7 +113,7 @@
 
 @font-face {
   font-family: 'Crimson Text';
-  src: url('../assets/fonts/CrimsonText-Italic.ttf') format('truetype');
+  src: url('../assets/fonts/CrimsonText-Italic.woff2') format('woff2');
   font-style: italic;
   font-weight: 400;
   font-display: swap;
@@ -121,7 +121,7 @@
 
 @font-face {
   font-family: 'Crimson Text';
-  src: url('../assets/fonts/CrimsonText-SemiBold.ttf') format('truetype');
+  src: url('../assets/fonts/CrimsonText-SemiBold.woff2') format('woff2');
   font-style: normal;
   font-weight: 600;
   font-display: swap;

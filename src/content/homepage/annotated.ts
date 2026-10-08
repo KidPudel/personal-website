@@ -3,7 +3,7 @@
 // AnnotatedText.astro.
 
 /** The colour a door and its note take when it opens. */
-export type Tone = 'green' | 'blue' | 'orange' | 'pink';
+export type Tone = 'green' | 'blue' | 'lavender' | 'orange' | 'pink';
 
 export type AnnotatedPart =
   | string

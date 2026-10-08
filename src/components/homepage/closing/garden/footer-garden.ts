@@ -1,69 +1,27 @@
 import { frontBloom, planGarden, type Exclusion, type GardenScene, type Pt } from './garden-plan';
-import { WITHER_MS, canvasBackend, drawBee, drawScene, type Frame, type Ink } from './garden-draw';
+import { canvasBackend, drawBee, drawScene, type Frame, type Ink } from './garden-draw';
+import { readInk } from './garden-ink';
 import { EDGE_PULL_EVENT, bottomPullExtent, type EdgePullDetail } from '../../edge-pull';
 
 // The footer garden: a canvas planned for the real width and footer (a new
 // arrangement each visit), kept alive by a slight stop-motion jitter, plants
 // leaning and flowers turning toward the cursor, and a pull past the end of
-// the page. A pull shows how much more is living there: like typing in a
-// type garden, pull energy plants growth events one after another (a bud
-// opens, a branch flowers, a vine climbs and wraps a stem, a vine arcs to
-// the next cluster, a sprout comes up), each growing in its own time. When
-// the page settles back, everything the pull grew withers back, newest
-// first, and the garden is as it was.
+// the page. A pull lets the visitor grow the garden: like typing in a type
+// garden, pull energy plants growth events one after another (a bud opens, a
+// flower pops out along a stem, a branch flowers, a sprout comes up, now and
+// then a vine climbs a stem), each growing in its own time. What grows stays
+// until the page reloads; once everything has grown, the garden rests.
 
 // Growth events per second at a full pull.
 const EVENTS_PER_SECOND = 9;
-// Withering runs newest first, this far apart.
-const WITHER_STAGGER_MS = 22;
 const BOIL_PX = 0.75;
+// A garden at rest cycles through this many pre-drawn jittered frames.
+const STILL_FRAMES = 3;
 // The least open flower area up front, per pixel of width, for a garden to
 // count as full (see frontBloom).
 const FRONT_BLOOM_MIN = 8.4;
 // A group stays animated this long after its birth.
 const SETTLE_MS = 3800;
-
-const INK_KEYS: Record<keyof Ink, string> = {
-  green: 'green',
-  green2: 'green-2',
-  vein: 'vein',
-  bud: 'bud',
-  petal: 'petal',
-  petalBack: 'petal-back',
-  petalLine: 'petal-line',
-  disc: 'disc',
-  discLine: 'disc-line',
-  cosmos: 'cosmos',
-  cosmosLine: 'cosmos-line',
-  eye: 'eye',
-  eyeDark: 'eye-dark',
-  anemone: 'anemone',
-  anemoneLine: 'anemone-line',
-  stamen: 'stamen',
-  lilac: 'lilac',
-  lilacLine: 'lilac-line',
-  lilacCenter: 'lilac-center',
-  coral: 'coral',
-  coralLine: 'coral-line',
-  forget: 'forget',
-  forgetLine: 'forget-line',
-  bee: 'bee',
-  wing: 'wing',
-  soil: 'soil',
-  pebble: 'pebble',
-  root: 'root',
-  shell: 'shell',
-  shellLine: 'shell-line',
-  snail: 'snail',
-};
-
-const readInk = (style: CSSStyleDeclaration, prefix: string, fallback?: Ink) =>
-  Object.fromEntries(
-    (Object.keys(INK_KEYS) as (keyof Ink)[]).map((key) => [
-      key,
-      style.getPropertyValue(`--fg-${prefix}${INK_KEYS[key]}`).trim() || fallback?.[key] || '#000',
-    ]),
-  ) as unknown as Ink;
 
 // Bees come when the garden is clicked; three at most.
 const MAX_BEES = 3;
@@ -115,6 +73,7 @@ class FooterGarden extends HTMLElement {
 
   private scene?: GardenScene;
   private births: number[] = [];
+  // Nothing withers now (growth stays until reload); the drawing still can.
   private deaths: (number | undefined)[] = [];
   private order: number[] = [];
   private seed = Math.floor(Math.random() * 2 ** 31);
@@ -136,6 +95,12 @@ class FooterGarden extends HTMLElement {
   private local?: Pt;
   private snail = 0;
   private bees: Bee[] = [];
+  private tap?: { id: number; x: number; y: number; time: number };
+  // The still garden, pre-drawn in a few jittered frames that take turns, so
+  // a garden at rest costs a copy, not a redraw. Rebuilt when it grows.
+  private stillFrames: { canvas: HTMLCanvasElement; perches: { id: number; x: number; y: number; R: number }[] }[] = [];
+  private stillVersion = -1;
+  private growth = 0;
   private perches: { id: number; x: number; y: number; R: number }[] = [];
 
   private pull = 0;
@@ -183,7 +148,11 @@ class FooterGarden extends HTMLElement {
     const observer = new IntersectionObserver(
       ([entry]) => {
         this.inView = entry.isIntersecting;
-        if (!this.inView) this.pointer = undefined;
+        if (!this.inView) {
+          this.pointer = undefined;
+          // Let the pre-drawn frames go while the garden is out of sight.
+          this.stillFrames = [];
+        }
         this.wake();
       },
       { rootMargin: '80px 0px' },
@@ -204,7 +173,12 @@ class FooterGarden extends HTMLElement {
     window.addEventListener('pointerdown', this.handlePointer, { passive: true, signal });
     window.addEventListener('pointerup', this.handlePointerEnd, { passive: true, signal });
     window.addEventListener('pointercancel', this.handlePointerEnd, { passive: true, signal });
-    window.addEventListener('click', this.handleClick, { signal });
+    // Bees answer a tap or click, read from the press and release: iOS
+    // Safari sends no click from plain parts of the page to a listener on
+    // the window, and the garden itself takes no input.
+    window.addEventListener('pointerdown', this.handleTapStart, { passive: true, signal });
+    window.addEventListener('pointerup', this.handleTapEnd, { passive: true, signal });
+    window.addEventListener('pointercancel', () => (this.tap = undefined), { passive: true, signal });
     document.documentElement.addEventListener('pointerleave', () => (this.pointer = undefined), { signal });
     this.reducedMotion.addEventListener('change', () => this.build(), { signal });
   }
@@ -284,6 +258,7 @@ class FooterGarden extends HTMLElement {
     this.order = [];
     this.leans = scene.plants.map(() => ({ x: 0, y: 0 }));
     this.looks.clear();
+    this.growth += 1;
 
     const style = getComputedStyle(this);
     this.ink = readInk(style, '');
@@ -353,17 +328,60 @@ class FooterGarden extends HTMLElement {
     return current[0] || current[1] ? current : undefined;
   }
 
+  // The garden is still when nothing grows, leans or turns and the cursor is
+  // nowhere near: then it is drawn from the pre-drawn frames.
+  private isStill(now: number) {
+    const scene = this.scene;
+    if (!scene || this.pull > 0 || this.reducedMotion?.matches) return false;
+    if (this.births.some((birth) => birth !== Infinity && birth !== -Infinity && now - birth < SETTLE_MS)) return false;
+    if (this.leans.some((lean) => lean.x || lean.y)) return false;
+    for (const look of this.looks.values()) if (look[0] || look[1]) return false;
+    if (this.local) {
+      const [x, y] = this.local;
+      if (x > -300 && x < scene.width + 300 && y > -300 && y < scene.height + 300) return false;
+    }
+    return true;
+  }
+
   private render(now: number) {
     const scene = this.scene;
     const g = this.context;
-    if (!scene || !g || !this.ink || !this.inkFar) return;
+    const canvas = this.canvas;
+    if (!scene || !g || !canvas || !this.ink || !this.inkFar) return;
     this.dirty = false;
-    g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    g.clearRect(0, 0, scene.width, scene.height);
-    const frame = this.frame(now, 0, scene.height);
-    frame.perches = [];
-    drawScene(canvasBackend(g), this.ink, this.inkFar, scene, frame);
-    this.perches = frame.perches;
+    if (this.isStill(now)) {
+      if (this.stillVersion !== this.growth) {
+        this.stillFrames = [];
+        this.stillVersion = this.growth;
+      }
+      const variant = Math.floor(now / 120) % STILL_FRAMES;
+      let still = this.stillFrames[variant];
+      if (!still) {
+        const copy = document.createElement('canvas');
+        copy.width = canvas.width;
+        copy.height = canvas.height;
+        const cg = copy.getContext('2d')!;
+        cg.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+        const frame = this.frame(now, 0, scene.height);
+        frame.step = variant;
+        frame.perches = [];
+        drawScene(canvasBackend(cg), this.ink, this.inkFar, scene, frame);
+        still = { canvas: copy, perches: frame.perches };
+        this.stillFrames[variant] = still;
+      }
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.clearRect(0, 0, canvas.width, canvas.height);
+      g.drawImage(still.canvas, 0, 0);
+      this.perches = still.perches;
+      g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    } else {
+      g.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      g.clearRect(0, 0, scene.width, scene.height);
+      const frame = this.frame(now, 0, scene.height);
+      frame.perches = [];
+      drawScene(canvasBackend(g), this.ink, this.inkFar, scene, frame);
+      this.perches = frame.perches;
+    }
     this.drawBees(g, now);
     if (this.pull > 0) this.renderGround(now);
   }
@@ -414,22 +432,13 @@ class FooterGarden extends HTMLElement {
           break;
         }
         this.births[next] = now;
+        this.growth += 1;
         this.energy -= 1;
         this.dirty = true;
       }
       // The snail below moves on while the page is held open.
       this.snail = Math.min(1, this.snail + dt * 0.06 * strength);
     }
-
-    // What has withered is gone again, ready for the next pull.
-    let withering = false;
-    this.deaths.forEach((death, index) => {
-      if (death === undefined) return;
-      if (now - death >= WITHER_MS) {
-        this.deaths[index] = undefined;
-        this.births[index] = Infinity;
-      } else withering = true;
-    });
 
     if (this.canvas) {
       const rect = this.canvas.getBoundingClientRect();
@@ -440,12 +449,12 @@ class FooterGarden extends HTMLElement {
 
     const growing = this.births.some((birth) => birth !== Infinity && birth !== -Infinity && now - birth < SETTLE_MS);
     const step = Math.floor(now / 120);
-    if (growing || withering || buzzing) this.dirty = true;
+    if (growing || buzzing) this.dirty = true;
     if (this.inView && step !== this.lastStep) this.dirty = true;
     this.lastStep = step;
     if (this.dirty || this.pull > 0) this.render(now);
 
-    if (this.inView || this.pull > 0 || growing || withering || buzzing) this.raf = window.requestAnimationFrame(this.tick);
+    if (this.inView || this.pull > 0 || growing || buzzing) this.raf = window.requestAnimationFrame(this.tick);
   };
 
   // Each cluster leans toward the cursor, more at its top.
@@ -470,6 +479,11 @@ class FooterGarden extends HTMLElement {
       if (Math.abs(lean.x - tx) + Math.abs(lean.y - ty) < 0.0005) return;
       lean.x += (tx - lean.x) * k;
       lean.y += (ty - lean.y) * k;
+      // Come fully to rest, so the still garden can be drawn from its cache.
+      if (!tx && !ty && Math.abs(lean.x) + Math.abs(lean.y) < 0.003) {
+        lean.x = 0;
+        lean.y = 0;
+      }
       this.dirty = true;
     });
   }
@@ -653,11 +667,21 @@ class FooterGarden extends HTMLElement {
 
   // Input ---------------------------------------------------------------------
 
-  // A click or tap in the garden (not on a link) calls a bee.
-  private handleClick = (event: MouseEvent) => {
+  private handleTapStart = (event: PointerEvent) => {
+    if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    this.tap = { id: event.pointerId, x: event.clientX, y: event.clientY, time: performance.now() };
+  };
+
+  // A tap or click in the garden (not on a link): the finger or mouse came
+  // up close to where it went down, soon after. It calls a bee.
+  private handleTapEnd = (event: PointerEvent) => {
+    const tap = this.tap;
+    this.tap = undefined;
+    if (!tap || tap.id !== event.pointerId) return;
+    if (Math.hypot(event.clientX - tap.x, event.clientY - tap.y) > 10 || performance.now() - tap.time > 600) return;
     if (!this.inView || !this.canvas || !this.scene) return;
     const target = event.target instanceof Element ? event.target : undefined;
-    if (target?.closest('a, button, input, textarea, select, [role="button"]')) return;
+    if (target?.closest('a, button, input, textarea, select, label, [role="button"]')) return;
     const rect = this.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -680,9 +704,9 @@ class FooterGarden extends HTMLElement {
     else if (this.pull < was - 0.3) this.receding = true;
 
     if (was <= 0 && this.pull > 0) {
-      // A new pull grows in a fresh order and answers at once. New flowers
-      // come first (buds open, flowers pop out along the stems), then what
-      // takes longer to show: sprouts from the soil, climbing vines.
+      // A new pull grows what is left in a fresh order and answers at once.
+      // New flowers come first (buds open, flowers pop out along the stems),
+      // then what takes longer to show: sprouts from the soil, climbing vines.
       const lead: Record<string, number> = { open: 0, branch: 0.25, sprout: 0.6, climb: 0.9 };
       this.order = Array.from({ length: scene.groups.length - scene.resting }, (_, i) => scene.resting + i)
         .map((index) => ({ index, rank: (lead[scene.groups[index].kind] ?? 0.5) + Math.random() * 0.8 }))
@@ -691,18 +715,8 @@ class FooterGarden extends HTMLElement {
       this.energy = Math.max(this.energy, 1.4);
     }
 
-    if (was > 0 && this.pull <= 0) {
-      // The page settles back: what the pull grew withers, newest first.
-      const now = performance.now();
-      const alive = this.births
-        .map((birth, index) => ({ birth, index }))
-        .filter(({ birth, index }) => index >= scene.resting && birth !== Infinity && this.deaths[index] === undefined)
-        .sort((a, b) => b.birth - a.birth);
-      alive.forEach(({ index }, rank) => {
-        this.deaths[index] = now + rank * WITHER_STAGGER_MS;
-      });
-      this.energy = 0;
-    }
+    // What a pull grew stays; only the leftover energy is let go.
+    if (was > 0 && this.pull <= 0) this.energy = 0;
 
     this.ground?.toggleAttribute('data-active', this.pull > 0);
     if (this.pull > 0) this.renderGround(performance.now());

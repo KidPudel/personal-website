@@ -3,7 +3,7 @@ import couplePortrait from '../../../assets/life/me_and_bebe.png';
 import { personalNote as personalNoteCopy, type PersonalReveal } from '../../../content/homepage/values';
 import { toLocale } from '../../../i18n/locales';
 import WritingList from '../../blog/WritingList.astro';
-import DoodleSketchbook from './DoodleSketchbook.astro';
+import BoxOpening from './BoxOpening.astro';
 import HoloPortrait from './HoloPortrait.astro';
 
 const personalNote = personalNoteCopy[toLocale(Astro.currentLocale)];
@@ -51,7 +51,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
             ) : reveal === 'blog' ? (
               <WritingList class="personal-note__writing" />
             ) : (
-              <DoodleSketchbook label={personalNote.doodlesLabel} />
+              <BoxOpening label={personalNote.boxLabel} line={personalNote.boxLine} />
             )}
           </div>
         </div>
@@ -263,7 +263,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
      instead of pushing what follows down. Closed panels leave the reading
      order and focus sequence entirely, and the layout too, so a closed
      panel never stretches the page past the garden at its end. */
-  .personal-note__body[data-enhanced] .personal-note__panel {
+  :global(.js) .personal-note__body .personal-note__panel {
     position: absolute;
     z-index: 1;
     top: 100%;
@@ -280,7 +280,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
       display 0s 240ms allow-discrete;
   }
 
-  .personal-note__body[data-enhanced] .personal-note__panel[data-open] {
+  :global(.js) .personal-note__body .personal-note__panel[data-open] {
     display: block;
     opacity: 1;
     visibility: visible;
@@ -299,11 +299,11 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 
   /* The blog list is text: what it lies over melts into a soft blur behind
      it, as under the introduction's notes and the header. */
-  .personal-note__body[data-enhanced] .personal-note__panel--blog {
+  :global(.js) .personal-note__body .personal-note__panel--blog {
     isolation: isolate;
   }
 
-  .personal-note__body[data-enhanced] .personal-note__panel--blog::before {
+  :global(.js) .personal-note__body .personal-note__panel--blog::before {
     position: absolute;
     z-index: -1;
     inset: 0 -2rem -3rem;
@@ -326,9 +326,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   }
 
   /* Wide screens: a spread, the story on the left and the aside on the right,
-     both from the same top line. The doodles spread over both columns from
-     that line, around the sentence and over the faded story, and let clicks
-     through to it. */
+     both from the same top line. */
   @media (width > 75rem) {
     .personal-note__body {
       display: grid;
@@ -339,17 +337,6 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 
     .personal-note__closing-block {
       margin-top: 0;
-    }
-
-    .personal-note__body[data-enhanced] .personal-note__panel--doodles {
-      top: 0;
-      left: calc(-100% - var(--about-gap));
-      width: calc(200% + var(--about-gap));
-      pointer-events: none;
-    }
-
-    .personal-note__body[data-enhanced] .personal-note__panel--doodles .personal-note__panel-content {
-      padding-top: 0;
     }
   }
 
@@ -369,8 +356,8 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .personal-note__body[data-enhanced] .personal-note__panel,
-    .personal-note__body[data-enhanced] .personal-note__panel[data-open] {
+    :global(.js) .personal-note__body .personal-note__panel,
+    :global(.js) .personal-note__body .personal-note__panel[data-open] {
       transform: none;
     }
   }

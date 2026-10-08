@@ -3,7 +3,9 @@ import '../styles/foundations.css';
 import '../styles/composition.css';
 import '../styles/motion.css';
 
-import instrumentSansURL from '../assets/fonts/InstrumentSans-Regular.ttf?url';
+import instrumentSansURL from '../assets/fonts/InstrumentSans-Regular.woff2?url';
+import instrumentSansMediumURL from '../assets/fonts/instrument-sans-latin-500-normal.woff2?url';
+import instrumentSerifURL from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
 import PortfolioHeader from '../components/homepage/PortfolioHeader.astro';
 import ReadingProgress from '../components/case-studies/ReadingProgress.astro';
 import {
@@ -227,7 +229,12 @@ const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}
     <meta name="theme-color" content={themeColor} />
-    <link rel="preload" href={instrumentSansURL} as="font" type="font/ttf" crossorigin="anonymous" />
+    {/* The faces most text is set in, fetched at once rather than after the
+         styles that name them: reading, the medium of the door words, and
+         the serif of headings and the email. */}
+    <link rel="preload" href={instrumentSansURL} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={instrumentSansMediumURL} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={instrumentSerifURL} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="icon" type="image/svg+xml" href={faviconURL} />
     <link rel="apple-touch-icon" href={appleTouchIconURL} />
     <link rel="canonical" href={canonicalURL} />

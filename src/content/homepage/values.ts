@@ -54,7 +54,7 @@ export const personalNote = {
     // The path that led here. What I believe has its own section (beliefs).
     columns: [
       [
-        'I started in software engineering, then designed games. Engineering lets me build and ship ideas myself. Game design taught me how interaction and motivation shape what people do. I care about the whole feel of it: visuals, motion, sound and small details working as one.',
+        'I started in software engineering, then designed games, and found in product design the place where both meet. I care about the whole feel of things: visuals, motion, sound and small details working as one.',
       ],
     ],
     closing: [
@@ -67,13 +67,15 @@ export const personalNote = {
       '.',
     ] satisfies ClosingPart[],
     portraitAlt: 'Igor and his girlfriend outdoors',
-    doodlesLabel: 'All of Igor’s doodles',
+    // The sketcher word opens a drawn box that bursts open, and then just this.
+    boxLabel: 'A hand-drawn box bursting open with sparkles',
+    boxLine: 'Well, here it is.',
   },
   ru: {
     heading: 'Ещё немного обо мне',
     columns: [
       [
-        'Я начинал в разработке, потом делал игры. Разработка позволяет мне самому собирать и выпускать идеи. Геймдизайн научил понимать, как взаимодействие и мотивация влияют на поступки людей. Мне важно ощущение целиком: визуал, движение, звук и мелочи, которые работают как одно целое.',
+        'Я начинал в разработке, потом делал игры и нашёл в продуктовом дизайне место, где одно встречается с другим. Мне важно ощущение целиком: визуал, движение, звук и мелочи, которые работают как одно целое.',
       ],
     ],
     closing: [
@@ -86,7 +88,8 @@ export const personalNote = {
       '.',
     ] satisfies ClosingPart[],
     portraitAlt: 'Игорь и его девушка на улице',
-    doodlesLabel: 'Все рисунки Игоря',
+    boxLabel: 'Нарисованная коробка, которая открывается с искрами',
+    boxLine: 'Ну вот, собственно.',
   },
 };
 
@@ -95,10 +98,10 @@ export const beliefs: Record<Locale, { heading: string; parts: AnnotatedPart[] }
   en: {
     heading: 'what i believe',
     parts: [
-      'The most useful moments in my work are when someone does something I didn’t expect. I can’t design what people do, only the ',
+      'I can’t design what people do, only the ',
       {
         text: 'conditions',
-        note: 'So I’d rather understand people first and leave them in control than force a path on them.',
+        note: 'So I’d rather understand people first than force a path on them.',
         tone: 'orange',
       },
       ' they act in. A product is only how the value reaches people, and I want that value to ',
@@ -115,10 +118,10 @@ export const beliefs: Record<Locale, { heading: string; parts: AnnotatedPart[] }
   ru: {
     heading: 'во что я верю',
     parts: [
-      'Самые полезные моменты в работе случаются, когда человек делает то, чего я не ожидал. Я не могу спроектировать то, что делают люди, только ',
+      'Я не могу спроектировать то, что делают люди, только ',
       {
         text: 'условия',
-        note: 'Поэтому мне важнее понять людей и оставить им контроль, чем навязать им путь.',
+        note: 'Поэтому мне важнее понять людей, чем навязать им путь.',
         tone: 'orange',
       },
       ', в которых они действуют. Продукт нужен лишь для того, чтобы ценность дошла до людей, и я хочу, чтобы она ',

@@ -65,6 +65,8 @@ export interface Frame {
   from: number;
   to: number;
   snail?: number;
+  // Which jittered frame to draw; by default it changes every 120 ms.
+  step?: number;
 }
 
 export const WITHER_MS = 650;
@@ -134,7 +136,7 @@ export const canvasBackend = (g: CanvasRenderingContext2D): Backend => ({
   },
 });
 
-const strokeRange = (B: Backend, P: Pt[], a: number, b: number, colour: string, width: number) => {
+export const strokeRange = (B: Backend, P: Pt[], a: number, b: number, colour: string, width: number) => {
   const n = P.length - 1;
   const ia = a * n;
   const ib = b * n;
@@ -481,7 +483,7 @@ const withering = (frame: Frame, index: number) => {
 
 export const drawScene = (B: Backend, ink: Ink, inkFar: Ink, scene: GardenScene, frame: Frame) => {
   const { unit: S, groundY } = scene;
-  const step = Math.floor(frame.now / 120);
+  const step = frame.step ?? Math.floor(frame.now / 120);
 
   // Height-weighted displacement: a newborn plant settles from a sway; every
   // plant leans toward the cursor, more at the top than at the root.
@@ -586,7 +588,7 @@ const drawSoil = (B: Backend, ink: Ink, scene: GardenScene) => {
 
 // Grass stands in front of where the stems enter the soil.
 const drawGroundFront = (B: Backend, ink: Ink, scene: GardenScene, frame: Frame) => {
-  const step = Math.floor(frame.now / 120);
+  const step = frame.step ?? Math.floor(frame.now / 120);
   for (const blade of scene.ground.grass) {
     const [jx, jy, jr] = jitter(blade.id, step, frame.boil * 0.6);
     drawLeaf(B, ink.green, undefined, blade.x + jx, blade.y + jy, blade.a + jr, blade.L, blade.bend);

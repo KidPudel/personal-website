@@ -48,9 +48,16 @@ class OpeningSequence extends HTMLElement {
     // The strip is only in view within a status bar's height of the top, so
     // further down it rests on the field.
     const root = document.documentElement;
+    // A reload or a return lands where the visitor was, but the browser only
+    // restores that scroll once the page has loaded. Until then the sky
+    // stays hidden, so it never flashes over a page further down.
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    const restoring =
+      (navigation?.type === 'reload' || navigation?.type === 'back_forward') && document.readyState !== 'complete';
+    let revealed = !restoring;
     const syncSky = () => {
       this.scrollFrame = 0;
-      const shown = !reducedMotion.matches;
+      const shown = revealed && !reducedMotion.matches;
       const fadeDistance = Math.max(skyFadeTarget.offsetTop, 1);
       const progress = Math.min(Math.max(window.scrollY / fadeDistance, 0), 1);
       const opacity = shown ? openingMotion.skyOpacity * (1 - progress) : 0;
@@ -87,7 +94,19 @@ class OpeningSequence extends HTMLElement {
     });
     window.addEventListener('pagehide', () => setSkyPlayback(false), { signal });
 
+    // The first opacity fades in (see OpeningSequence.astro); from then on
+    // the sky follows the scroll without easing.
+    const reveal = () => {
+      revealed = true;
+      syncSky();
+      window.setTimeout(() => sky.setAttribute('data-following', ''), 520);
+    };
     syncSky();
+    if (restoring) {
+      window.addEventListener('load', () => window.setTimeout(reveal, 0), { once: true, signal });
+    } else {
+      window.setTimeout(() => sky.setAttribute('data-following', ''), 520);
+    }
   }
 
   // The hello writes itself in place on a fresh arrival. Its remaining frames
