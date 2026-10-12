@@ -7,7 +7,7 @@ import { caseStudies, caseStudyPath } from '../../../content/case-studies';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import { imagePlaceholder } from '../../../lib/image-placeholder';
 import InstagramPrototype from './InstagramPrototype.astro';
-import ObservatoryScreenStack from './ObservatoryScreenStack.astro';
+import ObservatoryGroupDemo from './ObservatoryGroupDemo.astro';
 import SupergoodScreenStack from './SupergoodScreenStack.astro';
 import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
 import WorkCaption from './WorkCaption.astro';
@@ -90,7 +90,7 @@ const firstRow = 2;
             format="webp"
             quality={82}
           />
-          {card.kind === 'observatory' && <ObservatoryScreenStack />}
+          {card.kind === 'observatory' && <ObservatoryGroupDemo />}
           {card.kind === 'instagram' && <InstagramPrototype />}
           {card.kind === 'chinese' && <TwoSticksScreenStack />}
           {card.kind === 'supergood' && <SupergoodScreenStack />}

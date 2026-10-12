@@ -1,0 +1,543 @@
+---
+import { toLocale, translator } from '../../../i18n/locales';
+
+const t = translator(toLocale(Astro.currentLocale));
+
+// The case study's main decision, to try in one click: Brave Browser as
+// Activity Monitor lists it (one row per process), then as Observatory lists
+// it (one row per app, already added up). Names, PIDs and memory are from
+// Observatory's process screenshot (processes-of-app.png); the 17th process is
+// below its fold, so only 16 are drawn and the list always runs off the window.
+const processes = [
+  ['Brave Browser Helper (Renderer)', '4,705', '56 MiB'],
+  ['Brave Browser Helper (Renderer)', '19,375', '144 MiB'],
+  ['Brave Browser Helper (Renderer)', '20,351', '169 MiB'],
+  ['Brave Browser Helper (Renderer)', '21,434', '365 MiB'],
+  ['Brave Browser Helper (Renderer)', '34,822', '36 MiB'],
+  ['Brave Browser Helper (Renderer)', '35,336', '26 MiB'],
+  ['Brave Browser', '93,948', '325 MiB'],
+  ['chrome_crashpad_handler', '93,959', '2.8 MiB'],
+  ['Brave Browser Helper', '93,964', '380 MiB'],
+  ['Brave Browser Helper', '93,965', '45 MiB'],
+  ['Brave Browser Helper', '93,966', '36 MiB'],
+  ['Brave Browser Helper (Renderer)', '93,970', '102 MiB'],
+  ['Brave Browser Helper (Renderer)', '93,972', '74 MiB'],
+  ['Brave Browser Helper (Renderer)', '93,976', '83 MiB'],
+  ['Brave Browser Helper', '94,011', '24 MiB'],
+  ['Brave Browser Helper', '94,012', '25 MiB'],
+];
+
+// Observatory's live view (main.png), in its order.
+const apps = [
+  ['Brave Browser', 'Hidden', '1.9 GiB', '17'],
+  ['ChatGPT', 'Hidden', '1.1 GiB', '15'],
+  ['Figma', 'Hidden', '5.0 GiB', '13'],
+  ['Finder', 'Idle', '199 MiB', '1'],
+  ['Ghostty', 'Idle', '180 MiB', '1'],
+  ['Happ', 'Visible', '80 MiB', '2'],
+  ['Observatory', 'Frontmost', '53 MiB', '1'],
+  ['Reminders', 'Idle', '81 MiB', '1'],
+];
+
+const status = {
+  processes: [t('17 rows', '17 строк'), t(' to find and add up', ', которые нужно найти и сложить')],
+  apps: [t('1 row', '1 строка'), t(', already added up', ', уже сложено')],
+};
+---
+
+<observatory-group-demo class="group-demo" data-view="processes" data-status={JSON.stringify(status)}>
+  <div class="group-demo__window">
+    <div class="group-demo__bar">
+      <span class="group-demo__lights" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div
+        class="group-demo__switch"
+        role="group"
+        aria-label={t('Show Brave Browser in', 'Показать Brave Browser в')}
+      >
+        <span class="group-demo__thumb" aria-hidden="true"></span>
+        <button type="button" data-view="processes" aria-pressed="true" data-foley-hover="tick">
+          {t('Activity Monitor', 'Мониторинг системы')}
+        </button>
+        <!-- Enabled by the script, so it never promises a change without JavaScript. -->
+        <button type="button" data-view="apps" aria-pressed="false" data-foley-hover="tick" disabled>
+          Observatory
+        </button>
+      </div>
+    </div>
+
+    <p class="group-demo__status" aria-live="polite">
+      <strong>{status.processes[0]}</strong><span>{status.processes[1]}</span>
+    </p>
+
+    <!-- The tables are a picture of the two apps; the line above says what they show. -->
+    <div class="group-demo__table" aria-hidden="true">
+      <div class="group-demo__head">
+        <span class="group-demo__swap">
+          <span data-in="processes">Process name</span>
+          <span data-in="apps">Application</span>
+        </span>
+        <span>Memory</span>
+        <span class="group-demo__swap group-demo__last">
+          <span data-in="processes">PID</span>
+          <span data-in="apps">Procs</span>
+        </span>
+      </div>
+      <div class="group-demo__rows">
+        <ol class="group-demo__procs">
+          {processes.map(([name, pid, memory], index) => (
+            <li style={`--i: ${index}`}>
+              <span class="group-demo__name">{name}</span>
+              <span>{memory}</span>
+              <span class="group-demo__last">{pid}</span>
+            </li>
+          ))}
+        </ol>
+        <ol class="group-demo__apps">
+          {apps.map(([name, state, memory, procs], index) => (
+            <li style={`--i: ${index}`}>
+              <span class="group-demo__name">
+                {name}
+                <small>{state}</small>
+              </span>
+              <span>{memory}</span>
+              <span class="group-demo__last">{procs}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</observatory-group-demo>
+
+<script>
+  import { play } from '@foleyjs/core';
+
+  type View = 'processes' | 'apps';
+
+  class ObservatoryGroupDemo extends HTMLElement {
+    private abort?: AbortController;
+    private landing?: number;
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      const { signal } = this.abort;
+
+      this.querySelectorAll<HTMLButtonElement>('.group-demo__switch button').forEach((button) => {
+        button.disabled = false;
+        button.addEventListener('click', () => this.show(button.dataset.view as View), { signal });
+      });
+      // The table is the bigger target for a pointer; keyboards use the switch.
+      this.querySelector('.group-demo__table')?.addEventListener(
+        'click',
+        () => this.show(this.dataset.view === 'apps' ? 'processes' : 'apps'),
+        { signal },
+      );
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      window.clearTimeout(this.landing);
+    }
+
+    private show(view: View) {
+      if (this.dataset.view === view) return;
+      this.dataset.view = view;
+
+      this.querySelectorAll<HTMLButtonElement>('.group-demo__switch button').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.view === view));
+      });
+      const [count, rest] = JSON.parse(this.dataset.status ?? '{}')[view] ?? [];
+      const status = this.querySelector('.group-demo__status');
+      if (status && count) {
+        status.replaceChildren(
+          Object.assign(document.createElement('strong'), { textContent: count }),
+          Object.assign(document.createElement('span'), { textContent: rest }),
+        );
+      }
+
+      // The rows slide together, and a soft knock marks the one row landing.
+      window.clearTimeout(this.landing);
+      play('swoosh');
+      if (view === 'apps') {
+        this.landing = window.setTimeout(() => play('pop'), this.reducedMotion.matches ? 0 : 420);
+      }
+    }
+  }
+
+  if (!customElements.get('observatory-group-demo')) {
+    customElements.define('observatory-group-demo', ObservatoryGroupDemo);
+  }
+</script>
+
+<style>
+  /* Sizes follow the panel (a size container), so the same number of rows
+     shows at every width and the list always runs past the window's edge. */
+  .group-demo {
+    --row: 5.3cqh;
+    --app-row: 8.1cqh;
+    /* Never under 10 px, so the narrowest desktop grid stays readable. */
+    --type: max(0.625rem, min(1.75cqw, 2.45cqh));
+    --paper: #f9f8f5;
+    --line: rgb(17 17 15 / 7%);
+    --muted: rgb(17 17 15 / 48%);
+    --mark: #cfe89a;
+    /* Where text starts inside the table; the status line shares it. */
+    --pad: 1.8cqh;
+
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: inherit;
+    container-type: size;
+    color: var(--color-ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Instrument Sans', system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .group-demo__window {
+    position: absolute;
+    inset: 9cqh 6cqw -4cqh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 70%);
+    border-radius: 2cqh;
+    background: var(--paper);
+    box-shadow:
+      0 0.1rem 0.2rem rgb(17 17 15 / 8%),
+      0 1.2rem 2.6rem rgb(17 17 15 / 18%);
+  }
+
+  /* ---- Title bar: traffic lights and the switch, like Observatory's Now / Tests ---- */
+
+  .group-demo__bar {
+    position: relative;
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    height: 10cqh;
+  }
+
+  .group-demo__lights {
+    position: absolute;
+    top: 2.2cqh;
+    left: 2.4cqh;
+    display: flex;
+    gap: 0.9cqh;
+  }
+
+  .group-demo__lights i {
+    width: 1.5cqh;
+    height: 1.5cqh;
+    border-radius: 50%;
+    background: #fe5f57;
+  }
+
+  .group-demo__lights i:nth-child(2) {
+    background: #febc2e;
+  }
+
+  .group-demo__lights i:nth-child(3) {
+    background: #28c840;
+  }
+
+  .group-demo__switch {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 1.4cqh;
+    padding: 0.5cqh;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgb(17 17 15 / 3.5%);
+  }
+
+  .group-demo__thumb {
+    position: absolute;
+    top: 0.5cqh;
+    bottom: 0.5cqh;
+    left: 0.5cqh;
+    width: calc(50% - 0.5cqh);
+    border-radius: 999px;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px rgb(17 17 15 / 6%),
+      0 0.15rem 0.4rem rgb(17 17 15 / 10%);
+    transition: transform 240ms var(--ease-out);
+  }
+
+  .group-demo[data-view='apps'] .group-demo__thumb {
+    transform: translateX(100%);
+  }
+
+  .group-demo__switch button {
+    position: relative;
+    padding: 0.9cqh 1.6em;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    font-size: calc(var(--type) * 1.12);
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      color 160ms ease,
+      transform 140ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .group-demo__switch button[aria-pressed='true'] {
+    color: var(--color-ink);
+  }
+
+  .group-demo__switch button:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .group-demo__switch button:disabled {
+    cursor: default;
+  }
+
+  .group-demo__switch button:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 0.1rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .group-demo__switch button[aria-pressed='false']:not(:disabled):hover {
+      color: var(--color-ink);
+    }
+  }
+
+  /* ---- The line that says what the table shows ---- */
+
+  .group-demo__status {
+    flex: none;
+    margin: 1.6cqh calc(2.6cqh + var(--pad)) 1.2cqh;
+    color: var(--muted);
+    font-size: calc(var(--type) * 1.3);
+    line-height: 1.2;
+  }
+
+  .group-demo__status strong {
+    color: var(--color-ink);
+    font-weight: 650;
+  }
+
+  /* ---- Table ---- */
+
+  .group-demo__table {
+    position: relative;
+    flex: 1;
+    margin: 0 2.6cqh;
+    font-size: var(--type);
+    cursor: pointer;
+  }
+
+  .group-demo__head,
+  .group-demo__table li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7.5em 5em;
+    align-items: center;
+    column-gap: 1em;
+    padding-inline: var(--pad);
+  }
+
+  .group-demo__head {
+    height: 4.6cqh;
+    color: var(--muted);
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .group-demo__head > :not(:first-child),
+  .group-demo__table li > :not(:first-child) {
+    text-align: right;
+  }
+
+  /* Two labels share one cell and crossfade with the view. */
+  .group-demo__swap {
+    display: grid;
+  }
+
+  .group-demo__swap > span {
+    grid-area: 1 / 1;
+    transition: opacity 160ms ease;
+  }
+
+  .group-demo[data-view='processes'] [data-in='apps'],
+  .group-demo[data-view='apps'] [data-in='processes'] {
+    opacity: 0;
+  }
+
+  .group-demo__rows {
+    position: relative;
+  }
+
+  .group-demo__table ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .group-demo__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Activity Monitor: one row per process. */
+  .group-demo__procs li {
+    height: var(--row);
+    border-top: 1px solid var(--line);
+    color: rgb(17 17 15 / 82%);
+    /* Back to their places: quick, and the top rows first. */
+    transition:
+      transform 300ms var(--ease-out) calc(var(--i) * 8ms),
+      opacity 160ms ease calc(var(--i) * 8ms);
+  }
+
+  .group-demo__procs .group-demo__last {
+    color: var(--muted);
+  }
+
+  /* Observatory: one row per app, laid over the same place. */
+  .group-demo__apps {
+    position: absolute;
+    inset: 0 0 auto;
+    pointer-events: none;
+  }
+
+  .group-demo__apps li {
+    position: relative;
+    isolation: isolate;
+    height: var(--app-row);
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(1.2cqh);
+    transition:
+      opacity 120ms ease,
+      transform 120ms ease;
+  }
+
+  .group-demo__apps .group-demo__name {
+    font-weight: 600;
+  }
+
+  .group-demo__apps small {
+    display: block;
+    margin-top: 0.35cqh;
+    color: var(--muted);
+    font-size: 0.82em;
+    font-weight: 400;
+  }
+
+  /* Brave's row: the study's green, swept in like the highlights there. */
+  .group-demo__apps li:first-child {
+    border-top-color: transparent;
+    transform: none;
+  }
+
+  .group-demo__apps li:first-child::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0.5cqh 0;
+    border-radius: 1cqh;
+    background: var(--mark);
+    clip-path: inset(0 100% 0 0 round 1cqh);
+    content: '';
+    transition: clip-path 120ms ease;
+  }
+
+  .group-demo__apps li:first-child .group-demo__last {
+    font-weight: 650;
+  }
+
+  /* ---- Grouped: the process rows slide up into Brave's one row ---- */
+
+  .group-demo[data-view='apps'] .group-demo__procs li {
+    opacity: 0;
+    transform: translateY(calc((var(--app-row) - var(--row)) / 2 - var(--i) * var(--row)));
+    transition:
+      transform 460ms var(--ease-in-out) calc(var(--i) * 14ms),
+      opacity 180ms ease calc(260ms + var(--i) * 14ms);
+  }
+
+  .group-demo[data-view='apps'] .group-demo__apps li {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 260ms ease calc(540ms + var(--i) * 45ms),
+      transform 320ms var(--ease-out) calc(540ms + var(--i) * 45ms);
+  }
+
+  .group-demo[data-view='apps'] .group-demo__apps li:first-child {
+    transition: opacity 200ms ease 380ms;
+  }
+
+  .group-demo[data-view='apps'] .group-demo__apps li:first-child::before {
+    clip-path: inset(0 0 0 0 round 1cqh);
+    transition: clip-path 380ms var(--ease-out) 460ms;
+  }
+
+  /* A hint of the click: under the pointer the rows lean toward the top. */
+  @media (hover: hover) and (pointer: fine) {
+    .group-demo[data-view='processes'] .group-demo__table:hover .group-demo__procs li {
+      transform: translateY(calc(var(--i) * var(--row) * -0.05));
+      transition: transform 360ms var(--ease-out) calc(var(--i) * 10ms);
+    }
+  }
+
+  /* Narrow panels drop the last column so names keep their room. */
+  @container (max-aspect-ratio: 1) {
+    /* Set on the window: a container query styles only what is inside it. */
+    .group-demo__window {
+      --type: max(0.625rem, min(3.3cqw, 2.45cqh));
+      --pad: 1.2cqh;
+      inset-inline: 4cqw;
+    }
+
+    .group-demo__head,
+    .group-demo__table li {
+      grid-template-columns: minmax(0, 1fr) 6em;
+    }
+
+    .group-demo__table .group-demo__last {
+      display: none;
+    }
+
+    .group-demo__switch button {
+      padding-inline: 0.9em;
+      font-size: var(--type);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .group-demo__procs li,
+    .group-demo__apps li,
+    .group-demo[data-view] .group-demo__procs li,
+    .group-demo[data-view] .group-demo__apps li,
+    .group-demo[data-view] .group-demo__table:hover .group-demo__procs li {
+      transform: none;
+      transition: opacity 200ms ease;
+    }
+
+    .group-demo__apps li:first-child::before,
+    .group-demo[data-view='apps'] .group-demo__apps li:first-child::before {
+      transition: none;
+    }
+
+    .group-demo__thumb {
+      transition: none;
+    }
+  }
+</style>

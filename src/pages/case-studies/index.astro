@@ -76,7 +76,7 @@ const t = translator(locale);
   /* The listing uses the homepage's frame, section title, panels, and
      captions, so a visitor moving between the two sees one system. */
   .case-index {
-    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)) !important;
+    width: var(--work-width) !important;
     padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6.5rem);
   }
 
@@ -92,7 +92,7 @@ const t = translator(locale);
   .case-index__list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: clamp(1rem, 3vw, 3.75rem);
+    column-gap: var(--work-gap);
     padding: 0;
     margin: 0;
     list-style: none;
@@ -100,7 +100,7 @@ const t = translator(locale);
 
   /* The whole card opens the case study: the caption's link covers it. */
   .case-index__item {
-    --work-caption-hit-radius: clamp(0.8rem, 1.4vw, 1.35rem);
+    --work-caption-hit-radius: var(--work-radius);
     position: relative;
     min-width: 0;
   }
@@ -111,11 +111,9 @@ const t = translator(locale);
     aspect-ratio: 4 / 3;
     place-items: center;
     overflow: hidden;
-    border-radius: clamp(0.8rem, 1.4vw, 1.35rem);
+    border-radius: var(--work-radius);
     background: #eceae6;
-    box-shadow:
-      0 1px 0 rgb(17 17 15 / 0.06),
-      0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+    box-shadow: var(--work-shadow);
   }
 
   .case-index__frame::after {
@@ -158,7 +156,7 @@ const t = translator(locale);
   }
 
   .case-index__caption {
-    padding: clamp(0.8rem, 1.1vw, 1rem) 0 clamp(2.75rem, 5vw, 4.75rem);
+    padding: clamp(0.6rem, 0.9vw, 0.85rem) 0 var(--work-gap);
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -172,12 +170,8 @@ const t = translator(locale);
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .case-index__frame {
-      border-radius: 0.8rem;
-    }
-
     .case-index__caption {
-      padding: 0.75rem 0 2.5rem;
+      padding: 0.6rem 0 1.75rem;
     }
   }
 

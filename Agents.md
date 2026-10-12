@@ -41,6 +41,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Each study's opening and frame paper | SuperGood `supergood/FocusCover.astro`; Observatory `observatory/EyepieceCover.astro`, `night.ts`, comparator `Blink.astro`; Instagram `instagram-saves/PileCover.astro`; Two Sticks `two-sticks/CopybookCover.astro`, `copybook.ts` |
 | Case-study live moments (highlights drawing in, chart replay, gathering rows, pen circle) | `src/components/case-studies/StudyLife.astro`; states in `src/styles/plates.css` |
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
+| Observatory work card (the 17 process rows that gather into one app row) | `src/components/homepage/showcase/ObservatoryGroupDemo.astro` |
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
 | Link hover mark (the stop-motion marker swipe) | `.link-mark` and its frames in `src/styles/foundations.css`; timing and the faint rest mark in `src/styles/tokens.css` |

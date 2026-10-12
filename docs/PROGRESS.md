@@ -1,6 +1,13 @@
 # Progress
 
-Last updated: 2026-10-06
+Last updated: 2026-10-12
+
+## Observatory card: the case study's decision, in one click
+
+- Igor's review of the work cards: the interaction should show why a guest should care, and Observatory's shuffling stack of screenshots showed neither the point nor that it was clickable. New rule for every work panel: one action acts out the main decision of its case study. SuperGood's fan is next to be judged against it.
+- Observatory's panel (`ObservatoryGroupDemo.astro`, replacing `ObservatoryScreenStack.astro`) is a window with Observatory's own Now / Tests style switch, here "Activity Monitor | Observatory". It opens on Brave Browser as Activity Monitor lists it, 16 of its 17 processes with real names, PIDs and memory from `processes-of-app.png`, running past the window's edge under "17 rows to find and add up". Choosing Observatory (or clicking the table) slides the rows up into one green row (1.9 GiB, 17 procs) and the live view's other seven apps settle in under "1 row, already added up". Rows lean toward the top under the pointer as a hint; a swoosh and a soft pop mark the gather and the landing.
+- Motion: gather 460 ms in-out with 14 ms stagger, marker swept in like the study's highlights, return in 300 ms ease-out; CSS transitions on one `data-view` attribute, so rapid clicks retarget instead of restarting. Reduced motion crossfades. Without JavaScript the Activity Monitor view stays and the Observatory button is disabled. Text sizes follow the panel (size container) with a 10 px floor; narrow panels drop the PID / Procs column.
+- The panel now loads no images beyond its background (five screenshots fewer). Verified at 1280, 1024 and 375 px in English and Russian, no horizontal overflow or console errors. Astro diagnostics, the media contract and both production builds pass.
 
 ## Homepage opens on the page itself
 
