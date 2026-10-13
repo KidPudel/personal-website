@@ -1,6 +1,6 @@
 # Media performance contract
 
-Last updated: 2026-09-23
+Last updated: 2026-10-13
 
 This document is the implementation contract for every image, video, flipbook, poster, and decorative media asset on the site. Future agents must read it before changing public media.
 
@@ -55,7 +55,15 @@ The opening sky offers AV1 first and H.264 after it, for each screen size: brows
 
 ### Homepage showcase first row
 
-The homepage opens on the page itself, so the first row of work (SuperGood and Instagram) is in the first viewport on wide screens. Its card backgrounds, SuperGood's five visible phones, the Instagram placeholder phone, and the "try clicking around" doodle load eagerly without high priority (the sky poster stays the route's one high-priority image); the rest of the showcase stays lazy. Every card paints a 24 px copy of its own background (`src/lib/image-placeholder.ts`, about 300 bytes each, inlined at build time) until the real one arrives, so no card is ever an empty frame. This suits only soft images like the gradients; never use it for screenshots or photographs.
+The homepage opens on the page itself, so the first row of work (SuperGood and Instagram) is in the first viewport on wide screens. Its card backgrounds, SuperGood's phone (History; the plates and button that move are clipped copies with the same `srcset`), the Instagram placeholder phone load eagerly without high priority (the sky poster stays the route's one high-priority image); the rest of the showcase stays lazy. Every card paints a 24 px copy of its own background (`src/lib/image-placeholder.ts`, about 300 bytes each, inlined at build time) until the real one arrives, so no card is ever an empty frame. This suits only soft images like the gradients; never use it for screenshots or photographs.
+
+### Homepage Instagram card
+
+The card is the redesigned Saved screen from the live prototype, in front of the pile. Until the prototype loads, and without JavaScript, the real screenshot of that screen (`all_saved_new.png`) stands in, eager like the rest of the first row; the twelve grid thumbnails it then shows are eager too, since they are visible at once. The pile behind the phone is the case study's sprite (`pile/pile.webp`, about 300 KB, the same file and URL as the cover, so one download serves both pages). It is decorative and optional: it starts loading only after the page's `load` event and once the card is near the viewport, never on data saver or 2G, and until it has decoded the card shows its usual texture and the search simply filters inside the phone.
+
+### Homepage SuperGood and Two Sticks cards
+
+Both cards are one phone built from the case studies' screenshots, prepared by `scripts/prepare-showcase-screens.mjs` (originals untouched; the History edit needs Inter installed). SuperGood: History is eager with the first row; the menu screen it pushes to is lazy, and its cart bar is live text in Nunito (`@fontsource/nunito` 700, latin and Cyrillic subsets, fetched only for the glyphs used), so the bar can fill with the repeated order. Two Sticks: the chat and the blank Web App sheet are lazy; the written sheet the strokes uncover is a single 560 px WebP set on the SVG only once the card is within 200 px of the viewport. Without JavaScript and under reduced motion each card is a still phone; reduced motion fades to the finished state.
 
 ### Instagram Saves pile
 

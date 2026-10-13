@@ -2,22 +2,23 @@
 import { Image } from 'astro:assets';
 import '@fontsource/instrument-serif/400.css';
 
-import clickCue from '../../../assets/art/icons/Doodles_point_click.png';
 import { caseStudies, caseStudyPath } from '../../../content/case-studies';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
 import { imagePlaceholder } from '../../../lib/image-placeholder';
 import InstagramPrototype from './InstagramPrototype.astro';
 import ObservatoryGroupDemo from './ObservatoryGroupDemo.astro';
-import SupergoodScreenStack from './SupergoodScreenStack.astro';
-import TwoSticksScreenStack from './TwoSticksScreenStack.astro';
+import SupergoodLunch from './SupergoodLunch.astro';
+import TwoSticksChat from './TwoSticksChat.astro';
 import WorkCaption from './WorkCaption.astro';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 // Copy lives in src/content/case-studies.ts; this adds the homepage layout.
-// The two wide cards sit on a diagonal: SuperGood opens the grid at top left,
-// Observatory closes it at bottom right. `position` keeps the document and
-// keyboard order the same as the visual reading order.
+// Two by two, every card the same moderately wide shape (4:3), which suits
+// what they all hold: two phones, a phone in a wall, a phone beside paper, a
+// desktop window. The order carries the ranking, SuperGood first. `position`
+// keeps the document and keyboard order the same as the visual reading order.
+// `portrait` only shapes the phone layout (upright cards there).
 const layout = {
   supergood: { area: 'supergood', kind: 'supergood', portrait: false, position: 1 },
   'instagram-saves-redesign': { area: 'instagram', kind: 'instagram', portrait: true, position: 2 },
@@ -46,20 +47,6 @@ const firstRow = 2;
     <h2 class="showcase__title">
       {t('my work', 'мои работы')}
     </h2>
-
-    <p class="showcase__click-cue">
-      <span>{t('try clicking around', 'попробуй покликать')}</span>
-      <span class="showcase__click-cue-art" aria-hidden="true">
-        <Image
-          src={clickCue}
-          alt=""
-          width={512}
-          loading="eager"
-          decoding="async"
-          format="png"
-        />
-      </span>
-    </p>
   </div>
 
   <div class="showcase__grid">
@@ -81,22 +68,25 @@ const firstRow = 2;
             class="showcase__background"
             src={card.background}
             alt=""
-            widths={card.portrait ? [360, 480, 720] : [480, 720, 960, 1280, 1600]}
-            sizes={card.portrait
-              ? '(max-width: 44rem) calc(100vw - 2rem), (max-width: 75rem) 45vw, 28vw'
-              : '(max-width: 44rem) calc(100vw - 2rem), (max-width: 75rem) 90vw, 62vw'}
+            widths={[480, 720, 960, 1280]}
+            sizes="(max-width: 44rem) calc(100vw - 2rem), 45vw"
             loading={card.position <= firstRow ? 'eager' : 'lazy'}
             decoding="async"
             format="webp"
             quality={82}
           />
-          {card.kind === 'observatory' && <ObservatoryGroupDemo />}
-          {card.kind === 'instagram' && <InstagramPrototype />}
-          {card.kind === 'chinese' && <TwoSticksScreenStack />}
-          {card.kind === 'supergood' && <SupergoodScreenStack />}
+          {/* The product inside is a preview to watch, not a control: inert keeps
+              it out of the pointer's way and the tab order, so the whole card
+              is one link to its case study. */}
+          <div class="showcase__device" inert>
+            {card.kind === 'observatory' && <ObservatoryGroupDemo />}
+            {card.kind === 'instagram' && <InstagramPrototype />}
+            {card.kind === 'chinese' && <TwoSticksChat />}
+            {card.kind === 'supergood' && <SupergoodLunch />}
+          </div>
         </div>
 
-        {/* The panel is for trying the product; the caption opens its case study. */}
+        {/* The caption's link reaches over the whole card. */}
         <WorkCaption
           class="showcase__caption"
           href={card.href}
@@ -130,10 +120,88 @@ const firstRow = 2;
       this.reducedMotion.addEventListener('change', this.syncSoundPreferences, {
         signal: this.abort.signal,
       });
+      this.querySelectorAll<HTMLElement>('.showcase__card').forEach((card) => this.watch(card));
+      this.watchScroll();
     }
 
     disconnectedCallback() {
       this.abort?.abort();
+    }
+
+    // A card being looked at plays its preview to the end and holds it; when
+    // the look moves on, the preview rewinds. The card says so with a
+    // `showcase:preview` event ({ on, quiet }), which its product listens for.
+    // With a mouse, looking means the pointer resting on the card a moment (a
+    // sweep across the grid doesn't start anything); with a keyboard, focus on
+    // its link; on a phone or any screen without hover, the card scrolling up
+    // into the middle of the screen (watchScroll). Previews started by
+    // scrolling stay silent: sound should answer an action, and a scroll isn't
+    // one.
+    private looks = new Map<HTMLElement, { on: boolean; timer: number }>();
+
+    private look(card: HTMLElement, next: boolean, delay: number, quiet = false) {
+      const state = this.looks.get(card) ?? { on: false, timer: 0 };
+      this.looks.set(card, state);
+      window.clearTimeout(state.timer);
+      state.timer = window.setTimeout(() => {
+        if (state.on === next) return;
+        state.on = next;
+        card.dispatchEvent(new CustomEvent('showcase:preview', { detail: { on: next, quiet } }));
+      }, delay);
+    }
+
+    private watch(card: HTMLElement) {
+      const link = card.querySelector<HTMLElement>('.work-caption__link');
+      const signal = this.abort?.signal;
+      if (!link || !signal) return;
+      link.addEventListener('pointerenter', (event) => {
+        if (event.pointerType === 'mouse' && this.finePointer.matches) this.look(card, true, 140);
+      }, { signal });
+      link.addEventListener('pointerleave', (event) => {
+        if (event.pointerType === 'mouse' && this.finePointer.matches) this.look(card, false, 90);
+      }, { signal });
+      link.addEventListener('focus', () => {
+        if (link.matches(':focus-visible')) this.look(card, true, 0);
+      }, { signal });
+      link.addEventListener('blur', () => {
+        if (this.finePointer.matches) this.look(card, false, 0);
+      }, { signal });
+      signal.addEventListener('abort', () => window.clearTimeout(this.looks.get(card)?.timer));
+    }
+
+    // Without hover, scrolling does the looking. A card plays once its panel
+    // has risen past the line 60% down the screen, and rewinds when it sinks
+    // back below it, so scrolling up a little undoes it and scrolling down
+    // plays it again. A card that has scrolled away above the screen is left
+    // as it is, out of sight.
+    private watchScroll() {
+      const signal = this.abort?.signal;
+      if (!signal) return;
+      const cards = [...this.querySelectorAll<HTMLElement>('.showcase__card')];
+      let frame = 0;
+      const update = () => {
+        frame = 0;
+        if (this.finePointer.matches) return;
+        const line = window.innerHeight * 0.6;
+        cards.forEach((card) => {
+          const panel = card.querySelector<HTMLElement>('.showcase__panel');
+          if (!panel) return;
+          const box = panel.getBoundingClientRect();
+          if (box.bottom < 0) return;
+          this.look(card, box.top + box.height * 0.4 < line, 0, true);
+        });
+      };
+      const schedule = () => {
+        if (!frame) frame = requestAnimationFrame(update);
+      };
+      window.addEventListener('scroll', schedule, { passive: true, signal });
+      window.addEventListener('resize', schedule, { passive: true, signal });
+      // Moving to a screen with hover hands the cards back to the pointer.
+      this.finePointer.addEventListener('change', () => {
+        if (this.finePointer.matches) cards.forEach((card) => this.look(card, false, 0));
+        else schedule();
+      }, { signal });
+      schedule();
     }
 
     private syncSoundPreferences = () => {
@@ -188,52 +256,40 @@ const firstRow = 2;
     text-align: left;
   }
 
-  .showcase__click-cue {
-    display: flex;
-    flex: none;
-    align-items: center;
-    gap: clamp(0.25rem, 0.5vw, 0.55rem);
-    margin: 0 clamp(0.1rem, 0.5vw, 0.5rem) -0.4rem 0;
-    color: var(--color-ink);
-    font-family: var(--font-reading);
-    font-size: clamp(0.9rem, 1.05vw, 1.1rem);
-    line-height: 1;
-  }
-
-  .showcase__click-cue-art {
-    display: block;
-    width: clamp(1.65rem, 2.2vw, 2.15rem);
-    aspect-ratio: 1;
-    overflow: hidden;
-  }
-
-  .showcase__click-cue-art :global(img) {
-    display: block;
-    width: 250%;
-    max-width: none;
-    height: auto;
-    transform: translate(-13.6%, -19.8%);
-  }
-
   /* Each card spans a panel row and a caption row of the parent grid
      (subgrid), so captions in one row start on the same line and the panels
      above them end together. The wide panels set each row's height. */
   .showcase__grid {
     display: grid;
     grid-template-areas:
-      'supergood supergood instagram'
-      'supergood supergood instagram'
-      'chinese observatory observatory'
-      'chinese observatory observatory';
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+      'supergood instagram'
+      'supergood instagram'
+      'chinese observatory'
+      'chinese observatory';
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(4, auto);
     column-gap: clamp(1rem, 3vw, 3.75rem);
   }
 
+  /* One card, one action: open the case study. The caption's link reaches
+     over the whole card (WorkCaption's hit area covers the nearest positioned
+     ancestor); the product preview above it is inert, so it never catches the
+     pointer. */
   .showcase__card {
+    --card-trail: clamp(2.75rem, 5vw, 4.75rem);
+    --work-caption-hit-radius: clamp(0.8rem, 1.4vw, 1.35rem);
+
+    position: relative;
     display: grid;
     min-width: 0;
     grid-template-rows: subgrid;
+    isolation: isolate;
+    transition: transform 280ms var(--ease-out);
+  }
+
+  /* The link's reach stops at the pitch, not in the gap before the next row. */
+  .showcase__card :global(.work-caption__link)::after {
+    bottom: var(--card-trail);
   }
 
   .showcase__panel {
@@ -249,37 +305,93 @@ const firstRow = 2;
       0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
   }
 
-  /* Pointing at the pitch (the case-study link) lifts the panel above it a little, so the small
-     line and the big picture read as one thing to open. */
+  /* The product sits in the panel as if the wrapper weren't there. */
+  .showcase__device {
+    display: contents;
+  }
+
+  /* The card being looked at (pointer or keyboard) lifts, its pitch draws its
+     marker, and its kind and year come in; the other cards step back. Moving
+     straight from one card to the next switches at once: the newly looked-at
+     card brightens without delay, while the others only dim after a beat and
+     only come back after one, so crossing the gap between cards never
+     flickers. */
   .showcase__panel {
+    transition: box-shadow 280ms var(--ease-out);
+  }
+
+  .showcase__card {
     transition:
       transform 280ms var(--ease-out),
-      box-shadow 280ms var(--ease-out);
+      opacity 320ms ease 160ms,
+      filter 320ms ease 160ms;
+  }
+
+  .showcase__card:has(.work-caption__link:focus-visible) {
+    transform: translateY(-0.25rem);
+    transition-delay: 0s;
   }
 
   .showcase__card:has(.work-caption__link:focus-visible) .showcase__panel {
-    transform: translateY(-0.2rem) scale(1.012);
     box-shadow:
       0 1px 0 rgb(17 17 15 / 0.06),
       0 1.75rem 4.25rem rgb(17 17 15 / 0.14);
   }
 
+  .showcase__grid:has(.work-caption__link:focus-visible) .showcase__card:not(:has(.work-caption__link:focus-visible)) {
+    opacity: 0.38;
+    filter: saturate(0.6);
+    transition-delay: 0s, 90ms, 90ms;
+  }
+
   @media (hover: hover) and (pointer: fine) {
+    .showcase__card:has(.work-caption__link:hover) {
+      transform: translateY(-0.25rem);
+      transition-delay: 0s;
+    }
+
     .showcase__card:has(.work-caption__link:hover) .showcase__panel {
-      transform: translateY(-0.2rem) scale(1.012);
       box-shadow:
         0 1px 0 rgb(17 17 15 / 0.06),
         0 1.75rem 4.25rem rgb(17 17 15 / 0.14);
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .showcase__panel {
-      transition: box-shadow 200ms linear;
+    .showcase__grid:has(.work-caption__link:hover) .showcase__card:not(:has(.work-caption__link:hover)) {
+      opacity: 0.38;
+      filter: saturate(0.6);
+      transition-delay: 0s, 90ms, 90ms;
     }
 
-    .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) .showcase__panel {
+    /* The pitch says what it is at all times; the kind and year come in on
+       the card being looked at. */
+    .showcase__card :global(.work-caption__meta) {
+      opacity: 0;
+      translate: 0 -0.2rem;
+      transition:
+        opacity 200ms ease,
+        translate 260ms var(--ease-out);
+    }
+
+    .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) :global(.work-caption__meta) {
+      opacity: 1;
+      translate: none;
+    }
+  }
+
+  /* Reduced motion: the card doesn't move, but the spotlight still fades. */
+  @media (prefers-reduced-motion: reduce) {
+    .showcase__card {
+      transition:
+        opacity 200ms ease 160ms,
+        filter 200ms ease 160ms;
+    }
+
+    .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) {
       transform: none;
+    }
+
+    .showcase__card :global(.work-caption__meta) {
+      translate: none !important;
     }
   }
 
@@ -301,9 +413,8 @@ const firstRow = 2;
     object-fit: cover;
   }
 
-  .showcase__card--supergood .showcase__panel,
-  .showcase__card--observatory .showcase__panel {
-    aspect-ratio: 10 / 7;
+  .showcase__panel {
+    aspect-ratio: 4 / 3;
   }
 
   .showcase__card--observatory {
@@ -325,33 +436,7 @@ const firstRow = 2;
   /* The caption (WorkCaption) is the case-study link's hit area; the panel
      above stays free for trying the product. */
   .showcase__caption {
-    position: relative;
-    padding: clamp(0.8rem, 1.1vw, 1rem) 0 clamp(2.75rem, 5vw, 4.75rem);
-  }
-
-  /* Tablets: the portrait cards would be too thin in three columns, so the
-     wide cards take a full row each and the portrait pair shares the middle. */
-  @media (44rem < width <= 75rem) {
-    .showcase__grid {
-      grid-template-areas:
-        'supergood supergood'
-        'supergood supergood'
-        'instagram chinese'
-        'instagram chinese'
-        'observatory observatory'
-        'observatory observatory';
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: repeat(6, auto);
-    }
-
-    .showcase__card--supergood .showcase__panel,
-    .showcase__card--observatory .showcase__panel {
-      aspect-ratio: 16 / 10;
-    }
-
-    .showcase__card--portrait .showcase__panel {
-      aspect-ratio: 3 / 4;
-    }
+    padding: clamp(0.8rem, 1.1vw, 1rem) 0 var(--card-trail);
   }
 
   @media (max-width: 44rem) {
@@ -366,15 +451,6 @@ const firstRow = 2;
 
     .showcase__heading {
       gap: 1rem;
-    }
-
-    .showcase__click-cue {
-      margin-right: 0;
-      font-size: clamp(0.78rem, 3.4vw, 0.92rem);
-    }
-
-    .showcase__click-cue-art {
-      width: clamp(1.55rem, 7vw, 1.9rem);
     }
 
     .showcase__grid {
@@ -404,8 +480,13 @@ const firstRow = 2;
       aspect-ratio: 3 / 4;
     }
 
+    .showcase__card {
+      --card-trail: 2.5rem;
+      --work-caption-hit-radius: 0.8rem;
+    }
+
     .showcase__caption {
-      padding: 0.75rem 0 2.5rem;
+      padding: 0.75rem 0 var(--card-trail);
     }
   }
 </style>

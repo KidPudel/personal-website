@@ -1,6 +1,13 @@
 # Progress
 
-Last updated: 2026-10-12
+Last updated: 2026-10-13
+
+## SuperGood and Two Sticks cards: one phone, one moment
+
+- Igor's review: Instagram and Observatory work because each is one product, large, opening on the problem and resolving it with one action in the product's own UI; SuperGood (two cropped phones, blur swap, tiny plates) and Two Sticks (an HTML-redrawn chat, the copybook shrinking into a thumbnail) didn't. Agreed from storyboards made of the real screens, then built.
+- SuperGood (`SupergoodLunch.astro`): one phone framed close on History. A finger (the Instagram card's) presses "Добавить весь заказ", the bread and soup lift off, the screen pushes to the menu (iOS curve), the camera follows down, and the plates land in a cart bar that rises to meet them: 2 dishes, 639 ₽, from 205 minutes. Igor asked to fix the old mismatch (menu bar 1420 ₽ vs the order's 639 ₽): the bar is now live text in the app's Nunito; the orders read "Доставлен" instead of "Отменен".
+- Two Sticks (`TwoSticksChat.astro`): one phone with the real chat. The finger presses "Открыть прописи", the handwriting Web App rises over the dimmed chat as a sheet, the finger writes 去 in stroke order (each stroke uncovers the learner's own strokes from `write.png`), presses "Проверить", and the real score appears. The copybook is no longer on the card.
+- Derived screens come from `scripts/prepare-showcase-screens.mjs`. Verified frame by frame at 1440×900 and 390×844, under reduced motion, and rewinding on look-away.
 
 ## Observatory card: the case study's decision, in one click
 

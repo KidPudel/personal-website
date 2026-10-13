@@ -1,0 +1,548 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource/nunito/700.css';
+
+import historyScreen from '../../../assets/showcase-cards/supergood-history.png';
+import menuScreen from '../../../assets/showcase-cards/supergood-menu.png';
+
+// SuperGood's point, as one moment: your usual lunch, one tap away (most weekday orders were
+// repeats), and the time and total in view the whole time you're on the menu. One phone, framed
+// close on History with yesterday's lunch open. When the card is looked at (ShowcaseCards), a
+// finger presses "Добавить весь заказ", the bread and the soup lift off their plates, the screen
+// pushes to the menu, and the two land in the cart bar that rises to meet them: 2 dishes, the
+// order's 639 ₽, delivery in 205 minutes.
+//
+// The screens are the case study's screenshots (scripts/prepare-showcase-screens.mjs): History
+// with its orders marked delivered, and the menu without its bar, which is drawn here in the
+// app's own Nunito so it can fill as the lunch lands.
+//
+// Positions are pixels of history.png (597 × 1060), the phone everything sits in.
+const device = { width: 597, height: 1060 };
+const screen = { x: 74, y: 34, width: 449, height: 976 };
+const plates = [
+  { id: 'bread', x: 135, y: 489 },
+  { id: 'soup', x: 134, y: 582 },
+];
+const plateRadius = 37;
+const button = { x: 102, y: 772, width: 392, height: 40 };
+// Where the plates drop: the cart in the bar.
+const cart = { x: 287, y: 937 };
+
+const pct = (value: number, of: number) => `${((value / of) * 100).toFixed(3)}%`;
+const screenBox = `left: ${pct(screen.x, device.width)}; top: ${pct(screen.y, device.height)}; width: ${pct(screen.width, device.width)}; height: ${pct(screen.height, device.height)}`;
+// The phone's own image, placed inside the screen so its screen lines up with it.
+const inScreen = `width: ${pct(device.width, screen.width)}; left: ${pct(-screen.x, screen.width)}; top: ${pct(-screen.y, screen.height)}`;
+const deviceImage = {
+  widths: [300, 450, 597],
+  sizes: '(max-width: 44rem) 64vw, 29vw',
+  format: 'webp' as const,
+  quality: 86,
+};
+---
+
+<supergood-lunch
+  class="lunch"
+  aria-hidden="true"
+  data-device={`${device.width} ${device.height}`}
+  data-cart={`${cart.x} ${cart.y}`}
+  style={`--device-ratio: ${device.width} / ${device.height}`}
+>
+  <span class="lunch__rig">
+    <span class="lunch__device">
+      <Image class="lunch__frame" src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+
+      <span class="lunch__screen" style={screenBox}>
+        <span class="lunch__page lunch__page--history">
+          <Image class="lunch__shot" style={inScreen} src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+          <!-- Where the plates were, once they have lifted off. -->
+          {plates.map((plate) => (
+            <span
+              class="lunch__spot"
+              style={`left: ${pct(plate.x - screen.x, screen.width)}; top: ${pct(plate.y - screen.y, screen.height)}; width: ${pct(plateRadius * 2.2, screen.width)}`}
+            ></span>
+          ))}
+          <!-- The button, cut from the same screenshot, so it can be pressed. -->
+          <span
+            class="lunch__press"
+            style={`${inScreen}; clip-path: inset(${pct(button.y, device.height)} ${pct(device.width - button.x - button.width, device.width)} ${pct(device.height - button.y - button.height, device.height)} ${pct(button.x, device.width)} round 1.6% / 0.9%); transform-origin: ${pct(button.x + button.width / 2, device.width)} ${pct(button.y + button.height / 2, device.height)}`}
+          >
+            <Image src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+          </span>
+        </span>
+
+        <span class="lunch__page lunch__page--menu">
+          <Image
+            src={menuScreen}
+            alt=""
+            widths={[240, 360, 448]}
+            sizes="(max-width: 44rem) 48vw, 22vw"
+            loading="lazy"
+            decoding="async"
+            format="webp"
+            quality={86}
+          />
+        </span>
+
+        <!-- The menu's pinned bar: time, dishes, total. -->
+        <span class="lunch__bar">
+          <span>от 205 мин</span>
+          <span class="lunch__cart">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" /></svg>
+            <span class="lunch__count" data-count></span>
+          </span>
+          <span class="lunch__total" data-total>639 ₽</span>
+        </span>
+      </span>
+
+      <!-- Above the screen: the two plates on their way to the cart. -->
+      {plates.map((plate) => (
+        <span class="lunch__plate" data-plate={plate.id} data-at={`${plate.x} ${plate.y}`} style={`transform-origin: ${pct(plate.x, device.width)} ${pct(plate.y, device.height)}`}>
+          <span style={`clip-path: circle(${pct(plateRadius, device.width)} at ${pct(plate.x, device.width)} ${pct(plate.y, device.height)})`}>
+            <Image src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+          </span>
+        </span>
+      ))}
+
+      <span class="lunch__touch" style={`left: ${pct(button.x + button.width / 2, device.width)}; top: ${pct(button.y + button.height / 2, device.height)}`}></span>
+    </span>
+  </span>
+</supergood-lunch>
+
+<script>
+  import { play } from '@foleyjs/core';
+
+  // The iOS push and a soft arc for things thrown into a cart.
+  const arc = 'cubic-bezier(0.55, 0, 0.25, 1)';
+
+  class SupergoodLunch extends HTMLElement {
+    private abort?: AbortController;
+    private animations: Animation[] = [];
+    private timers: number[] = [];
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Previews started by scrolling play without sound (ShowcaseCards).
+    private quiet = false;
+
+    private cue(name: Parameters<typeof play>[0]) {
+      if (!this.quiet) play(name);
+    }
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      this.dataset.live = '';
+      // The card is the only control (ShowcaseCards).
+      this.closest('.showcase__card')?.addEventListener('showcase:preview', (event) => {
+        const { on, quiet } = (event as CustomEvent<{ on: boolean; quiet?: boolean }>).detail;
+        this.quiet = Boolean(quiet);
+        if (on) this.serve();
+        else this.reset();
+      }, { signal: this.abort.signal });
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.reset();
+    }
+
+    private at(delay: number, run: () => void) {
+      this.timers.push(window.setTimeout(run, delay));
+    }
+
+    private set(state: Record<string, string | null>) {
+      Object.entries(state).forEach(([key, value]) => {
+        if (value === null) delete this.dataset[key];
+        else this.dataset[key] = value;
+      });
+    }
+
+    private count(value: number) {
+      const count = this.querySelector<HTMLElement>('[data-count]');
+      if (count) count.textContent = value ? String(value) : '';
+    }
+
+    // Looking away: back to yesterday's lunch, ready to play again.
+    private reset() {
+      this.timers.forEach((timer) => window.clearTimeout(timer));
+      this.timers = [];
+      this.animations.forEach((animation) => animation.cancel());
+      this.animations = [];
+      this.set({ step: null, touch: null, press: null, bar: null, full: null });
+      this.count(0);
+    }
+
+    private serve() {
+      this.reset();
+      if (this.reducedMotion.matches) {
+        this.count(2);
+        this.set({ step: 'served', bar: '', full: '' });
+        return;
+      }
+      const device = this.querySelector<HTMLElement>('.lunch__device');
+      const bar = this.querySelector<HTMLElement>('.lunch__bar');
+      const plates = [...this.querySelectorAll<HTMLElement>('.lunch__plate')];
+      if (!device || !bar) return;
+
+      // 1. A finger comes to the button and presses it.
+      this.set({ touch: '' });
+      this.at(300, () => {
+        this.set({ press: '' });
+        this.cue('tap');
+      });
+
+      // 2. The plates lift off the screen, toward the camera.
+      this.at(460, () => {
+        this.set({ press: null, touch: null, step: 'lift' });
+        plates.forEach((plate, index) => {
+          this.animations.push(plate.animate(
+            [
+              { transform: 'none', filter: 'drop-shadow(0 0 0 rgb(60 30 0 / 0))' },
+              { transform: `translate(${index ? 3 : -3}%, -2.2%) scale(1.22)`, filter: 'drop-shadow(0 1.1rem 1rem rgb(60 30 0 / 0.26))' },
+            ],
+            { duration: 380, delay: index * 50, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' },
+          ));
+        });
+      });
+
+      // 3. The screen pushes to the menu, the camera follows down to the bar, and the plates
+      //    drop into the cart, the soup a beat behind.
+      this.at(820, () => {
+        this.set({ step: 'served' });
+        this.cue('swoosh');
+        const [width, height] = (this.dataset.device ?? '597 1060').split(' ').map(Number);
+        const [cartX, cartY] = (this.dataset.cart ?? '287 937').split(' ').map(Number);
+        const scale = device.offsetWidth / width;
+        plates.forEach((plate, index) => {
+          const [x, y] = (plate.dataset.at ?? '0 0').split(' ').map(Number);
+          const dx = (cartX - x) * scale;
+          const dy = (cartY - y) * scale;
+          const lifted = `translate(${index ? 3 : -3}%, -2.2%) scale(1.22)`;
+          this.animations.push(plate.animate(
+            [
+              { transform: lifted, filter: 'drop-shadow(0 1.1rem 1rem rgb(60 30 0 / 0.26))', opacity: 1 },
+              { transform: `translate(${dx * 0.18}px, ${dy * 0.08 - height * scale * 0.035}px) scale(1.3) rotate(${index ? -8 : 8}deg)`, filter: 'drop-shadow(0 1.6rem 1.3rem rgb(60 30 0 / 0.24))', opacity: 1, offset: 0.32 },
+              { transform: `translate(${dx}px, ${dy}px) scale(0.3) rotate(${index ? -20 : 18}deg)`, filter: 'drop-shadow(0 0.15rem 0.2rem rgb(60 30 0 / 0.2))', opacity: 1, offset: 0.94 },
+              { transform: `translate(${dx}px, ${dy}px) scale(0.22) rotate(${index ? -20 : 18}deg)`, filter: 'drop-shadow(0 0 0 rgb(60 30 0 / 0))', opacity: 0 },
+            ],
+            { duration: 820, delay: 140 + index * 130, easing: arc, fill: 'forwards' },
+          ));
+        });
+      });
+
+      // 4. The bar rises to meet them, and fills as each lands.
+      this.at(1320, () => this.set({ bar: '' }));
+      this.at(1790, () => {
+        this.count(1);
+        this.bump(bar, 1.025);
+      });
+      this.at(1920, () => {
+        this.count(2);
+        this.set({ full: '' });
+        this.bump(bar, 1.05);
+        this.cue('pop');
+      });
+    }
+
+    private bump(element: HTMLElement, amount: number) {
+      this.animations.push(element.animate(
+        [{ scale: '1' }, { scale: `${amount}`, offset: 0.35 }, { scale: '1' }],
+        { duration: 380, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+      ));
+    }
+  }
+
+  if (!customElements.get('supergood-lunch')) {
+    customElements.define('supergood-lunch', SupergoodLunch);
+  }
+</script>
+
+<style>
+  /* One phone on the warm field, framed close like a photograph: History's open order and its
+     button at rest, the menu's cart bar once served. Sizes follow the panel's height (a size
+     container), so the framing holds at every panel shape. */
+  .lunch {
+    --push: cubic-bezier(0.32, 0.72, 0, 1);
+
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: inherit;
+    container-type: size;
+  }
+
+  .lunch__rig {
+    position: absolute;
+    inset: 0;
+    display: block;
+    transform-origin: 50% 100%;
+    transition: transform 700ms var(--ease-in-out);
+  }
+
+  /* Served, the camera follows the lunch down to the bar. */
+  .lunch[data-step='served'] .lunch__rig {
+    transform: translateY(-15cqh) scale(1.05);
+    transition: transform 1100ms var(--ease-in-out);
+  }
+
+  .lunch__device {
+    position: absolute;
+    top: -36cqh;
+    left: 50%;
+    display: block;
+    height: 150cqh;
+    aspect-ratio: var(--device-ratio);
+    filter: drop-shadow(0 1.2rem 1.6rem rgb(60 30 0 / 0.24));
+    transform: translateX(-50%);
+  }
+
+  .lunch :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .lunch__device > :global(.lunch__frame) {
+    height: 100%;
+  }
+
+  .lunch__screen {
+    position: absolute;
+    display: block;
+    overflow: hidden;
+    border-radius: 10.6% / 4.9%;
+    container-type: size;
+    background: #fff;
+  }
+
+  .lunch__page {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    background: #fff;
+    transition:
+      transform 420ms var(--ease-out),
+      opacity 420ms ease;
+  }
+
+  .lunch__page :global(.lunch__shot),
+  .lunch__press {
+    position: absolute;
+    display: block;
+    max-width: none;
+  }
+
+  /* The screen pushes like iOS: the menu comes in from the right, History slips back under it. */
+  .lunch__page--history::after {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.14);
+    content: '';
+    opacity: 0;
+    transition: opacity 420ms ease;
+  }
+
+  .lunch__page--menu {
+    transform: translateX(100%);
+    box-shadow: -0.6rem 0 1.6rem rgb(0 0 0 / 0.1);
+  }
+
+  .lunch[data-step='served'] .lunch__page--history {
+    transform: translateX(-30%);
+    transition: transform 620ms var(--push);
+  }
+
+  .lunch[data-step='served'] .lunch__page--history::after {
+    opacity: 1;
+    transition: opacity 620ms var(--push);
+  }
+
+  .lunch[data-step='served'] .lunch__page--menu {
+    transform: none;
+    transition: transform 620ms var(--push);
+  }
+
+  /* Where a plate stood, the order card's empty paper. */
+  .lunch__spot {
+    position: absolute;
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: rgb(248 249 250);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+  }
+
+  .lunch:is([data-step='lift'], [data-step='served']) .lunch__spot {
+    opacity: 1;
+  }
+
+  .lunch__press {
+    transition:
+      transform 220ms cubic-bezier(0.23, 1, 0.32, 1),
+      filter 220ms ease;
+  }
+
+  .lunch[data-press] .lunch__press {
+    filter: brightness(0.92);
+    transform: scale(0.965);
+    transition-duration: 100ms;
+  }
+
+  .lunch__plate {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .lunch__plate > span {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .lunch:is([data-step='lift'], [data-step='served']) .lunch__plate {
+    opacity: 1;
+  }
+
+  /* ---- The cart bar, in the app's Nunito ---- */
+
+  .lunch__bar {
+    position: absolute;
+    left: 6.9%;
+    top: 89.75%;
+    display: grid;
+    width: 85.7%;
+    height: 5.55%;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 5.6cqw;
+    border-radius: 3.8cqw;
+    background: #030506;
+    box-shadow: 0 0.5rem 1.2rem rgb(0 0 0 / 0.22);
+    color: #fff;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 4.7cqw;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(170%);
+    transition:
+      transform 300ms var(--ease-out),
+      opacity 200ms ease;
+  }
+
+  .lunch[data-bar] .lunch__bar {
+    opacity: 1;
+    transform: none;
+    transition:
+      transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease;
+  }
+
+  .lunch__cart {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+
+  .lunch__cart svg {
+    width: 1.45em;
+    height: 1.45em;
+  }
+
+  .lunch__count:empty {
+    display: none;
+  }
+
+  .lunch__total {
+    justify-self: end;
+    opacity: 0;
+    transform: translateY(40%);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+
+  .lunch[data-full] .lunch__total {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 260ms ease,
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---- The finger, the same as on the Instagram card ---- */
+
+  .lunch__touch {
+    position: absolute;
+    z-index: 3;
+    display: block;
+    width: 7cqh;
+    min-width: 1.1rem;
+    aspect-ratio: 1;
+    border: 1.5px solid rgb(255 255 255 / 0.9);
+    border-radius: 50%;
+    background: rgb(40 40 48 / 0.28);
+    box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 0.22);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) translate(12%, 30%) scale(0.6);
+    transition:
+      opacity 180ms ease,
+      transform 260ms cubic-bezier(0.23, 1, 0.32, 1),
+      background-color 100ms ease;
+  }
+
+  .lunch[data-touch] .lunch__touch {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .lunch[data-press] .lunch__touch {
+    background: rgb(40 40 48 / 0.45);
+    transform: translate(-50%, -50%) scale(0.82);
+  }
+
+  /* Reduced motion: no camera, no flight. The menu and its filled bar fade in over History. */
+  @media (prefers-reduced-motion: reduce) {
+    .lunch__rig,
+    .lunch[data-step='served'] .lunch__rig {
+      transform: none;
+      transition: none;
+    }
+
+    .lunch__page--menu,
+    .lunch[data-step='served'] .lunch__page--menu {
+      opacity: 0;
+      transform: none;
+      transition: opacity 300ms ease;
+    }
+
+    .lunch[data-step='served'] .lunch__page--menu {
+      opacity: 1;
+    }
+
+    .lunch[data-step='served'] .lunch__page--history {
+      transform: none;
+    }
+
+    .lunch__bar,
+    .lunch[data-bar] .lunch__bar,
+    .lunch__total,
+    .lunch[data-full] .lunch__total {
+      transform: none;
+      transition: opacity 300ms ease;
+    }
+
+    .lunch__plate {
+      display: none;
+    }
+  }
+</style>

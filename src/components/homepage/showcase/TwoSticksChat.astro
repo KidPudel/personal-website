@@ -1,0 +1,492 @@
+---
+import { getImage, Image } from 'astro:assets';
+
+import chatScreen from '../../../assets/case_study_images/two-sticks/fact.png';
+import sheetBlank from '../../../assets/showcase-cards/two-sticks-sheet-blank.png';
+import sheetWritten from '../../../assets/showcase-cards/two-sticks-sheet.png';
+
+// Two Sticks' point, as one moment: write the character without leaving the chat (a chat can't
+// draw, so handwriting opens inside Telegram as a Web App). One phone with the bot's chat. When
+// the card is looked at (ShowcaseCards), a finger presses "Открыть прописи", the Web App's sheet
+// rises over the chat, the finger writes 去 ("идти") stroke by stroke, and "Проверить" brings up
+// the score. Every stroke uncovers the learner's own handwriting in write.png; the blank sheet
+// is the same screenshot with the canvas and score emptied (scripts/prepare-showcase-screens.mjs).
+//
+// Positions: the phone is fact.png (849 × 1852); the sheet is write.png's sheet (706 × 1534),
+// scaled to the phone's screen width.
+const device = { width: 849, height: 1852 };
+const screen = { x: 77, y: 118, width: 689, height: 1592 };
+const sheet = { width: 706, height: 1534, top: 220 };
+const button = { x: 85, y: 1033, width: 402, height: 75 };
+const check = { x: 353, y: 889, width: 136, height: 53 };
+const score = { x: 98, y: 1032, width: 520, height: 90 };
+// 去 in stroke order: 一, 丨, 一, 𠃋, 丶, traced over the learner's strokes (sheet pixels).
+const strokes = [
+  'M261 547 L348 539 L438 534',
+  'M342 480 L346 610',
+  'M236 614 C300 604 400 596 480 587',
+  'M340 618 L286 720 L383 676',
+  'M383 644 L413 697',
+];
+
+const written = await getImage({ src: sheetWritten, width: 560, format: 'webp', quality: 86 });
+const pct = (value: number, of: number) => `${((value / of) * 100).toFixed(3)}%`;
+const sheetScale = screen.width / sheet.width;
+const inScreen = `width: ${pct(device.width, screen.width)}; left: ${pct(-screen.x, screen.width)}; top: ${pct(-screen.y, screen.height)}`;
+const deviceImage = {
+  widths: [320, 480, 640, 849],
+  sizes: '(max-width: 44rem) 86vw, 22vw',
+  format: 'webp' as const,
+  quality: 84,
+};
+---
+
+<two-sticks-chat
+  class="two-sticks"
+  aria-hidden="true"
+  data-written={written.src}
+  data-map={`${device.width} ${device.height} ${screen.x} ${sheet.top} ${sheetScale}`}
+  data-check={`${check.x + check.width / 2} ${check.y + check.height / 2}`}
+  style={`--device-ratio: ${device.width} / ${device.height}`}
+>
+  <span class="two-sticks__rig">
+    <span class="two-sticks__device">
+      <Image class="two-sticks__frame" src={chatScreen} alt="" loading="lazy" decoding="async" {...deviceImage} />
+
+      <span
+        class="two-sticks__screen"
+        style={`left: ${pct(screen.x, device.width)}; top: ${pct(screen.y, device.height)}; width: ${pct(screen.width, device.width)}; height: ${pct(screen.height, device.height)}`}
+      >
+        <!-- The button, cut from the chat, so it can be pressed. -->
+        <span
+          class="two-sticks__press"
+          style={`${inScreen}; clip-path: inset(${pct(button.y, device.height)} ${pct(device.width - button.x - button.width, device.width)} ${pct(device.height - button.y - button.height, device.height)} ${pct(button.x, device.width)} round 4% / 2%); transform-origin: ${pct(button.x + button.width / 2, device.width)} ${pct(button.y + button.height / 2, device.height)}`}
+        >
+          <Image src={chatScreen} alt="" loading="lazy" decoding="async" {...deviceImage} />
+        </span>
+
+        <span class="two-sticks__dim"></span>
+
+        <!-- The handwriting Web App, opened as a sheet over the chat. -->
+        <span class="two-sticks__sheet" style={`top: ${pct(sheet.top - screen.y, screen.height)}; aspect-ratio: ${sheet.width} / ${sheet.height}`}>
+          <Image src={sheetBlank} alt="" widths={[280, 420, 560, 706]} sizes="(max-width: 44rem) 72vw, 18vw" loading="lazy" decoding="async" format="webp" quality={86} />
+          <svg viewBox={`0 0 ${sheet.width} ${sheet.height}`} preserveAspectRatio="none">
+            <defs>
+              <mask id="two-sticks-ink" maskUnits="userSpaceOnUse">
+                {strokes.map((d) => <path class="two-sticks__stroke" d={d} pathLength="1" />)}
+              </mask>
+              <clipPath id="two-sticks-check"><rect x={check.x} y={check.y} width={check.width} height={check.height} rx="4" /></clipPath>
+              <clipPath id="two-sticks-score"><rect x={score.x} y={score.y} width={score.width} height={score.height} /></clipPath>
+            </defs>
+            <!-- The written sheet, seen only where the strokes have reached, and its score. -->
+            <image class="two-sticks__written" width={sheet.width} height={sheet.height} mask="url(#two-sticks-ink)" />
+            <g class="two-sticks__check" style={`transform-origin: ${check.x + check.width / 2}px ${check.y + check.height / 2}px`}>
+              <image class="two-sticks__written" width={sheet.width} height={sheet.height} clip-path="url(#two-sticks-check)" />
+            </g>
+            <g class="two-sticks__score">
+              <image class="two-sticks__written" width={sheet.width} height={sheet.height} clip-path="url(#two-sticks-score)" />
+            </g>
+          </svg>
+        </span>
+      </span>
+
+      <span class="two-sticks__touch" style={`left: ${pct(button.x + button.width / 2, device.width)}; top: ${pct(button.y + button.height / 2, device.height)}`}></span>
+    </span>
+  </span>
+</two-sticks-chat>
+
+<script>
+  import { play } from '@foleyjs/core';
+
+  type Point = { x: number; y: number };
+
+  class TwoSticksChat extends HTMLElement {
+    private abort?: AbortController;
+    private timers: number[] = [];
+    private frame = 0;
+    private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Previews started by scrolling play without sound (ShowcaseCards).
+    private quiet = false;
+
+    private cue(name: Parameters<typeof play>[0]) {
+      if (!this.quiet) play(name);
+    }
+
+    connectedCallback() {
+      this.abort?.abort();
+      this.abort = new AbortController();
+      const { signal } = this.abort;
+      const touch = this.querySelector<HTMLElement>('.two-sticks__touch');
+      if (touch) this.home = { left: touch.style.left, top: touch.style.top };
+      // The written sheet is only seen after a look, so it loads once the card is near.
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        this.querySelectorAll('.two-sticks__written').forEach((image) => image.setAttribute('href', this.dataset.written ?? ''));
+      }, { rootMargin: '200px' });
+      observer.observe(this);
+      signal.addEventListener('abort', () => observer.disconnect());
+
+      // The card is the only control (ShowcaseCards).
+      this.closest('.showcase__card')?.addEventListener('showcase:preview', (event) => {
+        const { on, quiet } = (event as CustomEvent<{ on: boolean; quiet?: boolean }>).detail;
+        this.quiet = Boolean(quiet);
+        if (on) this.write();
+        else this.reset();
+      }, { signal });
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.reset();
+    }
+
+    private at(delay: number, run: () => void) {
+      this.timers.push(window.setTimeout(run, delay));
+    }
+
+    private set(state: Record<string, string | null>) {
+      Object.entries(state).forEach(([key, value]) => {
+        if (value === null) delete this.dataset[key];
+        else this.dataset[key] = value;
+      });
+    }
+
+    private strokes() {
+      return [...this.querySelectorAll<SVGPathElement>('.two-sticks__stroke')];
+    }
+
+    private ink(path: SVGPathElement, progress: number) {
+      path.style.strokeDashoffset = String(1 - progress);
+    }
+
+    // Looking away: the sheet closes and the canvas is empty again.
+    private reset() {
+      this.timers.forEach((timer) => window.clearTimeout(timer));
+      this.timers = [];
+      cancelAnimationFrame(this.frame);
+      this.set({ step: null, touch: null, press: null, pen: null, travel: null, checked: null });
+      this.strokes().forEach((path) => this.ink(path, 0));
+      // The finger waits over "Открыть прописи" again.
+      const touch = this.querySelector<HTMLElement>('.two-sticks__touch');
+      if (touch) Object.assign(touch.style, { left: this.home.left, top: this.home.top });
+    }
+
+    private home = { left: '', top: '' };
+
+    // Sheet pixels to a place on the phone, in percent of the phone's box.
+    private place(point: Point) {
+      const [width, height, left, top, scale] = (this.dataset.map ?? '').split(' ').map(Number);
+      const touch = this.querySelector<HTMLElement>('.two-sticks__touch');
+      if (!touch) return;
+      touch.style.left = `${((left + point.x * scale) / width) * 100}%`;
+      touch.style.top = `${((top + point.y * scale) / height) * 100}%`;
+    }
+
+    private write() {
+      this.reset();
+      if (this.reducedMotion.matches) {
+        this.strokes().forEach((path) => this.ink(path, 1));
+        this.set({ step: 'sheet', checked: '' });
+        return;
+      }
+
+      // 1. A finger presses "Открыть прописи".
+      this.set({ touch: '' });
+      this.at(300, () => {
+        this.set({ press: '' });
+        this.cue('tap');
+      });
+
+      // 2. The Web App rises over the chat, and the camera leans in.
+      this.at(460, () => {
+        this.set({ press: null, touch: null, step: 'sheet' });
+        this.cue('rise');
+      });
+
+      // 3. The finger writes the character, stroke by stroke.
+      this.at(1250, () => {
+        const paths = this.strokes();
+        const lengths = paths.map((path) => path.getTotalLength());
+        const speed = 0.7; // sheet pixels per millisecond
+        const gap = 120; // lifting the finger between strokes
+        const plan: { path: SVGPathElement; length: number; from: number; to: number }[] = [];
+        let time = 160;
+        paths.forEach((path, index) => {
+          const to = time + lengths[index] / speed;
+          plan.push({ path, length: lengths[index], from: time, to });
+          time = to + gap;
+        });
+        const end = time - gap;
+        const start = performance.now();
+        const first = paths[0].getPointAtLength(0);
+        this.place(first);
+        this.set({ touch: '', pen: '' });
+
+        const draw = (now: number) => {
+          const t = now - start;
+          let point: Point | undefined;
+          let down = false;
+          plan.forEach((stroke, index) => {
+            const progress = Math.min(1, Math.max(0, (t - stroke.from) / (stroke.to - stroke.from)));
+            this.ink(stroke.path, progress);
+            if (t >= stroke.from && t <= stroke.to) {
+              point = stroke.path.getPointAtLength(progress * stroke.length);
+              down = true;
+            } else if (t > stroke.to && plan[index + 1] && t < plan[index + 1].from) {
+              // Between strokes the finger travels, lifted, to where the next one starts.
+              const from = stroke.path.getPointAtLength(stroke.length);
+              const next = plan[index + 1].path.getPointAtLength(0);
+              const k = (t - stroke.to) / (plan[index + 1].from - stroke.to);
+              const ease = k * k * (3 - 2 * k);
+              point = { x: from.x + (next.x - from.x) * ease, y: from.y + (next.y - from.y) * ease };
+            }
+          });
+          if (point) this.place(point);
+          if (down) this.dataset.pen = '';
+          else delete this.dataset.pen;
+          if (t < end) this.frame = requestAnimationFrame(draw);
+          else this.check();
+        };
+        this.frame = requestAnimationFrame(draw);
+      });
+    }
+
+    // 4. "Проверить", and the score comes up.
+    private check() {
+      const [x, y] = (this.dataset.check ?? '0 0').split(' ').map(Number);
+      this.set({ pen: null, travel: '' });
+      this.place({ x, y });
+      this.at(380, () => {
+        this.set({ travel: null, press: '' });
+        this.cue('tap');
+      });
+      this.at(520, () => {
+        this.set({ press: null, checked: '' });
+        this.cue('pop');
+      });
+      this.at(900, () => this.set({ touch: null }));
+    }
+  }
+
+  if (!customElements.get('two-sticks-chat')) {
+    customElements.define('two-sticks-chat', TwoSticksChat);
+  }
+</script>
+
+<style>
+  /* One phone on the lavender field, the bot's chat in it. Sizes follow the panel's height (a
+     size container), so the framing holds on wide cards and on the upright phone cards. */
+  .two-sticks {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border-radius: inherit;
+    container-type: size;
+  }
+
+  .two-sticks__rig {
+    position: absolute;
+    inset: 0;
+    display: block;
+    transform-origin: 50% 66%;
+    transition: transform 600ms var(--ease-in-out);
+  }
+
+  /* With the sheet open, the camera leans in toward the canvas. */
+  .two-sticks[data-step='sheet'] .two-sticks__rig {
+    transform: translateY(-10cqh) scale(1.05);
+    transition: transform 1000ms var(--ease-in-out) 120ms;
+  }
+
+  .two-sticks__device {
+    position: absolute;
+    top: -3.6cqh;
+    left: 50%;
+    display: block;
+    height: 140cqh;
+    aspect-ratio: var(--device-ratio);
+    filter: drop-shadow(0 1.1rem 1.5rem rgb(40 20 80 / 0.28));
+    transform: translateX(-50%);
+  }
+
+  .two-sticks :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .two-sticks__device > :global(.two-sticks__frame) {
+    height: 100%;
+  }
+
+  /* Upright cards (phones): a smaller phone, so the whole sheet and its score stay in frame. */
+  @container (max-aspect-ratio: 1) {
+    .two-sticks__device {
+      top: -2cqh;
+      height: 112cqh;
+    }
+  }
+
+  .two-sticks__screen {
+    position: absolute;
+    display: block;
+    overflow: hidden;
+    border-radius: 13.5% / 5.9%;
+  }
+
+  .two-sticks__press {
+    position: absolute;
+    display: block;
+    max-width: none;
+    transition:
+      transform 220ms cubic-bezier(0.23, 1, 0.32, 1),
+      filter 220ms ease;
+  }
+
+  .two-sticks[data-press]:not([data-step]) .two-sticks__press {
+    filter: brightness(1.35);
+    transform: scale(0.97);
+    transition-duration: 100ms;
+  }
+
+  /* The chat steps back under the sheet. */
+  .two-sticks__dim {
+    position: absolute;
+    inset: 0;
+    display: block;
+    background: rgb(0 0 0 / 0.5);
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+
+  .two-sticks[data-step='sheet'] .two-sticks__dim {
+    opacity: 1;
+    transition-duration: 420ms;
+  }
+
+  .two-sticks__sheet {
+    position: absolute;
+    left: 0;
+    display: block;
+    width: 100%;
+    transform: translateY(105%);
+    transition: transform 360ms var(--ease-in-out);
+  }
+
+  /* An iOS sheet: quick, with the slightest settle. */
+  .two-sticks[data-step='sheet'] .two-sticks__sheet {
+    transform: none;
+    transition: transform 620ms cubic-bezier(0.2, 1.08, 0.35, 1);
+  }
+
+  .two-sticks__sheet svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .two-sticks__stroke {
+    fill: none;
+    stroke: #fff;
+    stroke-dasharray: 1 1;
+    stroke-dashoffset: 1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 30;
+  }
+
+  .two-sticks__check {
+    transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .two-sticks[data-press][data-step] .two-sticks__check {
+    transform: scale(0.94);
+    transition-duration: 100ms;
+  }
+
+  .two-sticks__score {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 160ms ease,
+      transform 160ms ease;
+  }
+
+  .two-sticks[data-checked] .two-sticks__score {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 320ms ease,
+      transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---- The finger, the same as on the Instagram card ---- */
+
+  .two-sticks__touch {
+    position: absolute;
+    z-index: 3;
+    display: block;
+    width: 6.5cqh;
+    min-width: 1.1rem;
+    aspect-ratio: 1;
+    border: 1.5px solid rgb(255 255 255 / 0.9);
+    border-radius: 50%;
+    background: rgb(40 40 48 / 0.28);
+    box-shadow: 0 0.1rem 0.5rem rgb(0 0 0 / 0.22);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) translate(12%, 30%) scale(0.6);
+    transition:
+      opacity 180ms ease,
+      transform 260ms cubic-bezier(0.23, 1, 0.32, 1),
+      background-color 100ms ease;
+  }
+
+  .two-sticks[data-touch] .two-sticks__touch {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Writing, the finger is pressed to the glass; between strokes it lifts. */
+  .two-sticks[data-pen] .two-sticks__touch,
+  .two-sticks[data-press] .two-sticks__touch {
+    background: rgb(40 40 48 / 0.45);
+    transform: translate(-50%, -50%) scale(0.82);
+    transition-duration: 180ms, 120ms, 100ms;
+  }
+
+  .two-sticks[data-travel] .two-sticks__touch {
+    transition:
+      opacity 180ms ease,
+      transform 260ms cubic-bezier(0.23, 1, 0.32, 1),
+      left 360ms var(--ease-in-out),
+      top 360ms var(--ease-in-out);
+  }
+
+  /* Reduced motion: no camera, no writing. The sheet fades in, written and checked. */
+  @media (prefers-reduced-motion: reduce) {
+    .two-sticks__rig,
+    .two-sticks[data-step='sheet'] .two-sticks__rig,
+    .two-sticks__score,
+    .two-sticks[data-checked] .two-sticks__score {
+      transform: none;
+      transition: opacity 300ms ease;
+    }
+
+    .two-sticks__sheet,
+    .two-sticks[data-step='sheet'] .two-sticks__sheet {
+      opacity: 0;
+      transform: none;
+      transition: opacity 300ms ease;
+    }
+
+    .two-sticks[data-step='sheet'] .two-sticks__sheet {
+      opacity: 1;
+    }
+  }
+</style>

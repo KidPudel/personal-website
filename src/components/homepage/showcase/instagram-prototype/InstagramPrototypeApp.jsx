@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { play } from '@foleyjs/core';
 import { createPortal } from 'react-dom';
 import {
   ArrowLeft, AtSign, Bell, Bookmark, BookmarkCheck, Check, ChevronDown, Copy,
@@ -429,6 +430,150 @@ function App(){
   </div></div></div></div>;
 }
 
+// The homepage card shows the redesign's point: from the pile, the one you
+// meant. Behind the phone the card holds a wall of saves (the pile, drawn by
+// InstagramPrototype.astro). The phone opens on the redesigned Saved screen,
+// and a tap on the search field types a real query from the case study's
+// screenshots. The grid clears, the wall dissolves, and the posts it finds
+// lift out of the wall and land in the results. Without the wall, the saves
+// that don't match drop out and the ones that do slide into place. Everything else on the
+// screen is the same component, kept still (inert), so the search is the one
+// thing to do. The full prototype (App) stays above, not shown on the site.
+const SHOWCASE_SEARCHES=['spider','new york'];
+const SHOWCASE_GRID=12;
+const SHOWCASE_EASE='cubic-bezier(0.77, 0, 0.175, 1)';
+const showcaseSaved=catalogItems.filter(item=>item.initiallySaved!==false);
+const showcaseText=item=>`${item.title} ${item.creator} ${item.collection} ${item.annotation||''}`.toLowerCase();
+const showcaseResults=query=>filterAndSort(query?showcaseSaved.filter(item=>showcaseText(item).includes(query)):showcaseSaved,'Latest',[0,TOTAL_DAYS]);
+const reducedMotion=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pileReady=()=>!!document.querySelector('.instagram-pile[data-ready]');
+const pileName=item=>item.photo.split('/').pop().replace(/\.\w+$/,'');
+
+function SavedSearchShowcase({preview=false,quiet=false}){
+  // Previews started by scrolling play without sound (ShowcaseCards).
+  const quietRef=useRef(quiet); quietRef.current=quiet;
+  const cue=name=>{if(!quietRef.current)play(name)};
+  const [query,setQuery]=useState(''), [typed,setTyped]=useState(''), [leaving,setLeaving]=useState(null);
+  // Results that are still flying in from the wall stay hidden until they land.
+  const [awaiting,setAwaiting]=useState(()=>new Set()), viaPile=useRef(false);
+  const nextSearch=useRef(0), timers=useRef([]), tiles=useRef(new Map()), before=useRef(null), busy=useRef(false);
+  const results=showcaseResults(query);
+  const shown=query?results:results.slice(0,SHOWCASE_GRID);
+  const upcoming=SHOWCASE_SEARCHES[nextSearch.current%SHOWCASE_SEARCHES.length];
+
+  const later=(delay,run)=>timers.current.push(window.setTimeout(run,delay));
+  useEffect(()=>()=>timers.current.forEach(window.clearTimeout),[]);
+  useEffect(()=>{
+    const landed=()=>setAwaiting(new Set());
+    document.addEventListener('saves:landed',landed);
+    return()=>document.removeEventListener('saves:landed',landed);
+  },[]);
+
+  // FLIP: remember where every tile was, let the grid change, then play each
+  // tile from its old place to its new one. New tiles rise in instead.
+  const remember=()=>{before.current=new Map([...tiles.current].map(([id,el])=>[id,el.getBoundingClientRect()]))};
+  useLayoutEffect(()=>{
+    const previous=before.current;
+    if(!previous)return;
+    before.current=null;
+    // Found from the wall: hand the wall each result's place, and let it fly
+    // the matching saves in. The ones it has no tile for simply appear.
+    if(viaPile.current){
+      viaPile.current=false;
+      const found=shown.map(item=>({id:item.id,name:pileName(item),rect:tiles.current.get(item.id)?.getBoundingClientRect()})).filter(x=>x.rect);
+      const detail={tiles:found,handled:[],quiet:quietRef.current};
+      document.dispatchEvent(new CustomEvent('saves:found',{detail}));
+      setAwaiting(new Set(found.filter(x=>detail.handled.includes(x.name)).map(x=>x.id)));
+      // Never leave a result hidden if the wall doesn't say it landed.
+      later(2000,()=>setAwaiting(new Set()));
+      return;
+    }
+    if(reducedMotion())return;
+    let entering=0;
+    tiles.current.forEach((el,id)=>{
+      const now=el.getBoundingClientRect(), was=previous.get(id), ratio=now.width/el.offsetWidth||1;
+      if(was){
+        const dx=(was.left-now.left)/ratio, dy=(was.top-now.top)/ratio;
+        if(dx||dy)el.animate([{transform:`translate(${dx}px,${dy}px)`},{transform:'none'}],{duration:460,easing:SHOWCASE_EASE});
+      }else{
+        el.animate([{opacity:0,transform:'translateY(14px) scale(.96)'},{opacity:1,transform:'none'}],{duration:320,delay:60+entering*28,easing:'cubic-bezier(0.23, 1, 0.32, 1)',fill:'backwards'});
+        entering+=1;
+      }
+    });
+  },[query]);
+
+  const commit=(next,fromPile=false)=>{remember();viaPile.current=fromPile;if(fromPile)setAwaiting(new Set(showcaseResults(next).map(item=>item.id)));setQuery(next);setLeaving(null);busy.current=false;if(next)cue('swoosh')};
+
+  const search=()=>{
+    if(busy.current)return;
+    busy.current=true;
+    const next=upcoming;
+    nextSearch.current+=1;
+    const still=reducedMotion();
+    // Type it in, letter by letter, as a person would.
+    if(still)setTyped(next);
+    else{
+      setTyped('');
+      [...next].forEach((_,i)=>later(70*i,()=>{setTyped(next.slice(0,i+1));cue('thock')}));
+    }
+    const typedAt=still?0:70*next.length+120;
+    // Then what doesn't match leaves, and the grid settles on what does.
+    // With the wall there, the whole grid clears and the finds come from the
+    // wall; without it, only what doesn't match leaves.
+    const keep=new Set(showcaseResults(next).map(item=>item.id)), fromPile=pileReady();
+    later(typedAt,()=>{
+      setLeaving(new Set(shown.filter(item=>fromPile||!keep.has(item.id)).map(item=>item.id)));
+      later(still?0:220,()=>commit(next,fromPile));
+    });
+  };
+
+  // Clears at any point, even mid-typing, so looking away always brings the
+  // pile and the full grid back.
+  const clear=()=>{
+    timers.current.forEach(window.clearTimeout);
+    timers.current=[];
+    busy.current=false;
+    setTyped('');
+    setLeaving(null);
+    setAwaiting(new Set());
+    document.dispatchEvent(new CustomEvent('saves:cleared'));
+    if(query)commit('');
+  };
+
+  // The card is the only control (ShowcaseCards): looked at, it searches;
+  // looked away, it clears. The first render is the resting state.
+  const started=useRef(false);
+  useEffect(()=>{
+    if(!started.current){started.current=true;return}
+    preview?search():clear();
+  },[preview]);
+
+  const said=query?`AI search found ${results.length} saves for “${query}”`:'';
+  return <div className="app-shell"><div className="showcase"><div className="prototype"><div className="phone enhanced-mode">
+    <div className="screen saved-screen is-enhanced showcase-screen">
+      <div inert=""><TopBar title="Saved" onBack={()=>{}} onFilter={()=>{}} onCreate={()=>{}}/></div>
+      <div className="tabs" inert="">{['All','Collections','Series','Reels','Posts'].map(t=><button key={t} className={t==='All'?'active':''}>{t}</button>)}</div>
+      <main className="page-content">
+        <div className={`search-box showcase-search ${typed?'has-text':''}`}>
+          <button className="showcase-search-field" onClick={search} aria-label={query?`Search your saves for “${upcoming}” instead`:`Search your saves for “${upcoming}”`}>
+            <Search/><span className="showcase-search-text">{typed||'Search with AI, titles, or your notes'}</span><i className="showcase-caret" aria-hidden="true"/>
+          </button>
+          {query&&<button aria-label="Clear search" onClick={clear}><X/></button>}
+        </div>
+        {query&&<div className="ai-result showcase-rise"><Sparkles/><span><b>AI search</b> found {results.length} saves across captions and your annotations</span></div>}
+        <span className="showcase-said" aria-live="polite">{said}</span>
+        {!query&&<section className={`showcase-collections ${leaving?'is-leaving':''}`} inert=""><div className="section-heading"><h2>Collections</h2><button>See all</button></div><div className="collection-grid">{initialCollections.slice(0,4).map(c=><CollectionCard collection={c} unread={{Health:3,Art:13}[c.name]||0} key={c.name} onClick={()=>{}}/>)}</div></section>}
+        <section inert=""><div className="section-heading"><h2>{query?`Results for “${query}”`:'Reels and posts'}</h2><span>{results.length} · Latest</span></div>
+          <div className="save-grid showcase-grid">{shown.map(item=><div key={item.id} ref={el=>{el?tiles.current.set(item.id,el):tiles.current.delete(item.id)}} className={`save-tile ${leaving?.has(item.id)?'is-leaving':''} ${awaiting.has(item.id)?'is-awaiting':''}`}>
+            <img className={item.fit==='contain'?'contain':''} src={mediaSrc(item.photo,420)} alt={item.title} width="480" height="480" draggable="false" loading="eager" decoding="async"/>
+            <span className="media-type">{item.type==='reel'?<Play fill="white"/>:<Copy/>}</span>
+          </div>)}</div>
+        </section>
+      </main>
+    </div>
+  </div></div></div></div>;
+}
+
 const finePointer=()=>window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 // The scroller under a touch that can still move along the drag, searched from the touched element up to the host.
@@ -452,7 +597,16 @@ export default function InstagramPrototypeIsland(){
   const hostRef=useRef(null);
   const touchRef=useRef(null);
   const scaleRef=useRef(1);
-  const [shadow,setShadow]=useState(null);
+  const [shadow,setShadow]=useState(null), [preview,setPreview]=useState({on:false,quiet:false});
+
+  // The card it sits in says when it is being looked at.
+  useEffect(()=>{
+    const card=hostRef.current?.closest('.showcase__card');
+    if(!card)return;
+    const look=event=>setPreview({on:Boolean(event.detail?.on),quiet:Boolean(event.detail?.quiet)});
+    card.addEventListener('showcase:preview',look);
+    return()=>card.removeEventListener('showcase:preview',look);
+  },[]);
 
   useEffect(()=>{
     const host=hostRef.current;
@@ -566,7 +720,7 @@ export default function InstagramPrototypeIsland(){
 
   return <div className="instagram-prototype__stage" style={{position:'absolute',inset:0}}>
     <div ref={hostRef} style={{position:'absolute',inset:0,display:'grid',placeItems:'center',isolation:'isolate'}}>
-      {shadow&&createPortal(<><style>{prototypeStyles}</style><App/></>,shadow)}
+      {shadow&&createPortal(<><style>{prototypeStyles}</style><SavedSearchShowcase preview={preview.on} quiet={preview.quiet}/></>,shadow)}
     </div>
     <span ref={touchRef} className="instagram-prototype__touch" aria-hidden="true"/>
   </div>;

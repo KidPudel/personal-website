@@ -1,19 +1,58 @@
 ---
+import { getImage, Image } from 'astro:assets';
+
+import pileImage from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.webp';
+import pile from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.json';
+import savedScreen from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/all_saved_new.png';
 import InstagramPrototypeApp from './instagram-prototype/InstagramPrototypeApp.jsx';
-import { sitePath } from '../../../config/site';
 import { toLocale, translator } from '../../../i18n/locales';
 
 const t = translator(toLocale(Astro.currentLocale));
 
-const prototypeImage = (name: string) => sitePath(`/instagram-showcase/thumbnails/${name}.webp`);
-const stories = [
-  ['profile-avatar-cat', 'Your story'],
-  ['profile-garden-cat', 'anna'],
-  ['profile-music-today', 'studio'],
-  ['profile-mountain-friends', 'alex'],
-  ['profile-canopy', 'roam'],
-];
+// Behind the phone, the pile: the case study cover's wall of saved posts, from
+// the same sprite. The posts the phone's searches find sit where the phone
+// doesn't cover them, so they can be seen leaving the wall.
+const sprite = await getImage({ src: pileImage, format: 'webp' });
+const columns = 7;
+const tiles = 70;
+const placed: Record<number, string> = {
+  1: 'spiderman-red',
+  5: 'new-york-day',
+  14: 'april-new-york',
+  20: 'spiderman-2',
+  22: 'nyc-doodle',
+};
+let seed = 76;
+const next = () => {
+  seed = (seed * 16807) % 2147483647;
+  return seed / 2147483647;
+};
+const rest = pile.names
+  .filter((name) => !Object.values(placed).includes(name))
+  .map((name) => ({ name, at: next() }))
+  .sort((a, b) => a.at - b.at)
+  .map(({ name }) => name);
+const wall = Array.from({ length: tiles }, (_, index) => placed[index] ?? rest[index % rest.length]);
+const tileStyle = (name: string) => {
+  const index = pile.names.indexOf(name);
+  const column = index % pile.columns;
+  const row = Math.floor(index / pile.columns);
+  return `--tile-x: ${(column / (pile.columns - 1)) * 100}%; --tile-y: ${(row / (pile.rows - 1)) * 100}%`;
+};
 ---
+
+<div
+  class="instagram-pile"
+  aria-hidden="true"
+  data-sprite={sprite.src}
+  style={`--columns: ${columns}; --sprite-size: ${pile.columns * 100}% ${pile.rows * 100}%`}
+>
+  <div class="instagram-pile__wall">
+    {wall.map((name) => <span class="instagram-pile__tile" data-name={name} style={tileStyle(name)}></span>)}
+  </div>
+</div>
+<!-- Above the phone: the found posts on their way from the wall to the results. -->
+<div class="instagram-flight" aria-hidden="true"></div>
 
 <div
   class="instagram-prototype"
@@ -22,55 +61,220 @@ const stories = [
     'Интерактивный концепт улучшенного сохранённого в Instagram (интерфейс на английском)',
   )}
 >
-  <div class="instagram-prototype__device" aria-hidden="true" lang="en">
-    <div class="instagram-prototype__topbar">
-      <span class="instagram-prototype__plus">+</span>
-      <span class="instagram-prototype__wordmark">Instagram⌄</span>
-      <span class="instagram-prototype__heart">♡</span>
-    </div>
-
-    <div class="instagram-prototype__stories">
-      {stories.map(([image, label]) => (
-        <div class="instagram-prototype__story">
-          <span class="instagram-prototype__story-ring">
-            <img src={prototypeImage(image)} alt="" width="48" height="48" loading="eager" decoding="async" />
-          </span>
-          <span>{label}</span>
-        </div>
-      ))}
-    </div>
-
-    <div class="instagram-prototype__author">
-      <img src={prototypeImage('profile-music-today')} alt="" width="34" height="34" loading="eager" decoding="async" />
-      <span><strong>process.practice</strong><small>Suggested for you · Health</small></span>
-      <b>•••</b>
-    </div>
-
-    <img
-      class="instagram-prototype__post"
-      src={prototypeImage('healthy-habits')}
-      alt=""
-      width="384"
-      height="480"
+  <!-- Until the live prototype loads (and without JavaScript), the real
+       screenshot of the same redesigned Saved screen stands in. -->
+  <div class="instagram-prototype__device">
+    <Image
+      src={savedScreen}
+      alt={t(
+        'Redesigned Instagram Saved screen with search across AI descriptions, titles and notes, collections, and the saved posts grid',
+        'Редизайн «Сохранённого» в Instagram: поиск по AI-описаниям, названиям и заметкам, коллекции и сетка сохранённых постов',
+      )}
+      widths={[240, 388]}
+      sizes="(max-width: 44rem) 50vw, 14rem"
       loading="eager"
       decoding="async"
+      format="webp"
+      quality={85}
     />
-
-    <div class="instagram-prototype__actions">
-      <span>♡ <b>12.8K</b></span>
-      <span>◯ <b>384</b></span>
-      <span>⌁</span>
-      <span class="instagram-prototype__bookmark">♧</span>
-    </div>
-    <p class="instagram-prototype__caption"><strong>process.practice</strong> Healthy habits for creatives. A small idea worth saving.</p>
-    <div class="instagram-prototype__nav"><b>●</b><span>▣</span><span>⌁</span><span>⌕</span><span>◉</span></div>
   </div>
   <div class="instagram-prototype__app" lang="en">
     <InstagramPrototypeApp client:visible={{ rootMargin: '240px' }} />
   </div>
 </div>
 
+<script>
+  import { play } from '@foleyjs/core';
+
+  // The wall waits for the page, then loads when the card is near; on a data
+  // saver or a slow connection it stays away and the card keeps its texture.
+  // The phone (InstagramPrototypeApp) says what it found and where each result
+  // sits; the wall flies its copies there and says when they have landed.
+  const pile = document.querySelector<HTMLElement>('.instagram-pile');
+  const flight = document.querySelector<HTMLElement>('.instagram-flight');
+
+  if (pile && flight) {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const light = Boolean(connection?.saveData) || /(^|-)2g$/.test(connection?.effectiveType ?? '');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const ease = 'cubic-bezier(0.77, 0, 0.175, 1)';
+    let flights: Animation[] = [];
+
+    const load = () => {
+      const src = pile.dataset.sprite;
+      if (!src) return;
+      const image = new Image();
+      image.src = src;
+      image.decode().then(() => {
+        pile.style.setProperty('--sprite', `url('${src}')`);
+        pile.dataset.ready = '';
+      }, () => {});
+    };
+    const watch = () => {
+      const observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        load();
+      }, { rootMargin: '200px' });
+      observer.observe(pile);
+    };
+    if (!light) {
+      if (document.readyState === 'complete') watch();
+      else window.addEventListener('load', watch, { once: true });
+    }
+
+    const reset = () => {
+      flights.forEach((animation) => animation.cancel());
+      flights = [];
+      flight.replaceChildren();
+      pile.querySelectorAll('.is-taken').forEach((tile) => tile.classList.remove('is-taken'));
+    };
+
+    document.addEventListener('saves:found', (event) => {
+      if (!('ready' in pile.dataset)) return;
+      const detail = (event as CustomEvent<{ tiles: { name: string; rect: DOMRect }[]; handled: string[]; quiet?: boolean }>).detail;
+      reset();
+      const trips = detail.tiles
+        .map((trip) => ({ ...trip, from: pile.querySelector<HTMLElement>(`[data-name="${trip.name}"]`) }))
+        .filter((trip): trip is typeof trip & { from: HTMLElement } => Boolean(trip.from));
+      detail.handled.push(...trips.map((trip) => trip.name));
+      pile.dataset.cleared = '';
+      if (!trips.length || reduced.matches) {
+        document.dispatchEvent(new CustomEvent('saves:landed'));
+        return;
+      }
+
+      // Each found post leaves its place in the wall, rises a little, and
+      // settles exactly on its result in the phone.
+      const origin = flight.getBoundingClientRect();
+      trips.forEach((trip, index) => {
+        const from = trip.from.getBoundingClientRect();
+        const to = trip.rect;
+        const look = getComputedStyle(trip.from);
+        const clone = document.createElement('span');
+        clone.className = 'instagram-flight__tile';
+        Object.assign(clone.style, {
+          left: `${from.left - origin.left}px`,
+          top: `${from.top - origin.top}px`,
+          width: `${from.width}px`,
+          height: `${from.height}px`,
+          backgroundImage: look.backgroundImage,
+          backgroundPosition: look.backgroundPosition,
+          backgroundSize: look.backgroundSize,
+        });
+        flight.append(clone);
+        trip.from.classList.add('is-taken');
+
+        const dx = to.left + to.width / 2 - (from.left + from.width / 2);
+        const dy = to.top + to.height / 2 - (from.top + from.height / 2);
+        flights.push(clone.animate(
+          [
+            { opacity: 0.6, transform: 'none' },
+            { opacity: 1, transform: `translate(${dx * 0.08}px, ${dy * 0.08 - 14}px) scale(1.18)`, offset: 0.3 },
+            { opacity: 1, transform: `translate(${dx}px, ${dy}px) scale(${to.width / from.width}, ${to.height / from.height})` },
+          ],
+          { duration: 760, delay: 80 + index * 90, easing: ease, fill: 'both' },
+        ));
+      });
+
+      Promise.all(flights.map((animation) => animation.finished)).then(() => {
+        if (!detail.quiet) play('pop');
+        document.dispatchEvent(new CustomEvent('saves:landed'));
+        window.setTimeout(() => flight.replaceChildren(), 160);
+      }, () => {});
+    });
+
+    document.addEventListener('saves:cleared', () => {
+      reset();
+      delete pile.dataset.cleared;
+    });
+  }
+</script>
+
 <style>
+  /* ---- The pile: a dense wall of saves behind the phone ---- */
+
+  .instagram-pile {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 700ms ease;
+  }
+
+  .instagram-pile[data-ready] {
+    opacity: 1;
+  }
+
+  /* Muted, so it reads as the noise the phone cuts through. A search clears
+     it away and leaves the calm gradient. */
+  .instagram-pile__wall {
+    position: absolute;
+    top: -3%;
+    right: -2%;
+    left: -2%;
+    display: grid;
+    grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
+    gap: 2px;
+    opacity: 0.4;
+    filter: saturate(0.75);
+    transition:
+      opacity 520ms ease,
+      filter 520ms ease,
+      transform 900ms var(--ease-out);
+  }
+
+  .instagram-pile[data-cleared] .instagram-pile__wall {
+    opacity: 0;
+    filter: saturate(0.75) blur(6px);
+    transform: scale(1.04);
+  }
+
+  .instagram-pile__tile {
+    display: block;
+    aspect-ratio: 4 / 5;
+    border-radius: 2px;
+    background-color: rgb(255 255 255 / 0.18);
+    background-image: var(--sprite);
+    background-position: var(--tile-x) var(--tile-y);
+    background-size: var(--sprite-size);
+  }
+
+  .instagram-pile__tile.is-taken {
+    visibility: hidden;
+  }
+
+  .instagram-flight {
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .instagram-flight :global(.instagram-flight__tile) {
+    position: absolute;
+    display: block;
+    border-radius: 2px;
+    box-shadow: 0 0.6rem 1.4rem rgb(23 54 96 / 0.3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .instagram-pile,
+    .instagram-pile__wall {
+      transition: opacity 200ms ease;
+    }
+
+    .instagram-pile[data-cleared] .instagram-pile__wall {
+      filter: saturate(0.75);
+      transform: none;
+    }
+  }
+
   .instagram-prototype__app {
     display: contents;
   }
@@ -100,145 +304,15 @@ const stories = [
       0 0 0 clamp(0.3rem, 1.2vw, 0.7rem) rgb(255 255 255 / 0.28),
       0 0 0 clamp(0.38rem, 1.7vw, 0.95rem) rgb(190 220 255 / 0.25),
       0 1rem 2rem rgb(23 54 96 / 0.22);
-    color: #0f0f0f;
-    font-family: Arial, sans-serif;
     overflow: hidden;
     transform: translate(-50%, -50%);
   }
 
-  .instagram-prototype__topbar,
-  .instagram-prototype__author,
-  .instagram-prototype__actions,
-  .instagram-prototype__nav {
-    display: flex;
-    align-items: center;
-  }
-
-  .instagram-prototype__topbar {
-    justify-content: space-between;
-    height: 8%;
-    padding: 0 7%;
-  }
-
-  .instagram-prototype__plus,
-  .instagram-prototype__heart {
-    font-size: clamp(0.65rem, 2vw, 1.4rem);
-  }
-
-  .instagram-prototype__wordmark {
-    font-family: Georgia, serif;
-    font-size: clamp(0.55rem, 1.7vw, 1.16rem);
-    font-style: italic;
-  }
-
-  .instagram-prototype__stories {
-    display: flex;
-    gap: 3%;
-    height: 13%;
-    padding: 1% 4% 0;
-    overflow: hidden;
-  }
-
-  .instagram-prototype__story {
-    flex: 0 0 18%;
-    min-width: 0;
-    font-size: clamp(0.22rem, 0.62vw, 0.43rem);
-    text-align: center;
-  }
-
-  .instagram-prototype__story-ring {
-    display: block;
-    width: 100%;
-    aspect-ratio: 1;
-    margin-bottom: 7%;
-    padding: 5%;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ff7a00, #ff1678 48%, #8e35ff);
-  }
-
-  .instagram-prototype__story img,
-  .instagram-prototype__author img {
+  .instagram-prototype__device :global(img) {
     display: block;
     width: 100%;
     height: 100%;
-    border-radius: 50%;
     object-fit: cover;
-  }
-
-  .instagram-prototype__story img {
-    border: 1px solid white;
-  }
-
-  .instagram-prototype__author {
-    height: 7%;
-    gap: 3%;
-    padding: 0 4%;
-    font-size: clamp(0.25rem, 0.74vw, 0.52rem);
-  }
-
-  .instagram-prototype__author > img {
-    width: 9%;
-    height: auto;
-    aspect-ratio: 1;
-  }
-
-  .instagram-prototype__author span {
-    display: grid;
-    line-height: 1.2;
-  }
-
-  .instagram-prototype__author small {
-    color: #666;
-    font-size: 0.86em;
-  }
-
-  .instagram-prototype__author b {
-    margin-left: auto;
-    letter-spacing: 0.08em;
-  }
-
-  .instagram-prototype__post {
-    display: block;
-    width: 100%;
-    height: 58%;
-    object-fit: cover;
-  }
-
-  .instagram-prototype__actions {
-    gap: 4%;
-    height: 5%;
-    padding: 0 4%;
-    font-size: clamp(0.3rem, 0.9vw, 0.62rem);
-  }
-
-  .instagram-prototype__actions b {
-    font-size: 0.76em;
-  }
-
-  .instagram-prototype__bookmark {
-    margin-left: auto;
-  }
-
-  .instagram-prototype__caption {
-    height: 4%;
-    margin: 0;
-    padding: 0 4%;
-    font-size: clamp(0.22rem, 0.62vw, 0.44rem);
-    line-height: 1.25;
-  }
-
-  .instagram-prototype__nav {
-    position: absolute;
-    right: 4%;
-    bottom: 1.2%;
-    left: 4%;
-    justify-content: space-between;
-    height: 6%;
-    padding: 0 5%;
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.94);
-    box-shadow: 0 0.15rem 0.75rem rgb(0 0 0 / 0.12);
-    font-size: clamp(0.35rem, 1.1vw, 0.76rem);
   }
 
   /* The static phone is only a placeholder until the live prototype has loaded. */

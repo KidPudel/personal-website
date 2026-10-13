@@ -42,6 +42,10 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Case-study live moments (highlights drawing in, chart replay, gathering rows, pen circle) | `src/components/case-studies/StudyLife.astro`; states in `src/styles/plates.css` |
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Observatory work card (the 17 process rows that gather into one app row) | `src/components/homepage/showcase/ObservatoryGroupDemo.astro` |
+| Instagram work card (the wall of saves, the search that pulls finds out of it) | Wall and flight `src/components/homepage/showcase/InstagramPrototype.astro`; the Saved screen and its search `SavedSearchShowcase` in `instagram-prototype/InstagramPrototypeApp.jsx` |
+| SuperGood work card (one phone: History, the tap on "Добавить весь заказ", the push to the menu, the plates landing in the live cart bar) | `src/components/homepage/showcase/SupergoodLunch.astro` |
+| Two Sticks work card (one phone: the chat, the handwriting Web App rising over it, 去 written stroke by stroke, the score) | `src/components/homepage/showcase/TwoSticksChat.astro` |
+| When a work card counts as looked at (hover delay, keyboard focus, the scroll line on phones) and the spotlight on it | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
 | Link hover mark (the stop-motion marker swipe) | `.link-mark` and its frames in `src/styles/foundations.css`; timing and the faint rest mark in `src/styles/tokens.css` |

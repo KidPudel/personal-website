@@ -118,6 +118,8 @@ const status = {
     private abort?: AbortController;
     private landing?: number;
     private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    // Previews started by scrolling play without sound (ShowcaseCards).
+    private quiet = false;
 
     connectedCallback() {
       this.abort?.abort();
@@ -126,14 +128,14 @@ const status = {
 
       this.querySelectorAll<HTMLButtonElement>('.group-demo__switch button').forEach((button) => {
         button.disabled = false;
-        button.addEventListener('click', () => this.show(button.dataset.view as View), { signal });
       });
-      // The table is the bigger target for a pointer; keyboards use the switch.
-      this.querySelector('.group-demo__table')?.addEventListener(
-        'click',
-        () => this.show(this.dataset.view === 'apps' ? 'processes' : 'apps'),
-        { signal },
-      );
+      // The card is the only control (ShowcaseCards): looked at, the rows
+      // group into Observatory's one; looked away, they come apart again.
+      this.closest('.showcase__card')?.addEventListener('showcase:preview', (event) => {
+        const { on, quiet } = (event as CustomEvent<{ on: boolean; quiet?: boolean }>).detail;
+        this.quiet = Boolean(quiet);
+        this.show(on ? 'apps' : 'processes');
+      }, { signal });
     }
 
     disconnectedCallback() {
@@ -158,9 +160,11 @@ const status = {
       }
 
       // The rows slide together, and a soft knock marks the one row landing.
+      // Coming apart again is silent: it happens as the look moves to another
+      // card, and only the card being looked at makes a sound.
       window.clearTimeout(this.landing);
-      play('swoosh');
-      if (view === 'apps') {
+      if (view === 'apps' && !this.quiet) {
+        play('swoosh');
         this.landing = window.setTimeout(() => play('pop'), this.reducedMotion.matches ? 0 : 420);
       }
     }
@@ -338,7 +342,6 @@ const status = {
     flex: 1;
     margin: 0 2.6cqh;
     font-size: var(--type);
-    cursor: pointer;
   }
 
   .group-demo__head,
@@ -489,14 +492,6 @@ const status = {
     transition: clip-path 380ms var(--ease-out) 460ms;
   }
 
-  /* A hint of the click: under the pointer the rows lean toward the top. */
-  @media (hover: hover) and (pointer: fine) {
-    .group-demo[data-view='processes'] .group-demo__table:hover .group-demo__procs li {
-      transform: translateY(calc(var(--i) * var(--row) * -0.05));
-      transition: transform 360ms var(--ease-out) calc(var(--i) * 10ms);
-    }
-  }
-
   /* Narrow panels drop the last column so names keep their room. */
   @container (max-aspect-ratio: 1) {
     /* Set on the window: a container query styles only what is inside it. */
@@ -525,8 +520,7 @@ const status = {
     .group-demo__procs li,
     .group-demo__apps li,
     .group-demo[data-view] .group-demo__procs li,
-    .group-demo[data-view] .group-demo__apps li,
-    .group-demo[data-view] .group-demo__table:hover .group-demo__procs li {
+    .group-demo[data-view] .group-demo__apps li {
       transform: none;
       transition: opacity 200ms ease;
     }
