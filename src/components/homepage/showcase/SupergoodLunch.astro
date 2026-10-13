@@ -228,17 +228,19 @@ const deviceImage = {
         });
       });
 
-      // 4. The bar rises to meet them, and fills as each lands.
+      // 4. The bar rises to meet them, and fills as each lands: the first set down, the second
+      //    completing the order.
       this.at(1320, () => this.set({ bar: '' }));
       this.at(1790, () => {
         this.count(1);
         this.bump(bar, 1.025);
+        this.cue('drop');
       });
       this.at(1920, () => {
         this.count(2);
         this.set({ full: '' });
         this.bump(bar, 1.05);
-        this.cue('pop');
+        this.cue('success');
       });
     }
 

@@ -401,7 +401,7 @@ button:active { transform: scale(.97); }
 .showcase-search { padding: 0; cursor: pointer; transition: background-color 140ms ease, transform 130ms var(--ease-out); }
 .showcase-search:hover { background: #e7e7ea; }
 .showcase-search:active { transform: scale(.985); }
-.search-box .showcase-search-field { min-width: 0; height: 100%; flex: 1; display: flex; align-items: center; gap: 9px; padding: 0 12px; border: 0; background: none; color: #111; font-size: 15px; text-align: left; place-items: initial; }
+.search-box .showcase-search-field { min-width: 0; height: 100%; flex: 1; display: flex; align-items: center; gap: 9px; padding: 0 12px; border: 0; background: none; color: #111; font-size: 15px; text-align: left; }
 .search-box .showcase-search-field:focus-visible { outline: 2px solid #405de6; outline-offset: 2px; border-radius: 11px; }
 .search-box .showcase-search-field svg { flex: none; order: -2; width: 22px; height: 22px; color: #737a84; stroke-width: 2; }
 .showcase-search-text { min-width: 0; overflow: hidden; color: #737a84; text-overflow: ellipsis; white-space: nowrap; }

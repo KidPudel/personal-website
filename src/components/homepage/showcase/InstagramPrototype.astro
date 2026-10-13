@@ -178,7 +178,7 @@ const tileStyle = (name: string) => {
       });
 
       Promise.all(flights.map((animation) => animation.finished)).then(() => {
-        if (!detail.quiet) play('pop');
+        if (!detail.quiet) play('sparkle');
         document.dispatchEvent(new CustomEvent('saves:landed'));
         window.setTimeout(() => flight.replaceChildren(), 160);
       }, () => {});

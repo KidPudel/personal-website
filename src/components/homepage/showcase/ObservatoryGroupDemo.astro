@@ -159,13 +159,13 @@ const status = {
         );
       }
 
-      // The rows slide together, and a soft knock marks the one row landing.
+      // The rows slide together, and a low clunk marks the one row settling.
       // Coming apart again is silent: it happens as the look moves to another
       // card, and only the card being looked at makes a sound.
       window.clearTimeout(this.landing);
       if (view === 'apps' && !this.quiet) {
         play('swoosh');
-        this.landing = window.setTimeout(() => play('pop'), this.reducedMotion.matches ? 0 : 420);
+        this.landing = window.setTimeout(() => play('latch'), this.reducedMotion.matches ? 0 : 420);
       }
     }
   }
