@@ -1,6 +1,12 @@
 # Implementation plan
 
-Last updated: 2026-10-02
+Last updated: 2026-10-14
+
+## Completed milestone: uneven-star site icon
+
+- Apply Igor's selected original Averia asterisk to the favicon and matching home-screen icon, preserving the approved silhouette.
+- Keep the favicon transparent and adaptive to light and dark browser themes.
+- Verify media checks, production builds at both base paths, and desktop/mobile presentation. See `docs/PROGRESS.md`.
 
 ## Completed milestone: case studies as a marked-up proof
 

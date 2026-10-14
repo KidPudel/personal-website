@@ -1,6 +1,12 @@
 # Progress
 
-Last updated: 2026-10-13
+Last updated: 2026-10-14
+
+## Site icon: the original uneven star
+
+- Igor selected the original Averia asterisk from the favicon exploration. Its unevenness connects to his existing note on oddities; no altered arms, cuts, or displaced tips were adopted.
+- Replaced `public/favicon.svg` with the selected transparent silhouette (1.17 KB), dark ink for light browser themes and paper ink for dark themes. Updated the opaque 180 px `public/apple-touch-icon.png` to the same star on the page's field colour (3.87 KB).
+- Media checks and production builds passed for the default configuration, `/`, and `/personal-website/`. Icon links retain the configured base path. Inspected the homepage at 1280 px and 390 px without horizontal overflow and verified the delivered PNG in the browser. Existing unrelated case-study CSS build warnings and the Instagram prototype's React `inert` warning remain.
 
 ## SuperGood and Two Sticks cards: one phone, one moment
 
