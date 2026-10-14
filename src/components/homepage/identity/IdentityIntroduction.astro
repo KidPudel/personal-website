@@ -12,8 +12,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     <div class="identity__copy" data-identity-copy>
       <div class="identity__intro">
         <h1 id="intro-title" class="identity__hello">
-          <HelloAnimation text={identity.hello} opening />{' '}
-          <span class="identity__role">{identity.role}</span>
+          <HelloAnimation text={identity.hello} opening />
         </h1>
         <div class="identity__summary">
           <AnnotatedText parts={identity.claim} id="intro" />
@@ -35,7 +34,7 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     isolation: isolate;
     display: grid;
     min-height: 0;
-    grid-template-columns: min(42rem, 100%);
+    grid-template-columns: min(62rem, 100%);
     justify-content: start;
     align-content: start;
     align-items: start;
@@ -50,19 +49,17 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
 
   .identity__copy {
     position: relative;
-    width: min(100%, 49rem);
+    width: 100%;
   }
 
   .identity__intro {
     overflow: visible;
   }
 
-
   .identity__hello {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0;
     margin: 0;
     color: var(--color-ink);
     font-family: var(--font-editorial);
@@ -71,27 +68,42 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     letter-spacing: 0.025em;
   }
 
-  .identity__role {
+  /* The claim is the headline: what I care about and what kind of designer
+     I am, with the detail behind its doors. Set in Splav (Averia, a serif
+     averaged from hundreds of others, with Cyrillic averaged the same way),
+     soft at the edges like the sky and the
+     handwriting, and in ink, because a headline is read whole. The doors
+     are italic, marked by their asterisks. */
+  .identity__summary {
+    /* The whole sentence in ink, not the doors' grey. */
+    --door-grey: var(--color-ink);
+    /* About 60 characters a line, so the headline reads in three lines. */
+    max-width: 29em;
+    margin: clamp(0.75rem, 1.2vw, 1.125rem) 0 0;
     color: var(--color-ink);
-    font-family: var(--font-display);
-    font-size: clamp(2.05rem, 2.9vw, 3.15rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 1.04;
+    font-family: var(--font-intro);
+    font-size: clamp(1.3rem, 0.8vw + 0.9rem, 1.65rem);
+    /* Light, so the bold italic doors stand clear of it. */
+    font-weight: 300;
+    letter-spacing: 0.005em;
+    line-height: 1.26;
   }
 
-  .identity__summary {
-    /* The doors' grey, a step darker than About's so it reads on the sky
-       (4.6:1). */
-    --door-grey: #5c5952;
-    /* About 72 characters a line: wide enough for the claim to sit on one
-       line, and in ems so the measure holds at every type size. */
-    max-width: 35.5em;
-    margin: clamp(1.125rem, 1.6vw, 1.5rem) 0 0;
-    color: var(--color-ink);
+  .identity__summary :global(.annotated__phrase) {
+    font-family: inherit;
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .identity__summary :global(.annotated__anchor) {
+    font-weight: inherit;
+  }
+
+  /* The notes are the detail layer: the same sans and size as every other
+     note on the page. */
+  .identity__summary :global(.annotated__note-text) {
     font-family: var(--font-reading);
     font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
-    font-weight: 400;
     letter-spacing: 0.025em;
     line-height: 1.4;
   }
@@ -104,24 +116,18 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
         0.75rem;
     }
 
-    .identity__copy {
-      width: 100%;
-    }
-
     .identity__hello {
       font-size: 1.05rem;
     }
 
-    .identity__role {
-      font-size: clamp(1.7rem, 7.8vw, 2.05rem);
-      line-height: 1.14;
+    .identity__summary {
+      margin-top: 0.75rem;
+      font-size: clamp(1.15rem, 3.6vw + 0.3rem, 1.3rem);
+      line-height: 1.26;
     }
 
-    .identity__summary {
-      max-width: 36em;
-      margin-top: 1.125rem;
+    .identity__summary :global(.annotated__note-text) {
       font-size: 1.0625rem;
-      line-height: 1.4;
     }
   }
 
@@ -130,25 +136,5 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
       padding-top: clamp(2.4rem, 5.5svh, 3.2rem);
       padding-bottom: 0.6rem;
     }
-
-    .identity__role {
-      font-size: clamp(1.58rem, 7vw, 1.85rem);
-    }
-
-    .identity__summary {
-      margin-top: 0.875rem;
-    }
   }
-
-  @media (max-height: 48rem) and (min-width: 52.01rem) {
-    .identity__role {
-      font-size: clamp(2.2rem, 3.2vw, 3.15rem);
-    }
-
-    .identity__summary {
-      margin-top: 1.125rem;
-      font-size: 0.95rem;
-    }
-  }
-
 </style>

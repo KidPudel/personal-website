@@ -27,6 +27,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Personal note copy | `src/content/homepage/values.ts` |
 | Beliefs section copy and its notes | `beliefs` in `src/content/homepage/values.ts`; section in `src/components/homepage/beliefs/Beliefs.astro` |
 | Hero claim and its notes | `claim` in `src/content/homepage/identity.ts` |
+| The introduction's typeface (Splav: Averia with Cyrillic) and size | `--font-intro` and the Splav faces in `src/styles/tokens.css`; size in `IdentityIntroduction.astro`. Splav itself is built in `../fonts/splav`; after a rebuild, re-subset its Light and Bold Italic into the `-latin` and `-cyrillic` files here |
 | Coloured phrases with notes (hero and beliefs), page dimming | `src/components/homepage/AnnotatedText.astro`; phrase tones in `src/content/homepage/annotated.ts` |
 | Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |
 | The box that opens behind “editorial and illustrative sketcher” (frame timing, the line after it) | Playback `src/components/homepage/personal/BoxOpening.astro`; the line `boxLine` in `src/content/homepage/values.ts` |

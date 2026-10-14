@@ -39,6 +39,7 @@ const toneStyles = usedTones
 
 type Item =
   | { kind: 'text'; value: string }
+  | { kind: 'anchor'; value: string }
   | { kind: 'phrase'; text: string; tone: string; noteId: string }
   | { kind: 'joyful'; lead: string; word: string; href: string; trail: string };
 
@@ -55,6 +56,8 @@ parts.forEach((part, index) => {
       part = part.slice(trail.length);
     }
     if (part) items.push({ kind: 'text', value: part });
+  } else if ('anchor' in part) {
+    items.push({ kind: 'anchor', value: part.anchor });
   } else if ('joyful' in part) {
     // The word before "joyful" stays with it, so the circled word never ends
     // the sentence alone on its line.
@@ -81,8 +84,10 @@ parts.forEach((part, index) => {
     {items.map((item) =>
       item.kind === 'text' ? (
         item.value
+      ) : item.kind === 'anchor' ? (
+        <strong class="annotated__anchor">{item.value}</strong>
       ) : item.kind === 'phrase' ? (
-        <span class:list={['annotated__phrase link-mark', item.tone]} aria-controls={item.noteId} data-phrase>{item.text}</span>
+        <span class:list={['annotated__phrase link-mark', item.tone]} aria-controls={item.noteId} data-phrase>{item.text}<span class="annotated__star" aria-hidden="true">*</span></span>
       ) : (
         <span class="annotated__keep">{item.lead}<JoyfulWord word={item.word} href={item.href} />{item.trail}</span>
       ),
@@ -206,9 +211,9 @@ parts.forEach((part, index) => {
     transition: color 220ms ease;
   }
 
-  /* A door, as in "A few more things about me": ink in the grey sentence.
-     Hover draws the marker swipe, in the door's colour; while its note is
-     open the swipe stays. */
+  /* A door, as in "A few more things about me": ink in the grey sentence,
+     with its asterisk. Hover draws the marker swipe, in the door's colour;
+     while its note is open the swipe stays. */
   .annotated__phrase {
     color: var(--color-ink);
     font-family: var(--font-door);
@@ -245,6 +250,23 @@ parts.forEach((part, index) => {
     white-space: nowrap;
   }
 
+  /* A door's mark: an asterisk in its own colour, the footnote sign for
+     "there's more here". It is what tells a visitor a word opens, on touch
+     screens too, so ink and weight are free to mean "read this". */
+  .annotated__star {
+    margin-left: 0.04em;
+    color: var(--door);
+    transition: color 220ms ease;
+  }
+
+  /* An anchor: a phrase to read first, in ink. Its weight comes from where
+     the sentence is set, and it carries no door mark. */
+  .annotated__anchor {
+    color: var(--color-ink);
+    font-weight: inherit;
+    transition: color 220ms ease;
+  }
+
   /* "joyful" is a door of its own kind, in ink like the others. */
   .annotated__keep :global(.joyful) {
     color: var(--color-ink);
@@ -253,12 +275,17 @@ parts.forEach((part, index) => {
 
   /* Open: everything but the door and its note fades. */
   .annotated[data-active] .annotated__text,
+  .annotated[data-active] .annotated__anchor,
   .annotated[data-active] .annotated__phrase {
     color: var(--door-fade);
   }
 
   .annotated[data-active] .annotated__phrase[aria-expanded='true'] {
     color: var(--color-ink);
+  }
+
+  .annotated[data-active] .annotated__phrase:not([aria-expanded='true']) .annotated__star {
+    color: var(--door-fade);
   }
 
   .annotated[data-active] .annotated__keep :global(.joyful) {
