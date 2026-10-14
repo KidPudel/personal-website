@@ -46,8 +46,8 @@ html.homepage-document body {
 /* Doors: words that open something in place (AnnotatedText.astro and
    PersonalNote.astro). While one is open, <html> has data-annotating and the
    homepage section holding it has data-annotating-host: the rest of the page
-   fades, and that section comes forward so what opened lies over what
-   follows instead of pushing it down. */
+   fades, and that section comes forward. A sentence's note opens inside the
+   sentence; the personal note's reveals lie over what follows. */
 [data-site-header] > *,
 #main-content > *,
 #main-content :is(h1, h2),

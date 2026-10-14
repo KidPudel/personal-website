@@ -108,13 +108,19 @@ parts.forEach((part, index) => {
 <script>
   // The doors of a sentence, like the ones in "A few more things about me":
   // grey text, ink words that open something. Opening one fades the rest of
-  // the page, colours the door, and unfolds its note under the sentence.
-  // Without this script the notes simply follow the sentence.
+  // the page, colours the door, and parts the sentence under the door's
+  // line: the lines below slide down and the note unfolds in the gap, so the
+  // explanation stays right under its word. Without this script the notes
+  // simply follow the sentence.
   const OPEN_EVENT = 'annotation-open';
+  // How long the gap takes to close before the note goes back to its place.
+  const CLOSE_MS = 320;
 
   class AnnotatedText extends HTMLElement {
     private abort?: AbortController;
     private active?: HTMLElement;
+    private width = 0;
+    private closing = new Map<HTMLElement, number>();
 
     connectedCallback() {
       this.abort?.abort();
@@ -148,6 +154,17 @@ parts.forEach((part, index) => {
       document.addEventListener(OPEN_EVENT, (event) => {
         if ((event as CustomEvent).detail !== this && this.active) this.close();
       }, { signal });
+
+      // The sentence rewraps at a new width, so an open note moves to the
+      // door's new line.
+      const resize = new ResizeObserver(([entry]) => {
+        const width = Math.round(entry.contentRect.width);
+        if (width === this.width) return;
+        this.width = width;
+        if (this.active) this.place(this.active, false);
+      });
+      resize.observe(this);
+      signal.addEventListener('abort', () => resize.disconnect());
     }
 
     disconnectedCallback() {
@@ -164,10 +181,10 @@ parts.forEach((part, index) => {
         this.close();
         return;
       }
-      if (this.active) this.reset(this.active);
+      if (this.active) this.reset(this.active, false);
       this.active = phrase;
       phrase.setAttribute('aria-expanded', 'true');
-      this.noteFor(phrase)?.setAttribute('data-open', '');
+      this.place(phrase, true);
       this.setAttribute('data-active', '');
       this.closest('#main-content > *')?.setAttribute('data-annotating-host', '');
       document.documentElement.setAttribute('data-annotating', '');
@@ -175,7 +192,7 @@ parts.forEach((part, index) => {
     }
 
     private close() {
-      if (this.active) this.reset(this.active);
+      if (this.active) this.reset(this.active, true);
       this.active = undefined;
       this.removeAttribute('data-active');
       this.closest('#main-content > *')?.removeAttribute('data-annotating-host');
@@ -184,9 +201,92 @@ parts.forEach((part, index) => {
       }
     }
 
-    private reset(phrase: HTMLElement) {
+    private reset(phrase: HTMLElement, animate: boolean) {
       phrase.setAttribute('aria-expanded', 'false');
-      this.noteFor(phrase)?.removeAttribute('data-open');
+      const note = this.noteFor(phrase);
+      if (!note) return;
+      note.removeAttribute('data-open');
+      if (!animate || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        this.putBack(note);
+        return;
+      }
+      window.clearTimeout(this.closing.get(note));
+      this.closing.set(note, window.setTimeout(() => this.putBack(note), CLOSE_MS));
+    }
+
+    /** Returns a note to the list after the sentence and mends the text it
+     *  split. */
+    private putBack(note: HTMLElement) {
+      window.clearTimeout(this.closing.get(note));
+      this.closing.delete(note);
+      const sentence = note.parentElement;
+      note.style.removeProperty('margin-right');
+      note.querySelector<HTMLElement>('.annotated__note-text')?.removeAttribute('style');
+      this.querySelector('.annotated__notes')?.append(note);
+      if (sentence?.matches('.annotated__text')) sentence.normalize();
+    }
+
+    /** Opens the sentence after the door's line and sets the note in the
+     *  gap. */
+    private place(phrase: HTMLElement, animate: boolean) {
+      const note = this.noteFor(phrase);
+      const sentence = phrase.closest<HTMLElement>('.annotated__text');
+      if (!note || !sentence) return;
+      this.putBack(note);
+      note.removeAttribute('data-open');
+      sentence.insertBefore(note, this.lineAfter(phrase, sentence));
+      this.alignUnder(phrase, sentence, note);
+      if (animate) note.getBoundingClientRect();
+      note.toggleAttribute('data-instant', !animate);
+      note.setAttribute('data-open', '');
+    }
+
+    /** Starts the note where the door starts, out into the space beside the
+     *  sentence, narrowing to fit before the page's right inset. When that
+     *  leaves less than 24em (about 55 characters), it starts at the
+     *  sentence's edge instead, never somewhere in between, so it always lines
+     *  up with something. On a phone it stays at the edge. */
+    private alignUnder(phrase: HTMLElement, sentence: HTMLElement, note: HTMLElement) {
+      const text = note.querySelector<HTMLElement>('.annotated__note-text');
+      if (!text) return;
+      const style = getComputedStyle(text);
+      const rects = phrase.getClientRects();
+      const box = sentence.getBoundingClientRect();
+      const start = rects[rects.length - 1].left - box.left;
+      // The page's inset mirrored on the right: as far as the note may run.
+      const room = document.documentElement.clientWidth - 2 * box.left - start;
+      if (start <= 0 || room < 24 * parseFloat(style.fontSize)) return;
+      const width = Math.min(parseFloat(style.maxWidth), room);
+      text.style.marginLeft = `${start}px`;
+      text.style.maxWidth = `${width}px`;
+      // The note may run past the sentence's right edge into the space beside it.
+      note.style.marginRight = `${Math.min(0, box.width - start - width)}px`;
+    }
+
+    /** The first thing on the line after the door's last line: a split text
+     *  node, or the part of the sentence that holds it. Null when the door is
+     *  on the last line. */
+    private lineAfter(phrase: HTMLElement, sentence: HTMLElement): Node | null {
+      const rects = phrase.getClientRects();
+      const line = rects[rects.length - 1];
+      const middle = (line.top + line.bottom) / 2;
+      const walker = document.createTreeWalker(sentence, NodeFilter.SHOW_TEXT);
+      const range = document.createRange();
+      for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
+        if (phrase.contains(node) || !(phrase.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING)) continue;
+        for (let index = 0; index < node.length; index += 1) {
+          if (/\s/.test(node.data[index])) continue;
+          range.setStart(node, index);
+          range.setEnd(node, index + 1);
+          const rect = range.getClientRects()[0];
+          if (!rect || (rect.top + rect.bottom) / 2 < middle + line.height / 2) continue;
+          if (node.parentNode === sentence) return node.splitText(index);
+          let part: Node = node;
+          while (part.parentNode !== sentence) part = part.parentNode!;
+          return part;
+        }
+      }
+      return null;
     }
   }
 
@@ -292,78 +392,79 @@ parts.forEach((part, index) => {
     opacity: 0.2;
   }
 
-  /* The note: its letters in the door's colour, set in from the sentence's
-     edge. */
+  /* The note, in the gap the sentence opens under the door's line: in the
+     sentence's own face, in the door's colour, starting where the door
+     starts. Its asterisk hangs in the margin, the footnote answering
+     the one on the door. */
   .annotated__note-text {
-    position: relative;
-    max-width: 34em;
+    max-width: 36em;
     margin: 0;
-    margin-left: clamp(1.5rem, 7vw, 7.5rem);
-    padding-top: 0.9lh;
     color: var(--door);
-    font-style: italic;
+    font-style: normal;
+    font-weight: inherit;
     text-wrap: pretty;
   }
 
-  /* Whatever the open note lies over melts into a soft blur behind it, like
-     the content under the header, so faded text never collides with it. */
-  :global(.js) .annotated .annotated__note-text::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0 -2rem -3rem;
-    content: '';
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    /* Feathered on every side, fully covering behind the text. */
-    --feather-y: linear-gradient(to bottom, transparent, black 0.6lh, black calc(100% - 2.25rem), transparent);
-    --feather-x: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
-    mask-image: var(--feather-y), var(--feather-x);
-    mask-composite: intersect;
-    -webkit-mask-image: var(--feather-y), var(--feather-x);
-    -webkit-mask-composite: source-in;
-    pointer-events: none;
+  .annotated__note-text::before {
+    content: '*' / '';
+    display: inline-block;
+    width: 0.6em;
+    margin-left: -0.6em;
   }
 
   /* Without JavaScript the notes follow the sentence in the page. With it,
-     the open note lies over the faded page under the sentence, so nothing
-     moves. Keyed to the root's js class, set before the first paint, so the
-     notes never show in the page and then fold away. */
+     a note waits out of sight until its door opens, then moves into the
+     sentence. Keyed to the root's js class, set before the first paint, so
+     the notes never show in the page and then fold away. */
   :global(.js) .annotated .annotated__notes {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
+    display: none;
   }
 
-  :global(.js) .annotated .annotated__note {
-    position: absolute;
-    isolation: isolate;
-    top: 0;
-    left: 0;
-    width: 100%;
+  .annotated__notes .annotated__note-text {
+    padding-top: 0.9lh;
+  }
+
+  /* Opening: the gap grows from nothing to the note's height, pushing the
+     rest of the sentence down, and the note's letters come in as it opens. */
+  :global(.js) .annotated__text > .annotated__note {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 320ms var(--ease-out);
+  }
+
+  :global(.js) .annotated__text > .annotated__note[data-open] {
+    grid-template-rows: 1fr;
+  }
+
+  /* Room on the left for the hanging asterisk, which the unfold would
+     otherwise clip. */
+  :global(.js) .annotated__text > .annotated__note > .annotated__note-inner {
+    min-height: 0;
+    margin-left: -1em;
+    padding-left: 1em;
+    overflow: hidden;
+  }
+
+  :global(.js) .annotated__text > .annotated__note .annotated__note-text {
+    padding: 0.55rem 0 1rem;
     opacity: 0;
-    visibility: hidden;
-    transform: translateY(-0.25rem);
-    transition:
-      opacity 160ms ease,
-      transform 160ms ease,
-      visibility 0s 160ms;
+    transition: opacity 140ms ease;
   }
 
-  :global(.js) .annotated .annotated__note[data-open] {
+  :global(.js) .annotated__text > .annotated__note[data-open] .annotated__note-text {
     opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition:
-      opacity 220ms var(--ease-out),
-      transform 260ms var(--ease-out),
-      visibility 0s;
+    transition: opacity 240ms ease 80ms;
+  }
+
+  :global(.js) .annotated__text > .annotated__note[data-instant],
+  :global(.js) .annotated__text > .annotated__note[data-instant] .annotated__note-text {
+    transition: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    :global(.js) .annotated .annotated__note,
-    :global(.js) .annotated .annotated__note[data-open] {
-      transform: none;
+    :global(.js) .annotated__text > .annotated__note,
+    :global(.js) .annotated__text > .annotated__note .annotated__note-text {
+      transition: none;
     }
   }
 </style>

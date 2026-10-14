@@ -23,7 +23,7 @@
 }
 
 /* The homepage introduction: Splav, light for the sentence, bold italic for
-   its doors. Splav is Averia Serif Libre with Cyrillic, averaged from 18 OFL
+   its doors, italic for the notes they open. Splav is Averia Serif Libre with Cyrillic, averaged from 18 OFL
    serifs the way Averia was averaged; its Latin is Averia's own. Built in its
    own project (fonts/splav next to this site); see Splav-OFL.txt. Latin and
    Cyrillic are split, so each page loads only the letters it uses. */
@@ -41,6 +41,24 @@
   src: url('../assets/fonts/Splav-Light-cyrillic.woff2') format('woff2');
   font-style: normal;
   font-weight: 300;
+  font-display: swap;
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+
+@font-face {
+  font-family: 'Splav';
+  src: url('../assets/fonts/Splav-Italic-latin.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2190-2193, U+2212;
+}
+
+@font-face {
+  font-family: 'Splav';
+  src: url('../assets/fonts/Splav-Italic-cyrillic.woff2') format('woff2');
+  font-style: italic;
+  font-weight: 400;
   font-display: swap;
   unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
 }

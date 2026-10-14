@@ -311,7 +311,7 @@ const firstRow = 2;
   }
 
   /* The card being looked at (pointer or keyboard) lifts, its pitch draws its
-     marker, and its kind and year come in; the other cards step back. Moving
+     marker, and its caption comes in; the other cards blur and step back. Moving
      straight from one card to the next switches at once: the newly looked-at
      card brightens without delay, while the others only dim after a beat and
      only come back after one, so crossing the gap between cards never
@@ -340,7 +340,7 @@ const firstRow = 2;
 
   .showcase__grid:has(.work-caption__link:focus-visible) .showcase__card:not(:has(.work-caption__link:focus-visible)) {
     opacity: 0.38;
-    filter: saturate(0.6);
+    filter: saturate(0.6) blur(3px);
     transition-delay: 0s, 90ms, 90ms;
   }
 
@@ -358,23 +358,52 @@ const firstRow = 2;
 
     .showcase__grid:has(.work-caption__link:hover) .showcase__card:not(:has(.work-caption__link:hover)) {
       opacity: 0.38;
-      filter: saturate(0.6);
+      filter: saturate(0.6) blur(3px);
       transition-delay: 0s, 90ms, 90ms;
     }
+  }
 
-    /* The pitch says what it is at all times; the kind and year come in on
-       the card being looked at. */
-    .showcase__card :global(.work-caption__meta) {
-      opacity: 0;
-      translate: 0 -0.2rem;
-      transition:
-        opacity 200ms ease,
-        translate 260ms var(--ease-out);
+  @media (hover: hover) and (pointer: fine) {
+    /* The product in the panel says what each study is about, so the
+       caption waits for the card being looked at (pointer or keyboard) and
+       then comes in, in the gap under the panel. It takes no room of its
+       own, so the rows sit about as close as the columns and nothing moves
+       when it appears; where it runs over the next card, that card is
+       blurred and stepped back. It stays in the page for screen readers. */
+    .showcase__card {
+      --card-trail: clamp(2.9rem, 3.4vw, 3.75rem);
     }
 
-    .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) :global(.work-caption__meta) {
+    .showcase__card .showcase__caption {
+      height: 0;
+      padding: 0;
+    }
+
+    .showcase__card .showcase__caption > :global(*) {
+      margin-top: 0.7rem;
+    }
+
+    /* Only a fade: a transform here would make the caption the box its
+       link's card-wide reach is measured from. */
+    .showcase__card :global(.work-caption) {
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
+
+    .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) :global(.work-caption) {
       opacity: 1;
-      translate: none;
+      transition: opacity 220ms ease 60ms;
+    }
+
+    /* The link reaches over the panel and the caption under it, so moving
+       down onto the caption keeps the card looked at, and stops short of
+       the next row. */
+    .showcase__card :global(.work-caption__link)::after {
+      bottom: calc(var(--card-trail) - 2.4rem);
+    }
+
+    .showcase__card {
+      padding-bottom: var(--card-trail);
     }
   }
 
@@ -388,10 +417,6 @@ const firstRow = 2;
 
     .showcase__card:has(.work-caption__link:is(:hover, :focus-visible)) {
       transform: none;
-    }
-
-    .showcase__card :global(.work-caption__meta) {
-      translate: none !important;
     }
   }
 

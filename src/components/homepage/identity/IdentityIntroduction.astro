@@ -99,13 +99,18 @@ const identity = identityCopy[toLocale(Astro.currentLocale)];
     font-weight: inherit;
   }
 
-  /* The notes are the detail layer: the same sans and size as every other
-     note on the page. */
+  /* The notes open inside the headline, so they speak in its voice: Splav
+     Italic at reading size, a quieter aside between the light sentence and
+     its bold italic doors. */
   .identity__summary :global(.annotated__note-text) {
-    font-family: var(--font-reading);
-    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
-    letter-spacing: 0.025em;
-    line-height: 1.4;
+    /* The italic runs narrow, so a shorter measure keeps lines near 70
+       characters. */
+    max-width: 31em;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.1rem, 0.4vw + 0.98rem, 1.3rem);
+    letter-spacing: 0.01em;
+    line-height: 1.42;
   }
 
   @media (max-width: 52rem) {
