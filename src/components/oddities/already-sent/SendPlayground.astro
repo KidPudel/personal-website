@@ -22,7 +22,7 @@ const hints = {
 
 <send-playground class="playground" data-version="today" data-open data-hints={JSON.stringify(hints)}>
   <div class="playground__switch" role="group" aria-label={t('Version', 'Версия')}>
-    <button type="button" class="playground__option" data-version-option="today" aria-pressed="true">{t('Instagram today', 'Instagram сейчас')}</button>
+    <button type="button" class="playground__option" data-version-option="today" aria-pressed="true">{t('Instagram today', 'Сейчас')}</button>
     <button type="button" class="playground__option" data-version-option="fix" aria-pressed="false">{t('With the fix', 'С исправлением')}</button>
   </div>
 
@@ -182,6 +182,7 @@ const hints = {
     color: var(--color-copy);
     font: inherit;
     font-size: var(--study-small);
+    white-space: nowrap;
     cursor: pointer;
     transition:
       background-color 200ms ease,

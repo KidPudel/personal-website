@@ -76,9 +76,11 @@ const Person = interactive ? 'button' : 'div';
               </span>
             </span>
             <span class="share-sheet__name">{person.name}</span>
+            {/* "Sent" and when are kept apart, so a language where they don't fit one line (Russian)
+                breaks between them instead of running into the next person. */}
             <span class="share-sheet__sent" data-sent-line>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3 10.2 13.8M21.5 3l-7.1 18-4.2-7.2L3 9.7z" /></svg>
-              <span data-sent-text>{t('Sent', 'Отправлено')} {sentText}</span>
+              <span class="share-sheet__sent-word"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3 10.2 13.8M21.5 3l-7.1 18-4.2-7.2L3 9.7z" /></svg>{t('Sent', 'Отправлено')}</span>
+              {' '}<span class="share-sheet__sent-when">{sentText}</span>
             </span>
           </Person>
         </li>
@@ -192,8 +194,8 @@ const Person = interactive ? 'button' : 'div';
     flex-direction: column;
     align-items: center;
     width: 100%;
-    /* Room for a two-line name and the sent line in every cell, so rows never shift. */
-    min-height: calc(136 * var(--pt));
+    /* Room in every cell for a name and a sent line of two lines each, so rows never shift. */
+    min-height: calc(146 * var(--pt));
     padding: 0;
     border: 0;
     background: none;
@@ -292,14 +294,16 @@ const Person = interactive ? 'button' : 'div';
 
   /* The fix: who already got this, in grey under the name, with Instagram's own send arrow. */
   .share-sheet__sent {
-    display: inline-flex;
-    align-items: center;
-    gap: calc(4 * var(--pt));
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.3em;
+    max-width: 100%;
     margin-top: calc(3 * var(--pt));
     color: var(--muted);
     font-size: calc(13 * var(--pt));
     letter-spacing: 0;
-    white-space: nowrap;
+    line-height: 1.3;
     visibility: hidden;
     opacity: 0;
     filter: blur(3px);
@@ -311,10 +315,17 @@ const Person = interactive ? 'button' : 'div';
       visibility 0s linear 360ms;
   }
 
+  .share-sheet__sent-word,
+  .share-sheet__sent-when {
+    white-space: nowrap;
+  }
+
   .share-sheet__sent svg {
-    flex: none;
-    width: calc(12 * var(--pt));
-    height: calc(12 * var(--pt));
+    display: inline-block;
+    width: 0.92em;
+    height: 0.92em;
+    margin-right: 0.3em;
+    vertical-align: -0.1em;
     stroke-width: 2.2;
   }
 
