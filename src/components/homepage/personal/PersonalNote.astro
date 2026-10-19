@@ -49,7 +49,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
                 <HoloPortrait src={couplePortrait} alt={personalNote.portraitAlt} />
               </figure>
             ) : reveal === 'blog' ? (
-              <WritingList class="personal-note__writing" />
+              <WritingList class="personal-note__writing" limit={1} />
             ) : (
               <BoxOpening label={personalNote.boxLabel} line={personalNote.boxLine} />
             )}

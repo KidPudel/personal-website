@@ -26,7 +26,8 @@ const t = translator(toLocale(Astro.currentLocale));
     padding: 48px 0 120px;
   }
 
-  .blog-index__list {
+  /* The list is its own component, so the class it receives needs :global. */
+  .blog-index :global(.blog-index__list) {
     font-size: var(--study-body);
   }
 </style>

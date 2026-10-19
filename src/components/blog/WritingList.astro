@@ -4,18 +4,21 @@ import { getWriting } from '../../lib/writing';
 
 interface Props {
   class?: string;
+  /** Show only the newest posts, followed by a link to the full list. */
+  limit?: number;
 }
 
-const { class: className } = Astro.props;
+const { class: className, limit } = Astro.props;
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 
 // Newest first; undated posts (older, published elsewhere) go last.
-const posts = (await getWriting(locale)).sort(
+const allPosts = (await getWriting(locale)).sort(
   (first, second) =>
     (second.entry.data.publishedAt?.getTime() ?? 0) - (first.entry.data.publishedAt?.getTime() ?? 0),
 );
+const posts = limit ? allPosts.slice(0, limit) : allPosts;
 
 const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
@@ -44,6 +47,11 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
     </li>
   ))}
 </ul>
+{limit && (
+  <a class="writing-list__all" href={localePath('/blog/', locale)}>
+    <span class="link-mark">{t('All posts', 'Все записи')}</span> →
+  </a>
+)}
 
 <style>
   .writing-list {
@@ -64,6 +72,23 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
     margin-block: -0.3rem;
     color: var(--color-ink);
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* The title is the link: larger and in ink, above a grey summary. */
+  .writing-list__title {
+    font-size: 1.2em;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  /* Touch screens can't hover, so the titles and the way to the full list
+     keep a faint mark there to read as links. */
+  @media (hover: none) {
+    .writing-list__title,
+    .writing-list__all .link-mark {
+      background-image: var(--link-mark-rest);
+    }
   }
 
   .writing-list__link:focus-visible {
@@ -78,8 +103,24 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
 
   .writing-list__summary {
     margin: 0.15rem 0 0;
-    color: var(--color-copy);
+    font-size: 1em;
+    color: var(--color-muted);
     line-height: 1.45;
+  }
+
+  .writing-list__all {
+    display: inline-block;
+    margin-top: 1.4rem;
+    padding-block: 0.65rem;
+    color: var(--color-ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .writing-list__all:focus-visible {
+    border-radius: 0.08em;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
   }
 
   .writing-list__date {
