@@ -1,0 +1,49 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+}
+
+const { src, alt, caption } = Astro.props;
+---
+
+<figure class="blog-sketch">
+  <Image
+    src={src}
+    alt={alt}
+    widths={[480, 720, 1040]}
+    sizes="(max-width: 600px) calc(100vw - 40px), 520px"
+    format="webp"
+    quality={84}
+    loading="lazy"
+    decoding="async"
+  />
+  <figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+  .blog-sketch {
+    margin: 48px auto 52px;
+    max-width: 520px;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* The sketch is drawn on white; multiply lets the page paper show through it. */
+    mix-blend-mode: multiply;
+  }
+
+  figcaption {
+    margin-top: 12px;
+    color: #656560;
+    font-size: var(--study-small, 0.9375rem);
+    line-height: 1.6;
+    text-align: center;
+  }
+</style>

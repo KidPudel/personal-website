@@ -134,6 +134,9 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .blog-document p { margin: 0 0 24px; font-size: var(--study-body); letter-spacing: normal; line-height: 1.65; }
 .blog-document figure { margin: 36px 0; }
 .blog-document figcaption { margin-top: 16px; }
+.blog-document .blog-post__header { margin-bottom: 48px; }
+.blog-document .blog-post__header time { color: #656560; font-size: var(--study-small); }
+.blog-document .blog-post__reading { margin-top: 48px; padding-top: 20px; border-top: 1px solid rgb(0 0 0 / .1); color: #656560; font-size: var(--study-small); line-height: 1.6; }
 .blog-document .case-footer { width: min(780px, calc(100% - 48px)); margin: 40px auto 0; padding-bottom: 100px; }
 @media (max-width: 760px) {
   .blog-document main, .blog-document .case-footer { width: calc(100% - 40px); }
