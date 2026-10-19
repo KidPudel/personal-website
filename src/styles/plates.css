@@ -59,24 +59,6 @@ html.study--two-sticks { --marker: #d9d0fc; }
   overflow-x: clip;
 }
 
-/* On a page where soft means unchanged, the header never blurs what passes under it: it only
-   lays the field's own colour over the top of the window, fading out. */
-.study-plates .portfolio-navigation:not(:has(.contact-disclosure[open]))::before {
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--color-field) 88%, transparent) 0,
-    color-mix(in srgb, var(--color-field) 55%, transparent) 50%,
-    transparent 100%
-  );
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-
-.study-plates .portfolio-navigation:not(:has(.contact-disclosure[open]))::after {
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
-}
-
 /* While a study's opening is night (Observatory), the header takes the night's inks. */
 html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[open])) {
   --color-ink: #dfe8c8;

@@ -72,7 +72,9 @@ const resume = resumeLink(locale);
     </details>
   </nav>
 </portfolio-navigation>
-{showHome && <div class="portfolio-navigation-spacer" aria-hidden="true" data-site-header-spacer></div>}
+{showHome && <div class="portfolio-navigation-spacer" aria-hidden="true"></div>}
+<!-- Marks the top of the page, one bar deep: once it scrolls away, the band fades in. -->
+<div class="portfolio-navigation-sentinel" aria-hidden="true" data-site-header-sentinel></div>
 
 <script>
   class PortfolioNavigation extends HTMLElement {
@@ -136,11 +138,13 @@ const resume = resumeLink(locale);
       this.compactObserver?.disconnect();
       this.removeAttribute('data-compact');
 
-      // The homepage compacts once the introduction leaves; other pages
-      // compact once the header's own reserved space has scrolled away.
+      // One state for every page: at the top the bar has no band, and once
+      // the page scrolls the band fades in and the bar compacts. The homepage
+      // waits for its introduction to leave, since the sky under the bar needs
+      // no backing; other pages wait for the bar's own depth of scroll.
       const introduction = document.querySelector<HTMLElement>('#intro');
-      const spacer = document.querySelector<HTMLElement>('[data-site-header-spacer]');
-      const target = introduction ?? spacer;
+      const sentinel = document.querySelector<HTMLElement>('[data-site-header-sentinel]');
+      const target = introduction ?? sentinel;
       if (!target || !('IntersectionObserver' in window)) return;
 
       this.compactObserver = new IntersectionObserver(
@@ -205,7 +209,8 @@ const resume = resumeLink(locale);
   /* A progressive blur: a lighter blur with a faint tint runs the full depth
      of the band and a heavier one covers its upper part, so content under
      the controls is calm enough to read them and fades back in below. The
-     tint stays faint so the band reads as blur rather than a white wash. */
+     tint stays faint so the band reads as blur rather than a white wash, and
+     it keeps the bar's own depth when the band grows for the contact links. */
   .portfolio-navigation::before,
   .portfolio-navigation::after {
     position: absolute;
@@ -224,34 +229,34 @@ const resume = resumeLink(locale);
       color-mix(in srgb, var(--color-field) 28%, transparent) 0,
       color-mix(in srgb, var(--color-field) 12%, transparent) 55%,
       transparent 100%
-    );
+    ) top / 100% calc(100% - var(--contact-surface-bottom) + 2.5rem) no-repeat;
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 50%, transparent 100%);
   }
 
   .portfolio-navigation::after {
+    -webkit-backdrop-filter: blur(24px) saturate(1.05);
     backdrop-filter: blur(24px) saturate(1.05);
     mask-image: linear-gradient(to bottom, black 0, black 45%, transparent 90%);
     -webkit-mask-image: linear-gradient(to bottom, black 0, black 45%, transparent 90%);
   }
 
-  /* While the links are open the band stays solid to just below them and
-     fades after, so the text underneath doesn't show through them. */
-  .portfolio-navigation:has(.contact-disclosure[open])::before {
-    background: color-mix(in srgb, var(--color-field) 76%, transparent);
-    mask-image: linear-gradient(to bottom, black 0, black calc(100% - 3rem), transparent 100%);
-  }
-
+  /* While the links are open the same blur reaches to just below them and
+     fades after. Both layers share one fade so it reads as one deeper blur,
+     not a second band; no extra tint is added. */
+  .portfolio-navigation:has(.contact-disclosure[open])::before,
   .portfolio-navigation:has(.contact-disclosure[open])::after {
-    mask-image: linear-gradient(to bottom, black 0, black calc(100% - 3.5rem), transparent calc(100% - 0.5rem));
+    mask-image: linear-gradient(to bottom, black 0, black calc(100% - 3rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0, black calc(100% - 3rem), transparent 100%);
   }
 
-  /* Over the homepage sky the controls need no backing, so the band only
-     appears once the page scrolls past the introduction or the contact
-     links open. */
-  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::before,
-  .portfolio-navigation:not(.portfolio-navigation--with-home):not([data-compact]):not(:has(.contact-disclosure[open]))::after {
+  /* At the top of the page the controls need no backing, so the band only
+     appears once the page scrolls or the contact links open. Without
+     scripting the band simply stays. */
+  :global(html.js) .portfolio-navigation:not([data-compact]):not(:has(.contact-disclosure[open]))::before,
+  :global(html.js) .portfolio-navigation:not([data-compact]):not(:has(.contact-disclosure[open]))::after {
     opacity: 0;
   }
 
@@ -266,9 +271,19 @@ const resume = resumeLink(locale);
   }
 
   /* Reserves the bar's height so page content starts below it. */
-  .portfolio-navigation-spacer {
+  .portfolio-navigation-spacer,
+  .portfolio-navigation-sentinel {
     --navigation-bottom: 1.3rem;
     height: calc(var(--navigation-top) + 2.75rem + var(--navigation-bottom));
+  }
+
+  .portfolio-navigation-sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    pointer-events: none;
+    visibility: hidden;
   }
 
   :global(html:has(.portfolio-navigation--with-home)) {
@@ -468,7 +483,8 @@ const resume = resumeLink(locale);
       padding: 0.45rem 0.7rem 1rem;
     }
 
-    .portfolio-navigation-spacer {
+    .portfolio-navigation-spacer,
+    .portfolio-navigation-sentinel {
       height: calc(0.45rem + 2.75rem + 1rem);
     }
 

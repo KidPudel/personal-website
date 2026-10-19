@@ -33,6 +33,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | The box that opens behind “editorial and illustrative sketcher” (frame timing, the line after it) | Playback `src/components/homepage/personal/BoxOpening.astro`; the line `boxLine` in `src/content/homepage/values.ts` |
 | Blog posts (local or linked out) | `src/content/writing/`; list in `src/components/blog/WritingList.astro`, pages in `src/pages/blog/` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
+| The top bar on every page: its blur band, when it fades in on scroll, how it grows under the open contact links | `src/components/homepage/PortfolioHeader.astro` (one header for all pages, rendered by `src/layouts/BaseDocument.astro`) |
 | Contact addresses and links (header panel and page footer) | `src/config/site.ts`; footer layout in `src/components/homepage/closing/ClosingContact.astro` |
 | Case study names, pitches, roles, product tags, years (homepage cards and `/case-studies/`) | `src/content/case-studies.ts` |
 | Work caption (pitch, tag, year) on the homepage and `/case-studies/` | `src/components/homepage/showcase/WorkCaption.astro` |
