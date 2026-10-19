@@ -34,12 +34,6 @@ const tilts = [-1, 1.2, -0.6, 0.8];
      JavaScript or under reduced motion the hand simply rests open. -->
 <section id="oddities" class="oddities" aria-labelledby="oddities-title">
   <h2 id="oddities-title" class="oddities__title">{t('little oddities', 'маленькие странности')}</h2>
-  <p class="oddities__lead">
-    {t(
-      'Small things in products that don’t match how people actually behave. I notice one, name it, and try a fix.',
-      'Мелочи в продуктах, которые расходятся с тем, как люди ведут себя на самом деле. Замечаю такую, называю и пробую исправить.',
-    )}
-  </p>
 
   <oddity-hand class="hand">
     <ul class="hand__cards" role="list">
@@ -381,16 +375,6 @@ const tilts = [-1, 1.2, -0.6, 0.8];
     font-weight: 400;
     letter-spacing: -0.035em;
     line-height: 1.1;
-  }
-
-  .oddities__lead {
-    max-width: 30em;
-    margin: 0;
-    color: var(--color-copy);
-    font-family: var(--font-reading);
-    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
-    letter-spacing: 0.02em;
-    line-height: 1.45;
   }
 
   /* The fan: every card in one grid cell, spread sideways by its step from the middle and turned

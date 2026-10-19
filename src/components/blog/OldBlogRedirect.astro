@@ -1,0 +1,25 @@
+---
+// Old /blog/ addresses forward to Writing. Astro's config redirects drop the
+// base path from their destination, so these pages build it themselves.
+import { localePath, type Locale } from '../../i18n/locales';
+
+interface Props {
+  locale: Locale;
+  slug?: string;
+}
+
+const { locale, slug } = Astro.props;
+const to = localePath(slug ? `/writing/${slug}/` : '/writing/', locale);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <title>{to}</title>
+    <meta http-equiv="refresh" content={`0;url=${to}`} />
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={new URL(to, Astro.site)} />
+  </head>
+  <body><a href={to}>{to}</a></body>
+</html>

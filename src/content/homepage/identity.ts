@@ -16,13 +16,13 @@ export const identity: Record<Locale, Identity> = {
       ', I look for ',
       {
         text: 'oddities',
-        note: 'Oddities are places where what people actually do doesn’t fit how things are set up for them. I find them through research, and they can lead to fixing a product or to something that doesn’t exist yet.',
+        note: 'Oddities are places where what people actually do doesn’t fit how things are set up for them. I find them through research and everyday use, and dig into why they happen, more and more through cognitive science. They can lead to fixing a product or to something that doesn’t exist yet.',
         tone: 'green',
       },
-      ' in how things work for people, and design ',
+      ' where things don’t fit how people actually behave, and design ',
       {
         text: 'interactions',
-        note: 'Before products I designed games: core loops, limits, a playtest on every build. That’s where I learned to guide people toward an action or a feeling. In products I use it to help people do what they already want, not to hook them. How people think is what I want to go deeper into next, through cognitive science.',
+        note: 'Before products I designed games: core loops, constraints, a playtest on every build. That’s where I learned to guide people toward an action or a feeling. In products I use it to help people do what they already want, not to hook them.',
         tone: 'blue',
       },
       ' that guide them without taking away their control. I also ',
@@ -42,13 +42,13 @@ export const identity: Record<Locale, Identity> = {
       ' я ищу ',
       {
         text: 'странности',
-        note: 'Странностями я называю места, где то, что люди делают на самом деле, не совпадает с тем, как для них всё устроено. Я нахожу их в исследованиях, и они ведут либо к исправлению продукта, либо к тому, чего ещё нет.',
+        note: 'Странностями я называю места, где то, что люди делают на самом деле, не совпадает с тем, как для них всё устроено. Я нахожу их в исследованиях и просто пользуясь вещами, а потом разбираюсь, почему они возникают, всё чаще через когнитивную науку. Они ведут либо к исправлению продукта, либо к тому, чего ещё нет.',
         tone: 'green',
       },
-      ' в том, как всё устроено для людей, и продумываю ',
+      ' там, где устройство вещей расходится с тем, как люди на самом деле себя ведут, и продумываю ',
       {
         text: 'взаимодействия',
-        note: 'До продуктов я проектировал игры: игровые циклы, ограничения, плейтест каждой сборки. Там я научился вести людей к действию или к чувству. В продуктах я использую это, чтобы помогать людям делать то, чего они сами хотят, а не подсаживать их. Дальше я хочу глубже разобраться в том, как думают люди, через когнитивную науку.',
+        note: 'До продуктов я проектировал игры: игровые циклы, ограничения, плейтест каждой сборки. Там я научился вести людей к действию или к чувству. В продуктах я использую это, чтобы помогать людям делать то, чего они сами хотят, а не подсаживать их.',
         tone: 'blue',
       },
       ', которые ведут их, не отнимая у них контроль. А ещё я ',

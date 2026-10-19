@@ -10,13 +10,6 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
-  // The blog became Writing; old addresses keep working.
-  redirects: {
-    '/blog': '/writing',
-    '/blog/[slug]': '/writing/[slug]',
-    '/ru/blog': '/ru/writing',
-    '/ru/blog/[slug]': '/ru/writing/[slug]',
-  },
   i18n: {
     locales: ['en', 'ru'],
     defaultLocale: 'en',
@@ -25,7 +18,11 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
-    sitemap({ i18n: { defaultLocale: 'en', locales: { en: 'en', ru: 'ru' } } }),
+    sitemap({
+      i18n: { defaultLocale: 'en', locales: { en: 'en', ru: 'ru' } },
+      // Old /blog/ addresses are redirect pages in src/pages/blog/.
+      filter: (page) => !/\/blog\//.test(page),
+    }),
   ],
   vite: {
     optimizeDeps: {

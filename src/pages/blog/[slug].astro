@@ -1,0 +1,11 @@
+---
+import OldBlogRedirect from '../../components/blog/OldBlogRedirect.astro';
+import { getWriting } from '../../lib/writing';
+
+export async function getStaticPaths() {
+  const posts = await getWriting('en');
+  return posts.filter((post) => !post.entry.data.externalUrl).map((post) => ({ params: { slug: post.slug } }));
+}
+---
+
+<OldBlogRedirect locale="en" slug={Astro.params.slug} />
