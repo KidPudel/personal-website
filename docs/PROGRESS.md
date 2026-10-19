@@ -1,6 +1,15 @@
 # Progress
 
-Last updated: 2026-10-14
+Last updated: 2026-10-19
+
+## Little oddities
+
+- New homepage section between "what I believe" and "more things I've made": small mismatches between a product and what people do, each noticed, named in interaction-design terms, compared with something from the world that has the same mechanism, and answered with a small fix. Less strict than a case study: a card on the homepage that already shows the fix, and a short page.
+- Title and line on top like the other sections (Igor didn't like the cluster beside the text). After trying loose tilted cards with blank placeholders, and gooey watercolour drops ("too liquidy", rejected), Igor picked a hand of cards from three still mockups (loupes, cut-outs, hand): each found oddity is a card face up; until there are three, the ones to come lie face down at the ends, greyed (their watercolour drained, Igor's scribble doodle faint on the back) so only the real one is in colour. A new oddity is the next card turned over.
+- Motion: when the section arrives the hand is dealt from one stack and fans open along an arc (CSS transitions, staggered from the middle out), and the face-up card's "Sent" line appears once it settles. A mouse in the hand opens the fan wider; cards lean toward the cursor and can be picked up and thrown (springs), the face-down ones trailing their face-up neighbour. A press that doesn't move is a click on the link. A held card follows the pointer directly (frame-rate-independent easing, not a spring: the stiff held spring went unstable on slow frames and shook harder and harder); the throw takes the pointer's speed over its last 100 ms, capped; the springs advance in fixed 1/240 s steps; a lost pointer, cancel, or window blur lets go. Touch gets the deal only (native scrolling stays); reduced motion and no JavaScript show the hand resting open. The card shows the whole sheet, its "Sent" line a touch larger than in the product.
+- First oddity, "Did I already send this?" (`/oddities/already-sent/`): Instagram's share sheet keeps no trace of who already got a reel, so people recall instead of recognise and send twice. Framed as knowledge in the head vs in the world (Norman) and recognition over recall, with "did I lock the door?" and the pill box as the parallel. The fix: a grey "Sent 2h ago" line under the name, nobody reordered, sending again still allowed. The page has a static before/after and a playable phone: pick, send, reopen Share, switch between today and the fix.
+- The sheet is drawn in HTML from Igor's screenshots (390 pt, measured colours) with stand-in friends, his doodles and made-up names, because the real sheet shows his friends' faces (Igor's choice). English and Russian.
+- Verified at 1440 × 900 and 375 × 812 in both languages: the full send loop, drag vs click on the card, no horizontal overflow. Astro diagnostics, the media contract, and both production builds pass.
 
 ## Site icon: the original uneven star
 

@@ -14,8 +14,8 @@ html.study-plates {
   --gutter: clamp(20px, 5vw, 72px);
   /* Type grows with the screen, about 17px at 1280 to 20px on a large display, and the columns are
      measured in it, so a line keeps about 70 characters and the page fills a big screen. */
-  --text: clamp(1rem, 0.73rem + 0.417vw, 1.25rem);
-  --small: clamp(0.875rem, 0.8rem + 0.15vw, 1.0625rem);
+  --text: var(--text-reading);
+  --small: var(--text-reading-small);
   --measure: calc(var(--text) * 34);
   --side: calc(var(--text) * 30);
   --wide: calc(var(--measure) + 4rem + var(--side));

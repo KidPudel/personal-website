@@ -242,6 +242,10 @@
 
 @layer tokens {
   :root {
+    /* Reading type shared by the case studies and the writing pages: about 17px at 1280,
+       growing to 20px on a large display. */
+    --text-reading: clamp(1rem, 0.73rem + 0.417vw, 1.25rem);
+    --text-reading-small: clamp(0.875rem, 0.8rem + 0.15vw, 1.0625rem);
     --color-field: #F8F8F8;
     --color-ink: #11110f;
     --color-muted: #716d65;

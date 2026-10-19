@@ -28,7 +28,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
     <li class="writing-list__item" lang={contentLocale === locale ? undefined : contentLocale}>
       <a
         class="writing-list__link"
-        href={data.externalUrl ?? localePath(`/blog/${slug}/`, locale)}
+        href={data.externalUrl ?? localePath(`/writing/${slug}/`, locale)}
         hreflang={data.externalLanguage}
       >
         <span class="writing-list__title link-mark">{data.title}</span>
@@ -48,8 +48,8 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
   ))}
 </ul>
 {limit && (
-  <a class="writing-list__all" href={localePath('/blog/', locale)}>
-    <span class="link-mark">{t('All posts', 'Все записи')}</span> →
+  <a class="writing-list__all" href={localePath('/writing/', locale)}>
+    <span class="link-mark">{t('All posts', 'Все тексты')}</span> →
   </a>
 )}
 

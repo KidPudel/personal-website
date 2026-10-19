@@ -259,7 +259,7 @@ const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
   <body>
     <a class="skip-link" href="#main-content">{t('Skip to main content', 'Перейти к основному содержанию')}</a>
     <PortfolioHeader
-      showHome={/\/(case-studies|blog)\//.test(Astro.url.pathname)}
+      showHome={/\/(case-studies|writing|oddities)\//.test(Astro.url.pathname)}
       alternatePath={translated ? pagePath : undefined}
     />
     <slot />

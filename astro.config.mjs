@@ -10,6 +10,13 @@ export default defineConfig({
   site,
   base,
   trailingSlash: 'always',
+  // The blog became Writing; old addresses keep working.
+  redirects: {
+    '/blog': '/writing',
+    '/blog/[slug]': '/writing/[slug]',
+    '/ru/blog': '/ru/writing',
+    '/ru/blog/[slug]': '/ru/writing/[slug]',
+  },
   i18n: {
     locales: ['en', 'ru'],
     defaultLocale: 'en',

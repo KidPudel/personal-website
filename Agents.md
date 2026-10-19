@@ -31,7 +31,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Coloured phrases with notes (hero and beliefs), page dimming | `src/components/homepage/AnnotatedText.astro`; phrase tones in `src/content/homepage/annotated.ts` |
 | Personal note constellation | `src/components/homepage/personal/PersonalNote.astro` |
 | The box that opens behind “editorial and illustrative sketcher” (frame timing, the line after it) | Playback `src/components/homepage/personal/BoxOpening.astro`; the line `boxLine` in `src/content/homepage/values.ts` |
-| Blog posts (local or linked out) | `src/content/writing/`; list in `src/components/blog/WritingList.astro`, pages in `src/pages/blog/` |
+| Writing (essays and concepts, local or linked out) | `src/content/writing/`; list in `src/components/blog/WritingList.astro`, pages in `src/pages/writing/`; old `/blog/` addresses redirect in `astro.config.mjs` |
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
 | The top bar on every page: its blur band, when it fades in on scroll, how it grows under the open contact links | `src/components/homepage/PortfolioHeader.astro` (one header for all pages, rendered by `src/layouts/BaseDocument.astro`) |
 | Contact addresses and links (header panel and page footer) | `src/config/site.ts`; footer layout in `src/components/homepage/closing/ClosingContact.astro` |
@@ -47,6 +47,9 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Instagram work card (the wall of saves, the search that pulls finds out of it) | Wall and flight `src/components/homepage/showcase/InstagramPrototype.astro`; the Saved screen and its search `SavedSearchShowcase` in `instagram-prototype/InstagramPrototypeApp.jsx` |
 | SuperGood work card (one phone: History, the tap on "Добавить весь заказ", the push to the menu, the plates landing in the live cart bar) | `src/components/homepage/showcase/SupergoodLunch.astro` |
 | Two Sticks work card (one phone: the chat, the handwriting Web App rising over it, 去 written stroke by stroke, the score) | `src/components/homepage/showcase/TwoSticksChat.astro` |
+| Little oddities: which oddities exist, their names, product, year | `src/content/oddities.ts` |
+| The little oddities section on the homepage: a hand of cards (found oddities face up, the ones to come face down and greyed with the scribble doodle, up to three), the deal from one stack, the fan that opens on hover, pick up and throw | `src/components/homepage/oddities/LittleOddities.astro` |
+| "Did I already send this?" oddity: its page and copy, the share sheet and its stand-in friends, the homepage card, the playable phone | Page `src/pages/oddities/already-sent/index.astro`; sheet `src/components/oddities/already-sent/ShareSheet.astro`; card `AlreadySentCard.astro`; phone `SendPlayground.astro`; avatars from `scripts/prepare-oddity-avatars.mjs` |
 | When a work card counts as looked at (hover delay, keyboard focus, the scroll line on phones) and the spotlight on it | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Case studies listing | `src/pages/case-studies/index.astro` |
 | Type, ink, field, accent | `src/styles/tokens.css` |

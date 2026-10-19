@@ -1,0 +1,272 @@
+---
+import { Image } from 'astro:assets';
+
+import ground from '../../../assets/oddities/already-sent/ground.png';
+import SendPlayground from '../../../components/oddities/already-sent/SendPlayground.astro';
+import ShareSheet from '../../../components/oddities/already-sent/ShareSheet.astro';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+import '../../../styles/case-study.css';
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+---
+
+<BaseDocument
+  title={t('Did I already send this? | Igor Kupchinenko', 'Я это уже отправлял? | Игорь Купчиненко')}
+  description={t(
+    'A little oddity in Instagram’s share sheet: it forgets what you already sent, so you have to remember. A small fix that leaves a trace where you decide.',
+    'Маленькая странность в окне «Поделиться» в Instagram: оно забывает, что вы уже отправили, и помнить приходится вам. Небольшое исправление, которое оставляет след там, где вы решаете.',
+  )}
+  pageClass="editorial-case-study oddity-document"
+>
+  <main id="main-content">
+    <header class="hero">
+      <h1>{t('Did I already send this?', 'Я это уже отправлял?')}</h1>
+      <p class="hero__line">
+        {t(
+          'Instagram remembers every reel you’ve sent. The share sheet just doesn’t tell you.',
+          'Instagram помнит каждый рилс, который вы отправили. Просто окно «Поделиться» об этом молчит.',
+        )}
+      </p>
+      <p class="facts-line">{t('A little oddity · Instagram · 2026', 'Маленькая странность · Instagram · 2026')}</p>
+    </header>
+
+    <!-- Before and after, at the moment the oddity happens: Share, opened again after sending. -->
+    <figure class="compare">
+      <div class="compare__plate">
+        <Image class="compare__ground" src={ground} alt="" widths={[640, 960, 1200]} format="webp" quality={80} sizes="(max-width: 1100px) calc(100vw - 40px), 1040px" loading="eager" decoding="async" fetchpriority="high" />
+        <div class="compare__side">
+          <p class="compare__label">{t('Today', 'Сейчас')}</p>
+          <ShareSheet class="compare__sheet" sent={[0]} loading="eager" decorative />
+        </div>
+        <div class="compare__side">
+          <p class="compare__label">{t('With the fix', 'С исправлением')}</p>
+          <ShareSheet class="compare__sheet" fix sent={[0]} loading="eager" decorative />
+        </div>
+      </div>
+      <figcaption>
+        {t(
+          'Share, opened again two hours after sending this reel to Mira. Today it looks exactly like the first time. Names and pictures are stand-ins.',
+          'Окно «Поделиться», открытое снова через два часа после того, как рилс ушёл Мире. Сейчас оно выглядит точно так же, как в первый раз. Имена и картинки условные.',
+        )}
+      </figcaption>
+    </figure>
+
+    <section class="study-section" aria-labelledby="oddity">
+      <h2 id="oddity">{t('Wait, did I send it?', 'Стоп, я же его отправлял?')}</h2>
+      <p>
+        {t(
+          'You watch a reel to the end, and it’s exactly your friend’s sense of humour. You tap Share, pick them, send. A few reels later, or the next morning, it comes around again. You tap Share, and the sheet looks exactly like it did the first time.',
+          'Вы досматриваете рилс до конца, и он точно в духе вашего друга. Нажимаете «Поделиться», выбираете его, отправляете. Через пару рилсов или на следующее утро он попадается снова. Вы нажимаете «Поделиться», а окно выглядит ровно так же, как в первый раз.',
+        )}
+      </p>
+      <p>
+        {t(
+          'Did I send it? I think I did. Maybe? You send it again, just in case, and feel like your memory is going.',
+          'Я ведь отправлял? Вроде да. Или нет? Вы отправляете ещё раз, на всякий случай, и чувствуете, что память начинает подводить.',
+        )}
+      </p>
+      <p>
+        {t(
+          'Instagram did confirm it when you sent it. The trouble comes next time: when you’re deciding whom to send it to, the sheet keeps no trace of what you already did.',
+          'Когда вы отправляли рилс, Instagram это подтвердил. Проблема начинается в следующий раз: когда вы решаете, кому его отправить, в окне не остаётся никакого следа того, что вы уже сделали.',
+        )}
+      </p>
+    </section>
+
+    <section class="study-section" aria-labelledby="head">
+      <h2 id="head">{t('Knowledge in the head', 'Знание в голове')}</h2>
+      <p>
+        {t(
+          'Don Norman splits what we need to act into two kinds of knowledge. Knowledge in the world is right there in front of us, like a light switch you can see is on. Knowledge in the head is whatever we have to remember.',
+          'Дон Норман делит знание, которое нужно нам, чтобы действовать, на два вида. Знание в мире лежит прямо перед нами, как выключатель, по которому видно, что свет включён. Знание в голове нам приходится помнить.',
+        )}
+      </p>
+      <p>
+        {t(
+          'Instagram knows you sent this reel. It’s right there in your chat with Mira. But at the moment you choose whom to send it to, that knowledge isn’t in the world. It’s only in your head, so you have to recall it.',
+          'Instagram знает, что вы отправили этот рилс: он лежит в вашем чате с Мирой. Но в момент, когда вы выбираете, кому его отправить, этого знания нет в мире. Оно есть только у вас в голове, и его приходится вспоминать.',
+        )}
+      </p>
+      <p>
+        {t('And recall is exactly what fails here. Sending a reel is a routine action, the kind ', 'А вспоминание здесь как раз и подводит. Отправить рилс для нас рутина, такие действия ')}<a href={localePath('/blog/what-is-a-vibe/', locale)}>{t('behavioral processing', 'поведенческий уровень обработки')}</a>{t(
+          ' runs on autopilot. We do it without paying attention, so it leaves almost no memory behind. That’s why designers aim for recognition over recall: show people what they need instead of asking them to remember it.',
+          ' выполняет на автопилоте. Мы делаем это не задумываясь, и в памяти почти ничего не остаётся. Поэтому дизайнеры стремятся к узнаванию вместо припоминания: показать человеку то, что ему нужно, а не просить его это вспомнить.',
+        )}
+      </p>
+    </section>
+
+    <section class="study-section" aria-labelledby="door">
+      <h2 id="door">{t('Did I lock the door?', 'Я закрыл дверь?')}</h2>
+      <p>
+        {t(
+          'It’s the same feeling as walking away from home and wondering whether you locked the door. You’ve locked it a thousand times, so this time left no mark.',
+          'Это то же чувство, что и когда вы выходите из дома и не можете вспомнить, закрыли ли дверь. Вы закрывали её тысячу раз, и в этот раз в памяти ничего не отложилось.',
+        )}
+      </p>
+      <p class="insight">
+        {t(
+          'Nobody fixes that with a better memory. People fix it by putting the answer back into the world.',
+          'Никто не решает это хорошей памятью. Это решают тем, что возвращают ответ в мир.',
+        )}
+      </p>
+      <p>
+        {t(
+          'A pill box with a compartment for each day doesn’t ask whether you took Tuesday’s pill. You just look: Tuesday is empty, so you did. Some people take a photo of the locked door for the same reason. The trace does the remembering.',
+          'Таблетница с отделением на каждый день не спрашивает, приняли ли вы таблетку во вторник. Вы просто смотрите: вторник пустой, значит, приняли. Кто-то по той же причине фотографирует закрытую дверь. Помнит след, а не вы.',
+        )}
+      </p>
+    </section>
+
+    <section class="study-section" aria-labelledby="fix">
+      <h2 id="fix">{t('A trace where you decide', 'След там, где вы решаете')}</h2>
+      <p>
+        {t(
+          'So the fix is small. When the share sheet opens, it shows who already got this reel: a quiet line under their name, right where you’re looking anyway.',
+          'Поэтому исправление маленькое. Когда окно «Поделиться» открывается, оно показывает, кому этот рилс уже ушёл: тихая строчка под именем, ровно там, куда вы и так смотрите.',
+        )}
+      </p>
+      <ul class="plain-list">
+        <li>{t('It’s a note, not a lock. You can still send it again, now on purpose.', 'Это подсказка, а не замок. Отправить ещё раз можно, только теперь осознанно.')}</li>
+        <li>{t('Nobody moves. Everyone stays where your thumb expects them, so the sheet still feels familiar.', 'Никто не переезжает. Все остаются там, где их ждёт палец, и окно остаётся знакомым.')}</li>
+        <li>{t('It doesn’t look like picking someone. The blue check means “sending now”, the grey line means “already sent”.', 'Это не похоже на выбор. Синяя галочка значит «отправляю сейчас», серая строчка значит «уже отправлено».')}</li>
+      </ul>
+
+      <div class="try">
+        <Image class="try__ground" src={ground} alt="" widths={[640, 960, 1200]} format="webp" quality={80} sizes="(max-width: 1100px) calc(100vw - 40px), 1040px" loading="lazy" decoding="async" />
+        <SendPlayground />
+      </div>
+    </section>
+
+    <p class="reading">
+      {t('Further reading: Don Norman, ', 'Почитать: Дон Норман, ')}<cite>{t('The Design of Everyday Things', '«Дизайн привычных вещей»')}</cite>{t('. Jakob Nielsen, ', '. Якоб Нильсен, ')}<cite>{t('10 Usability Heuristics for User Interface Design', '«10 эвристик юзабилити»')}</cite>.
+    </p>
+  </main>
+
+  <footer class="case-footer">
+    <nav aria-label={t('Oddity links', 'Ссылки')}>
+      <a href={`${localePath('/', locale)}#oddities`}><span class="link-mark">{t('More oddities', 'Другие странности')}</span></a>
+      <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
+    </nav>
+  </footer>
+</BaseDocument>
+
+<style>
+  main {
+    padding-bottom: 2rem;
+  }
+
+  .facts-line {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Both sheets on one stretch of the card's watercolour, cut off by its lower edge like the
+     homepage card, each under its name. */
+  .compare {
+    margin: 0 auto clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .compare__plate {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.25rem, 4vw, 4rem);
+    height: clamp(24rem, 46vw, 32rem);
+    padding: clamp(1.5rem, 4vw, 3rem) clamp(1.25rem, 6vw, 5.5rem) 0;
+    overflow: hidden;
+    border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+    background: #f3cdae;
+  }
+
+  .compare__plate :global(.compare__ground),
+  .try :global(.try__ground) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .compare__side {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .compare__label {
+    margin: 0 0 0.85rem;
+    color: #5b3a2b;
+    font-size: var(--study-small);
+    letter-spacing: 0.01em;
+  }
+
+  .compare__side :global(.compare__sheet) {
+    flex: 1;
+    min-height: 0;
+    filter: drop-shadow(0 0.9rem 1.6rem rgb(80 30 10 / 0.22));
+  }
+
+  .compare figcaption {
+    margin-inline: auto;
+  }
+
+  .study-section {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .study-section > .insight {
+    margin-block: 2rem;
+  }
+
+  .try {
+    position: relative;
+    display: grid;
+    place-items: center;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem) 1rem;
+    overflow: hidden;
+    border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+    background: #f3cdae;
+  }
+
+  .try > :global(send-playground) {
+    position: relative;
+  }
+
+  /* No playground without JavaScript, and no empty plate either. */
+  :global(html:not(.js)) .try {
+    display: none;
+  }
+
+  .reading {
+    max-width: var(--study-measure);
+    margin: clamp(3rem, 6vw, 4.5rem) auto 0;
+    padding-top: 20px;
+    border-top: 1px solid var(--study-rule);
+    color: var(--study-caption);
+    font-size: var(--study-small);
+    line-height: 1.6;
+  }
+
+  /* On a phone two sheets side by side would be too small to read, so they stack, each cut to
+     its first row, where Mira is. */
+  @media (max-width: 40rem) {
+    .compare__plate {
+      grid-template-columns: minmax(0, 1fr);
+      height: auto;
+      padding: 1.5rem 1.25rem 0;
+      gap: 1.5rem;
+    }
+
+    .compare__side {
+      height: 15.5rem;
+    }
+
+    .compare__side :global(.compare__sheet) {
+      -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent);
+      mask-image: linear-gradient(to bottom, #000 72%, transparent);
+    }
+  }
+</style>

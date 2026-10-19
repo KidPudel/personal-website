@@ -8,7 +8,7 @@ const t = translator(toLocale(Astro.currentLocale));
 ---
 
 <BaseDocument
-  title={t('Blog | Igor Kupchinenko', 'Блог | Игорь Купчиненко')}
+  title={t('Writing | Igor Kupchinenko', 'Тексты | Игорь Купчиненко')}
   description={t(
     'Writing by Igor Kupchinenko about product ideas and the things that shape them.',
     'Тексты Игоря Купчиненко о продуктовых идеях и о том, что их формирует.',
@@ -16,7 +16,7 @@ const t = translator(toLocale(Astro.currentLocale));
   pageClass="editorial-case-study blog-document"
 >
   <main id="main-content" class="blog-index">
-    <h1>{t('Blog', 'Блог')}</h1>
+    <h1>{t('Writing', 'Тексты')}</h1>
     <WritingList class="blog-index__list" />
   </main>
 </BaseDocument>

@@ -1,0 +1,610 @@
+---
+import { Image } from 'astro:assets';
+import '@fontsource/instrument-serif/400.css';
+
+import scribble from '../../../assets/art/doodles/Doodles_scribble.png';
+import ground from '../../../assets/oddities/already-sent/ground.png';
+import AlreadySentCard from '../../oddities/already-sent/AlreadySentCard.astro';
+import { oddities, oddityPath } from '../../../content/oddities';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+
+// The oddities are a hand of cards: each found oddity face up, and until there are three, the ones
+// still to come face down at the ends, greyed, with Igor's scribble on the back (not untangled yet).
+// A new oddity is the next card turned over.
+const backs = Math.max(0, 3 - oddities.length);
+type Slot = { kind: 'oddity'; index: number } | { kind: 'back' };
+const slots: Slot[] = [
+  ...(backs >= 2 ? [{ kind: 'back' } as const] : []),
+  ...oddities.map((_, index) => ({ kind: 'oddity', index }) as const),
+  ...(backs >= 1 ? [{ kind: 'back' } as const] : []),
+];
+// Each card's place in the fan: how many steps from the middle, so the hand opens evenly both ways.
+const middle = (slots.length - 1) / 2;
+// A real card leans only a little; the fan does the rest.
+const tilts = [-1, 1.2, -0.6, 0.8];
+---
+
+<!-- Little oddities: small things in products that don't match what people do. When the section
+     arrives the hand is dealt: the cards come out of one stack and fan open. A mouse coming near
+     opens the fan wider; any card can be picked up and thrown and springs back into the hand, the
+     face-down ones trailing the card beside them. All of it is decoration over plain links: without
+     JavaScript or under reduced motion the hand simply rests open. -->
+<section id="oddities" class="oddities" aria-labelledby="oddities-title">
+  <h2 id="oddities-title" class="oddities__title">{t('little oddities', 'маленькие странности')}</h2>
+  <p class="oddities__lead">
+    {t(
+      'Small things in products that don’t match how people actually behave. I notice one, name it, and try a fix.',
+      'Мелочи в продуктах, которые расходятся с тем, как люди ведут себя на самом деле. Замечаю такую, называю и пробую исправить.',
+    )}
+  </p>
+
+  <oddity-hand class="hand">
+    <ul class="hand__cards" role="list">
+      {slots.map((slot, position) => {
+        const fan = `--fan: ${position - middle}; --deal: ${Math.abs(position - middle)}`;
+        if (slot.kind === 'back') {
+          return (
+            <li class="card card--back" data-card data-back aria-hidden="true" style={`${fan}; --tilt: 0deg`}>
+              <div class="card__body" data-card-body>
+                <div class="card__back">
+                  <Image class="card__wash" src={ground} alt="" widths={[400, 640, 800]} sizes="(max-width: 52rem) 70vw, 24rem" format="webp" quality={82} loading="lazy" decoding="async" />
+                  <Image class="card__scribble" src={scribble} alt="" width={256} loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </li>
+          );
+        }
+        const oddity = oddities[slot.index];
+        return (
+          <li class="card" data-card style={`${fan}; --tilt: ${tilts[slot.index % tilts.length]}deg`}>
+            <div class="card__body" data-card-body>
+              <div class="card__face" inert>
+                {oddity.slug === 'already-sent' && <AlreadySentCard />}
+              </div>
+              <p class="card__caption">
+                <a class="card__link link-mark" href={localePath(oddityPath(oddity.slug), locale)} draggable="false">
+                  {oddity.name[locale]}
+                </a>
+                <span>{oddity.where[locale]} · {oddity.year}</span>
+              </p>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  </oddity-hand>
+</section>
+
+<script>
+  type Sample = { t: number; x: number; y: number };
+  type Card = {
+    el: HTMLElement;
+    tilt: number;
+    back: boolean;
+    // A face-down card trails the face-up card beside it.
+    anchor?: Card;
+    // Offset from the card's place in the hand, its turn away from its resting tilt, and their speeds.
+    x: number;
+    y: number;
+    r: number;
+    vx: number;
+    vy: number;
+    vr: number;
+    // Where the card is pulled to, relative to its place.
+    tx: number;
+    ty: number;
+    // While held: the pointer, less where it took hold, and where the pointer has just been.
+    hold?: { id: number; dx: number; dy: number; px: number; py: number; moved: boolean; samples: Sample[] };
+  };
+
+  // A soft spring: a thrown card overshoots its place a little and settles, like something set down.
+  const SETTLE = { stiffness: 150, damping: 15 };
+  // How quickly a held card catches up with the hand (per second); high enough to feel attached,
+  // low enough to keep a little weight.
+  const FOLLOW = 32;
+  // Springs advance in steps this short whatever the frame rate, so a slow frame can't make them
+  // overshoot more each time.
+  const STEP = 1 / 240;
+  // The fastest a card may be thrown, in pixels per second.
+  const MAX_SPEED = 2600;
+  // How much pointer history a throw is measured over.
+  const THROW_WINDOW = 100;
+
+  const clamp = (value: number, limit: number) => Math.max(-limit, Math.min(limit, value));
+
+  class OddityHand extends HTMLElement {
+    private cards: Card[] = [];
+    private frame = 0;
+    private last = 0;
+    private abort?: AbortController;
+    private observer?: IntersectionObserver;
+    private reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    private fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+    connectedCallback() {
+      if (this.reduced.matches) return;
+      this.abort = new AbortController();
+      const { signal } = this.abort;
+      this.cards = [...this.querySelectorAll<HTMLElement>('[data-card]')].map((item) => ({
+        el: item.querySelector<HTMLElement>('[data-card-body]')!,
+        tilt: parseFloat(getComputedStyle(item).getPropertyValue('--tilt')) || 0,
+        back: item.hasAttribute('data-back'),
+        x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0, tx: 0, ty: 0,
+      }));
+      const faces = this.cards.filter((card) => !card.back);
+      this.cards.forEach((card, index) => {
+        if (!card.back) return;
+        card.anchor = faces.reduce<Card | undefined>((best, candidate) => {
+          const distance = Math.abs(this.cards.indexOf(candidate) - index);
+          return !best || distance < Math.abs(this.cards.indexOf(best) - index) ? candidate : best;
+        }, undefined);
+      });
+
+      this.prepareDeal();
+
+      this.addEventListener('pointermove', this.onHover, { signal });
+      this.addEventListener('pointerleave', this.onLeave, { signal });
+      this.cards.forEach((card) => {
+        card.el.addEventListener('pointerdown', (event) => this.onDown(event, card), { signal });
+        card.el.addEventListener('pointermove', (event) => this.onDrag(event, card), { signal });
+        card.el.addEventListener('pointerup', (event) => this.release(card, event.pointerId), { signal });
+        card.el.addEventListener('pointercancel', (event) => this.release(card, event.pointerId), { signal });
+        card.el.addEventListener('lostpointercapture', (event) => this.release(card, event.pointerId), { signal });
+        card.el.addEventListener('dragstart', (event) => event.preventDefault(), { signal });
+      });
+      // Leaving the window mid-drag lets go, so a card is never left stuck to a pointer.
+      window.addEventListener('blur', () => this.cards.forEach((card) => this.release(card)), { signal });
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+      this.observer?.disconnect();
+      cancelAnimationFrame(this.frame);
+      this.frame = 0;
+    }
+
+    // A hand still below the screen waits gathered into one stack, and is dealt when it comes into
+    // view: the cards fan out from the middle, and the face-up card's answer (the "sent" line)
+    // appears once it has settled. A hand already on screen stays as it is.
+    private prepareDeal() {
+      if (this.getBoundingClientRect().top < window.innerHeight) return;
+      const sheets = [...this.querySelectorAll<HTMLElement>('[data-share-sheet][data-fix]')];
+      sheets.forEach((sheet) => sheet.removeAttribute('data-fix'));
+      this.toggleAttribute('data-gathered', true);
+      this.observer = new IntersectionObserver((entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        this.observer?.disconnect();
+        this.removeAttribute('data-gathered');
+        window.setTimeout(() => sheets.forEach((sheet) => sheet.setAttribute('data-fix', '')), 700);
+      }, { rootMargin: '0px 0px -22% 0px' });
+      this.observer.observe(this);
+    }
+
+    private get held() {
+      return this.cards.find((card) => card.hold?.moved);
+    }
+
+    // A mouse coming near pulls the cards toward it a little, the nearer the stronger. Measured from
+    // each card's place in the hand, not from where it has been pulled, so the pull can't feed itself.
+    private onHover = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse' || !this.fine.matches || this.held) return;
+      this.cards.forEach((card) => {
+        const box = card.el.getBoundingClientRect();
+        const dx = event.clientX - (box.left + box.width / 2 - card.x);
+        const dy = event.clientY - (box.top + box.height / 2 - card.y);
+        const pull = Math.max(0, 1 - Math.hypot(dx, dy) / 520) * 0.04;
+        card.tx = clamp(dx * pull, 24);
+        card.ty = clamp(dy * pull, 24);
+      });
+      this.wake();
+    };
+
+    private onLeave = () => {
+      if (this.held) return;
+      this.cards.forEach((card) => {
+        card.tx = 0;
+        card.ty = 0;
+      });
+      this.wake();
+    };
+
+    private onDown(event: PointerEvent, card: Card) {
+      if (event.pointerType !== 'mouse' || event.button !== 0 || !this.fine.matches || this.held) return;
+      card.hold = {
+        id: event.pointerId,
+        dx: event.clientX - card.x,
+        dy: event.clientY - card.y,
+        px: event.clientX,
+        py: event.clientY,
+        moved: false,
+        samples: [{ t: event.timeStamp, x: event.clientX, y: event.clientY }],
+      };
+    }
+
+    private onDrag(event: PointerEvent, card: Card) {
+      const hold = card.hold;
+      if (!hold || hold.id !== event.pointerId) return;
+      if (!hold.moved) {
+        // A press that hardly moves is a click on the link.
+        if (Math.hypot(event.clientX - hold.px, event.clientY - hold.py) < 6) return;
+        hold.moved = true;
+        card.el.setPointerCapture(event.pointerId);
+        card.el.closest('[data-card]')?.classList.add('is-held');
+      }
+      card.tx = event.clientX - hold.dx;
+      card.ty = event.clientY - hold.dy;
+      hold.samples.push({ t: event.timeStamp, x: event.clientX, y: event.clientY });
+      while (hold.samples.length > 2 && event.timeStamp - hold.samples[0].t > THROW_WINDOW) hold.samples.shift();
+      this.wake();
+    }
+
+    // The pointer's speed over its last moments, which becomes the card's speed when let go. A hand
+    // that came to rest before letting go puts the card down instead of throwing it.
+    private throwSpeed(hold: NonNullable<Card['hold']>) {
+      const now = performance.now();
+      const recent = hold.samples.filter((sample) => now - sample.t < THROW_WINDOW);
+      if (recent.length < 2) return { vx: 0, vy: 0 };
+      const first = recent[0];
+      const last = recent[recent.length - 1];
+      const seconds = Math.max(0.016, (last.t - first.t) / 1000);
+      const vx = (last.x - first.x) / seconds;
+      const vy = (last.y - first.y) / seconds;
+      const speed = Math.hypot(vx, vy);
+      const scale = speed > MAX_SPEED ? MAX_SPEED / speed : 1;
+      return { vx: vx * scale, vy: vy * scale };
+    }
+
+    private release(card: Card, pointerId?: number) {
+      const hold = card.hold;
+      if (!hold || (pointerId !== undefined && hold.id !== pointerId)) return;
+      card.hold = undefined;
+      card.tx = 0;
+      card.ty = 0;
+      card.el.closest('[data-card]')?.classList.remove('is-held');
+      if (card.el.hasPointerCapture(hold.id)) card.el.releasePointerCapture(hold.id);
+      if (hold.moved) {
+        const { vx, vy } = this.throwSpeed(hold);
+        card.vx = vx;
+        card.vy = vy;
+        // The throw ends where it started: on the card, not inside the link it covers.
+        const swallow = (click: Event) => {
+          click.preventDefault();
+          click.stopPropagation();
+        };
+        card.el.addEventListener('click', swallow, { capture: true, once: true });
+        window.setTimeout(() => card.el.removeEventListener('click', swallow, { capture: true }), 0);
+      }
+      this.wake();
+    }
+
+    private wake() {
+      if (this.frame) return;
+      this.last = performance.now();
+      this.frame = requestAnimationFrame(this.step);
+    }
+
+    private step = (now: number) => {
+      // However long the frame took (a background tab can take seconds), the physics only ever
+      // covers a fraction of a second, in short fixed steps.
+      let elapsed = Math.min(0.05, Math.max(0, (now - this.last) / 1000));
+      this.last = now;
+      const held = this.held;
+      if (held) {
+        // A held card goes straight toward the hand, eased the same at any frame rate.
+        const catchUp = 1 - Math.exp(-FOLLOW * elapsed);
+        const x = held.x + (held.tx - held.x) * catchUp;
+        const y = held.y + (held.ty - held.y) * catchUp;
+        if (elapsed > 0) {
+          // Its speed only turns it; the throw speed comes from the pointer when it lets go.
+          held.vx = (x - held.x) / elapsed;
+          held.vy = (y - held.y) / elapsed;
+        }
+        held.x = x;
+        held.y = y;
+      }
+      while (elapsed > 1e-6) {
+        const dt = Math.min(STEP, elapsed);
+        elapsed -= dt;
+        this.cards.forEach((card) => this.integrate(card, held, dt));
+      }
+
+      let moving = false;
+      this.cards.forEach((card) => {
+        if (![card.x, card.y, card.r, card.vx, card.vy, card.vr].every(Number.isFinite)) {
+          Object.assign(card, { x: 0, y: 0, r: 0, vx: 0, vy: 0, vr: 0 });
+        }
+        card.el.style.transform = `translate3d(${card.x.toFixed(2)}px, ${card.y.toFixed(2)}px, 0) rotate(${(card.tilt + card.r).toFixed(3)}deg)`;
+        const target = this.targetOf(card, held);
+        if (card.hold || Math.hypot(card.vx, card.vy) > 4 || Math.hypot(target.x - card.x, target.y - card.y) > 0.4 || Math.abs(card.r) > 0.05 || Math.abs(card.vr) > 0.5) moving = true;
+      });
+
+      if (!moving) {
+        // Settled: snap the last fraction of a pixel and stop asking for frames.
+        this.cards.forEach((card) => {
+          if (card.hold) return;
+          card.vx = card.vy = card.vr = 0;
+        });
+      }
+      this.frame = moving ? requestAnimationFrame(this.step) : 0;
+    };
+
+    // Where a card is pulled to right now: its own target, plus its face-up neighbour's movement
+    // for a face-down card, or a little of the carried card's for the rest.
+    private targetOf(card: Card, held: Card | undefined) {
+      if (card.anchor && card.anchor.x !== undefined && !card.hold?.moved) {
+        return { x: card.tx + card.anchor.x * 0.45, y: card.ty + card.anchor.y * 0.45 };
+      }
+      if (held && held !== card) {
+        return { x: card.tx + held.x * 0.12, y: card.ty + held.y * 0.12 };
+      }
+      return { x: card.tx, y: card.ty };
+    }
+
+    private integrate(card: Card, held: Card | undefined, dt: number) {
+      if (card !== held) {
+        const target = this.targetOf(card, held);
+        card.vx += ((target.x - card.x) * SETTLE.stiffness - card.vx * SETTLE.damping) * dt;
+        card.vy += ((target.y - card.y) * SETTLE.stiffness - card.vy * SETTLE.damping) * dt;
+        card.vx = clamp(card.vx, MAX_SPEED * 1.5);
+        card.vy = clamp(card.vy, MAX_SPEED * 1.5);
+        card.x += card.vx * dt;
+        card.y += card.vy * dt;
+      }
+      // It swings into its motion and swings back as it slows.
+      const lean = clamp(card.vx * 0.012, 12);
+      card.vr += ((lean - card.r) * 120 - card.vr * 14) * dt;
+      card.r = clamp(card.r + card.vr * dt, 20);
+    }
+  }
+
+  if (!customElements.get('oddity-hand')) customElements.define('oddity-hand', OddityHand);
+</script>
+
+<style>
+  /* Title and line on top like every other section, the hand centred under them. */
+  .oddities {
+    display: block;
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
+    margin-inline: auto;
+    padding: 0 0 clamp(8rem, 13vw, 12rem);
+  }
+
+  /* The homepage's section titles: "my work", "more things i've made". */
+  .oddities__title {
+    margin: 0 0 clamp(1rem, 1.6vw, 1.5rem);
+    color: var(--color-ink);
+    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+
+  .oddities__lead {
+    max-width: 30em;
+    margin: 0;
+    color: var(--color-copy);
+    font-family: var(--font-reading);
+    font-size: clamp(0.98rem, 0.35vw + 0.92rem, 1.16rem);
+    letter-spacing: 0.02em;
+    line-height: 1.45;
+  }
+
+  /* The fan: every card in one grid cell, spread sideways by its step from the middle and turned
+     around a point far below the hand, so the cards open along an arc like a hand of cards. */
+  .hand {
+    --card: min(24rem, 66vw);
+    --spread: 44%;
+    --turn: 9deg;
+    display: block;
+    padding-block: clamp(3rem, 6vw, 4.5rem) 1rem;
+  }
+
+  .hand__cards {
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .card {
+    position: relative;
+    z-index: 2;
+    grid-area: 1 / 1;
+    width: var(--card);
+    transform-origin: 50% 160%;
+    translate: calc(var(--fan) * var(--spread)) calc(var(--deal) * 0.9rem);
+    rotate: calc(var(--fan) * var(--turn));
+    transition:
+      translate 620ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--deal) * 70ms),
+      rotate 620ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--deal) * 70ms);
+  }
+
+  .card--back {
+    z-index: 1;
+  }
+
+  /* Before the deal: one stack, the face-up card on top. */
+  .hand[data-gathered] .card {
+    translate: 0 1.5rem;
+    rotate: 0deg;
+  }
+
+  /* A mouse in the hand opens the fan wider, so the cards still to come show more. */
+  @media (hover: hover) and (pointer: fine) {
+    .hand:hover,
+    .hand:focus-within {
+      --spread: 58%;
+      --turn: 13deg;
+    }
+
+    .hand:hover .card,
+    .hand:focus-within .card {
+      transition-delay: 0ms;
+      transition-duration: 420ms;
+    }
+  }
+
+  .card__body {
+    position: relative;
+    transform: rotate(var(--tilt));
+    transform-origin: 50% 40%;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .card__face,
+  .card__back {
+    overflow: hidden;
+    border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.25rem 3rem rgb(17 17 15 / 0.12);
+  }
+
+  .card__face {
+    transition:
+      transform 280ms var(--ease-out),
+      box-shadow 280ms var(--ease-out);
+  }
+
+  /* Face down: the oddities still to come. Their watercolour is drained to grey paper inside a pale
+     border, the scribble faint on it, so only the found oddity is in colour. */
+  .card__back {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: #ebe9e5;
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.05),
+      0 0.9rem 2.2rem rgb(17 17 15 / 0.08);
+  }
+
+  .card__back::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 clamp(0.45rem, 0.8vw, 0.65rem) rgb(248 248 248 / 0.7);
+    content: '';
+  }
+
+  .card__back :global(.card__wash) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(0.9) brightness(1.06) contrast(0.85);
+    opacity: 0.8;
+  }
+
+  .card__back :global(.card__scribble) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 52%;
+    height: auto;
+    translate: -50% -50%;
+    mix-blend-mode: multiply;
+    opacity: 0.32;
+  }
+
+  .card__caption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.1rem 1rem;
+    min-height: 2.75rem;
+    margin: 0;
+    padding-top: clamp(0.7rem, 1vw, 0.9rem);
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: clamp(0.95rem, 0.15vw + 0.9rem, 1.02rem);
+    letter-spacing: 0.015em;
+    line-height: 1.4;
+  }
+
+  .card__link {
+    color: var(--color-ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* The whole face-up card opens the oddity. */
+  .card__link::after {
+    position: absolute;
+    inset: 0;
+    border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+    content: '';
+  }
+
+  .card__link:focus-visible {
+    outline: none;
+  }
+
+  .card__link:focus-visible::after {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (hover: none) {
+    .card__link {
+      background-image: var(--link-mark-rest);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card__body {
+      cursor: grab;
+    }
+
+    .card:hover .card__face,
+    .card:has(.card__link:focus-visible) .card__face {
+      transform: translateY(-0.35rem);
+      box-shadow:
+        0 1px 0 rgb(17 17 15 / 0.06),
+        0 1.6rem 3.6rem rgb(17 17 15 / 0.16);
+    }
+
+    /* Picked up: off the table, a deeper shadow under it. */
+    .card.is-held {
+      z-index: 3;
+    }
+
+    .card.is-held .card__body {
+      cursor: grabbing;
+    }
+
+    .card.is-held :is(.card__face, .card__back) {
+      transform: scale(1.03);
+      box-shadow:
+        0 1px 0 rgb(17 17 15 / 0.05),
+        0 2.6rem 4.5rem rgb(17 17 15 / 0.2);
+    }
+
+    .card.is-held .card__link {
+      pointer-events: none;
+    }
+  }
+
+  /* On a phone the hand is narrower, so the cards to come only peek out at the sides. */
+  @media (max-width: 52rem) {
+    .oddities {
+      width: min(calc(100% - 2 * var(--page-gutter)), 44rem);
+      padding-bottom: clamp(7rem, 24vw, 9rem);
+    }
+
+    .hand {
+      --card: min(70vw, 22rem);
+      --spread: 30%;
+      --turn: 7deg;
+      padding-top: 2.5rem;
+    }
+  }
+</style>

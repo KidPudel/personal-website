@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+
+import ground from '../../../assets/oddities/already-sent/ground.png';
+import { imagePlaceholder } from '../../../lib/image-placeholder';
+import ShareSheet from './ShareSheet.astro';
+
+// The card for "Did I already send this?": the share sheet, opened again, already answering the
+// question. Mira got this reel two hours ago, and the sheet says so under her name.
+const placeholder = await imagePlaceholder(ground);
+---
+
+<div class="sent-card" style={`--card-placeholder: url(${placeholder})`}>
+  <Image
+    class="sent-card__ground"
+    src={ground}
+    alt=""
+    widths={[400, 640, 800]}
+    sizes="(max-width: 44rem) 82vw, 24rem"
+    format="webp"
+    quality={82}
+    loading="lazy"
+    decoding="async"
+  />
+  <ShareSheet class="sent-card__sheet" fix sent={[0]} />
+</div>
+
+<style>
+  .sent-card {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--card-placeholder) center / cover no-repeat;
+  }
+
+  .sent-card :global(.sent-card__ground) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* The sheet rises out of the card's lower edge, as it rises over a reel. Its "Sent" line is set a
+     touch larger than in the product, so it reads at the card's size. */
+  .sent-card :global(.sent-card__sheet) {
+    position: absolute;
+    inset: 11% 6% 0;
+    filter: drop-shadow(0 0.9rem 1.6rem rgb(80 30 10 / 0.22));
+  }
+
+  .sent-card :global(.share-sheet__sent) {
+    font-size: calc(14.5 * var(--pt));
+  }
+</style>

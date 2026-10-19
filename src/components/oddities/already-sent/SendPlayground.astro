@@ -1,0 +1,351 @@
+---
+import { Image } from 'astro:assets';
+
+import sky from '../../../assets/art/dithered-sky-poster.webp';
+import { toLocale, translator } from '../../../i18n/locales';
+import ShareSheet from './ShareSheet.astro';
+
+// The oddity to try by hand: a reel (the homepage's own sky), its Share button, and the share sheet.
+// Pick someone, send, open Share again. "Today" opens the same blank sheet as before; "With the fix"
+// shows who already got it. The page says all of this in words and pictures as well, so without
+// JavaScript the playground is simply left out.
+const t = translator(toLocale(Astro.currentLocale));
+const hints = {
+  pick: t('Pick someone and send them this reel.', 'Выберите кого-нибудь и отправьте ему этот рилс.'),
+  send: t('Now tap Send.', 'Теперь нажмите «Отправить».'),
+  sent: t('Sent. Now open Share again.', 'Отправлено. Теперь снова откройте «Поделиться».'),
+  closed: t('Tap Share to open it again.', 'Нажмите «Поделиться», чтобы открыть снова.'),
+  today: t('So, did it go? The sheet isn’t saying. Now try it with the fix.', 'Ну что, ушло или нет? Окно молчит. Теперь попробуйте с исправлением.'),
+  fix: t('There’s the trace. You can still send it again, on purpose.', 'Вот и след. Отправить ещё раз можно, только теперь осознанно.'),
+};
+---
+
+<send-playground class="playground" data-version="today" data-open data-hints={JSON.stringify(hints)}>
+  <div class="playground__switch" role="group" aria-label={t('Version', 'Версия')}>
+    <button type="button" class="playground__option" data-version-option="today" aria-pressed="true">{t('Instagram today', 'Instagram сейчас')}</button>
+    <button type="button" class="playground__option" data-version-option="fix" aria-pressed="false">{t('With the fix', 'С исправлением')}</button>
+  </div>
+
+  <div class="playground__phone">
+    <div class="playground__screen">
+      <Image class="playground__reel" src={sky} alt={t('A reel of a dithered blue sky.', 'Рилс с синим небом в точечном растре.')} widths={[360, 540, 720]} sizes="(max-width: 30rem) 70vw, 20rem" format="webp" quality={80} loading="lazy" decoding="async" />
+      <div class="playground__actions" data-actions>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3S3.5 15.4 3.5 9.2A4.4 4.4 0 0 1 12 7.1a4.4 4.4 0 0 1 8.5 2.1c0 6.2-8.5 11.1-8.5 11.1z" /></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 15.4A8.6 8.6 0 1 0 17 19l3.7 1.1z" /></svg>
+        <button type="button" class="playground__share" data-share aria-label={t('Share', 'Поделиться')}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.5 3 10.2 13.8M21.5 3l-7.1 18-4.2-7.2L3 9.7z" /></svg>
+        </button>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.3" /><circle cx="12" cy="12" r="1.3" /><circle cx="18.5" cy="12" r="1.3" /></svg>
+      </div>
+      <div class="playground__dim" data-dim aria-hidden="true"></div>
+      <div class="playground__sheet" data-sheet-wrap>
+        <ShareSheet interactive sentWhen={t('just now', 'только что')} />
+      </div>
+    </div>
+  </div>
+
+  <p class="playground__hint" aria-live="polite" data-hint>{hints.pick}</p>
+</send-playground>
+
+<script>
+  class SendPlayground extends HTMLElement {
+    private abort?: AbortController;
+    private sentTo = new Set<number>();
+    private hints: Record<string, string> = {};
+    // Whether this opening of the sheet came after a send, so it's the moment of the oddity.
+    private reopened = false;
+
+    connectedCallback() {
+      this.abort = new AbortController();
+      const { signal } = this.abort;
+      this.hints = JSON.parse(this.dataset.hints ?? '{}');
+      this.querySelectorAll<HTMLButtonElement>('[data-person]').forEach((person) => {
+        person.addEventListener('click', () => this.toggle(person), { signal });
+      });
+      this.querySelector('[data-send]')?.addEventListener('click', () => this.send(), { signal });
+      this.querySelector('[data-share]')?.addEventListener('click', () => this.open(), { signal });
+      this.querySelector('[data-dim]')?.addEventListener('click', () => this.close(), { signal });
+      this.querySelectorAll<HTMLButtonElement>('[data-version-option]').forEach((option) => {
+        option.addEventListener('click', () => this.setVersion(option.dataset.versionOption ?? 'today'), { signal });
+      });
+      this.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && this.hasAttribute('data-open')) this.close();
+      }, { signal });
+      this.sync();
+    }
+
+    disconnectedCallback() {
+      this.abort?.abort();
+    }
+
+    private get sheet() {
+      return this.querySelector<HTMLElement>('[data-share-sheet]')!;
+    }
+
+    private picked() {
+      return [...this.querySelectorAll<HTMLButtonElement>('[data-person][aria-pressed="true"]')];
+    }
+
+    private toggle(person: HTMLButtonElement) {
+      person.setAttribute('aria-pressed', person.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      this.hint(this.picked().length ? 'send' : 'pick');
+      this.sync();
+    }
+
+    private send() {
+      const picked = this.picked();
+      if (!picked.length) return;
+      picked.forEach((person) => {
+        this.sentTo.add(Number(person.dataset.person));
+        person.setAttribute('aria-pressed', 'false');
+      });
+      this.close('sent');
+    }
+
+    private open() {
+      this.reopened = this.sentTo.size > 0;
+      this.toggleAttribute('data-open', true);
+      this.sheet.style.setProperty('--sent-delay', '320ms');
+      this.hint(this.reopened ? (this.dataset.version === 'fix' ? 'fix' : 'today') : 'pick');
+      this.sync();
+      window.setTimeout(() => this.querySelector<HTMLElement>('[data-person]')?.focus({ preventScroll: true }), 60);
+    }
+
+    private close(reason: 'sent' | 'closed' = 'closed') {
+      this.toggleAttribute('data-open', false);
+      this.picked().forEach((person) => person.setAttribute('aria-pressed', 'false'));
+      this.hint(reason === 'sent' || this.sentTo.size ? 'sent' : 'closed');
+      this.sync();
+      this.querySelector<HTMLElement>('[data-share]')?.focus({ preventScroll: true });
+    }
+
+    private setVersion(version: string) {
+      this.dataset.version = version;
+      this.sheet.style.setProperty('--sent-delay', '0ms');
+      this.querySelectorAll<HTMLButtonElement>('[data-version-option]').forEach((option) => {
+        option.setAttribute('aria-pressed', String(option.dataset.versionOption === version));
+      });
+      if (this.hasAttribute('data-open') && this.reopened) this.hint(version === 'fix' ? 'fix' : 'today');
+      this.sync();
+    }
+
+    private hint(key: string) {
+      const hint = this.querySelector<HTMLElement>('[data-hint]');
+      if (hint && this.hints[key]) hint.textContent = this.hints[key];
+    }
+
+    // One place turns the state into the page: who is marked as sent, whether the sheet shows it,
+    // what can be reached by touch and keyboard while the sheet is up or down.
+    private sync() {
+      const open = this.hasAttribute('data-open');
+      const picking = this.picked().length > 0;
+      this.querySelectorAll<HTMLElement>('[data-person]').forEach((person) => {
+        person.toggleAttribute('data-sent', this.sentTo.has(Number(person.dataset.person)));
+      });
+      this.sheet.toggleAttribute('data-fix', this.dataset.version === 'fix');
+      this.sheet.toggleAttribute('data-picking', open && picking);
+      this.querySelector<HTMLElement>('[data-send]')?.setAttribute('tabindex', open && picking ? '0' : '-1');
+      this.querySelector<HTMLElement>('[data-sheet-wrap]')!.inert = !open;
+      this.querySelector<HTMLElement>('[data-actions]')!.inert = open;
+      this.toggleAttribute('data-nudge', !open && this.sentTo.size > 0);
+    }
+  }
+
+  if (!customElements.get('send-playground')) customElements.define('send-playground', SendPlayground);
+</script>
+
+<style>
+  .playground {
+    display: none;
+    justify-items: center;
+    gap: 1.25rem;
+  }
+
+  :global(.js) .playground {
+    display: grid;
+  }
+
+  .playground__switch {
+    display: inline-flex;
+    padding: 0.25rem;
+    border-radius: 99px;
+    background: rgb(255 255 255 / 0.55);
+    box-shadow: inset 0 0 0 1px rgb(17 17 15 / 0.06);
+  }
+
+  .playground__option {
+    min-height: 2.75rem;
+    padding: 0 1.1rem;
+    border: 0;
+    border-radius: 99px;
+    background: transparent;
+    color: var(--color-copy);
+    font: inherit;
+    font-size: var(--study-small);
+    cursor: pointer;
+    transition:
+      background-color 200ms ease,
+      color 200ms ease,
+      box-shadow 200ms ease,
+      transform 160ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .playground__option:active {
+    transform: scale(0.97);
+  }
+
+  .playground__option[aria-pressed='true'] {
+    background: #fff;
+    color: var(--color-ink);
+    box-shadow: 0 1px 3px rgb(17 17 15 / 0.12);
+  }
+
+  .playground__option:focus-visible {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  .playground__phone {
+    width: min(20rem, 78vw);
+    padding: 0.55rem;
+    border-radius: 2.9rem;
+    background: #0d0e10;
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.08),
+      0 1.8rem 3.6rem rgb(80 30 10 / 0.24);
+  }
+
+  .playground__screen {
+    position: relative;
+    aspect-ratio: 390 / 844;
+    overflow: hidden;
+    border-radius: 2.4rem;
+    background: #1e3a8a;
+    container-type: inline-size;
+  }
+
+  .playground__screen :global(.playground__reel) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .playground__actions {
+    position: absolute;
+    right: calc(10 * 100cqi / 390);
+    bottom: calc(110 * 100cqi / 390);
+    display: grid;
+    justify-items: center;
+    gap: calc(22 * 100cqi / 390);
+    color: #fff;
+    filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.35));
+  }
+
+  .playground__actions svg {
+    width: calc(28 * 100cqi / 390);
+    height: calc(28 * 100cqi / 390);
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.9;
+  }
+
+  .playground__actions circle {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  .playground__share {
+    display: grid;
+    place-items: center;
+    width: calc(48 * 100cqi / 390);
+    height: calc(48 * 100cqi / 390);
+    margin: calc(-10 * 100cqi / 390);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 160ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .playground__share:active {
+    transform: scale(0.9);
+  }
+
+  .playground__share:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 0;
+  }
+
+  /* After a send, the Share button gives a small hop now and then, so the next step is obvious. */
+  [data-nudge] .playground__share svg {
+    animation: share-nudge 2.4s var(--ease-out) 0.6s infinite;
+  }
+
+  @keyframes share-nudge {
+    0%, 30%, 100% {
+      transform: none;
+    }
+    10% {
+      transform: translate(2px, -3px) rotate(-8deg);
+    }
+    20% {
+      transform: translate(-1px, 0) rotate(3deg);
+    }
+  }
+
+  .playground__dim {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.5);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
+  }
+
+  [data-open] .playground__dim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Opening is a little slower than closing: the sheet arrives, then gets out of the way. */
+  .playground__sheet {
+    position: absolute;
+    inset: 37% 0 0;
+    transform: translateY(102%);
+    transition: transform 260ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  [data-open] .playground__sheet {
+    transform: none;
+    transition-duration: 420ms;
+  }
+
+  .playground__sheet :global(.share-sheet-frame) {
+    height: 100%;
+  }
+
+  .playground__hint {
+    min-height: 3em;
+    max-width: 22rem;
+    margin: 0;
+    color: var(--color-copy);
+    font-size: var(--study-small);
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: balance;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-nudge] .playground__share svg {
+      animation: none;
+    }
+  }
+</style>

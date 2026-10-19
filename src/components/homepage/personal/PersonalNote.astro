@@ -7,7 +7,7 @@ import BoxOpening from './BoxOpening.astro';
 import HoloPortrait from './HoloPortrait.astro';
 
 const personalNote = personalNoteCopy[toLocale(Astro.currentLocale)];
-const reveals: PersonalReveal[] = ['portrait', 'doodles', 'blog'];
+const reveals: PersonalReveal[] = ['portrait', 'doodles', 'writing'];
 const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 ---
 
@@ -48,7 +48,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
               <figure class="personal-note__portrait">
                 <HoloPortrait src={couplePortrait} alt={personalNote.portraitAlt} />
               </figure>
-            ) : reveal === 'blog' ? (
+            ) : reveal === 'writing' ? (
               <WritingList class="personal-note__writing" limit={1} />
             ) : (
               <BoxOpening label={personalNote.boxLabel} line={personalNote.boxLine} />
@@ -297,13 +297,13 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
     }
   }
 
-  /* The blog list is text: what it lies over melts into a soft blur behind
+  /* The writing list is text: what it lies over melts into a soft blur behind
      it, as under the introduction's notes and the header. */
-  :global(.js) .personal-note__body .personal-note__panel--blog {
+  :global(.js) .personal-note__body .personal-note__panel--writing {
     isolation: isolate;
   }
 
-  :global(.js) .personal-note__body .personal-note__panel--blog::before {
+  :global(.js) .personal-note__body .personal-note__panel--writing::before {
     position: absolute;
     z-index: -1;
     inset: 0 -2rem -3rem;

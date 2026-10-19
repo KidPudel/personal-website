@@ -25,8 +25,9 @@ Do not introduce a client application framework, global application state, a cli
 | `/case-studies/supergood/` | SuperGood editorial case study |
 | `/case-studies/two-sticks/` | Two Sticks editorial case study |
 | `/case-studies/chinese-bee/` | Legacy route with Two Sticks as its canonical URL |
-| `/blog/` | Writing index from the `writing` collection; posts published elsewhere link out |
-| `/blog/<slug>/` | Local blog post |
+| `/oddities/<slug>/` | A little oddity: a short page with the mismatch, why it happens, and the fix (the homepage section is their index) |
+| `/writing/` | Writing index from the `writing` collection; posts published elsewhere link out |
+| `/writing/<slug>/` | Local post (`/blog/` addresses redirect here) |
 | Existing legacy paths | Static redirects to the closest current document or anchor |
 
 Every translated route also exists under `/ru/` (for example `/ru/case-studies/observatory/`). Russian route files only render the English page component; Astro's i18n routing sets `Astro.currentLocale`, and components choose copy from it through `src/i18n/locales.ts`. The 404 page is shared and bilingual.

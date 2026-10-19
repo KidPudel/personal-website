@@ -69,6 +69,10 @@ Both cards are one phone built from the case studies' screenshots, prepared by `
 
 The pile of saves on the Instagram Saves cover, and the faint paper of its frames, is one generated sprite (`pile/pile.webp`, about 300 KB, 54 tiles of 160 × 200) made by `scripts/prepare-instagram-pile.mjs` from the prototype's thumbnails, so the wall costs one request instead of fifty-four. It is decorative (`aria-hidden`); the search it shows is told in the text.
 
+### Little oddities
+
+Each oddity card is a watercolour ground (a feralui.dev render like the work cards, 1200 px PNG served as WebP through `Image`) with the product drawn live in HTML on it. The card is below the fold: its ground is lazy and paints a 24 px inline copy until it arrives. The share sheet's stand-in avatars are Igor's doodles, trimmed and centred by `scripts/prepare-oddity-avatars.mjs` into 192 px PNGs (line art, kept lossless, about 6 KB each). On an oddity's own page the before-and-after plate's ground is the route's one high-priority image; the playable phone's ground and reel (the homepage sky poster) are lazy, and without JavaScript the playground and its plate are left out, since the page says the same in words and the static pair.
+
 ## Flipbooks and animated image sequences
 
 - Do not eagerly fetch or decode every frame when a component connects.
