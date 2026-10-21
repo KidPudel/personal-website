@@ -37,6 +37,11 @@ const dateFormat = new Intl.DateTimeFormat(contentLocale, {
             {dateFormat.format(entry.data.publishedAt)}
           </time>
         )}
+        {entry.data.mediumUrl && (
+          <a class="blog-post__medium" href={entry.data.mediumUrl} hreflang="en">
+            <span class="link-mark">{t('Also on Medium', 'Также на Medium, на английском')}</span> ↗
+          </a>
+        )}
       </header>
       <Content />
     </article>

@@ -20,6 +20,12 @@ const allPosts = (await getWriting(locale)).sort(
 );
 const posts = limit ? allPosts.slice(0, limit) : allPosts;
 
+// The newest post is marked as new for its first month. Checked at build time,
+// so the mark disappears on the first deploy after that.
+const freshFor = 30 * 24 * 60 * 60 * 1000;
+const newestDate = allPosts[0]?.entry.data.publishedAt;
+const isNew = (date?: Date) => !!date && date === newestDate && Date.now() - date.getTime() < freshFor;
+
 const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
 ---
 
@@ -32,6 +38,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
         hreflang={data.externalLanguage}
       >
         <span class="writing-list__title link-mark">{data.title}</span>
+        {isNew(data.publishedAt) && <span class="writing-list__new">{t('new', 'новое')}</span>}
         {data.externalLabel && (
           <span class="writing-list__external">
             {' '}{t('on', 'на')} {data.externalLabel}{data.externalLanguage && data.externalLanguage !== locale && t(', in Russian', ', на английском')} ↗
@@ -95,6 +102,16 @@ const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numer
     border-radius: 0.08em;
     outline: var(--focus-width) solid var(--color-focus);
     outline-offset: var(--focus-offset);
+  }
+
+  /* A note in the introduction's hand beside the newest title, not a badge. */
+  .writing-list__new {
+    margin-left: 0.4em;
+    font-family: var(--font-intro);
+    font-style: italic;
+    font-size: 1.15em;
+    color: color-mix(in srgb, var(--color-accent) 78%, var(--color-ink));
+    white-space: nowrap;
   }
 
   .writing-list__external {

@@ -132,10 +132,16 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .blog-document h2 { margin: 0 0 20px; font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem); letter-spacing: -.025em; line-height: 1.3; }
 .blog-document h3 { margin: 0 0 16px; font-size: clamp(1.15rem, 1rem + 0.5vw, 1.375rem); letter-spacing: -.015em; line-height: 1.4; }
 .blog-document p { margin: 0 0 24px; font-size: var(--study-body); letter-spacing: normal; line-height: 1.65; }
+.blog-document .blog-post :is(ul, ol) { margin: 0 0 24px; padding-left: 1.4em; }
+.blog-document .blog-post li { font-size: var(--study-body); line-height: 1.65; }
 .blog-document figure { margin: 36px 0; }
 .blog-document figcaption { margin-top: 16px; }
 .blog-document .blog-post__header { margin-bottom: 48px; }
 .blog-document .blog-post__header time { color: #656560; font-size: var(--study-small); }
+/* The Medium copy sits after the date on the same quiet line. */
+.blog-document .blog-post__medium { color: #656560; font-size: var(--study-small); text-decoration: none; }
+.blog-document .blog-post__header time + .blog-post__medium::before { content: '·'; margin: 0 .5em; }
+.blog-document .blog-post__medium:focus-visible { border-radius: 0.08em; outline: var(--focus-width) solid var(--color-focus); outline-offset: var(--focus-offset); }
 .blog-document .blog-post > h2:not(:first-child) { margin-top: 56px; }
 .blog-document .blog-post__reading { margin-top: 48px; padding-top: 20px; border-top: 1px solid rgb(0 0 0 / .1); color: #656560; font-size: var(--study-small); line-height: 1.6; }
 .blog-document .case-footer { width: min(calc(var(--study-body) * 38), calc(100% - 48px)); margin: 40px auto 0; padding-bottom: 100px; }

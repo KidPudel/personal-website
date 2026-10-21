@@ -50,6 +50,8 @@ const writing = defineCollection({
     externalLabel: z.string().optional(),
     // Language of the linked page when it differs from this entry's language.
     externalLanguage: z.enum(['en', 'ru']).optional(),
+    // The same post on Medium, linked from the post's own page. Medium copies are in English.
+    mediumUrl: z.url().optional(),
   }),
 });
 
