@@ -279,14 +279,16 @@ const tileStyle = (name: string) => {
     display: contents;
   }
 
+  /* Sized like the Two Sticks phone: near the top, running off the bottom
+     edge, so the app reads at a glance. */
   .instagram-prototype {
     position: absolute;
     z-index: 2;
-    top: 16%;
+    top: 3.5%;
     left: 50%;
     display: block;
     width: 64%;
-    height: 80%;
+    height: 118%;
     transform: translateX(-50%);
   }
 
@@ -302,7 +304,6 @@ const tileStyle = (name: string) => {
     background: #fff;
     box-shadow:
       0 0 0 clamp(0.3rem, 1.2vw, 0.7rem) rgb(255 255 255 / 0.28),
-      0 0 0 clamp(0.38rem, 1.7vw, 0.95rem) rgb(190 220 255 / 0.25),
       0 1rem 2rem rgb(23 54 96 / 0.22);
     overflow: hidden;
     transform: translate(-50%, -50%);
@@ -356,11 +357,13 @@ const tileStyle = (name: string) => {
     }
   }
 
+  /* The tall phone-width card keeps the whole phone, centered, so the wall
+     of saves still shows round it. */
   @media (max-width: 44rem) {
     .instagram-prototype {
-      top: 15%;
-      width: 60%;
-      height: 82%;
+      top: 5%;
+      width: 70%;
+      height: 90%;
     }
   }
 </style>

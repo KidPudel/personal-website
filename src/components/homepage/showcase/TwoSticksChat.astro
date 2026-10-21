@@ -69,7 +69,7 @@ const deviceImage = {
 
         <!-- The handwriting Web App, opened as a sheet over the chat. -->
         <span class="two-sticks__sheet" style={`top: ${pct(sheet.top - screen.y, screen.height)}; aspect-ratio: ${sheet.width} / ${sheet.height}`}>
-          <Image src={sheetBlank} alt="" widths={[280, 420, 560, 706]} sizes="(max-width: 44rem) 72vw, 18vw" loading="lazy" decoding="async" format="webp" quality={86} />
+          <Image src={sheetBlank} alt="" widths={[280, 420, 560, 706]} sizes="(max-width: 44rem) 72vw, min(18vw, 20rem)" loading="lazy" decoding="async" format="webp" quality={86} />
           <svg viewBox={`0 0 ${sheet.width} ${sheet.height}`} preserveAspectRatio="none">
             <defs>
               <mask id="two-sticks-ink" maskUnits="userSpaceOnUse">

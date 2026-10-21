@@ -272,8 +272,15 @@
     --page-gutter: clamp(1.25rem, 14.4vw, 15rem);
     /* Sections cap at --page-frame and center; the intro and nav use
        --page-inset as padding so they line up with that frame. */
-    --page-frame: 130rem;
+    --page-frame: 76rem;
     --page-inset: max(var(--page-gutter), calc((100% - var(--page-frame)) / 2));
+    /* The homepage cards scale together from the width of one work card (two
+       to a row). The front card of the side projects and of the oddities is
+       about three quarters of it, so the work stays the biggest thing at
+       every width. Below 44rem each section sets its own phone sizes. */
+    --work-gap: clamp(0.75rem, 1.6vw, 1.75rem);
+    --work-card: calc((min(100vw - 2 * var(--page-gutter), var(--page-frame)) - var(--work-gap)) / 2);
+    --side-card: clamp(14rem, var(--work-card) * 0.77, 24rem);
     /* Where the header's controls start. The homepage introduction starts a
        fixed step below them. */
     --navigation-top: clamp(1.25rem, 6vw, 5rem);
@@ -292,6 +299,8 @@
     --focus-width: 0.2rem;
     --focus-offset: 0.25rem;
     --drawn-icon-wobble-duration: 1600ms;
+    /* One corner for every card on the homepage: work, side projects, oddities. */
+    --radius-card: clamp(0.8rem, 1.4vw, 1.2rem);
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
     /* How far fixed backdrops reach past the bottom of the viewport. */

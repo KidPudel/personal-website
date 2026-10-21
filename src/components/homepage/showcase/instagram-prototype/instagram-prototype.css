@@ -14,9 +14,8 @@ button:active { transform: scale(.97); }
 .app-shell { width: 430px; height: 884px; display: grid; place-content: center; zoom: var(--prototype-scale, .3); }
 .showcase { display: contents; }
 .prototype { position: relative; width: 390px; height: 844px; }
-.prototype::before, .prototype::after { position: absolute; content: ''; pointer-events: none; }
-.prototype::before { z-index: -2; inset: -18px; border: 1px solid rgba(255,255,255,.72); border-radius: 56px; background: linear-gradient(145deg, rgba(245,226,255,.54), rgba(130,202,255,.5)); box-shadow: 0 22px 48px rgba(23,54,96,.22); backdrop-filter: blur(16px) saturate(1.35); }
-.prototype::after { z-index: -1; inset: -9px; border: 1px solid rgba(255,255,255,.76); border-radius: 48px; background: linear-gradient(145deg, rgba(255,255,255,.34), rgba(191,224,255,.24)); box-shadow: inset 0 1px 0 rgba(255,255,255,.62); backdrop-filter: blur(9px) saturate(1.2); }
+/* One frosted ring round the phone. */
+.prototype::after { position: absolute; z-index: -1; inset: -9px; border: 1px solid rgba(255,255,255,.76); border-radius: 48px; background: linear-gradient(145deg, rgba(255,255,255,.34), rgba(191,224,255,.24)); box-shadow: inset 0 1px 0 rgba(255,255,255,.62), 0 22px 48px rgba(23,54,96,.22); content: ''; pointer-events: none; backdrop-filter: blur(9px) saturate(1.2); }
 /* clip-path, not only overflow, so the frosted (backdrop-filter) bars cannot escape the rounded corners. */
 .phone { position: relative; width: 390px; height: 844px; min-height: 0; overflow: hidden; background: #fff; border: 1px solid rgba(255,255,255,.82); border-radius: 38px; box-shadow: 0 12px 32px rgba(31,39,66,.2); clip-path: inset(0 round 38px); }
 .mode-panel { position: fixed; z-index: 90; top: 50%; right: 16px; width: 206px; border: 1px solid rgba(0,0,0,.07); border-radius: 15px; padding: 4px; background: rgba(255,255,255,.84); box-shadow: 0 8px 28px rgba(0,0,0,.1); backdrop-filter: blur(24px); transform: translateY(-50%); }

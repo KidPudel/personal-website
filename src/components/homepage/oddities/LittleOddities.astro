@@ -44,7 +44,7 @@ const tilts = [-1, 1.2, -0.6, 0.8];
             <li class="card card--back" data-card data-back aria-hidden="true" style={`${fan}; --tilt: 0deg`}>
               <div class="card__body" data-card-body>
                 <div class="card__back">
-                  <Image class="card__wash" src={ground} alt="" widths={[400, 640, 800]} sizes="(max-width: 52rem) 70vw, 24rem" format="webp" quality={82} loading="lazy" decoding="async" />
+                  <Image class="card__wash" src={ground} alt="" widths={[400, 640, 800]} sizes="(max-width: 44rem) 70vw, 24rem" format="webp" quality={82} loading="lazy" decoding="async" />
                   <Image class="card__scribble" src={scribble} alt="" width={256} loading="lazy" decoding="async" />
                 </div>
               </div>
@@ -380,7 +380,7 @@ const tilts = [-1, 1.2, -0.6, 0.8];
   /* The fan: every card in one grid cell, spread sideways by its step from the middle and turned
      around a point far below the hand, so the cards open along an arc like a hand of cards. */
   .hand {
-    --card: min(24rem, 66vw);
+    --card: var(--side-card);
     --spread: 44%;
     --turn: 9deg;
     display: block;
@@ -446,7 +446,7 @@ const tilts = [-1, 1.2, -0.6, 0.8];
   .card__face,
   .card__back {
     overflow: hidden;
-    border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+    border-radius: var(--radius-card);
     box-shadow:
       0 1px 0 rgb(17 17 15 / 0.06),
       0 1.25rem 3rem rgb(17 17 15 / 0.12);
@@ -524,7 +524,7 @@ const tilts = [-1, 1.2, -0.6, 0.8];
   .card__link::after {
     position: absolute;
     inset: 0;
-    border-radius: clamp(0.8rem, 1.4vw, 1.2rem);
+    border-radius: var(--radius-card);
     content: '';
   }
 
@@ -578,7 +578,7 @@ const tilts = [-1, 1.2, -0.6, 0.8];
   }
 
   /* On a phone the hand is narrower, so the cards to come only peek out at the sides. */
-  @media (max-width: 52rem) {
+  @media (max-width: 44rem) {
     .oddities {
       width: min(calc(100% - 2 * var(--page-gutter)), 44rem);
       padding-bottom: clamp(7rem, 24vw, 9rem);
