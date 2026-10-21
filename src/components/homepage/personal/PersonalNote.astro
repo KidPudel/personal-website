@@ -159,8 +159,7 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
   .personal-note {
     display: block;
     width: 100%;
-    /* Matches the pause between the other homepage sections. */
-    padding: 0 0 clamp(7rem, 12.5vw, 12rem);
+    padding: 0 0 var(--section-gap);
   }
 
   .personal-note__title,

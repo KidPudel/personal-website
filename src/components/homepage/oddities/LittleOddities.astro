@@ -363,7 +363,8 @@ const tilts = [-1, 1.2, -0.6, 0.8];
     display: block;
     width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
     margin-inline: auto;
-    padding: 0 0 clamp(8rem, 13vw, 12rem);
+    /* The hand's own 1rem below the cards counts toward the pause. */
+    padding: 0 0 calc(var(--section-gap) - 1rem);
   }
 
   /* The homepage's section titles: "my work", "more things i've made". */
@@ -384,7 +385,7 @@ const tilts = [-1, 1.2, -0.6, 0.8];
     --spread: 44%;
     --turn: 9deg;
     display: block;
-    padding-block: clamp(3rem, 6vw, 4.5rem) 1rem;
+    padding-block: clamp(0.5rem, 1.5vw, 1.4rem) 1rem;
   }
 
   .hand__cards {
@@ -581,14 +582,13 @@ const tilts = [-1, 1.2, -0.6, 0.8];
   @media (max-width: 44rem) {
     .oddities {
       width: min(calc(100% - 2 * var(--page-gutter)), 44rem);
-      padding-bottom: clamp(7rem, 24vw, 9rem);
     }
 
     .hand {
       --card: min(70vw, 22rem);
       --spread: 30%;
       --turn: 7deg;
-      padding-top: 2.5rem;
+      padding-top: 0.5rem;
     }
   }
 </style>

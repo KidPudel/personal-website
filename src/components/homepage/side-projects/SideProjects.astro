@@ -560,7 +560,8 @@ const cards = {
 
     display: block;
     width: 100%;
-    padding: 0 0 clamp(8rem, 13vw, 12rem);
+    /* The room the caption keeps under the cards counts toward the pause. */
+    padding: 0 0 calc(var(--section-gap) - 1.2rem);
   }
 
   .other-showcase__title {
@@ -820,14 +821,15 @@ const cards = {
   @media (max-width: 60rem) {
     .other-showcase {
       --reel-frame: 44rem;
-
-      padding-bottom: clamp(7rem, 24vw, 9rem);
     }
   }
 
   @media (max-width: 44rem) {
+    /* The caption wraps to two lines here and fills its room. */
     .other-showcase {
       --reel-frame: 34rem;
+
+      padding-bottom: var(--section-gap);
     }
 
     .reel {

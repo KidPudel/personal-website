@@ -19,8 +19,7 @@ const beliefs = beliefsCopy[toLocale(Astro.currentLocale)];
   .beliefs {
     display: block;
     width: 100%;
-    /* The same pause as between the other sections. */
-    padding: 0 0 clamp(8rem, 13vw, 12rem);
+    padding: 0 0 var(--section-gap);
   }
 
   .beliefs__title,
@@ -55,10 +54,6 @@ const beliefs = beliefsCopy[toLocale(Astro.currentLocale)];
   }
 
   @media (max-width: 52rem) {
-    .beliefs {
-      padding-bottom: clamp(7rem, 24vw, 9rem);
-    }
-
     .beliefs__title,
     .beliefs__text {
       width: min(calc(100% - 2 * var(--page-gutter)), 36rem);

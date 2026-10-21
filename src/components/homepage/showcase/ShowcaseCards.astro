@@ -221,11 +221,11 @@ const firstRow = 2;
   .showcase {
     display: block;
     width: 100%;
-    /* Tighter than the gaps between the later sections: those sit between
-       full-width cards, while this one sits under the introduction's narrow
-       text and would join the sky beside it into one empty area. It stays
-       over twice the introduction's own largest gap. */
-    padding: clamp(6rem, 7vw, 7rem) 0 clamp(3.5rem, 7vw, 6.5rem);
+    /* The cards' trail under the last row (the caption's room) counts toward
+       the pause before the next section. */
+    --card-trail: clamp(2.75rem, 5vw, 4.75rem);
+
+    padding: calc(var(--section-gap) - 1rem) 0 max(0px, var(--section-gap) - var(--card-trail));
   }
 
   .showcase__heading,
@@ -276,7 +276,6 @@ const firstRow = 2;
      ancestor); the product preview above it is inert, so it never catches the
      pointer. */
   .showcase__card {
-    --card-trail: clamp(2.75rem, 5vw, 4.75rem);
     --work-caption-hit-radius: var(--radius-card);
 
     position: relative;
@@ -370,7 +369,7 @@ const firstRow = 2;
        own, so the rows sit about as close as the columns and nothing moves
        when it appears; where it runs over the next card, that card is
        blurred and stepped back. It stays in the page for screen readers. */
-    .showcase__card {
+    .showcase {
       --card-trail: var(--work-gap);
     }
 
@@ -466,7 +465,7 @@ const firstRow = 2;
 
   @media (max-width: 44rem) {
     .showcase {
-      padding: clamp(5rem, 18vw, 7rem) 0 clamp(3.5rem, 12vw, 5rem);
+      --card-trail: 2.5rem;
     }
 
     .showcase__heading,
@@ -506,7 +505,6 @@ const firstRow = 2;
     }
 
     .showcase__card {
-      --card-trail: 2.5rem;
       --work-caption-hit-radius: var(--radius-card);
     }
 
