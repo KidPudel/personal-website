@@ -8,18 +8,32 @@ import sleigh from '../../../assets/games/santa/sleigh-with-elf.png';
 import snowflake from '../../../assets/games/santa/snowflake.png';
 import { toLocale, translator } from '../../../i18n/locales';
 
+interface Props {
+  /** Plays on its own and takes no input, for a preview inside a link. */
+  ambient?: boolean;
+}
+
+const { ambient = false } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
+const Scene = ambient ? 'span' : 'button';
+const sceneAttributes = ambient
+  ? {}
+  : {
+      type: 'button' as const,
+      'aria-label': t(
+        "Fly Santa's sleigh. Hold to rise and release to fall.",
+        'Управляй санями Санты. Удерживай, чтобы подняться, и отпусти, чтобы снижаться.',
+      ),
+    };
 ---
 
-<santa-flight class="santa-flight" data-visible="true">
-  <button
-    class="santa-flight__scene"
-    type="button"
-    aria-label={t(
-      "Fly Santa's sleigh. Hold to rise and release to fall.",
-      'Управляй санями Санты. Удерживай, чтобы подняться, и отпусти, чтобы снижаться.',
-    )}
-  >
+<santa-flight
+  class="santa-flight"
+  data-visible="true"
+  data-ambient={ambient ? '' : undefined}
+  aria-hidden={ambient ? 'true' : undefined}
+>
+  <Scene class="santa-flight__scene" {...sceneAttributes}>
     <Image
       class="santa-flight__layer santa-flight__sky"
       src={sky}
@@ -79,7 +93,7 @@ const t = translator(toLocale(Astro.currentLocale));
       />
     </span>
 
-  </button>
+  </Scene>
 </santa-flight>
 
 <script>
@@ -89,6 +103,12 @@ const t = translator(toLocale(Astro.currentLocale));
 <style>
   .santa-flight {
     display: block;
+  }
+
+  .santa-flight[data-ambient] .santa-flight__scene {
+    cursor: inherit;
+    pointer-events: none;
+    touch-action: auto;
   }
 
   .santa-flight__scene {

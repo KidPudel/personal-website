@@ -296,6 +296,69 @@ farmFields.forEach((root) => {
     return true;
   };
 
+  // A preview works the field on its own: the hoe walks the bare soil row by row,
+  // turning each patch, rests on the finished field, then the grass grows back.
+  if (root.hasAttribute('data-ambient')) {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const ground = layers.find((layer) => layer.ground);
+    const patches: Array<{ x: number; y: number }> = [];
+    ground?.rows.forEach((row, rowIndex) => {
+      const cells = [...row].flatMap((value, columnIndex) =>
+        value === '0' ? [{ x: ground.originX + columnIndex, y: ground.originY + rowIndex }] : [],
+      );
+      patches.push(...(rowIndex % 2 ? cells.reverse() : cells));
+    });
+
+    let visible = false;
+    let step = 0;
+    let timer = 0;
+
+    const aimAt = (patch: { x: number; y: number }) => {
+      const bounds = stage.getBoundingClientRect();
+      const sceneX = VIEWPORT_WIDTH / 2 + patch.x * TILE_SIZE + TILE_SIZE / 2 - HOE_TARGET_OFFSET_X;
+      const sceneY = VIEWPORT_HEIGHT / 2 + patch.y * TILE_SIZE + TILE_SIZE / 2;
+      showCursor((sceneX / VIEWPORT_WIDTH) * bounds.width, (sceneY / VIEWPORT_HEIGHT) * bounds.height);
+    };
+
+    const work = async () => {
+      if (!visible || reduceMotion.matches || document.hidden) return;
+      // Inside a still card (one not in front of a reel), the hoe waits its turn.
+      if (root.closest('[data-still]')) {
+        timer = window.setTimeout(work, 500);
+        return;
+      }
+      await initialise();
+      const patch = patches[step];
+
+      if (!patch) {
+        root.removeAttribute('data-cursor');
+        timer = window.setTimeout(() => {
+          prepared.clear();
+          render();
+          step = 0;
+          timer = window.setTimeout(work, 900);
+        }, 1600);
+        return;
+      }
+
+      aimAt(patch);
+      root.dataset.working = 'true';
+      window.setTimeout(() => {
+        prepareCell(patch.x, patch.y);
+        root.removeAttribute('data-working');
+      }, 160);
+      step += 1;
+      timer = window.setTimeout(work, 420);
+    };
+
+    new IntersectionObserver((entries) => {
+      visible = entries[0]?.isIntersecting ?? false;
+      window.clearTimeout(timer);
+      if (visible) timer = window.setTimeout(work, 600);
+    }).observe(root);
+    return;
+  }
+
   stage.addEventListener('pointerenter', (event) => {
     void initialise();
     const position = positionFromPointer(event);

@@ -13,6 +13,14 @@ flightElements.forEach((flight) => {
   if (!control || !sleigh || flight.dataset.bound === "true") return;
   flight.dataset.bound = "true";
 
+  // A preview plays its idle flight on its own; it only rests while out of view.
+  if (flight.hasAttribute("data-ambient")) {
+    new IntersectionObserver((entries) => {
+      flight.dataset.visible = String(entries[0]?.isIntersecting ?? false);
+    }).observe(flight);
+    return;
+  }
+
   let frame = 0;
   let lastTime = 0;
   let y = 0;

@@ -10,43 +10,30 @@ import bunPoster from '../../../assets/games/thelastofbuns/showcase-poster.webp'
 import bunVideo from '../../../assets/games/thelastofbuns/showcase.mp4';
 import ticTacToeImage from '../../../assets/games/tic-tac-toe/gameplay.png';
 import FarmField from './FarmField.astro';
-import SideProjectCaption from './SideProjectCaption.astro';
 import SantaFlight from './SantaFlight.astro';
 import WeightedSwitchExperiment from './WeightedSwitchExperiment.astro';
 import { toLocale, translator } from '../../../i18n/locales';
 
 const t = translator(toLocale(Astro.currentLocale));
 const videoFallback = t('Your browser does not support embedded video.', 'Браузер не поддерживает встроенное видео.');
+
+// Where a link leads, so a visitor knows before leaving the site.
+const destinationOf = (href: string) => {
+  const host = new URL(href).hostname;
+  return host.endsWith('itch.io') ? 'itch.io' : host === 'github.com' ? 'GitHub' : host === 'x.com' ? 'X' : host;
+};
+
+const project = (name: string, href: string) => ({ name, href, destination: destinationOf(href) });
+
 const cards = {
-  santa: {
-    name: 'Secret Santa Foundation',
-    href: 'https://itch.io/jam/secret-santa-2025/rate/4137573',
-  },
-  discourses: {
-    name: 'Discourses by Campfire',
-    href: 'https://kidpudel.itch.io/discourses-by-campfire',
-  },
-  buns: {
-    name: 'The Last of Buns',
-    href: 'https://github.com/KidPudel/The-Last-Of-Buns',
-  },
-  snake: {
-    name: t('Snake with Go and raylib', 'Змейка на Go и raylib'),
-    href: 'https://x.com/kidpudel/status/1781656147990020293?s=20',
-  },
-  ticTacToe: {
-    name: t('Tic-Tac-Toe with C++ and OpenGL', 'Крестики-нолики на C++ и OpenGL'),
-    href: 'https://github.com/KidPudel/TicTacToe',
-  },
-  switch: {
-    name: t('Switch experiment', 'Эксперимент с переключателем'),
-    href: 'https://x.com/kidpudel/status/2089804412319358998',
-  },
-  farm: {
-    name: t('Farming Game', 'Фермерская игра'),
-    href: 'https://kidpudel.itch.io/farming-game',
-  },
-} as const;
+  discourses: project('Discourses by Campfire', 'https://kidpudel.itch.io/discourses-by-campfire'),
+  santa: project('Secret Santa Foundation', 'https://itch.io/jam/secret-santa-2025/rate/4137573'),
+  buns: project('The Last of Buns', 'https://github.com/KidPudel/The-Last-Of-Buns'),
+  farm: project(t('Farming Game', 'Фермерская игра'), 'https://kidpudel.itch.io/farming-game'),
+  snake: project(t('Snake with Go and raylib', 'Змейка на Go и raylib'), 'https://x.com/kidpudel/status/1781656147990020293?s=20'),
+  switch: project(t('Switch experiment', 'Эксперимент с переключателем'), 'https://x.com/kidpudel/status/2089804412319358998'),
+  ticTacToe: project(t('Tic-Tac-Toe with C++ and OpenGL', 'Крестики-нолики на C++ и OpenGL'), 'https://github.com/KidPudel/TicTacToe'),
+};
 ---
 
 <section id="side-projects" class="other-showcase" aria-labelledby="other-showcase-title">
@@ -56,168 +43,532 @@ const cards = {
     ))}
   </h2>
 
-  <div class="other-showcase__grid">
-    <article class="other-showcase__item other-showcase__item--santa">
-      <div class="other-showcase__card other-showcase__card--santa">
-        <SantaFlight />
-      </div>
-      <SideProjectCaption name={cards.santa.name} href={cards.santa.href} />
-    </article>
+  {/* A reel: one card in front, larger, the rest waiting beside it; it turns on its own
+      and round without end. Each card is one link. Without scripts it is a plain row
+      that scrolls sideways. */}
+  <div class="reel" data-reel>
+    <ul class="reel__track" data-reel-track>
+      <li class="reel__item" data-reel-item data-name={cards.discourses.name} data-destination={cards.discourses.destination}>
+        <a class="reel__card" href={cards.discourses.href} aria-label={`${cards.discourses.name}, ${cards.discourses.destination}`} draggable="false">
+          <span class="reel__frame">
+            <span class="reel__media">
+              <video src={discoursesVideo} poster={discoursesPoster.src} width="960" height="540" preload="none" playsinline muted loop>
+                {videoFallback}
+              </video>
+            </span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.discourses.name}</span></span>
+            <span class="reel__destination">{cards.discourses.destination}</span>
+          </span>
+        </a>
+      </li>
 
-    <article class="other-showcase__item other-showcase__item--discourses">
-      <div class="other-showcase__card other-showcase__card--discourses">
-        <div class="project-preview">
-          <video
-            src={discoursesVideo}
-            poster={discoursesPoster.src}
-            width="960"
-            height="540"
-            preload="none"
-            playsinline
-            muted
-            loop
-          >
-            {videoFallback}
-          </video>
-        </div>
-      </div>
-      <SideProjectCaption name={cards.discourses.name} href={cards.discourses.href} />
-    </article>
+      <li class="reel__item" data-reel-item data-name={cards.santa.name} data-destination={cards.santa.destination}>
+        <a class="reel__card" href={cards.santa.href} aria-label={`${cards.santa.name}, ${cards.santa.destination}`} draggable="false">
+          <span class="reel__frame reel__frame--santa">
+            <span class="reel__media"><SantaFlight ambient /></span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.santa.name}</span></span>
+            <span class="reel__destination">{cards.santa.destination}</span>
+          </span>
+        </a>
+      </li>
 
-    <article class="other-showcase__item other-showcase__item--tic-tac-toe">
-      <div class="other-showcase__card other-showcase__card--tic-tac-toe">
-        <div class="other-showcase__tic-tac-toe">
-          <Image
-            src={ticTacToeImage}
-            alt={t('Tic-Tac-Toe game board', 'Игровое поле крестиков-ноликов')}
-            widths={[360, 560, 687]}
-            sizes="(max-width: 44rem) 72vw, 23vw"
-            loading="lazy"
-            decoding="async"
-            format="webp"
-            quality={82}
-          />
-        </div>
-      </div>
-      <SideProjectCaption name={cards.ticTacToe.name} href={cards.ticTacToe.href} />
-    </article>
+      <li class="reel__item" data-reel-item data-name={cards.buns.name} data-destination={cards.buns.destination}>
+        <a class="reel__card" href={cards.buns.href} aria-label={`${cards.buns.name}, ${cards.buns.destination}`} draggable="false">
+          <span class="reel__frame">
+            <span class="reel__media">
+              <video src={bunVideo} poster={bunPoster.src} width="800" height="450" preload="none" playsinline muted loop>
+                {videoFallback}
+              </video>
+            </span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.buns.name}</span></span>
+            <span class="reel__destination">{cards.buns.destination}</span>
+          </span>
+        </a>
+      </li>
 
-    <article class="other-showcase__item other-showcase__item--buns">
-      <div class="other-showcase__card other-showcase__card--buns">
-        <div class="project-preview">
-          <video
-            src={bunVideo}
-            poster={bunPoster.src}
-            width="800"
-            height="450"
-            preload="none"
-            playsinline
-            muted
-            loop
-          >
-            {videoFallback}
-          </video>
-        </div>
-      </div>
-      <SideProjectCaption name={cards.buns.name} href={cards.buns.href} />
-    </article>
+      <li class="reel__item" data-reel-item data-name={cards.farm.name} data-destination={cards.farm.destination}>
+        <a class="reel__card" href={cards.farm.href} aria-label={`${cards.farm.name}, ${cards.farm.destination}`} draggable="false">
+          <span class="reel__frame reel__frame--farm">
+            <span class="reel__media"><FarmField ambient /></span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.farm.name}</span></span>
+            <span class="reel__destination">{cards.farm.destination}</span>
+          </span>
+        </a>
+      </li>
 
-    <article class="other-showcase__item other-showcase__item--snake">
-      <div class="other-showcase__card other-showcase__card--snake">
-        <div class="project-preview">
-          <video
-            src={snakeVideo}
-            poster={snakePoster.src}
-            width="1150"
-            height="720"
-            preload="none"
-            playsinline
-            muted
-            loop
-          >
-            {videoFallback}
-          </video>
-        </div>
-      </div>
-      <SideProjectCaption name={cards.snake.name} href={cards.snake.href} />
-    </article>
+      <li class="reel__item" data-reel-item data-name={cards.snake.name} data-destination={cards.snake.destination}>
+        <a class="reel__card" href={cards.snake.href} aria-label={`${cards.snake.name}, ${cards.snake.destination}`} draggable="false">
+          <span class="reel__frame">
+            <span class="reel__media">
+              <video src={snakeVideo} poster={snakePoster.src} width="1150" height="720" preload="none" playsinline muted loop>
+                {videoFallback}
+              </video>
+            </span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.snake.name}</span></span>
+            <span class="reel__destination">{cards.snake.destination}</span>
+          </span>
+        </a>
+      </li>
 
-    <article class="other-showcase__item other-showcase__item--switch">
-      <div class="other-showcase__card other-showcase__card--switch">
-        <WeightedSwitchExperiment />
-      </div>
-      <SideProjectCaption name={cards.switch.name} href={cards.switch.href} />
-    </article>
+      <li class="reel__item" data-reel-item data-name={cards.switch.name} data-destination={cards.switch.destination}>
+        <a class="reel__card" href={cards.switch.href} aria-label={`${cards.switch.name}, ${cards.switch.destination}`} draggable="false">
+          <span class="reel__frame reel__frame--switch">
+            <span class="reel__media"><WeightedSwitchExperiment ambient /></span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.switch.name}</span></span>
+            <span class="reel__destination">{cards.switch.destination}</span>
+          </span>
+        </a>
+      </li>
 
-    <article class="other-showcase__item other-showcase__item--farm">
-      <div class="other-showcase__card other-showcase__card--farm">
-        <FarmField />
-      </div>
-      <SideProjectCaption name={cards.farm.name} href={cards.farm.href} />
-    </article>
+      <li class="reel__item" data-reel-item data-name={cards.ticTacToe.name} data-destination={cards.ticTacToe.destination}>
+        <a class="reel__card" href={cards.ticTacToe.href} aria-label={`${cards.ticTacToe.name}, ${cards.ticTacToe.destination}`} draggable="false">
+          <span class="reel__frame reel__frame--tic-tac-toe">
+            <span class="reel__media reel__board">
+              <Image
+                src={ticTacToeImage}
+                alt=""
+                widths={[360, 560]}
+                sizes="(max-width: 60rem) 13rem, 20rem"
+                loading="lazy"
+                decoding="async"
+                format="webp"
+                quality={82}
+              />
+            </span>
+          </span>
+          <span class="reel__caption" aria-hidden="true">
+            <span class="reel__name"><span class="link-mark">{cards.ticTacToe.name}</span></span>
+            <span class="reel__destination">{cards.ticTacToe.destination}</span>
+          </span>
+        </a>
+      </li>
+    </ul>
+    <p class="reel__live" aria-hidden="true" data-reel-caption></p>
   </div>
 </section>
 
 <script>
-  // These previews own playback and loading; a separate video.load() can cancel play().
-  const previewVideos = document.querySelectorAll<HTMLVideoElement>('.project-preview video');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const connection = (
-    navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }
-  ).connection;
-  const conserveData = Boolean(
-    connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? ''),
-  );
-  const visibleVideos = new Set<HTMLVideoElement>();
+  // The reel. One card is in front: larger, playing, and named underneath. The rest wait
+  // beside it, smaller and still. The reel turns on its own, one card at a time and round
+  // without end; under the pointer, the card you point at becomes the one in front, where
+  // it stands. On touch screens a swipe turns it. At both ends of the text column the row
+  // dissolves, so nothing is cut by a hard edge and nothing crosses into the margins.
+  const reel = document.querySelector<HTMLElement>('[data-reel]');
+  const track = reel?.querySelector<HTMLElement>('[data-reel-track]');
+  const caption = reel?.querySelector<HTMLElement>('[data-reel-caption]');
 
-  const play = (video: HTMLVideoElement) => {
-    if (reducedMotion.matches || conserveData || document.hidden) return;
-    void video.play().catch(() => undefined);
-  };
+  if (reel && track && caption) {
+    const items = [...track.querySelectorAll<HTMLElement>('[data-reel-item]')];
+    const count = items.length;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const connection = (
+      navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }
+    ).connection;
+    const conserveData = Boolean(connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? ''));
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      const video = entry.target as HTMLVideoElement;
-      if (entry.isIntersecting) {
-        visibleVideos.add(video);
-        play(video);
-      } else {
-        visibleVideos.delete(video);
-        video.pause();
+    const turnEvery = 3400; // ms between the reel's own turns
+    const quietAfterHand = 4000; // ms the reel waits after being moved by hand
+    const smallScale = 0.7; // a waiting card's size against the one in front
+    const follow = 9; // how quickly the reel catches up with where it is going (per second)
+
+    let big = 0; // width of the card in front
+    let gap = 0;
+    let view = 0;
+
+    let position = 0; // which card is in front, as a continuous index
+    let target = 0;
+    let anchor = 0; // where the card in front stands, from the reel's left
+    let anchorTarget = 0;
+    let current = -1;
+    let hovering = -1;
+    let pointerInside = false;
+    let focused = false;
+    let visible = false;
+    let revealed = false;
+    let quietUntil = 0;
+    let frame = 0;
+    let last = 0;
+    let turnTimer = 0;
+    let hoverTimer = 0;
+    let centres: number[] = [];
+
+    const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+    const ease = (value: number) => value * value * (3 - 2 * value);
+    // The nearest way round the loop from one card to another.
+    const around = (from: number, to: number) => {
+      const step = (((to - from) % count) + count) % count;
+      return step > count / 2 ? step - count : step;
+    };
+
+    const measure = () => {
+      const styles = getComputedStyle(reel);
+      big = items[0]?.offsetWidth ?? 0;
+      gap = parseFloat(styles.getPropertyValue('--reel-gap')) || 16;
+      view = track.clientWidth;
+      if (hovering < 0) anchor = anchorTarget = view / 2;
+      render();
+    };
+
+    const showCaption = (item: HTMLElement) => {
+      const name = item.dataset.name ?? '';
+      const destination = item.dataset.destination ?? '';
+      const words = name.split(' ');
+      const build = () => {
+        caption.replaceChildren();
+        const nameLine = document.createElement('span');
+        nameLine.className = 'reel__live-name';
+        words.forEach((word, index) => {
+          const span = document.createElement('span');
+          span.className = 'reel__word';
+          span.style.setProperty('--i', String(index));
+          span.textContent = word;
+          nameLine.append(span, index < words.length - 1 ? ' ' : '');
+        });
+        const destinationLine = document.createElement('span');
+        destinationLine.className = 'reel__word reel__live-destination';
+        destinationLine.style.setProperty('--i', String(words.length + 1));
+        destinationLine.textContent = destination;
+        caption.append(nameLine, destinationLine);
+        caption.removeAttribute('data-leaving');
+      };
+      if (!caption.childElementCount || reducedMotion.matches) return build();
+      caption.setAttribute('data-leaving', '');
+      window.setTimeout(build, 130);
+    };
+
+    // Only the card in front plays; the rest hold still on their first frame.
+    const syncMedia = () => {
+      items.forEach((item, i) => {
+        const video = item.querySelector('video');
+        if (!video) return;
+        if (i === current && visible && !reducedMotion.matches && !conserveData && !document.hidden) {
+          void video.play().catch(() => undefined);
+        } else {
+          video.pause();
+        }
+      });
+    };
+
+    const setCurrent = (index: number) => {
+      if (index === current) return;
+      current = index;
+      items.forEach((item, i) => {
+        item.toggleAttribute('data-current', i === current);
+        item.toggleAttribute('data-still', i !== current);
+      });
+      syncMedia();
+      if (revealed) showCaption(items[current]!);
+    };
+
+    const render = () => {
+      const pitch = big * smallScale + gap;
+      // Keep as many cards on each side of the one in front as the space allows, so the
+      // loop never runs out of cards at one end when the front card stands off centre.
+      const bias = (anchor - view / 2) / pitch;
+      const low = -count / 2 - bias;
+      const offsets = items.map((_, i) => {
+        const d = i - position;
+        return ((((d - low) % count) + count) % count) + low;
+      });
+      const scales = offsets.map((d) => smallScale + (1 - smallScale) * ease(clamp(1 - Math.abs(d), 0, 1)));
+      const widths = scales.map((scale) => big * scale);
+
+      // Lay the row out from the card nearest the front, outward both ways.
+      const order = offsets.map((d, i) => ({ d, i })).sort((a, b) => a.d - b.d);
+      const nearest = order.reduce((best, entry) => (Math.abs(entry.d) < Math.abs(best.d) ? entry : best));
+      const at = order.indexOf(nearest);
+      const space = (a: number, b: number) => widths[a]! / 2 + gap + widths[b]! / 2;
+      centres = new Array(count).fill(0);
+      // Between two cards, the anchor sits the matching share of the way between them.
+      const neighbour = nearest.d > 0 ? order[at - 1] : order[at + 1];
+      centres[nearest.i] = anchor + nearest.d * (neighbour ? space(nearest.i, neighbour.i) : big);
+      for (let k = at + 1; k < order.length; k += 1) {
+        centres[order[k]!.i] = centres[order[k - 1]!.i]! + space(order[k - 1]!.i, order[k]!.i);
       }
+      for (let k = at - 1; k >= 0; k -= 1) {
+        centres[order[k]!.i] = centres[order[k + 1]!.i]! - space(order[k]!.i, order[k + 1]!.i);
+      }
+
+      items.forEach((item, i) => {
+        const width = widths[i]!;
+        const left = centres[i]! - width / 2;
+        const right = centres[i]! + width / 2;
+        item.style.transform = `translate3d(${(centres[i]! - big / 2).toFixed(2)}px, 0, 0) scale(${scales[i]!.toFixed(4)})`;
+        item.style.zIndex = String(Math.round(scales[i]! * 100));
+        item.style.visibility = right < 0 || left > view ? 'hidden' : '';
+      });
+
+      setCurrent(nearest.i);
+      const front = items[nearest.i]!;
+      const frontWidth = widths[nearest.i]!;
+      caption.style.transform = `translate3d(${(centres[nearest.i]! - frontWidth / 2).toFixed(2)}px, 0, 0)`;
+      caption.style.width = `${frontWidth.toFixed(2)}px`;
+      caption.dataset.for = front.dataset.name ?? '';
+    };
+
+    const tick = (now: number) => {
+      const elapsed = Math.min(now - last, 64) / 1000;
+      last = now;
+      const share = reducedMotion.matches ? 1 : 1 - Math.exp(-follow * elapsed);
+      position += (target - position) * share;
+      anchor += (anchorTarget - anchor) * share;
+      render();
+      if (Math.abs(target - position) < 0.0005 && Math.abs(anchorTarget - anchor) < 0.25 && !dragging) {
+        position = target;
+        anchor = anchorTarget;
+        render();
+        frame = 0;
+        return;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    const wake = () => {
+      if (frame) return;
+      last = performance.now();
+      frame = requestAnimationFrame(tick);
+    };
+
+    const goTo = (index: number, standAt = view / 2) => {
+      target = Math.round(position + around(position, index));
+      anchorTarget = standAt;
+      wake();
+    };
+
+    // The reel's own turning, while nobody is pointing at it, holding focus in it, or
+    // has just moved it by hand.
+    const scheduleTurn = (delay = turnEvery) => {
+      window.clearTimeout(turnTimer);
+      turnTimer = window.setTimeout(turn, delay);
+    };
+    const turn = () => {
+      const now = performance.now();
+      if (!visible || pointerInside || focused || dragging || reducedMotion.matches || document.hidden) return;
+      if (now < quietUntil) return scheduleTurn(quietUntil - now);
+      target = Math.round(target) + 1;
+      anchorTarget = view / 2;
+      wake();
+      scheduleTurn();
+    };
+    const handOver = () => {
+      quietUntil = performance.now() + quietAfterHand;
+      scheduleTurn(quietAfterHand);
+    };
+
+    // Pointing at a card brings it to the front where it stands, so it grows under the
+    // pointer instead of running away from it. Only the pointer's own moves count: when
+    // the row shifts under a still pointer, the card it lands on is not being chosen. A
+    // short wait keeps a pointer crossing the row from waking every card on its way.
+    let pointed = -1;
+    track.addEventListener('pointermove', (event) => {
+      if (event.pointerType !== 'mouse' || dragging) return;
+      const item = (event.target as Element).closest<HTMLElement>('[data-reel-item]');
+      const i = item ? items.indexOf(item) : -1;
+      if (i < 0 || i === pointed) return;
+      pointed = i;
+      window.clearTimeout(hoverTimer);
+      hoverTimer = window.setTimeout(() => {
+        hovering = i;
+        if (i === current && Math.abs(anchorTarget - centres[i]!) < 1) return;
+        target = Math.round(position + around(position, i));
+        anchorTarget = clamp(centres[i]!, big / 2, view - big / 2);
+        wake();
+      }, 70);
     });
-  });
 
-  previewVideos.forEach((video) => observer.observe(video));
+    reel.addEventListener('pointerenter', (event) => {
+      if (event.pointerType === 'mouse') pointerInside = true;
+    });
+    reel.addEventListener('pointerleave', (event) => {
+      if (event.pointerType !== 'mouse') return;
+      window.clearTimeout(hoverTimer);
+      pointerInside = false;
+      hovering = -1;
+      pointed = -1;
+      anchorTarget = view / 2;
+      wake();
+      scheduleTurn();
+    });
 
-  const syncPlayback = () => {
-    previewVideos.forEach((video) => video.pause());
-    if (!reducedMotion.matches && !document.hidden) visibleVideos.forEach(play);
-  };
+    // A card not in front comes to the front first; the one in front opens its project.
+    items.forEach((item, i) => {
+      item.querySelector('a')?.addEventListener('click', (event) => {
+        if (swallowClick) return;
+        if (i === current || i === hovering) return;
+        event.preventDefault();
+        handOver();
+        goTo(i);
+      });
+      item.addEventListener('focusin', () => {
+        if (i !== current) goTo(i);
+      });
+    });
 
-  reducedMotion.addEventListener('change', syncPlayback);
-  document.addEventListener('visibilitychange', syncPlayback);
+    track.addEventListener('keydown', (event) => {
+      const move = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+      if (!move) return;
+      event.preventDefault();
+      handOver();
+      const next = (((current + move) % count) + count) % count;
+      goTo(next);
+      items[next]?.querySelector('a')?.focus({ preventScroll: true });
+    });
+
+    reel.addEventListener('focusin', () => {
+      focused = true;
+    });
+    reel.addEventListener('focusout', (event) => {
+      if (reel.contains(event.relatedTarget as Node | null)) return;
+      focused = false;
+      scheduleTurn();
+    });
+
+    // A drag or a swipe turns the reel by hand and lets go on the nearest card.
+    let dragging = false;
+    let pressed = false;
+    let pointerId = -1;
+    let startX = 0;
+    let startPosition = 0;
+    let lastX = 0;
+    let lastTime = 0;
+    let velocity = 0;
+    let swallowClick = false;
+
+    track.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      pressed = true;
+      pointerId = event.pointerId;
+      startX = lastX = event.clientX;
+      startPosition = position;
+      lastTime = event.timeStamp;
+      velocity = 0;
+    });
+
+    track.addEventListener('pointermove', (event) => {
+      if (!pressed || event.pointerId !== pointerId) return;
+      const moved = event.clientX - startX;
+      if (!dragging && Math.abs(moved) > 6) {
+        dragging = true;
+        reel.dataset.dragging = '';
+        window.clearTimeout(hoverTimer);
+        hovering = -1;
+        anchorTarget = view / 2;
+        try {
+          track.setPointerCapture(pointerId);
+        } catch {
+          // The pointer is already gone; the drag still follows its moves.
+        }
+        wake();
+      }
+      if (!dragging) return;
+      const pitch = big * (1 + smallScale) / 2 + gap;
+      target = position = startPosition - moved / pitch;
+      const dt = Math.max(event.timeStamp - lastTime, 1);
+      velocity = velocity * 0.6 + ((lastX - event.clientX) / pitch / dt) * 1000 * 0.4;
+      lastX = event.clientX;
+      lastTime = event.timeStamp;
+    });
+
+    const release = (event: PointerEvent) => {
+      if (event.pointerId !== pointerId) return;
+      pressed = false;
+      if (!dragging) return;
+      dragging = false;
+      delete reel.dataset.dragging;
+      swallowClick = true;
+      window.setTimeout(() => (swallowClick = false), 0);
+      target = Math.round(position + clamp(velocity * 0.18, -2, 2));
+      handOver();
+      wake();
+    };
+    track.addEventListener('pointerup', release);
+    track.addEventListener('pointercancel', release);
+    track.addEventListener(
+      'click',
+      (event) => {
+        if (!swallowClick) return;
+        swallowClick = false;
+        event.preventDefault();
+        event.stopPropagation();
+      },
+      true,
+    );
+
+    // A sideways wheel or trackpad swipe turns it too, settling on a card when it stops.
+    let wheelTimer = 0;
+    track.addEventListener(
+      'wheel',
+      (event) => {
+        if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+        event.preventDefault();
+        const pitch = big * (1 + smallScale) / 2 + gap;
+        target = position = position + event.deltaX / pitch;
+        anchorTarget = view / 2;
+        render();
+        handOver();
+        window.clearTimeout(wheelTimer);
+        wheelTimer = window.setTimeout(() => {
+          target = Math.round(position);
+          wake();
+        }, 140);
+      },
+      { passive: false },
+    );
+
+    new IntersectionObserver(
+      ([entry]) => {
+        visible = entry?.isIntersecting ?? false;
+        if (visible && !revealed && current >= 0) {
+          revealed = true;
+          showCaption(items[current]!);
+        }
+        syncMedia();
+        if (visible) scheduleTurn();
+        else window.clearTimeout(turnTimer);
+      },
+      { threshold: 0.6 },
+    ).observe(track);
+
+    const refresh = () => {
+      syncMedia();
+      if (!document.hidden) scheduleTurn();
+    };
+    document.addEventListener('visibilitychange', refresh);
+    reducedMotion.addEventListener('change', refresh);
+    new ResizeObserver(measure).observe(track);
+
+    reel.dataset.reelReady = '';
+    measure();
+  }
 </script>
 
 <style>
   .other-showcase {
+    --reel-frame: var(--page-frame);
+
     display: block;
     width: 100%;
     padding: 0 0 clamp(8rem, 13vw, 12rem);
   }
 
-  .other-showcase__title,
-  .other-showcase__grid {
-    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
-    margin-inline: auto;
-  }
-
   .other-showcase__title {
     display: flex;
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--reel-frame));
     align-items: baseline;
     column-gap: 0.22em;
-    margin-top: 0;
-    margin-bottom: clamp(1.5rem, 2.5vw, 2.5rem);
+    margin: 0 auto clamp(1.25rem, 2vw, 2rem);
     color: var(--color-ink);
     font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
     font-size: clamp(1.55rem, 2.4vw, 2.35rem);
@@ -227,35 +578,87 @@ const cards = {
     text-align: left;
   }
 
-  .other-showcase__grid {
-    display: grid;
-    grid-template-areas:
-      'santa snake'
-      'discourses switch'
-      'farm farm'
-      'buns tic';
-    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    align-items: start;
-    gap: clamp(1rem, 3vw, 3.75rem);
-  }
+  /* Square cards. The one in front is as wide as the oddities' card above, and the
+     others wait at seven tenths of it, so they still read as things, not thumbnails. */
+  .reel {
+    --card-big: clamp(14rem, 27vw, 24rem);
+    --reel-gap: clamp(0.75rem, 1.6vw, 1.5rem);
 
-  .other-showcase__item {
-    min-width: 0;
-  }
-
-  .other-showcase__card {
     position: relative;
-    min-width: 0;
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--reel-frame));
+    margin-inline: auto;
+  }
+
+  /* Without the script: a plain row of small cards that scrolls sideways in the frame. */
+  .reel__track {
+    display: flex;
+    gap: var(--reel-gap);
+    margin: 0;
+    padding: 0.5rem 0 1rem;
+    overflow-x: auto;
+    list-style: none;
+  }
+
+  .reel__item {
+    flex: none;
+    width: calc(var(--card-big) * 0.6);
+  }
+
+  /* With it: the row keeps to the text column, like the title above it, and dissolves
+     over its last stretch at each end instead of stopping at a hard edge. */
+  .reel[data-reel-ready] .reel__track {
+    --soft-end: calc(var(--card-big) * 0.24);
+
+    position: relative;
+    display: block;
+    height: calc(var(--card-big) + 3rem);
+    padding: 0;
+    overflow: clip;
+    touch-action: pan-y;
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--soft-end),
+      #000 calc(100% - var(--soft-end)),
+      transparent
+    );
+  }
+
+  .reel[data-reel-ready] .reel__item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--card-big);
+    transform-origin: 50% 50%;
+    will-change: transform;
+  }
+
+  .reel[data-dragging] .reel__track {
+    cursor: grabbing;
+    user-select: none;
+  }
+
+  .reel__card {
+    display: block;
+    color: var(--color-ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-drag: none;
+  }
+
+  .reel__frame {
+    position: relative;
+    display: block;
     aspect-ratio: 1;
     overflow: hidden;
-    border-radius: clamp(0.8rem, 1.4vw, 1.35rem);
+    border-radius: clamp(0.7rem, 1vw, 1rem);
     background: #111;
-    box-shadow: 0 1px 0 rgb(17 17 15 / 0.06), 0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+    box-shadow: 0 1px 0 rgb(17 17 15 / 0.05), 0 0.9rem 2.2rem rgb(17 17 15 / 0.12);
   }
 
-  .other-showcase__card::after {
+  .reel__frame::after {
     position: absolute;
-    z-index: 7;
+    z-index: 3;
     inset: 0;
     border: 1px solid rgb(255 255 255 / 0.22);
     border-radius: inherit;
@@ -263,123 +666,180 @@ const cards = {
     pointer-events: none;
   }
 
-  .other-showcase__item--santa {
-    grid-area: santa;
+  .reel__card:focus-visible {
+    outline: none;
   }
 
-  .other-showcase__item--discourses {
-    grid-area: discourses;
+  .reel__card:focus-visible .reel__frame {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
   }
 
-  .other-showcase__item--tic-tac-toe {
-    grid-area: tic;
-  }
-
-  .other-showcase__card--tic-tac-toe {
-    background: #dedbd4;
-  }
-
-  .other-showcase__item--buns {
-    grid-area: buns;
-  }
-
-  .other-showcase__item--snake {
-    grid-area: snake;
-  }
-
-  .other-showcase__item--switch {
-    grid-area: switch;
-  }
-
-  .other-showcase__card--switch {
-    background: #fff;
-  }
-
-  .other-showcase__item--farm {
-    grid-area: farm;
-  }
-
-  .other-showcase__card--farm {
-    aspect-ratio: 16 / 9;
-    background: #425d5f;
-  }
-
-  .other-showcase__card--santa,
-  .other-showcase__card--discourses,
-  .other-showcase__card--buns {
-    aspect-ratio: 2 / 1;
-  }
-
-  .project-preview,
-  .other-showcase__tic-tac-toe {
+  .reel__media {
     position: absolute;
     inset: 0;
     display: grid;
     place-items: center;
+    pointer-events: none;
   }
 
-  .project-preview video {
+  .reel__media video {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .other-showcase__tic-tac-toe :global(img) {
-    display: block;
-    width: 78%;
+  /* A card that is not in front holds still: its idle animation waits with it. */
+  .reel__item[data-still] :global(.santa-flight *) {
+    animation-play-state: paused;
+  }
+
+  /* Santa's scene is drawn at 16:9; it fills the card's height and crops at the sides. */
+  .reel__frame--santa {
+    background: #14152f;
+  }
+
+  .reel__frame--santa :global(.santa-flight),
+  .reel__frame--santa :global(.santa-flight__scene) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+  }
+
+  .reel__frame--farm {
+    background: #425d5f;
+  }
+
+  /* The field fills most of its 16:9 scene, so it sits whole in the square on its own
+     water instead of being cropped. */
+  .reel__frame--farm :global(.farm-field) {
+    width: 100%;
     height: auto;
-    max-height: 84%;
+    aspect-ratio: 16 / 9;
+  }
+
+  .reel__frame--switch {
+    background: #fff;
+  }
+
+  .reel__frame--switch :global(.weighted-switch) {
+    width: 100%;
+  }
+
+  .reel__frame--tic-tac-toe {
+    background: #dedbd4;
+  }
+
+  .reel__board :global(img) {
+    display: block;
+    width: auto;
+    height: 82%;
     object-fit: contain;
-    filter: drop-shadow(0 0.75rem 1.2rem rgb(17 17 15 / 0.14));
+    filter: drop-shadow(0 0.5rem 0.8rem rgb(17 17 15 / 0.14));
     transform: rotate(-1.4deg);
+  }
+
+  /* Each card's own caption, for reading without the script. */
+  .reel__caption {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-top: 0.5rem;
+    font-size: 0.84rem;
+  }
+
+  .reel__destination {
+    color: var(--color-muted);
+  }
+
+  .reel[data-reel-ready] .reel__caption {
+    display: none;
+  }
+
+  /* With the script, one caption names the card in front: the name writes itself in word
+     by word, coming into focus as it rises, and the place it leads follows. */
+  .reel__live {
+    display: none;
+  }
+
+  .reel[data-reel-ready] .reel__live {
+    position: absolute;
+    z-index: 200;
+    top: calc(var(--card-big) + 0.65rem);
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin: 0;
+    font-family: var(--font-reading);
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+    pointer-events: none;
+    transition:
+      opacity 130ms ease,
+      filter 130ms ease;
+  }
+
+  .reel__live[data-leaving] {
+    opacity: 0;
+    filter: blur(3px);
+  }
+
+  .reel__live :global(.reel__live-name) {
+    min-width: 0;
+    color: var(--color-ink);
+  }
+
+  .reel__live :global(.reel__live-destination) {
+    flex: none;
+    color: var(--color-muted);
+  }
+
+  .reel__live :global(.reel__word) {
+    display: inline-block;
+    animation: reel-word 520ms var(--ease-out) both;
+    animation-delay: calc(var(--i) * 45ms);
+  }
+
+  @keyframes reel-word {
+    from {
+      opacity: 0;
+      filter: blur(5px);
+      transform: translateY(0.45em);
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: none;
+    }
   }
 
   @media (max-width: 60rem) {
     .other-showcase {
+      --reel-frame: 44rem;
+
       padding-bottom: clamp(7rem, 24vw, 9rem);
-    }
-
-    .other-showcase__title,
-    .other-showcase__grid {
-      width: min(calc(100% - 2 * var(--page-gutter)), 44rem);
-    }
-
-    .other-showcase__grid {
-      grid-template-areas:
-        'santa'
-        'discourses'
-        'snake'
-        'switch'
-        'farm'
-        'buns'
-        'tic';
-      grid-template-columns: minmax(0, 1fr);
-      gap: 1.75rem;
-    }
-
-    .other-showcase__card--santa,
-    .other-showcase__card--discourses,
-    .other-showcase__card--buns {
-      aspect-ratio: 2 / 1;
-    }
-
-    /* One column: the square Snake and Tic-Tac-Toe panels would each take
-       most of a phone screen. Snake's recording is 16:10, so nothing is lost. */
-    .other-showcase__card--snake {
-      aspect-ratio: 16 / 10;
-    }
-
-    .other-showcase__card--tic-tac-toe {
-      aspect-ratio: 4 / 3;
     }
   }
 
   @media (max-width: 44rem) {
-    .other-showcase__title,
-    .other-showcase__grid {
-      width: min(calc(100% - 2 * var(--page-gutter)), 34rem);
+    .other-showcase {
+      --reel-frame: 34rem;
+    }
+
+    .reel {
+      --card-big: min(52vw, 15rem);
     }
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    .reel__live,
+    .reel__live :global(.reel__word) {
+      transition: none;
+      animation: none;
+    }
+  }
 </style>

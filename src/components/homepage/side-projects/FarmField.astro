@@ -7,16 +7,28 @@ import hoe from '../../../assets/games/farm-game/hoe.png';
 import props from '../../../assets/games/farm-game/props.png';
 import { toLocale, translator } from '../../../i18n/locales';
 
+interface Props {
+  /** The hoe works the field on its own and takes no input, for a preview inside a link. */
+  ambient?: boolean;
+}
+
+const { ambient = false } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
+const Stage = ambient ? 'span' : 'button';
+const stageAttributes = ambient
+  ? {}
+  : {
+      type: 'button' as const,
+      'aria-label': t('Use the hoe to prepare soil for planting a seed.', 'Вскопать мотыгой землю, чтобы посадить семя.'),
+    };
 ---
 
-<farm-field class="farm-field">
-  <button
-    class="farm-field__stage"
-    type="button"
-    aria-label={t('Use the hoe to prepare soil for planting a seed.', 'Вскопать мотыгой землю, чтобы посадить семя.')}
-    data-farm-stage
-  >
+<farm-field
+  class="farm-field"
+  data-ambient={ambient ? '' : undefined}
+  aria-hidden={ambient ? 'true' : undefined}
+>
+  <Stage class="farm-field__stage" data-farm-stage {...stageAttributes}>
     <Image
       class="farm-field__poster"
       src={farmPoster}
@@ -70,7 +82,7 @@ const t = translator(toLocale(Astro.currentLocale));
         data-farm-props
       />
     </span>
-  </button>
+  </Stage>
 </farm-field>
 
 <script>
@@ -78,6 +90,12 @@ const t = translator(toLocale(Astro.currentLocale));
 </script>
 
 <style>
+  .farm-field[data-ambient] .farm-field__stage {
+    cursor: inherit;
+    pointer-events: none;
+    touch-action: auto;
+  }
+
   .farm-field {
     display: block;
     width: 100%;

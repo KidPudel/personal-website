@@ -1,20 +1,32 @@
 ---
 import { toLocale, translator } from '../../../i18n/locales';
 
+interface Props {
+  /** Flips itself every few seconds and takes no input, for a preview inside a link. */
+  ambient?: boolean;
+}
+
+const { ambient = false } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
+const Control = ambient ? 'span' : 'button';
+const controlAttributes = ambient
+  ? {}
+  : {
+      type: 'button' as const,
+      role: 'switch' as const,
+      'aria-label': t('Weighted switch experiment', 'Эксперимент с «тяжёлым» переключателем'),
+    };
 ---
 
-<weighted-switch class="weighted-switch">
-  <button
-    class="weighted-switch__control"
-    type="button"
-    role="switch"
-    aria-checked="true"
-    aria-label={t('Weighted switch experiment', 'Эксперимент с «тяжёлым» переключателем')}
-  >
+<weighted-switch
+  class="weighted-switch"
+  data-ambient={ambient ? '' : undefined}
+  aria-hidden={ambient ? 'true' : undefined}
+>
+  <Control class="weighted-switch__control" aria-checked="true" {...controlAttributes}>
     <span class="weighted-switch__fill" aria-hidden="true"></span>
     <span class="weighted-switch__thumb" aria-hidden="true"></span>
-  </button>
+  </Control>
 </weighted-switch>
 
 <script>
@@ -22,6 +34,11 @@ const t = translator(toLocale(Astro.currentLocale));
 </script>
 
 <style>
+  .weighted-switch[data-ambient] .weighted-switch__control {
+    cursor: inherit;
+    pointer-events: none;
+  }
+
   .weighted-switch {
     display: flex;
     height: 100%;

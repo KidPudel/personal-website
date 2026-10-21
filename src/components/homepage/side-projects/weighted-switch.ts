@@ -258,15 +258,31 @@ switches.forEach((root) => {
     animate(on);
   };
 
-  control.addEventListener('click', () => {
-    const nextOn = control.getAttribute('aria-checked') !== 'true';
-    setChecked(nextOn);
-    play(nextOn ? 'switch' : 'tap', { pan: panFor(control) });
-  });
-
   reduceMotion.addEventListener('change', () => {
     snap(control.getAttribute('aria-checked') === 'true');
   });
 
   snap(true);
+
+  // A preview flips itself, silently, every few seconds while it is in view.
+  if (root.hasAttribute('data-ambient')) {
+    let timer = 0;
+    const flip = () => {
+      if (!reduceMotion.matches && !document.hidden && !root.closest('[data-still]')) {
+        setChecked(control.getAttribute('aria-checked') !== 'true');
+      }
+      timer = window.setTimeout(flip, 2400);
+    };
+    new IntersectionObserver((entries) => {
+      window.clearTimeout(timer);
+      if (entries[0]?.isIntersecting) timer = window.setTimeout(flip, 1200);
+    }).observe(root);
+    return;
+  }
+
+  control.addEventListener('click', () => {
+    const nextOn = control.getAttribute('aria-checked') !== 'true';
+    setChecked(nextOn);
+    play(nextOn ? 'switch' : 'tap', { pan: panFor(control) });
+  });
 });
