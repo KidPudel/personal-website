@@ -54,7 +54,8 @@ export const personalNote = {
     // The path that led here. What I believe has its own section (beliefs).
     columns: [
       [
-        'I started in software engineering, then designed games, and found in product design the place where both meet. I care about the whole feel of things: visuals, motion, sound and small details working as one.',
+        'I wrote software and made games for different reasons, but both were about giving people something they’d keep. Learning cognitive science is a big part of how I found what I actually care about in product design: how people work and why, and how to use that to help them.',
+        'I care about the whole feel of things: visuals, motion, sound and small details working as one.',
       ],
     ],
     closing: [
@@ -75,7 +76,8 @@ export const personalNote = {
     heading: 'Ещё немного обо мне',
     columns: [
       [
-        'Я начинал в разработке, потом делал игры и нашёл в продуктовом дизайне место, где одно встречается с другим. Мне важно ощущение целиком: визуал, движение, звук и мелочи, которые работают как одно целое.',
+        'Я писал код и делал игры по разным причинам, но и то и другое было о том, чтобы дать людям что-то, что у них останется. Во многом через когнитивную науку я нашёл то, что мне по-настоящему важно в продуктовом дизайне: как люди устроены и почему, и как с помощью этого им помогать.',
+        'Мне важно ощущение целиком: визуал, движение, звук и мелочи, которые работают как одно целое.',
       ],
     ],
     closing: [

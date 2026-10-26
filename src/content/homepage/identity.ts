@@ -16,16 +16,16 @@ export const identity: Record<Locale, Identity> = {
       ', I look for ',
       {
         text: 'oddities',
-        note: 'Oddities are places where what people actually do doesn’t fit how things are set up for them. I find them through research and everyday use, and dig into why they happen, more and more through cognitive science. They can lead to fixing a product or to something that doesn’t exist yet.',
+        note: 'Places where what people do doesn’t fit how things are set up for them. I find them through research and everyday use; they can lead to a fix or to something that doesn’t exist yet.',
         tone: 'green',
       },
       ' where things don’t fit how people actually behave, and design ',
       {
         text: 'interactions',
-        note: 'Before products I designed games: core loops, constraints, a playtest on every build. That’s where I learned to guide people toward an action or a feeling. In products I use it to help people do what they already want, not to hook them.',
+        note: 'Good interaction guides people by how they perceive and think, so they can use a product and get the value they need. How differently people perceive and make sense of the world is a big part of why I love this work.',
         tone: 'blue',
       },
-      ' that guide them without taking away their control. I also ',
+      ' from how people’s minds work. I also ',
       {
         text: 'build what I design',
         note: 'I was writing code before AI, so to me it’s a tool I control, not a black box: one part of a process I’ve already carried from idea to release more than once.',
@@ -42,16 +42,16 @@ export const identity: Record<Locale, Identity> = {
       ' я ищу ',
       {
         text: 'странности',
-        note: 'Странностями я называю места, где то, что люди делают на самом деле, не совпадает с тем, как для них всё устроено. Я нахожу их в исследованиях и просто пользуясь вещами, а потом разбираюсь, почему они возникают, всё чаще через когнитивную науку. Они ведут либо к исправлению продукта, либо к тому, чего ещё нет.',
+        note: 'Места, где то, что люди делают, не совпадает с тем, как для них всё устроено. Я нахожу их в исследованиях и просто пользуясь вещами; они ведут либо к исправлению, либо к тому, чего ещё нет.',
         tone: 'green',
       },
-      ' там, где устройство вещей расходится с тем, как люди на самом деле себя ведут, и продумываю ',
+      ' там, где устройство вещей расходится с тем, как люди на самом деле себя ведут, и проектирую ',
       {
         text: 'взаимодействия',
-        note: 'До продуктов я проектировал игры: игровые циклы, ограничения, плейтест каждой сборки. Там я научился вести людей к действию или к чувству. В продуктах я использую это, чтобы помогать людям делать то, чего они сами хотят, а не подсаживать их.',
+        note: 'Хорошее взаимодействие опирается на то, как люди воспринимают и думают, чтобы они могли пользоваться продуктом и получить то, что им нужно. То, насколько по-разному люди воспринимают и понимают мир, во многом и есть то, за что я люблю эту работу.',
         tone: 'blue',
       },
-      ', которые ведут их, не отнимая у них контроль. А ещё я ',
+      ', отталкиваясь от того, как люди думают. А ещё я ',
       {
         text: 'сам собираю то, что проектирую',
         note: 'Я писал код ещё до AI, поэтому для меня это инструмент под моим контролем, а не чёрный ящик: одна часть процесса, который я уже не раз проходил от идеи до релиза.',
