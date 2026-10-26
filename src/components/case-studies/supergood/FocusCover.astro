@@ -3,6 +3,8 @@ import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 import groundPoster from '../../../assets/showcase-cards/card2-poster.webp?inline';
+import type { CaseStudy } from '../../../content/case-studies';
+import ProjectFacts from '../ProjectFacts.astro';
 import Rich from '../Rich.astro';
 
 // SuperGood opens on its own texture, out of focus, the way an order felt before: a guess.
@@ -20,12 +22,13 @@ interface Props {
   pitch: string;
   /** The result, numbers in **bold**. */
   outcome: string;
-  facts: string[];
+  /** Whose project, Igor's part, the team, and whether it shipped, from src/content/case-studies.ts. */
+  about: CaseStudy['about'];
   ground: ImageMetadata;
   phones: Phone[];
 }
 
-const { title, pitch, outcome, facts, ground, phones } = Astro.props;
+const { title, pitch, outcome, about, ground, phones } = Astro.props;
 const phoneWidths = (src: ImageMetadata) => [...new Set([240, 360, 480].filter((width) => width < src.width).concat(Math.min(src.width, 600)))];
 const phoneSizes = '(max-width: 759px) 46vw, 21rem';
 ---
@@ -41,8 +44,8 @@ const phoneSizes = '(max-width: 759px) 46vw, 21rem';
     <div class="focus-cover__text">
       <h1>{title}</h1>
       <p class="focus-cover__pitch">{pitch}</p>
+      <ProjectFacts about={about} />
       <p class="focus-cover__outcome"><Rich text={outcome} /></p>
-      <p class="focus-cover__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
     </div>
 
     <!-- The same screens twice: once out of focus, once sharp. They trade places as you scroll. -->
@@ -219,14 +222,6 @@ const phoneSizes = '(max-width: 759px) 46vw, 21rem';
     font-weight: 600;
   }
 
-  .focus-cover .focus-cover__facts {
-    max-width: 24rem;
-    margin: 1.5rem 0 0;
-    color: var(--color-copy);
-    font-size: 0.875rem;
-    line-height: 1.55;
-  }
-
   /* ---- The pull: a tall stretch of page with the stage pinned while you scroll through it -- */
 
   @media (prefers-reduced-motion: no-preference) {
@@ -274,7 +269,8 @@ const phoneSizes = '(max-width: 759px) 46vw, 21rem';
       translate: 0 calc(var(--p) * -3rem);
     }
 
-    /* The screens start close and out of focus, low in the frame, and settle on the plate. */
+    /* The screens start close and out of focus, low in the frame under the words, and settle on the
+       plate. */
     :global(html.js) .focus-cover__phones {
       position: absolute;
       top: var(--plate-y);
@@ -284,7 +280,7 @@ const phoneSizes = '(max-width: 759px) 46vw, 21rem';
       height: var(--plate-h);
       margin: 0;
       padding: calc(var(--plate-h) * 0.08) clamp(1rem, 4cqw, 4rem);
-      transform: translateY(calc((1 - var(--p)) * 48svh)) scale(calc(1 + (1 - var(--p)) * 0.2));
+      transform: translateY(calc((1 - var(--p)) * 56svh)) scale(calc(1 + (1 - var(--p)) * 0.2));
       transform-origin: 50% 0;
       will-change: transform;
     }

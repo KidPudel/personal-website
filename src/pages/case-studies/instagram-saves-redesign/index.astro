@@ -1,8 +1,8 @@
 ---
-import { getImage, Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 
 import penCircle from '../../../assets/art/elements/circled.png';
-import pileImage from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.webp';
 import actions from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/action_prompt_for_save.png';
 import savedNew from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/all_saved_new.png';
 import savedOld from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/all_saved_old.png';
@@ -31,8 +31,8 @@ import BarCompare from '../../../components/case-studies/BarCompare.astro';
 import Decision from '../../../components/case-studies/Decision.astro';
 import Plate from '../../../components/case-studies/Plate.astro';
 import Rich from '../../../components/case-studies/Rich.astro';
-import Shot from '../../../components/case-studies/Shot.astro';
 import StarSummary from '../../../components/case-studies/StarSummary.astro';
+import Tldr from '../../../components/case-studies/Tldr.astro';
 import StepCompare from '../../../components/case-studies/StepCompare.astro';
 import StudyLife from '../../../components/case-studies/StudyLife.astro';
 import StudySection from '../../../components/case-studies/StudySection.astro';
@@ -40,14 +40,12 @@ import PileCover from '../../../components/case-studies/instagram-saves/PileCove
 import StudyFilm from '../../../components/case-studies/instagram-saves/StudyFilm.astro';
 import StudyImage from '../../../components/case-studies/instagram-saves/StudyImage.astro';
 import { localePath, toLocale, translator } from '../../../i18n/locales';
+import { caseStudy } from '../../../content/case-studies';
 import BaseDocument from '../../../layouts/BaseDocument.astro';
 import '../../../styles/plates.css';
 
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-// The frames are cut from the pile of saves the cover scrolls through, as a ghost of it: every
-// screen sits on the saves it is there to find.
-const pile = await getImage({ src: pileImage, format: 'webp' });
 const result = t(
   'An interactive prototype. In its flows, finding a half-remembered post takes **about 10 seconds instead of 90**, and saving into a new collection takes **1 tap instead of 2 and a name**.',
   'Интерактивный прототип. В его сценариях полузабытый пост находится **примерно за 10 секунд вместо 90**, а сохранить в новую коллекцию можно **одним касанием вместо двух и названия**.',
@@ -73,6 +71,22 @@ const journey = [
   { name: t('Find', 'Найти'), does: t('Scroll the grid, open a post, go back.', 'Листать сетку, открыть пост, вернуться.'), breaks: t('Posts look alike and you lose your place. After a minute or two, people give up and look for something new.', 'Посты похожи друг на друга, и место в ленте теряется. Через минуту-другую люди сдаются и ищут что-то новое.'), fix: t('Decision 1: search inside Saved', 'Решение 1: поиск в «Сохранённом»'), to: 1 },
   { name: t('Use', 'Использовать'), does: t('Copy it to Notes, Notion, Maps, or a chat to act on it.', 'Перенести в Заметки, Notion, Карты или чат, чтобы что-то с этим сделать.'), breaks: t('The reason and the next step live outside Instagram.', 'Причина и следующий шаг живут за пределами Instagram.'), fix: t('Decisions 4 and 5: notes, pins, reactions, a collection feed', 'Решения 4 и 5: заметки, закрепление, реакции, лента коллекции'), to: 4 },
 ];
+const situation = t(
+        'Saving on Instagram takes one tap. Finding that save again means scrolling through all of them.',
+        'Сохранить пост в Instagram можно одним касанием. А чтобы потом его найти, приходится листать всё подряд.',
+      );
+const closing = t(
+        'I’d test it on real, messy libraries. The search results in the prototype are designed states. Next, I’d run a task-based usability test with 5 people on their own saves, timing how long it takes to find a post they remember in today’s Instagram and in the prototype. At scale, the success metrics above would tell if it works.',
+        'Я бы проверил это на настоящих, захламлённых сохранениях. Результаты поиска в прототипе спроектированы заранее. Следующий шаг: юзабилити-тест на задачах с 5 людьми на их собственных сохранениях, чтобы засечь, сколько уходит на поиск запомнившегося поста в сегодняшнем Instagram и в прототипе. В масштабе понять, работает ли это, помогут метрики успеха выше.',
+      );
+// Each decision's title, result, and main screen, shared by the decision and the TL;DR.
+const decisions: { title: string; effect?: string; shot?: { src: ImageMetadata; alt: string } }[] = [
+  { title: t('Search inside Saved', 'Поиск в «Сохранённом»'), effect: t('Finding a half-remembered post takes **about 10 seconds instead of 90** of scrolling.', 'Полузабытый пост находится **примерно за 10 секунд вместо 90** секунд листания.'), shot: { src: spider, alt: t('Prototype search for spider returning two saved posts.', 'Поиск в прототипе по запросу «spider» находит две сохранённые публикации.') } },
+  { title: t('Sort and filter by save date', 'Сортировка и фильтр по дате'), shot: { src: filter, alt: t('Saved search filter with latest-first and oldest-first sorting and a saved-date range from August 28, 2025 to August 27, 2026.', 'Фильтр поиска по сохранённому с сортировкой от новых и от старых и диапазоном дат сохранения с 28 августа 2025 по 27 августа 2026 года.') } },
+  { title: t('Suggested collections when saving', 'Подсказки коллекций при сохранении'), effect: t('Saving into a new collection takes **1 tap instead of 2 and a name**.', 'Сохранить в новую коллекцию можно **одним касанием вместо двух и названия**.'), shot: { src: saveNew, alt: t('Redesigned save sheet suggesting an existing collection and a possible new collection.', 'Окно сохранения после редизайна: подсказывает существующую коллекцию и возможную новую.') } },
+  { title: t('Notes, pins, and reactions', 'Заметки, закрепление и реакции'), effect: t('Shared notes still need a clear “who can see this” state before testing.', 'Общим заметкам ещё нужно явно показывать, кто их видит, до тестирования.'), shot: { src: actions, alt: t('Saved-post actions for pinning, annotations, and shared reactions.', 'Действия с сохранённой публикацией: закрепить, добавить заметку, поставить общую реакцию.') } },
+  { title: t('Collections in the feed selector', 'Коллекции в переключателе ленты'), effect: t('It might just become more scrolling, and it doesn’t help people let go of saves, so it needs testing.', 'Это может стать просто ещё одним листанием, и отпускать сохранённое оно не помогает, так что это нужно проверить.'), shot: { src: feed, alt: t('Instagram feed menu expanded to show Following, Favorites, and Collections with Design, Travel, Art, and Health choices.', 'Раскрытое меню ленты Instagram: «Following», «Favorites» и «Collections» с вариантами Design, Travel, Art и Health.') } },
+];
 ---
 
 <BaseDocument
@@ -84,23 +98,16 @@ const journey = [
   pageClass="study-plates study--instagram"
   ogImage={savedNew.src}
 >
-  <main id="main-content" style={`--plate-paper: linear-gradient(rgb(248 248 248 / 80%) 0 0), url('${pile.src}') 0 0 / 540px 450px`}>
+  <main id="main-content">
     <PileCover
       title={t('Instagram Saves, worth coming back to.', '«Сохранённое» в Instagram, к которому хочется возвращаться.')}
       pitch={t('The more you save, the less you can find.', 'Чем больше сохраняешь, тем сложнее найти.')}
       outcome={result}
-      facts={[
-        t('Research, UX/UI, and prototyping', 'Исследование, UX/UI и прототипирование'),
-        t('Self-initiated redesign concept, 2026', 'Собственный концепт редизайна, 2026'),
-        t('Based on 9 user interviews, with an interactive mobile prototype as the output.', 'По 9 интервью с пользователями, на выходе интерактивный мобильный прототип.'),
-      ]}
+      about={caseStudy('instagram-saves-redesign').about}
     />
 
     <StarSummary
-      situation={t(
-        'Saving on Instagram takes one tap. Finding that save again means scrolling through all of them.',
-        'Сохранить пост в Instagram можно одним касанием. А чтобы потом его найти, приходится листать всё подряд.',
-      )}
+      situation={situation}
       task={t(
         'Make saves easy to find again, without asking people to organise more.',
         'Сделать так, чтобы сохранённое снова легко находилось, и не заставлять людей больше сортировать.',
@@ -117,6 +124,8 @@ const journey = [
       )}
     />
 
+    <Tldr situation={situation} result={result} decisions={decisions} closing={closing} closingPart="next" />
+
     <StudySection
       part="problem"
       lead={t(
@@ -124,14 +133,14 @@ const journey = [
         'Сохранил на потом, и вот «потом» наступило. Ты примерно помнишь тот рилс. Открываешь «Сохранённое» и листаешь. И листаешь дальше. Я и сам постоянно терял референсы, которые сохранял специально: сохранять получалось, а возвращаться к ним нет.',
       )}
     >
-      <!-- Why it matters, with the screen as it is today beside it. -->
+      <!-- Why it matters, then the screen as it is today. -->
       <div class="beside today">
         <p>{t(
           'My hypothesis is that Instagram should care too. A save is a strong signal of intent: someone wanted to see this again. If Saved works, people get one more reason to come back to the app. If it doesn’t, those signals just go to waste.',
           'Моя гипотеза в том, что Instagram это тоже важно. Сохранение говорит о намерении: человек хотел вернуться к этому посту. Если «Сохранённое» работает, у людей появляется ещё одна причина возвращаться в приложение. Если нет, эти сигналы просто пропадают.',
         )}</p>
         <div class="beside__side">
-          <Shot kind="screen" src={savedOld} sizes="(max-width: 1099px) min(calc(100vw - 40px), 248px), 248px" alt={t('Current Saved screen with collections and a grid of 76 saved posts, without search.', 'Текущий экран «Сохранённое»: коллекции и сетка из 76 публикаций, без поиска.')} caption={t('Saved today: collections, then one long grid. No search.', '«Сохранённое» сейчас: коллекции, а под ними одна длинная сетка. Поиска нет.')} />
+          <Plate caption={t('Saved today: collections, then one long grid. No search.', '«Сохранённое» сейчас: коллекции, а под ними одна длинная сетка. Поиска нет.')} shots={[{ src: savedOld, alt: t('Current Saved screen with collections and a grid of 76 saved posts, without search.', 'Текущий экран «Сохранённое»: коллекции и сетка из 76 публикаций, без поиска.') }]} />
         </div>
       </div>
     </StudySection>
@@ -251,20 +260,18 @@ const journey = [
     <StudySection part="decisions">
       <Decision
         number={1}
-        layout="plate"
-        screen="wide"
-        title={t('Search inside Saved', 'Поиск в «Сохранённом»')}
+        title={decisions[0].title}
         navLabel={t('Search', 'Поиск')}
         problem={t('People remember what a post showed, not who posted it or where they filed it. “There’s no way to search for ‘pasta with lemon’ inside my saves.”', 'Люди помнят, что было в посте, но не кто его выложил и куда он сохранён. «В сохранённом никак не найти „пасту с лимоном“».')}
         decision={t('So I added search across titles, your notes, and AI descriptions of each post, right inside Saved.', 'Поэтому я добавил поиск по названиям, твоим заметкам и AI-описаниям постов прямо в «Сохранённом».')}
         why={t('It works on saves people already have. One person said they’d skip a redesign that made them organise by hand, and another wanted to search by what the picture shows.', 'Он работает с тем, что уже сохранено. Один человек сказал, что не станет пользоваться редизайном, где всё нужно раскладывать вручную, а другой хотел искать по тому, что на картинке.')}
         instead={t('I could have nudged people to organise better, but that’s work up front, and it’s exactly the work people skip.', 'Можно было подталкивать людей лучше сортировать, но это работа заранее, а именно её люди и пропускают.')}
-        effect={t('Finding a half-remembered post takes **about 10 seconds instead of 90** of scrolling.', 'Полузабытый пост находится **примерно за 10 секунд вместо 90** секунд листания.')}
+        effect={decisions[0].effect}
         source={t('estimate for 76 saves', 'оценка для 76 сохранений')}
       >
-        <Plate bleed="right" notesOn={1} paperAt="-40px -120px" caption={t('These are designed result states. Whether AI search reliably finds the right save still needs testing on real libraries.', 'Это спроектированные состояния результатов. Насколько надёжно AI-поиск находит нужное, ещё предстоит проверить на настоящих сохранениях.')} shots={[
+        <Plate notesOn={1} caption={t('These are designed result states. Whether AI search reliably finds the right save still needs testing on real libraries.', 'Это спроектированные состояния результатов. Насколько надёжно AI-поиск находит нужное, ещё предстоит проверить на настоящих сохранениях.')} shots={[
           { src: newYork, alt: t('Prototype search for new york returning three saved posts.', 'Поиск в прототипе по запросу «new york» находит три сохранённые публикации.'), label: t('A place you remember.', 'Место, которое помнишь.') },
-          { src: spider, alt: t('Prototype search for spider returning two saved posts.', 'Поиск в прототипе по запросу «spider» находит две сохранённые публикации.'), label: t('A subject you remember.', 'Тема, которую помнишь.') },
+          { src: spider, alt: decisions[0].shot!.alt, label: t('A subject you remember.', 'Тема, которую помнишь.') },
         ]} notes={[
           { x: 4, y: 15.6, w: 92, h: 5, label: t('Search, right inside Saved', 'Поиск прямо в «Сохранённом»') },
           { x: 4, y: 21.7, w: 92, h: 5.5, label: t('Across titles, your notes, and AI descriptions', 'По названиям, заметкам и AI-описаниям') },
@@ -273,16 +280,14 @@ const journey = [
 
       <Decision
         number={2}
-        layout="plate"
-        screen="right"
-        title={t('Sort and filter by save date', 'Сортировка и фильтр по дате')}
+        title={decisions[1].title}
         navLabel={t('Date filter', 'Фильтр по дате')}
         problem={t('A long-time saver knew roughly when they’d saved a post but couldn’t jump to a month or year. Another person wanted time as an anchor for searching.', 'Человек, который сохраняет годами, примерно помнил, когда сохранил пост, но не мог перейти к нужному месяцу или году. Другой хотел опираться на время при поиске.')}
         decision={t('I added oldest-first sorting and a saved-date range next to search. The active range stays visible above the results.', 'Я добавил сортировку от старых к новым и диапазон дат сохранения рядом с поиском. Выбранный диапазон остаётся на виду над результатами.')}
         why={t('With years of saves, even a rough time window cuts the pile down a lot.', 'Когда сохранения копятся годами, даже примерный промежуток сильно сужает поиск.')}
       >
-        <Plate bleed="left" paperAt="-300px -40px" shots={[
-          { src: filter, alt: t('Saved search filter with latest-first and oldest-first sorting and a saved-date range from August 28, 2025 to August 27, 2026.', 'Фильтр поиска по сохранённому с сортировкой от новых и от старых и диапазоном дат сохранения с 28 августа 2025 по 27 августа 2026 года.'), label: t('Narrow the time window.', 'Сузить промежуток времени.') },
+        <Plate shots={[
+          { src: filter, alt: decisions[1].shot!.alt, label: t('Narrow the time window.', 'Сузить промежуток времени.') },
           { src: filterResult, alt: t('Travel search results with the selected date range and latest-first sort shown above the grid.', 'Результаты поиска по коллекции «Travel» с выбранным диапазоном дат и сортировкой от новых над сеткой.'), label: t('The range stays in view.', 'Диапазон остаётся на виду.') },
         ]} notes={[
           { x: 24, y: 8.8, w: 70, h: 11.4, label: t('Oldest-first sorting', 'Сортировка от старых') },
@@ -292,19 +297,17 @@ const journey = [
 
       <Decision
         number={3}
-        layout="plate"
-        screen="wide"
-        title={t('Suggested collections when saving', 'Подсказки коллекций при сохранении')}
+        title={decisions[2].title}
         navLabel={t('Suggestions', 'Подсказки')}
         problem={t('Filing means finding a collection or naming a new one, mid-scroll. “I don’t want to interrupt what I’m doing.”', 'Чтобы разложить пост, нужно найти коллекцию или придумать название новой прямо посреди ленты. «Не хочу отвлекаться от того, что делаю».')}
         decision={t('The save sheet now shows two suggestions above the full list: the best-matching collection, and a new one with a name already filled in.', 'Теперь в окне сохранения над полным списком две подсказки: самая подходящая коллекция и новая, уже с названием.')}
         why={t('This makes the choice easier without taking it away. The full list stays for when a suggestion is wrong.', 'Так выбирать проще, но выбор остаётся за человеком. Полный список на месте, если подсказка ошиблась.')}
-        effect={t('Saving into a new collection takes **1 tap instead of 2 and a name**.', 'Сохранить в новую коллекцию можно **одним касанием вместо двух и названия**.')}
+        effect={decisions[2].effect}
         source={t('counted from the designs', 'посчитано по макетам')}
       >
-        <Plate bleed="right" notesOn={1} paperAt="-180px -260px" shots={[
+        <Plate notesOn={1} shots={[
           { src: saveOld, alt: t('Original save sheet showing the collection list.', 'Исходное окно сохранения со списком коллекций.'), label: t('Before: find or name it yourself.', 'До: найти или назвать самому.') },
-          { src: saveNew, alt: t('Redesigned save sheet suggesting an existing collection and a possible new collection.', 'Окно сохранения после редизайна: подсказывает существующую коллекцию и возможную новую.'), label: t('After: two suggestions on top.', 'После: две подсказки сверху.') },
+          { src: saveNew, alt: decisions[2].shot!.alt, label: t('After: two suggestions on top.', 'После: две подсказки сверху.') },
         ]} notes={[
           { x: 4, y: 49.3, w: 92, h: 5.8, label: t('The best-matching collection', 'Самая подходящая коллекция') },
           { x: 4, y: 56.6, w: 92, h: 6.8, label: t('A new one, its name filled in', 'Новая, уже с названием') },
@@ -313,19 +316,17 @@ const journey = [
 
       <Decision
         number={4}
-        layout="plate"
-        screen="left"
-        title={t('Notes, pins, and reactions', 'Заметки, закрепление и реакции')}
+        title={decisions[3].title}
         navLabel={t('Notes and pins', 'Заметки')}
         problem={t('A collection keeps the post, not the reason: one creator kept Notion just to write reasons down. Another kept going back to the same references, and shared collections gave no feedback.', 'Коллекция хранит пост, но не причину: один автор контента вёл Notion, только чтобы записывать зачем. Другой постоянно возвращался к одним и тем же референсам, а общие коллекции молчали.')}
         decision={t('I added short notes on a save that you can search later, pins for references you go back to often, and reactions for shared collections.', 'Я добавил короткие заметки к сохранённому, по которым потом можно искать, закрепление для частых референсов и реакции в общих коллекциях.')}
         why={t('A note becomes one more way back, in your own words.', 'Заметка становится ещё одним путём назад, твоими словами.')}
-        effect={t('Shared notes still need a clear “who can see this” state before testing.', 'Общим заметкам ещё нужно явно показывать, кто их видит, до тестирования.')}
+        effect={decisions[3].effect}
         source={t('still open', 'ещё открыто')}
       >
-        <Plate bleed="right" notesOn={1} paperAt="-420px -180px" shots={[
+        <Plate notesOn={1} shots={[
           { src: annotation, alt: t('Annotation editor with a note about a limited blue palette.', 'Редактор заметки с записью об ограниченной синей палитре.'), label: t('A note in your own words.', 'Заметка своими словами.') },
-          { src: actions, alt: t('Saved-post actions for pinning, annotations, and shared reactions.', 'Действия с сохранённой публикацией: закрепить, добавить заметку, поставить общую реакцию.'), label: t('Pin, note, or react.', 'Закрепить, подписать, отреагировать.') },
+          { src: actions, alt: decisions[3].shot!.alt, label: t('Pin, note, or react.', 'Закрепить, подписать, отреагировать.') },
         ]} notes={[
           { x: 4, y: 77.5, w: 92, h: 5, label: t('Pin', 'Закрепить') },
           { x: 4, y: 84.6, w: 92, h: 5, label: t('Note', 'Заметка') },
@@ -335,18 +336,16 @@ const journey = [
 
       <Decision
         number={5}
-        layout="plate"
-        screen="right"
-        title={t('Collections in the feed selector', 'Коллекции в переключателе ленты')}
+        title={decisions[4].title}
         navLabel={t('Collection feed', 'Лента коллекции')}
         problem={t('One person stopped using Saved: it had turned into a backlog of things never read, made, or bought. Saving had replaced doing.', 'Один человек перестал пользоваться «Сохранённым»: оно превратилось в склад непрочитанного, несделанного и некупленного. Сохранять стали вместо того, чтобы делать.')}
         decision={t('I put collections in the feed selector next to Following and Favorites, so a Design collection can become a daily feed.', 'Я добавил коллекции в переключатель ленты рядом с «Подписками» и «Избранным», чтобы коллекция «Design» могла стать ежедневной лентой.')}
         why={t('That way saves get a place in everyday browsing, instead of a folder nobody opens.', 'Так сохранённое получает место в обычном просмотре, а не лежит в папке, которую никто не открывает.')}
-        effect={t('It might just become more scrolling, and it doesn’t help people let go of saves, so it needs testing.', 'Это может стать просто ещё одним листанием, и отпускать сохранённое оно не помогает, так что это нужно проверить.')}
+        effect={decisions[4].effect}
         source={t('open question', 'открытый вопрос')}
       >
-        <Plate bleed="left" paperAt="-90px -330px" caption={t('A collection in the main feed selector.', 'Коллекция в главном переключателе ленты.')} shots={[
-          { src: feed, alt: t('Instagram feed menu expanded to show Following, Favorites, and Collections with Design, Travel, Art, and Health choices.', 'Раскрытое меню ленты Instagram: «Following», «Favorites» и «Collections» с вариантами Design, Travel, Art и Health.') },
+        <Plate caption={t('A collection in the main feed selector.', 'Коллекция в главном переключателе ленты.')} shots={[
+          { src: feed, alt: decisions[4].shot!.alt },
         ]} notes={[
           { x: 26, y: 17.5, w: 48, h: 17.5, label: t('Collections, next to Following and Favorites', 'Коллекции рядом с «Подписками» и «Избранным»') },
         ]} />
@@ -382,8 +381,8 @@ const journey = [
         />
       </div>
 
-      <!-- The prototype at work: three walkthroughs, each in a frame of the pile. -->
-      <div class="films">
+      <!-- The prototype at work: three walkthroughs, each on its panel. -->
+      <div class="films" data-arrive>
         <StudyFilm id="search-film" title={t('Less scrolling, more finding.', 'Меньше листать, больше находить.')} description={t('Start with what you remember, then narrow it down.', 'Начни с того, что помнишь, а потом сузь поиск.')}
           small={searchFilmSmall} large={searchFilmLarge} poster={searchFilmPoster} />
         <StudyFilm id="saving-film" title={t('An easier save.', 'Сохранять проще.')} description={t('The same tap, plus a helpful collection suggestion.', 'То же касание и подсказка коллекции.')}
@@ -395,10 +394,7 @@ const journey = [
 
     <StudySection
       part="next"
-      lead={t(
-        'I’d test it on real, messy libraries. The search results in the prototype are designed states. Next, I’d run a task-based usability test with 5 people on their own saves, timing how long it takes to find a post they remember in today’s Instagram and in the prototype. At scale, the success metrics above would tell if it works.',
-        'Я бы проверил это на настоящих, захламлённых сохранениях. Результаты поиска в прототипе спроектированы заранее. Следующий шаг: юзабилити-тест на задачах с 5 людьми на их собственных сохранениях, чтобы засечь, сколько уходит на поиск запомнившегося поста в сегодняшнем Instagram и в прототипе. В масштабе понять, работает ли это, помогут метрики успеха выше.',
-      )}
+      lead={closing}
     />
   </main>
   <StudyLife />
@@ -413,21 +409,10 @@ const journey = [
 </BaseDocument>
 
 <style>
-  /* The screen as it is today, small, beside why it matters. */
-  :global(.study-plates) main .today {
-    align-items: center;
-    margin-top: 1rem;
-  }
-
-  .today :global(.shot) {
-    width: min(100%, 15.5rem);
-    margin: 0;
-  }
-
-  /* The two notebook spreads across both columns. */
+  /* The two notebook spreads across the frame. */
   :global(.study-plates) main .notebooks {
     display: grid;
-    grid-column: text-start / side-end;
+    grid-column: wide;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem;
     margin-block: 1.5rem 0;
@@ -438,11 +423,12 @@ const journey = [
     margin: 0.25rem 0 0;
   }
 
-  /* The nine people: the six who named finding in the reading column, the other three beside. */
+  /* The nine people: the six who named finding, and the other three beside them. */
   :global(.study-plates) main .people {
     display: grid;
-    grid-column: text-start / side-end;
-    grid-template-columns: subgrid;
+    grid-column: wide;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 4vw, 4rem);
     align-items: start;
     margin-block: 3.5rem 1rem;
   }
@@ -450,7 +436,7 @@ const journey = [
   .people__title {
     display: flex;
     flex-wrap: wrap;
-    grid-column: text-start / side-end;
+    grid-column: 1 / -1;
     align-items: center;
     gap: 1rem 1.75rem;
     margin: 0 0 1.25rem;
@@ -496,12 +482,10 @@ const journey = [
   }
 
   .people__group {
-    grid-column: text;
     padding-top: 1rem;
   }
 
   .people__group--other {
-    grid-column: side;
   }
 
   :global(.study-plates) main .people .people__label {
@@ -535,9 +519,9 @@ const journey = [
     font-size: var(--small);
   }
 
-  /* The journey map across both columns: the stages as rows, what fixes each one in ink. */
+  /* The journey map across the frame: the stages as rows, what fixes each one in ink. */
   :global(.study-plates) main .journey {
-    grid-column: text-start / side-end;
+    grid-column: wide;
     margin-block: 1.5rem 1rem;
     overflow-x: auto;
   }
@@ -588,18 +572,18 @@ const journey = [
     margin-bottom: 1.25rem;
   }
 
-  /* The two wireframe flows, across both columns. */
+  /* The two wireframe flows, across the frame. */
   :global(.study-plates) main .wireframes {
     display: grid;
-    grid-column: text-start / side-end;
+    grid-column: wide;
     gap: 2.5rem;
     margin-block: 1.5rem 0;
   }
 
-  /* The three walkthroughs, across both columns, each phone on a frame of the pile. */
+  /* The three walkthroughs, across the frame, each phone on its panel. */
   :global(.study-plates) main .films {
     display: grid;
-    grid-column: text-start / side-end;
+    grid-column: wide;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: clamp(1rem, 3vw, 2.5rem);
     align-items: start;
@@ -612,9 +596,8 @@ const journey = [
 
   .films :global(video) {
     padding: clamp(1rem, 2.4vw, 2rem);
-    border-radius: clamp(1rem, 1.6vw, 1.5rem);
-    background: var(--plate-paper);
-    box-shadow: inset 0 0 0 1.5px var(--color-ink);
+    border-radius: var(--radius-card);
+    background: var(--panel);
   }
 
   @media (max-width: 759px) {

@@ -1,5 +1,7 @@
 ---
 import { copybookCell } from './copybook';
+import type { CaseStudy } from '../../../content/case-studies';
+import ProjectFacts from '../ProjectFacts.astro';
 import Rich from '../Rich.astro';
 
 // Two Sticks opens on a copybook, the practice its notebook sheets end with: the character 教 (from
@@ -13,10 +15,11 @@ interface Props {
   pitch: string;
   /** The result, the key words in **bold**. */
   outcome: string;
-  facts: string[];
+  /** Whose project, Igor's part, the team, and whether it shipped, from src/content/case-studies.ts. */
+  about: CaseStudy['about'];
 }
 
-const { title, pitch, outcome, facts } = Astro.props;
+const { title, pitch, outcome, about } = Astro.props;
 const character = '教';
 // Three rows of six: the model and five copies, then six copies, then six traces left to write.
 const rows = [
@@ -32,8 +35,8 @@ let order = 0;
     <div class="copybook__text">
       <h1>{title}</h1>
       <p class="copybook__pitch">{pitch}</p>
+      <ProjectFacts about={about} />
       <p class="copybook__outcome"><Rich text={outcome} /></p>
-      <p class="copybook__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
     </div>
 
     <div class="copybook__sheet" aria-hidden="true" data-study-transition="two-sticks" style={`--cell: ${copybookCell}`}>
@@ -91,14 +94,6 @@ let order = 0;
     margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
     color: var(--color-ink);
     font-size: 1.0625rem;
-    line-height: 1.55;
-  }
-
-  .copybook .copybook__facts {
-    max-width: 26rem;
-    margin: 1.5rem 0 0;
-    color: var(--color-copy);
-    font-size: 0.875rem;
     line-height: 1.55;
   }
 

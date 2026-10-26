@@ -1,0 +1,129 @@
+---
+import type { ImageMetadata } from 'astro';
+
+import { toLocale, translator } from '../../i18n/locales';
+import Plate from './Plate.astro';
+import Rich from './Rich.astro';
+
+// The whole study in a two-minute read, shown instead of the long one when TL;DR is chosen (see
+// StarSummary): what was wrong, each decision with what it changed, the screens those decisions
+// made, the outcome, and what comes next. Every sentence is the study's own, from the same data
+// the long read uses, so the two never disagree.
+
+interface Decision {
+  title: string;
+  effect?: string;
+  shot?: { src: ImageMetadata; alt: string };
+}
+
+interface Props {
+  situation: string;
+  result: string;
+  decisions: Decision[];
+  /** The closing section's first paragraph, and which section it is. */
+  closing: string;
+  closingPart: 'reflection' | 'next';
+  /** How the decisions' screens are drawn. */
+  kind?: 'phone' | 'desktop';
+}
+
+const { situation, result, decisions, closing, closingPart, kind = 'phone' } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const shots = decisions.flatMap((decision, index) => (decision.shot ? [{ ...decision.shot, label: `${index + 1}. ${decision.title}` }] : []));
+// A closing that leads into a list ("Next time I'd:") stands alone here without its last sentence.
+const closingText = closing.replace(/\s*[^.!?]*:\s*$/, '');
+const closingLabel = closingPart === 'reflection' ? t('Reflection.', 'Выводы.') : t('Next.', 'Дальше.');
+---
+
+<section class="part tldr" id="tldr" aria-labelledby="tldr-title">
+  <h2 id="tldr-title">TL;DR</h2>
+  <p class="tldr__problem"><span class="summary__label">{t('Problem.', 'Проблема.')}</span> <Rich text={situation} /></p>
+
+  <h3 class="tldr__heading">{t('What I did', 'Что я сделал')}</h3>
+  <ol class="tldr__decisions" role="list">
+    {decisions.map((decision, index) => (
+      <li>
+        <a href={`#decision-${index + 1}`} data-read-more><span class="tldr__number">{index + 1}.</span> <span class="link-mark">{decision.title}</span></a>
+        {decision.effect && <p class="tldr__effect marked" data-arrive><Rich text={decision.effect} /></p>}
+      </li>
+    ))}
+  </ol>
+
+  {shots.length > 0 && <div class="tldr__screens"><Plate kind={kind} shots={shots} /></div>}
+
+  <p class="tldr__result marked" data-arrive><span class="summary__label">{t('Result.', 'Результат.')}</span> <Rich text={result} /></p>
+  <p class="tldr__closing"><span class="summary__label">{closingLabel}</span> <Rich text={closingText} /></p>
+  <p class="tldr__more"><button type="button" data-read-more><span class="link-mark">{t('Read the whole case study', 'Читать кейс целиком')}</span></button></p>
+</section>
+
+<script>
+  // A decision's title, or the last line, opens the long read, at that decision if it was one.
+  document.querySelectorAll<HTMLElement>('.tldr [data-read-more]').forEach((control) => {
+    control.addEventListener('click', (event) => {
+      const full = document.querySelector<HTMLButtonElement>('.depth [data-depth="full"]');
+      if (!full) return;
+      event.preventDefault();
+      full.click();
+      const target = control instanceof HTMLAnchorElement ? document.querySelector(control.hash) : document.getElementById('summary');
+      requestAnimationFrame(() => target?.scrollIntoView({ block: 'start' }));
+    });
+  });
+</script>
+
+<style>
+  .tldr__problem {
+    margin-top: 0;
+  }
+
+  /* One step under the section's heading, the same voice as a decision's title. */
+  :global(.study-plates main) .tldr__heading {
+    margin: var(--space-block) 0 0.75rem;
+  }
+
+  .tldr__decisions {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tldr__decisions a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .tldr__number {
+    color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  :global(.study-plates main) .tldr__effect {
+    margin: 0.2rem 0 0 1.4rem;
+  }
+
+  .tldr__screens {
+    margin: var(--space-block) 0;
+  }
+
+  :global(.study-plates main) .tldr__result {
+    margin-top: var(--space-block);
+    color: var(--color-ink);
+    font-size: calc(var(--text) * 1.12);
+  }
+
+  .tldr__more button {
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-ink);
+    cursor: pointer;
+    font: inherit;
+  }
+
+  .tldr__more button:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 3px;
+  }
+</style>

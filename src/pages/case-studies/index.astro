@@ -76,7 +76,12 @@ const t = translator(locale);
   /* The listing uses the homepage's frame, section title, panels, and
      captions, so a visitor moving between the two sees one system. */
   .case-index {
-    width: var(--work-width) !important;
+    /* The homepage work grid's frame and panel (ShowcaseCards.astro). */
+    --work-radius: var(--radius-card);
+    --work-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)) !important;
     padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6.5rem);
   }
 

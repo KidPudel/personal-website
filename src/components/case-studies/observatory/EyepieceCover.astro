@@ -6,6 +6,9 @@ import titleTexture from '../../../assets/case_study_images/ditchered_observator
 import footage from '../../../assets/case_study_images/observatory/archive-telescope.mp4?url';
 import footageFrame from '../../../assets/case_study_images/observatory/archive-telescope-frame.webp';
 import footageStill from '../../../assets/case_study_images/observatory/archive-telescope-dither.png';
+import type { CaseStudy } from '../../../content/case-studies';
+import { nightPaper } from './night';
+import ProjectFacts from '../ProjectFacts.astro';
 import Rich from '../Rich.astro';
 
 // Observatory opens at night, on the archive film of an astronomer at a telescope, printed in the
@@ -20,18 +23,19 @@ interface Props {
   pitch: string;
   /** The result, numbers in **bold**. */
   outcome: string;
-  facts: string[];
+  /** Whose project, Igor's part, the team, and whether it shipped, from src/content/case-studies.ts. */
+  about: CaseStudy['about'];
   /** Observatory's live view, what the eyepiece turns to. */
   view: ImageMetadata;
   viewAlt: string;
 }
 
-const { title, pitch, outcome, facts, view, viewAlt } = Astro.props;
+const { title, pitch, outcome, about, view, viewAlt } = Astro.props;
 const texture = await getImage({ src: titleTexture, width: 1600, format: 'webp', quality: 80 });
 const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width < view.width).concat(Math.min(view.width, 2400)))];
 ---
 
-<header class="eyepiece" data-eyepiece>
+<header class="eyepiece" data-eyepiece style={`--night-paper: ${nightPaper}`}>
   <div class="eyepiece__stage">
     <div class="eyepiece__text">
       <h1 class="eyepiece__title wordmark" aria-label={title} style={`--title-texture: url('${texture.src}')`}>
@@ -40,8 +44,8 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
         ))}
       </h1>
       <p class="eyepiece__pitch">{pitch}</p>
+      <ProjectFacts about={about} />
       <p class="eyepiece__outcome"><Rich text={outcome} /></p>
-      <p class="eyepiece__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
     </div>
 
     <!-- The eyepiece: the dithered still at once, then the film, dithered frame by frame. -->
@@ -159,7 +163,7 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
     --color-muted: rgb(223 232 200 / 62%);
     --gutter: clamp(20px, 5vw, 72px);
     container-type: inline-size;
-    background: var(--plate-paper, #0b0c0a);
+    background: var(--night-paper, #0b0c0a);
     color: var(--night-ink);
   }
 
@@ -288,14 +292,6 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
     color: #fff;
     font-family: var(--font-study-emphasis);
     font-weight: 600;
-  }
-
-  .eyepiece .eyepiece__facts {
-    max-width: 26rem;
-    margin: 1.5rem 0 0;
-    color: rgb(223 232 200 / 70%);
-    font-size: 0.875rem;
-    line-height: 1.55;
   }
 
   /* Clear of the section ticks at the window's left edge. */

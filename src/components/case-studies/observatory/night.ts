@@ -1,6 +1,6 @@
 // Observatory's paper: the night of system numbers from the launch film's artwork, columns of thin
-// digits on black. Drawn as a small SVG tile, so it stays sharp at any size and costs a few
-// kilobytes; frames cut from it start at different places (Plate's paperAt).
+// digits on black, behind the study's opening. Drawn as a small SVG tile, so it stays sharp at any
+// size and costs a few kilobytes.
 
 const columns = 14;
 const rows = 9;

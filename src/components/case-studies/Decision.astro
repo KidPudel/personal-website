@@ -14,58 +14,25 @@ interface Props {
   instead?: string;
   /** The outcome, with its numbers in **bold**; they are highlighted as it scrolls in. */
   effect?: string;
-  /** Where the outcome comes from, set as a note in the margin beside it. */
+  /** Where the outcome comes from, set as a quiet line under it. */
   source?: string;
-  /** plate: the problem, then the plate, then what I did, why, and the result.
-   *  pinned: like plate, but what I did and why scroll past the screen on the plate itself. */
-  layout?: 'plate' | 'pinned';
-  /** plate: on wide pages the screen and the words make a spread; this is the screen's side.
-   *  wide: an app window, or a comparison, across the page, with the result beside the words. */
-  screen?: 'left' | 'right' | 'wide';
 }
 
-const { number, title, navLabel, problem, decision, why, instead, effect, source, layout = 'plate', screen = 'left' } = Astro.props;
-const wide = layout === 'plate' && screen === 'wide';
-const resultBeside = wide && !Astro.slots.has('evidence');
+const { number, title, navLabel, problem, decision, why, instead, effect, source } = Astro.props;
 ---
 
-<!-- Shown first, then told. On wide pages a plate and its words face each other as a spread, the
-     evidence under the words; a wide plate runs across the page with the result beside the words;
-     on narrower pages the plate comes between the problem and the rest. -->
+<!-- One shape for every decision, read top to bottom: what was wrong, what I did, why, what I
+     didn't do; then the screen; then what came of it. The TL;DR keeps the problem, what I did, the
+     screen, and the result. -->
 
-<article class:list={['decision', 'decision--plate', layout === 'pinned' && 'decision--pinned', layout === 'plate' && (wide ? 'decision--wide' : ['decision--spread', `decision--screen-${screen}`])]} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
+<article class="decision" id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
   <h3>{number}. {title}</h3>
-  <p>{problem}</p>
-  {layout === 'pinned' ? (
-    <div class="decision__visual decision__visual--pinned">
-      <slot />
-      <div class="decision__beside">
-        <p>{decision}</p>
-        <p>{why}</p>
-        {instead && <p>{instead}</p>}
-      </div>
-    </div>
-  ) : (
-    <>
-      {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
-      <div class="decision__body beside">
-        <div class="decision__story">
-          <p>{decision}</p>
-          <p>{why}</p>
-          {instead && <p>{instead}</p>}
-          {!resultBeside && effect && <p class="decision__effect marked" data-arrive><Rich text={effect} /></p>}
-          {!resultBeside && source && <p class="decision__source">{source}</p>}
-        </div>
-        {Astro.slots.has('evidence') && <div class="decision__evidence beside__side"><slot name="evidence" /></div>}
-        {resultBeside && effect && (
-          <div class="decision__result beside__side">
-            <p class="decision__effect marked" data-arrive><Rich text={effect} /></p>
-            {source && <p class="decision__source">{source}</p>}
-          </div>
-        )}
-      </div>
-    </>
-  )}
-  {layout === 'pinned' && effect && <p class="decision__effect marked" data-arrive><Rich text={effect} /></p>}
-  {layout === 'pinned' && source && <p class="decision__source">{source}</p>}
+  <p class="decision__problem">{problem}</p>
+  <p class="decision__did">{decision}</p>
+  <p class="decision__why">{why}</p>
+  {instead && <p class="decision__instead">{instead}</p>}
+  {Astro.slots.has('default') && <div class="decision__visual"><slot /></div>}
+  {effect && <p class="decision__effect marked" data-arrive><Rich text={effect} /></p>}
+  {source && <p class="decision__source">{source}</p>}
+  {Astro.slots.has('evidence') && <div class="decision__evidence"><slot name="evidence" /></div>}
 </article>

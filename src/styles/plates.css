@@ -1,10 +1,15 @@
-/* Case studies told in focus.
+/* Case studies: one system for all four.
 
-   One left edge for headings, text, plates, and the large sentence. On wide pages a reading column
-   sits on that edge and a side column beside it carries what supports the words: a chart next to
-   the paragraph it proves, a decision's name next to the complaint it answered. Each decision puts
-   its screen in a frame on the grid (Plate.astro), what changed in focus and named on the open page.
-   Each study opens with its own moment, chosen for its subject (SuperGood: supergood/FocusCover).
+   One calm reading line, read top to bottom: a centred column of about 52rem at 16 to 17px, and
+   figures a little wider under the words they belong to. Nothing sits beside the text. Every screen
+   sits on a panel (Plate.astro) lightly tinted with the study's colour; several screens are one
+   panel shown one at a time. A Detailed / TL;DR switch (StarSummary) hides the supporting text and
+   keeps the headings, the problem and what was done, the screens, and the results. Each study opens
+   with its own moment, chosen for its subject; after that, all four share one system.
+
+   Rhythm, smallest to largest: a source under its claim (--space-tight), a caption or names under
+   a panel (--space-caption), words and a figure (--space-block), one decision and the next
+   (--space-decision), one part and the next (--space-part).
 
    Fonts keep their roles: Crimson Text 400 for headings and the one large sentence, Instrument Sans
    for everything else, Instrument Sans Semibold for emphasis. The live parts (StudyLife.astro and
@@ -12,18 +17,24 @@
 
 html.study-plates {
   --gutter: clamp(20px, 5vw, 72px);
-  /* Type grows with the screen, about 17px at 1280 to 20px on a large display, and the columns are
-     measured in it, so a line keeps about 70 characters and the page fills a big screen. */
-  --text: var(--text-reading);
-  --small: var(--text-reading-small);
-  --measure: calc(var(--text) * 34);
-  --side: calc(var(--text) * 30);
-  --wide: calc(var(--measure) + 4rem + var(--side));
-  --space-part: clamp(5.5rem, 3.5rem + 6vw, 9rem);
+  /* Calm reading type, 16px on phones to 17px on large screens, on a long line like a printed page. */
+  --text: clamp(1rem, 0.96rem + 0.1vw, 1.0625rem);
+  --small: 0.875rem;
+  --measure: 52rem;
+  /* Figures sit a little wider than the words. */
+  --figure: 56rem;
+  /* Panels: a light neutral, tinted with the study's colour. */
+  --panel: color-mix(in srgb, var(--marker) 16%, #f1f1ef);
+  /* The homepage's frame, which the covers read. */
+  --wide: min(100vw - 2 * var(--page-gutter), var(--page-frame));
+  --space-tight: 0.5rem;
+  --space-caption: 0.875rem;
+  --space-block: clamp(1.75rem, 1.4rem + 1vw, 2.5rem);
+  --space-decision: clamp(3.5rem, 2.75rem + 2vw, 4.75rem);
+  --space-part: clamp(4.5rem, 3.25rem + 3vw, 6.5rem);
   --context: #c6cfd6;
   --marker: #ffe25c;
   /* The names the film, chart, and image components read. */
-  --page-gutter: var(--gutter);
   --study-body: var(--text);
   --study-small: var(--small);
   --study-caption: var(--color-muted);
@@ -39,18 +50,18 @@ html.study--two-sticks { --marker: #d9d0fc; }
   display: none;
 }
 
-/* ---- The page: one left edge, a reading column, a side column, plates to the page edge ---------- */
+/* ---- The page: a centred reading column, figures a little wider ------------------------------ */
 
 .study-plates main {
   display: grid;
-  /* Narrow pages: one centred column; the side column's lines sit on the text column's, so side
-     material simply follows the words it belongs to. */
+  /* side is an old name for text, kept so older markup lands in the reading line. On phones the
+     outset tracks shrink to nothing and words and figures share the width. */
   grid-template-columns:
-    [full-start] minmax(var(--gutter), 1fr)
-    [wide-start] minmax(0, calc((var(--wide) - var(--measure)) / 2))
-    [text-start side-start] min(var(--measure), 100% - 2 * var(--gutter))
-    [text-end side-end] minmax(0, calc((var(--wide) - var(--measure)) / 2))
-    [wide-end] minmax(var(--gutter), 1fr)
+    [full-start] minmax(1.25rem, 1fr)
+    [wide-start] minmax(0, calc((var(--figure) - var(--measure)) / 2))
+    [text-start side-start] min(var(--measure), 100% - 2.5rem)
+    [text-end side-end] minmax(0, calc((var(--figure) - var(--measure)) / 2))
+    [wide-end] minmax(1.25rem, 1fr)
     [full-end];
   color: var(--color-ink);
   font-family: var(--font-reading);
@@ -86,50 +97,9 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
   align-content: start;
 }
 
-/* Wide pages: the reading column takes the left edge and the side column the space beside it. */
-@media (min-width: 1100px) {
-  .study-plates main {
-    /* The outer columns never get narrower than the section ticks at the window's left edge. */
-    grid-template-columns:
-      [full-start] minmax(6.5rem, 1fr)
-      [wide-start text-start] minmax(0, var(--measure))
-      [text-end] minmax(2rem, 4rem)
-      [side-start] minmax(0, var(--side))
-      [side-end wide-end] minmax(6.5rem, 1fr)
-      [full-end];
-  }
-}
-
-/* Words with what supports them: the words in the reading column, the support beside them. */
-.study-plates main .beside {
-  display: grid;
-  grid-column: text-start / side-end;
-  grid-template-columns: subgrid;
-  align-items: start;
-}
-
-.study-plates main .beside > * {
-  grid-row: 1;
-  grid-column: text;
-  min-width: 0;
-}
-
+/* Words with what supports them: the support follows the words, in the same column. */
 .study-plates main .beside > .beside__side {
-  grid-column: side;
-}
-
-@media (max-width: 1099px) {
-  .study-plates main .beside {
-    display: block;
-  }
-
-  .study-plates main .beside {
-    margin-bottom: 2rem;
-  }
-
-  .study-plates main .beside > .beside__side {
-    margin-top: 2rem;
-  }
+  margin-top: var(--space-block);
 }
 
 /* The study's opening owns the whole width. */
@@ -141,26 +111,22 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
   grid-column: wide;
 }
 
-/* The large sentence keeps the left edge and runs into the side column. */
-.study-plates main .statement {
-  grid-column: text-start / side-end;
-}
-
 .study-plates .col-full {
   grid-column: full;
 }
 
-/* A plate starts on the words' left edge and runs off the right of the page, or ends on the side
-   column's right edge and runs off the left, so its screen always sits on a column line. */
-.study-plates .decision > .decision__visual,
+/* A panel outside a decision runs across the frame. */
 .study-plates .part > .plate {
-  grid-column: text-start / full-end;
-  margin-block: clamp(2rem, 4vw, 3.25rem);
+  grid-column: wide;
+  margin-block: var(--space-block);
 }
 
-.study-plates .decision > .decision__visual:has(.plate--left),
-.study-plates .part > .plate--left {
-  grid-column: full-start / side-end;
+/* A panel that isn't a Plate (a film, a sheet): the same tinted panel. */
+.study-plates .panel-paper {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--panel);
 }
 
 /* Margin-note lines from the older layout: nothing to join here. */
@@ -189,11 +155,11 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
 }
 
 .study-plates .decision {
-  margin-top: clamp(4.5rem, 3rem + 5vw, 8rem);
+  margin-top: var(--space-decision);
 }
 
 .study-plates .part > h2 + .decision {
-  margin-top: clamp(2.5rem, 4vw, 3.5rem);
+  margin-top: var(--space-block);
 }
 
 /* ---- Type ----------------------------------------------------------------------------------- */
@@ -207,15 +173,15 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
 }
 
 .study-plates :is(.part, .finale) > h2 {
-  margin: 0 0 1.25rem;
-  font-size: clamp(2rem, 1.65rem + 1.1vw, 2.75rem);
-  letter-spacing: -0.02em;
-  line-height: 1.05;
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 1.5rem + 0.7vw, 2.125rem);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
 }
 
 .study-plates main h3 {
-  margin: 0 0 1rem;
-  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.75rem);
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.3rem, 1.2rem + 0.3vw, 1.5rem);
   letter-spacing: -0.012em;
   line-height: 1.2;
 }
@@ -223,16 +189,13 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
 .study-plates main :is(p, li) {
   color: var(--color-copy);
   font-size: var(--text);
-  line-height: 1.68;
+  line-height: 1.62;
 }
 
 .study-plates main p {
   margin-block: 0 1em;
 }
 
-.study-plates main .part__lead {
-  color: var(--color-ink);
-}
 
 .study-plates main :is(strong, b, .summary__label) {
   color: var(--color-ink);
@@ -251,6 +214,15 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
   margin-inline: 0;
 }
 
+/* A chart's title says what it shows, in ink, at reading size, the same in every study. */
+.study-plates main :is(.chart__title, .split__title, .steps__title, .dots__title) {
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-size: var(--text);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 .study-plates .plain-list {
   margin-block: 0 1.25rem;
   padding-left: 1.2em;
@@ -266,27 +238,20 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
 
 /* The one sentence a study turns on, set across the wide measure. */
 .study-plates main .statement {
-  max-width: 24ch;
-  margin-block: clamp(3rem, 5vw, 4.5rem);
-  font-size: clamp(2rem, 1.35rem + 2.3vw, 3.25rem);
-  letter-spacing: -0.025em;
-  line-height: 1.08;
+  max-width: 30ch;
+  margin-block: var(--space-block);
+  font-size: clamp(1.5rem, 1.3rem + 0.7vw, 1.875rem);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
 }
 
 .study-plates main .statement mark {
   padding-inline: 0.06em;
 }
 
-/* The insight with the job stories beside it: the sentence keeps the reading column, the stories
-   answer it from the side column, level with its last lines. */
-.study-plates main .insight > .statement {
-  grid-column: text;
-  max-width: none;
-}
-
+/* The insight, then the job stories it became. */
 .study-plates main .insight > .insight__stories {
-  align-self: end;
-  margin-block: clamp(3rem, 5vw, 4.5rem);
+  margin-top: 0;
 }
 
 /* A result, then where it comes from: a quiet line under what it qualifies. */
@@ -296,7 +261,7 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
 }
 
 .study-plates main :is(.callout, .decision__source) {
-  margin: 0.5rem 0 0;
+  margin: var(--space-tight) 0 0;
   color: var(--color-muted);
   font-size: var(--small);
   line-height: 1.5;
@@ -399,8 +364,8 @@ html.js.study-plates .chart--scale:not(.is-here) .chart__dot--emphasis {
   from { opacity: 0; }
 }
 
-/* The summary's result, beside the situation, task and action on wide pages: the outcome first
-   for anyone who reads only one thing. Set a step larger than the reading text. */
+/* The summary's result, after the situation, task and action, a step larger than the reading
+   text: the outcome for anyone who reads only one thing. */
 .study-plates main .summary__result p.marked {
   margin: 0;
   color: var(--color-ink);
@@ -408,132 +373,22 @@ html.js.study-plates .chart--scale:not(.is-here) .chart__dot--emphasis {
   line-height: 1.5;
 }
 
-/* ---- Spread: the framed screen and its words face each other ---------------------------------- */
+/* ---- Decisions: one shape in every study --------------------------------------------------------- */
 
-/* The words keep the side column's measure and line up with the page's own edge (the reading
-   column's left, or the side column's right). Every frame's outer edge sits on one line a little
-   past the content on its side, so frames on the same side line up down the page; the names sit
-   between the frame and the words. If the words run longer than the screen, the screen stays in
-   view beside them. */
-@media (min-width: 1280px) {
-  .study-plates .part > .decision--spread {
-    --spread-gap: clamp(2.5rem, 4vw, 4.5rem);
-    --names: 10rem;
-    grid-template-columns: [screen-start] minmax(0, 1fr) [screen-end] var(--spread-gap) [words-start] minmax(0, var(--side)) [words-end];
-    grid-template-rows: auto auto 1fr;
-    --spread-out: calc((100% - var(--wide)) / 2 - 4rem);
-    padding-inline: max(6.5rem, var(--spread-out)) max(1.5rem, calc((100% - var(--wide)) / 2));
-  }
-
-  .study-plates .part > .decision--screen-right {
-    grid-template-columns: [words-start] minmax(0, var(--side)) [words-end] var(--spread-gap) [screen-start] minmax(0, 1fr) [screen-end];
-    padding-inline: max(6.5rem, calc((100% - var(--wide)) / 2)) max(3rem, var(--spread-out));
-  }
-
-  .study-plates main .decision--spread > * {
-    grid-column: words;
-  }
-
-  .study-plates main .decision.decision--spread > .decision__visual {
-    position: sticky;
-    top: 6rem;
-    grid-row: 1 / -1;
-    grid-column: screen;
-    align-self: start;
-    justify-self: start;
-    margin: 0;
-  }
-
-  .study-plates main .decision.decision--screen-right > .decision__visual {
-    justify-self: end;
-  }
-
-  /* The frame's top meets the heading's. */
-  .study-plates .decision--spread .plate__stage {
-    padding: var(--mat);
-  }
-
-  /* Room for the names on the open side, inside the plate, so they never reach the words. */
-  .study-plates .decision--spread .plate--named.plate--right .plate__stage {
-    padding-right: calc(var(--gap) + var(--names));
-  }
-
-  .study-plates .decision--spread .plate--named.plate--left .plate__stage {
-    padding-left: calc(var(--gap) + var(--names));
-  }
-
-  .study-plates .decision--spread .plate__notes li {
-    max-width: var(--names);
-  }
-
-  .study-plates .decision--spread .plate {
-    --phone: min(clamp(15rem, 20vw, 26rem), (100svh - 9rem - 2 * var(--mat)) * 0.56);
-  }
-
-  .study-plates .decision--spread .plate--crop {
-    --phone: min(clamp(16rem, 23vw, 26rem), (100svh - 9rem - 2 * var(--mat)) * 0.7);
-  }
-
-  /* Two screens share the width: their frames overlap like two prints laid on a table, the
-     second a little lower and on top. */
-  .study-plates .decision--spread .plate--many {
-    --phone: min(14vw, 18rem, (100svh - 13rem - 2 * var(--mat)) * 0.56);
-  }
-
-  .study-plates .decision--spread .plate--many .plate__stage {
-    gap: var(--between);
-  }
-
-  .study-plates .decision--spread .plate .plate__caption {
-    padding-inline: 0;
-    text-align: left;
-  }
-
-  .study-plates main .decision--spread .decision__body {
-    display: block;
-    margin: 0;
-  }
-
-  .study-plates .decision--spread .decision__evidence {
-    margin-top: 2.25rem;
-  }
+/* The words in the reading column, the screen after them, then the result. A figure is as wide as
+   it needs: one phone keeps the words' width, two phones or an app window take the frame. */
+.study-plates main .decision > .decision__visual {
+  grid-column: wide;
+  margin-block: var(--space-block);
 }
 
-/* ---- Wide: an app window or a comparison across the page, the result beside the words -------- */
-
-.study-plates main .decision.decision--wide > .decision__visual {
-  grid-column: text-start / side-end;
+.study-plates main .decision > .decision__visual:has(> .plate--phone:not(.plate--many)),
+.study-plates main .part > .plate--phone:not(.plate--many) {
+  grid-column: text;
 }
 
-.study-plates main .decision--wide .decision__result {
-  align-self: start;
-}
-
-.study-plates main .decision--wide .decision__result .decision__effect {
-  margin-top: 0;
-  font-size: calc(var(--text) * 1.2);
-  line-height: 1.5;
-}
-
-/* An app window keeps room for its names on the open side, and fits the window's height. */
-@media (min-width: 760px) {
-  .study-plates main .plate--desktop {
-    --desk: min(62rem, (100svh - 12rem) * 1.55);
-  }
-
-  .study-plates main .plate--desktop.plate--named.plate--right .plate__stage {
-    padding-right: calc(var(--gap) + 11rem);
-  }
-
-  .study-plates main .plate--desktop .plate__notes li {
-    max-width: 11rem;
-  }
-}
-
-@media (max-width: 759px) {
-  .study-plates main .decision.decision--wide > .decision__visual {
-    grid-column: full;
-  }
+.study-plates main .decision > .decision__evidence {
+  margin-top: var(--space-block);
 }
 
 /* ---- Many into one: separate rows slide up into the one row that replaces them ---------------- */
@@ -577,241 +432,32 @@ html.js.study-plates .gather:not(.is-here) .gather__one {
   }
 }
 
-/* ---- Pinned decision: the words scroll past a screen that stays put -------------------------- */
-
-.study-plates .decision__visual--pinned {
-  display: grid;
-  grid-template: 1fr / 1fr;
-}
-
-.study-plates .decision__visual--pinned > * {
-  grid-area: 1 / 1;
-}
-
-.study-plates .decision__beside {
-  z-index: 1;
-  justify-self: start;
-  width: min(20rem, 30cqw);
-  /* Clear of the section ticks fixed at the window's left edge. */
-  margin-left: max(6.5rem, calc((100cqw - var(--wide)) / 2));
-  padding-block: 26svh;
-}
-
-.study-plates .decision__visual--pinned:not(:has(.plate--left)) .decision__beside {
-  justify-self: end;
-  margin-right: max(6.5rem, calc((100cqw - var(--wide)) / 2));
-  margin-left: 0;
-}
-
-.study-plates main .decision__beside p {
-  margin: 0 0 24svh;
-  color: var(--color-ink);
-}
-
-.study-plates main .decision__beside p:last-child {
-  margin-bottom: 0;
-}
-
-/* Below the width where words and screen fit side by side, it reads like any other plate. */
-@media (max-width: 1199px) {
-  .study-plates .decision > .decision__visual--pinned {
-    display: contents;
-  }
-
-  .study-plates .decision__visual--pinned > .plate {
-    grid-area: auto;
-    grid-column: text-start / full-end;
-    margin-block: clamp(2rem, 4vw, 3.25rem);
-  }
-
-  .study-plates .decision__visual--pinned > .plate--left {
-    grid-column: full-start / side-end;
-  }
-
-  .study-plates .decision__beside {
-    grid-area: auto;
-    grid-column: text;
-    width: auto;
-    margin: 0;
-    padding: 0;
-  }
-
-  .study-plates main .decision__beside p {
-    margin: 0 0 1em;
-    color: var(--color-copy);
-  }
-}
-
 /* ---- What people complained about, and the decision that answered each ----------------------- */
 
-/* Each complaint sits in the reading column; its line runs out across to the decision that
-   answered it, in the side column. */
 .study-plates main .answers {
-  display: grid;
-  grid-column: text-start / side-end;
-  grid-template-columns: subgrid;
-  row-gap: 1.25rem;
-  margin: 0.5rem 0 1.5rem;
+  margin: 0.25rem 0 0;
   padding: 0;
   list-style: none;
 }
 
-.study-plates .answers li {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: center;
-}
-
-.study-plates .answers__from {
-  display: flex;
-  grid-column: text-start / side-start;
-  align-items: center;
-  min-width: 0;
-}
-
-.study-plates .answers__problem {
-  flex: 0 1 24rem;
+.study-plates main .answers li {
   color: var(--color-ink);
-  font-size: var(--text);
-  line-height: 1.6;
 }
 
-/* The same line as on the plates: a dot where it starts, a hairline to where it lands. */
-.study-plates .answers__line {
-  flex: 1 1 3rem;
-  height: 7px;
-  margin-inline: 1rem 0.75rem;
-  background:
-    radial-gradient(circle at 3.5px 50%, var(--color-ink) 2.5px, transparent 3px) no-repeat,
-    linear-gradient(var(--color-ink), var(--color-ink)) 0 50% / 100% 1px no-repeat;
-  transform-origin: left center;
-  transition: scale 420ms var(--ease-out) calc(var(--i) * 160ms + 150ms);
-}
-
-html.js.study-plates .answers:not(.is-here) .answers__line {
-  scale: 0 1;
+.study-plates main .answers li + li {
+  margin-top: 1.1rem;
 }
 
 .study-plates main .answers__to {
-  display: inline-flex;
-  grid-column: side;
-  align-items: center;
-  min-height: 44px;
-  color: var(--color-ink);
-  font-size: var(--text);
-  line-height: 1.4;
-}
-
-@media (max-width: 1099px) {
-  .study-plates main .answers,
-  .study-plates .answers li {
-    display: block;
-  }
-
-  .study-plates .answers li + li {
-    margin-top: 1.25rem;
-  }
-
-  /* One line of reading: the complaint, a short line, the decision that answered it. */
-  .study-plates .answers__from {
-    display: contents;
-  }
-
-  .study-plates .answers__problem {
-    display: inline;
-  }
-
-  .study-plates .answers__line {
-    display: inline-block;
-    width: 2.25rem;
-    margin: 0 0.5rem 0 0.6rem;
-    vertical-align: middle;
-  }
-
-  .study-plates main .answers__to {
-    display: inline;
-    min-height: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .study-plates .answers__line {
-    transition: none;
-  }
-}
-
-/* ---- The decisions at a glance: each with its result, each a way in ----------------------------- */
-
-.study-plates main .index {
-  display: grid;
-  grid-column: text-start / side-end;
-  grid-template-columns: subgrid;
-  margin: 0.75rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.study-plates .index li {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-}
-
-.study-plates main .index a {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: baseline;
-  padding-block: 1.1rem;
-  color: var(--color-ink);
-}
-
-.study-plates .index__title {
-  grid-column: text;
-  font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
-  line-height: 1.4;
-}
-
-.study-plates .index__number {
+  display: block;
+  width: fit-content;
+  margin-top: 0.15rem;
   color: var(--color-muted);
-  font-variant-numeric: tabular-nums;
-}
-
-.study-plates main .index__result {
-  grid-column: side;
-  color: var(--color-copy);
-  font-size: var(--text);
+  font-size: var(--small);
   line-height: 1.5;
 }
 
-.study-plates main .index a:is(:hover, :focus-visible) .link-mark {
-  animation: link-mark-draw var(--link-mark-draw) step-end forwards;
-}
-
-@media (max-width: 1099px) {
-  .study-plates main .index,
-  .study-plates .index li,
-  .study-plates main .index a {
-    display: block;
-  }
-
-  .study-plates main .index a {
-    padding-block: 0.85rem;
-  }
-
-  .study-plates .index__title,
-  .study-plates main .index__result {
-    display: block;
-  }
-
-  .study-plates main .index__result {
-    margin-top: 0.2rem;
-    font-size: var(--small);
-  }
-}
-
-/* Evidence beside a decision's words is drawn at a size it can be read at. */
+/* Evidence under a decision's words is drawn at a size it can be read at. */
 .study-plates .decision__evidence .chart {
   margin-block: 0;
 }
@@ -836,7 +482,7 @@ html.js.study-plates .answers:not(.is-here) .answers__line {
   font-weight: 600;
 }
 
-/* ---- Results: the result comes into focus as it arrives --------------------------------------- */
+/* ---- Results: the charts across both columns, the words in the reading column ------------------ */
 
 .study-plates .finale {
   position: relative;
@@ -844,8 +490,6 @@ html.js.study-plates .answers:not(.is-here) .answers__line {
   display: grid;
   grid-column: full;
   grid-template-columns: subgrid;
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
-  padding-block: clamp(5rem, 9vw, 8rem);
 }
 
 .study-plates .finale > * {
@@ -857,17 +501,7 @@ html.js.study-plates .answers:not(.is-here) .answers__line {
 }
 
 .study-plates main .finale > .chart {
-  margin-block: 2.5rem;
-  transition: filter 1100ms var(--ease-out), opacity 700ms ease;
-}
-
-html.js.study-plates .finale:not(.is-here) > .chart {
-  filter: blur(10px);
-  opacity: 0.45;
-}
-
-.study-plates .finale .chart .chart__title {
-  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  margin-block: var(--space-block);
 }
 
 .study-plates .finale .chart .chart__row {
@@ -891,16 +525,11 @@ html.js.study-plates .finale:not(.is-here) > .chart {
   font-weight: 600;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .study-plates main .finale > .chart {
-    transition: none;
-  }
-}
-
 /* ---- Footer --------------------------------------------------------------------------------- */
 
 .study-plates .case-footer {
-  width: min(calc(100% - 2 * var(--gutter)), var(--measure));
+  /* Under the figures, on the same width. */
+  width: min(100% - 2.5rem, var(--figure));
   margin: var(--space-part) auto 0;
   padding: 1.5rem 0 5rem;
   background: linear-gradient(90deg, rgb(17 17 15 / 45%) 50%, transparent 0) 0 0 / 14px 1px repeat-x;
@@ -908,6 +537,7 @@ html.js.study-plates .finale:not(.is-here) > .chart {
 }
 
 .study-plates .case-footer nav {
+  max-width: var(--measure);
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem 2.5rem;
@@ -922,16 +552,6 @@ html.js.study-plates .finale:not(.is-here) > .chart {
   text-decoration: none;
 }
 
-/* ---- Narrow pages: plates span the page -------------------------------------------------------- */
-
-@media (max-width: 759px) {
-  .study-plates .decision > .decision__visual,
-  .study-plates .decision > .decision__visual:has(.plate--left),
-  .study-plates .part > .plate {
-    grid-column: full;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .study-plates main :is(mark, .marked strong) {
     transition: none;
@@ -940,4 +560,26 @@ html.js.study-plates .finale:not(.is-here) > .chart {
   .study-plates :is(.chart--units, .people).is-here :is(.chart__unit, .chart__value, .people__dot--on) {
     animation: none;
   }
+}
+
+/* ---- Detailed or TL;DR: the switch is in StarSummary. TL;DR shows the study's two-minute read
+   (Tldr.astro) in place of the long one; without JavaScript the long read is the page. ---------- */
+
+html.study-plates:not([data-depth='tldr']) main .tldr {
+  display: none;
+}
+
+html.study-plates[data-depth='tldr'] main > :not(header, .part--summary, .tldr),
+html.study-plates[data-depth='tldr'] main .part--summary > :not(.depth, script),
+html.study-plates[data-depth='tldr'] reading-progress {
+  display: none;
+}
+
+/* Right under the switch. */
+html.study-plates[data-depth='tldr'] main .tldr {
+  margin-top: 0;
+}
+
+.study-plates main .tldr > .tldr__screens {
+  grid-column: wide;
 }

@@ -2,134 +2,170 @@
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
-// A screen in a frame: a mat of a photograph from the study's world (a kitchen, a street) around
-// the screen, edged with a thin ink line, and the names of what changed on the open page beside it.
-// Two screens side by side show two parts of the same photograph.
-// The parts that changed rack sharp while the rest of the screen stays a little out of focus;
-// hovering the screen brings all of it into focus. The names are real text in reading order; the
-// frame, the focus, and the lines are only drawn.
+import { toLocale, translator } from '../../i18n/locales';
 
-interface Note {
-  /** The region that changed, in percent of the whole screen image: left, top, width, height. */
+// A screen on a panel, the one way every case study shows its product: a calm panel lightly tinted
+// with the study's colour, the screen large and sharp, its name under it inside the panel. What
+// changed is ringed on the screen with a number and named by that number. Several screens are one
+// panel showing one screen at a time: swipe or scroll sideways, use the arrows, or pick a dot.
+// Without JavaScript the screens still scroll sideways, each with its name.
+
+interface Region {
+  /** In percent of the whole screen image: left, top, width, height. */
   x: number;
   y: number;
   w: number;
   h: number;
+}
+
+interface Note extends Region {
   label: string;
-  /** More regions that changed the same way, sharp too; the line points at the first. */
-  also?: { x: number; y: number; w: number; h: number }[];
+  /** More regions that changed the same way, ringed too; the number sits on the first. */
+  also?: Region[];
 }
 
 interface Shot {
   src: ImageMetadata;
   alt: string;
-  /** A short name under the screen, for plates that hold more than one. */
+  /** The screen's name, shown under it. */
   label?: string;
+  /** Show only this part of the screen (percent), such as an app window without its shadow. */
+  crop?: Region;
 }
 
 interface Props {
-  /** The frame's ground: a photograph from the study's world. Without one, the frame is the study's
-   *  own paper (--plate-paper), such as Observatory's night of system numbers. */
-  ground?: ImageMetadata;
-  /** Which part of the ground shows, as an object-position, so frames differ. With two screens,
-   *  only its vertical part is used: the first shows the photograph's left, the second its right. */
-  groundAt?: string;
   shots: Shot[];
-  /** Regions on one screen that rack into focus, with their names. */
+  /** What changed on one screen, ringed and named. */
   notes?: Note[];
-  /** Which screen carries the notes: the first by default. With two screens it must be the one on
-   *  the names' side (the first when they sit left, the last when they sit right). */
+  /** Which screen carries the notes: the first by default. */
   notesOn?: number;
   /** Show only this part of the first screen, large, without the phone around it (percent). */
-  crop?: { x: number; y: number; w: number; h: number };
-  /** The side of the screen its names sit on. */
-  bleed?: 'right' | 'left';
-  /** The screen stays put while the decision's words scroll past it (see Decision, layout pinned). */
-  pinned?: boolean;
-  /** One line about the whole plate, under the screen. */
+  crop?: Region;
+  /** One line about the whole panel, under it. */
   caption?: string;
-  /** phone: a screen of a set width. desktop: an app window as wide as the plate allows. */
+  /** phone: screens of one set width. desktop: an app window as wide as the panel allows. */
   kind?: 'phone' | 'desktop';
-  /** Where this plate's paper starts, so frames cut from the same paper differ (background-position). */
-  paperAt?: string;
 }
 
-const { ground, groundAt = '50% 50%', shots, notes = [], notesOn = 0, crop, bleed = 'right', pinned = false, caption, kind = 'phone', paperAt } = Astro.props;
-const groundWidths = ground ? [...new Set([600, 900, 1200].filter((width) => width < ground.width).concat(Math.min(ground.width, 1200)))] : [];
-const candidates = kind === 'desktop' ? [640, 960, 1280, 1600, 2000] : [320, 480, 640];
+const { shots, notes = [], notesOn = 0, crop, caption, kind = 'phone' } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const candidates = kind === 'desktop' ? [640, 960, 1280, 1600] : [320, 480, 640, 800];
 const widthsFor = (src: ImageMetadata) => [...new Set(candidates.filter((width) => width < src.width).concat(Math.min(src.width, candidates.at(-1)!)))];
 const round = (value: number) => Math.round(value * 100) / 100;
+const cropOf = (index: number) => shots[index]?.crop ?? (index === 0 ? crop : undefined);
 
-// The names are placed against the screen as shown, so a cropped screen moves them into its frame.
-const shown = (note: Note) => (crop
-  ? { x: ((note.x - crop.x) / crop.w) * 100, y: ((note.y - crop.y) / crop.h) * 100, w: (note.w / crop.w) * 100, h: (note.h / crop.h) * 100 }
-  : note);
-const boxes = notes.map((note) => ({ ...shown(note), label: note.label }));
-const place = (box: { x: number; y: number; w: number; h: number }, at: number) => `--x: ${round(box.x)}; --y: ${round(box.y)}; --w: ${round(box.w)}; --h: ${round(box.h)}; --i: ${at}`;
-// The sharp copies are clipped in the whole screen's own coordinates.
-const sharpClip = (note: { x: number; y: number; w: number; h: number }) => `inset(${round(note.y)}% ${round(100 - note.x - note.w)}% ${round(100 - note.y - note.h)}% ${round(note.x)}% round 10px)`;
-
-const sharpRegions = notes.flatMap((note, at) => [note, ...(note.also ?? [])].map((region) => ({ region, at })));
-const first = shots[0];
-const cropFrame = crop && first
-  ? `aspect-ratio: ${round(crop.w * first.src.width)} / ${round(crop.h * first.src.height)}`
-  : undefined;
-const cropLayers = crop
-  ? `width: ${round(10000 / crop.w)}%; left: ${round((-crop.x / crop.w) * 100)}%; top: ${round((-crop.y / crop.h) * 100)}%`
-  : undefined;
-const groundY = groundAt.split(' ')[1] ?? '50%';
-const groundFor = (index: number) => (shots.length > 1 ? `${(index / (shots.length - 1)) * 100}% ${groundY}` : groundAt);
-const screenSizes = kind === 'desktop'
-  ? '(max-width: 759px) 92vw, min(70vw, 62rem)'
-  : crop ? '(max-width: 759px) 100vw, 40rem' : '(max-width: 759px) 68vw, min(27vw, 25rem)';
+// Rings are placed against the screen as shown, so a cropped screen moves them into its frame.
+const ringCrop = cropOf(notesOn);
+const shown = (region: Region) => (ringCrop
+  ? { x: ((region.x - ringCrop.x) / ringCrop.w) * 100, y: ((region.y - ringCrop.y) / ringCrop.h) * 100, w: (region.w / ringCrop.w) * 100, h: (region.h / ringCrop.h) * 100 }
+  : region);
+const rings = notes.flatMap((note, at) => [note, ...(note.also ?? [])].map((region, index) => ({ ...shown(region), number: index === 0 ? at + 1 : undefined, at })));
+const place = (ring: Region & { at: number }) => `--x: ${round(ring.x)}; --y: ${round(ring.y)}; --w: ${round(ring.w)}; --h: ${round(ring.h)}; --i: ${ring.at}`;
+const frameOf = (index: number) => {
+  const area = cropOf(index);
+  const shot = shots[index];
+  return area ? `aspect-ratio: ${round(area.w * shot.src.width)} / ${round(area.h * shot.src.height)}` : undefined;
+};
+const layersOf = (index: number) => {
+  const area = cropOf(index);
+  return area ? `width: ${round(10000 / area.w)}%; left: ${round((-area.x / area.w) * 100)}%; top: ${round((-area.y / area.h) * 100)}%` : undefined;
+};
+const sizes = kind === 'desktop' ? '(max-width: 759px) 90vw, 44rem' : '(max-width: 759px) 70vw, 22rem';
+const many = shots.length > 1;
+const legend = notes.map((note, at) => ({ number: at + 1, label: note.label }));
 ---
 
-<figure class:list={['plate', `plate--${bleed}`, `plate--${kind}`, shots.length > 1 && 'plate--many', crop && 'plate--crop', pinned && 'plate--pinned', notes.length > 0 && 'plate--named']} data-plate>
-  <div class="plate__stage">
-    {shots.map((shot, index) => {
-      const focused = index === notesOn && notes.length > 0;
-      return (
-        <div class="plate__shot">
-          <div class:list={['plate__screen', focused && 'plate__screen--focus']} style={index === 0 ? cropFrame : undefined}>
-            {ground ? (
-              <span class="plate__mat" aria-hidden="true"><Image src={ground} alt="" widths={groundWidths} sizes="(max-width: 759px) 90vw, 32rem" format="webp" quality={78} loading="lazy" decoding="async" style={`object-position: ${groundFor(index)}`} /></span>
-            ) : (
-              <span class="plate__mat plate__mat--paper" aria-hidden="true" style={paperAt ? `background-position: ${paperAt}` : undefined}></span>
-            )}
-            <div class="plate__frame">
-            <div class="plate__layers" style={index === 0 ? cropLayers : undefined}>
-              <Image class="plate__base" src={shot.src} alt={shot.alt} widths={widthsFor(shot.src)} sizes={screenSizes} format="webp" quality={85} loading="lazy" decoding="async" />
-              {focused && sharpRegions.map(({ region, at }) => (
-                <Image class="plate__sharp" src={shot.src} alt="" widths={widthsFor(shot.src)} sizes={screenSizes} format="webp" quality={85} loading="lazy" decoding="async" style={`clip-path: ${sharpClip(region)}; --i: ${at}`} />
-              ))}
+<figure class:list={['plate', `plate--${kind}`, many && 'plate--many', crop && 'plate--crop']} data-plate>
+  <div class="plate__panel">
+    <div class="plate__track" data-track tabindex={many ? 0 : undefined} role={many ? 'group' : undefined} aria-label={many ? t('Screens, one at a time', 'Экраны по одному') : undefined}>
+      {shots.map((shot, index) => (
+        <div class="plate__slide" data-slide>
+          <div class:list={['plate__screen', cropOf(index) && 'plate__screen--crop']} style={frameOf(index)}>
+            <div class="plate__layers" style={layersOf(index)}>
+              <Image src={shot.src} alt={shot.alt} widths={widthsFor(shot.src)} sizes={sizes} format="webp" quality={85} loading="lazy" decoding="async" />
             </div>
-            </div>
-            {focused && (
-              <ol class="plate__marks" aria-hidden="true">
-                {boxes.map((box, at) => <li style={place(box, at)}></li>)}
+            {index === notesOn && rings.length > 0 && (
+              <ol class="plate__rings" aria-hidden="true">
+                {rings.map((ring) => <li style={place(ring)}>{ring.number && <span>{ring.number}</span>}</li>)}
               </ol>
             )}
           </div>
-          {focused && (
-            <ol class="plate__notes">
-              {boxes.map((box, at) => <li style={place(box, at)}><span>{box.label}</span></li>)}
-            </ol>
+          {(shot.label || (index === notesOn && legend.length > 0)) && (
+            <div class="plate__key">
+              {shot.label && <p class="plate__label">{shot.label}</p>}
+              {index === notesOn && legend.length > 0 && (
+                <ol class="plate__names">{legend.map((item) => <li><span class="plate__number" aria-hidden="true">{item.number}</span>{item.label}</li>)}</ol>
+              )}
+            </div>
           )}
-          {shot.label && <p class="plate__label">{shot.label}</p>}
         </div>
-      );
-    })}
+      ))}
+    </div>
+    {many && (
+      <div class="plate__controls" hidden>
+        <button class="plate__arrow plate__arrow--prev" type="button" data-prev aria-label={t('Previous screen', 'Предыдущий экран')}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <button class="plate__arrow plate__arrow--next" type="button" data-next aria-label={t('Next screen', 'Следующий экран')}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+        <div class="plate__dots">
+          {shots.map((shot, index) => (
+            <button class="plate__dot" type="button" data-dot={index} aria-label={`${t('Screen', 'Экран')} ${index + 1}${shot.label ? `: ${shot.label}` : ''}`} aria-current={index === 0 ? 'true' : undefined}></button>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
   {caption && <figcaption class="plate__caption">{caption}</figcaption>}
 </figure>
 
 <script>
-  // Racks a plate into focus once it is in view and its screens are decoded, so the focus never
-  // lands before the picture does.
+  // Panels with several screens: arrows and dots move the sideways scroll one screen at a time,
+  // and the dots follow wherever a swipe or a trackpad leaves it. Rings draw in once a panel's
+  // screens are in view and decoded.
   const still = matchMedia('(prefers-reduced-motion: reduce)');
-  const plates = document.querySelectorAll<HTMLElement>('[data-plate]');
-  // Waits for each picture to load, then decode. A lazy image that has not started loading yet
-  // would make decode() give up at once, and the frame would arrive empty.
+
+  document.querySelectorAll<HTMLElement>('[data-plate]').forEach((plate) => {
+    const track = plate.querySelector<HTMLElement>('[data-track]');
+    const slides = Array.from(plate.querySelectorAll<HTMLElement>('[data-slide]'));
+    const controls = plate.querySelector<HTMLElement>('.plate__controls');
+    if (!track || !controls || slides.length < 2) return;
+
+    const prev = controls.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const next = controls.querySelector<HTMLButtonElement>('[data-next]')!;
+    const dots = Array.from(controls.querySelectorAll<HTMLButtonElement>('[data-dot]'));
+    controls.hidden = false;
+
+    const current = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+    const go = (index: number) => {
+      const target = Math.max(0, Math.min(slides.length - 1, index));
+      track.scrollTo({ left: target * track.clientWidth, behavior: still.matches ? 'auto' : 'smooth' });
+    };
+    const sync = () => {
+      const at = current();
+      prev.disabled = at === 0;
+      next.disabled = at === slides.length - 1;
+      dots.forEach((dot, index) => (index === at ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current')));
+      slides.forEach((slide, index) => slide.toggleAttribute('inert', index !== at));
+    };
+
+    prev.addEventListener('click', () => go(current() - 1));
+    next.addEventListener('click', () => go(current() + 1));
+    dots.forEach((dot, index) => dot.addEventListener('click', () => go(index)));
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') { event.preventDefault(); go(current() + 1); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); go(current() - 1); }
+    });
+    let frame = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(sync);
+    }, { passive: true });
+    new ResizeObserver(sync).observe(track);
+    sync();
+  });
+
   const ready = (image: HTMLImageElement) => {
     const loaded = image.complete && image.naturalWidth
       ? Promise.resolve()
@@ -139,100 +175,80 @@ const screenSizes = kind === 'desktop'
         });
     return loaded.then(() => image.decode().catch(() => undefined));
   };
-  const rack = (plate: HTMLElement) => {
-    const pictures = Array.from(plate.querySelectorAll<HTMLImageElement>('.plate__layers img, .plate__mat img'));
-    Promise.all(pictures.map(ready)).then(() => plate.classList.add('is-here'));
-  };
   const watch = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       watch.unobserve(entry.target);
-      rack(entry.target as HTMLElement);
+      const plate = entry.target as HTMLElement;
+      const first = plate.querySelector<HTMLImageElement>('.plate__layers img');
+      (first ? ready(first) : Promise.resolve()).then(() => plate.classList.add('is-here'));
     });
-  }, { rootMargin: '0px 0px -20% 0px', threshold: 0.3 });
-  plates.forEach((plate) => (still.matches ? plate.classList.add('is-here') : watch.observe(plate)));
+  }, { rootMargin: '0px 0px -15% 0px', threshold: 0.25 });
+  document.querySelectorAll<HTMLElement>('[data-plate]').forEach((plate) => (still.matches ? plate.classList.add('is-here') : watch.observe(plate)));
 </script>
 
 <style>
-  /* The plate has no box of its own: each screen sits in its own frame on the page's grid. */
   .plate {
-    /* The frame's mat around the screen; the names start past it, on the open page. */
-    --mat: clamp(1.75rem, 3.2vw, 3.5rem);
-    --gap: calc(var(--mat) + clamp(2rem, 3.5vw, 3.5rem));
-    --pad: calc(var(--mat) + clamp(1rem, 2vw, 2rem));
-    /* Large, but the framed screen never taller than the window can show below the header
-       (screens are about 0.56 as wide as they are tall). */
-    --phone: min(clamp(16rem, 25vw, 28rem), (100svh - 15rem - 2 * var(--mat)) * 0.56);
-    /* Unchanged parts stay readable: just off focus, and quieter in colour. */
-    --soft: blur(0.8px) saturate(0.55) brightness(0.97) contrast(0.92);
-    position: relative;
-    isolation: isolate;
+    --pad: clamp(1.25rem, 3vw, 2.5rem);
+    /* One phone width for every study, never taller than the window can show with its name. */
+    --phone: min(19rem, (100svh - 19rem) * 0.5);
     margin: 0;
   }
 
-  /* The screen sits on a column edge: flush with the words' left edge when the plate runs off the
-     right, flush with the side column's right edge when it runs off the left. The names take the
-     open side. */
-  .plate__stage {
-    /* The space between two frames side by side. */
-    --between: clamp(1rem, 2vw, 2rem);
-    display: flex;
-    gap: calc(2 * var(--mat) + var(--between));
-    align-items: flex-start;
-    padding: var(--pad) var(--mat);
+  .plate--crop {
+    --phone: min(24rem, (100svh - 17rem) * 0.66);
   }
 
-  .plate--left .plate__stage {
-    justify-content: flex-end;
-  }
+  /* ---- The panel: calm, lightly tinted with the study's colour ------------------------------ */
 
-  /* The frame: a mat of the ground around the screen, rounded and edged with a thin ink line, like
-     a print mounted on a card. It sits behind the screen, so the screen's own shape stands on it. */
-  .plate__mat {
-    position: absolute;
-    z-index: -1;
-    inset: calc(-1 * var(--mat));
-    overflow: hidden;
-    border-radius: clamp(1rem, 1.6vw, 1.5rem);
-    background: var(--plate-paper, var(--color-field));
-  }
-
-  .plate__mat::after {
-    position: absolute;
-    inset: 0;
-    border: 1.5px solid var(--color-ink);
-    border-radius: inherit;
-    content: '';
-  }
-
-  /* The photograph stays in the background: as taken, only a little quieter in colour. */
-  .plate__mat :global(img) {
-    display: block;
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    object-fit: cover;
-    filter: saturate(0.85);
-  }
-
-  :global(html.js) .plate:not(:global(.is-here)) .plate__mat {
-    opacity: 0;
-  }
-
-  .plate__mat {
-    transition: opacity 700ms ease;
-  }
-
-  /* The names are placed against the shot, which is exactly the screen's size. */
-  .plate__shot {
+  .plate__panel {
     position: relative;
-    flex: 0 0 var(--phone);
+    border-radius: var(--radius-card);
+    background: var(--panel, #f0f0ee);
+  }
+
+  .plate__track {
+    display: flex;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .plate__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .plate__track:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: -2px;
+    border-radius: var(--radius-card);
+  }
+
+  .plate__slide {
+    display: flex;
+    flex: 0 0 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
     min-width: 0;
-    container-type: inline-size;
+    padding: var(--pad) var(--pad) calc(var(--pad) * 0.9);
+    scroll-snap-align: center;
+  }
+
+  /* Room for the dots under the names. */
+  .plate--many .plate__slide {
+    padding-bottom: calc(var(--pad) + 1.75rem);
   }
 
   .plate__screen {
     position: relative;
+    width: var(--phone);
+    max-width: 100%;
+  }
+
+  .plate--desktop .plate__screen {
+    width: 100%;
   }
 
   .plate__layers {
@@ -244,303 +260,253 @@ const screenSizes = kind === 'desktop'
     width: 100%;
     max-width: none;
     height: auto;
-  }
-
-  .plate__layers :global(.plate__sharp) {
-    position: absolute;
-    inset: 0;
-  }
-
-  /* An app window takes the plate's width, up to a size its text can still be read at. */
-  .plate--desktop .plate__shot {
-    flex: 1 1 auto;
-    max-width: var(--desk, 62rem);
+    filter: drop-shadow(0 0.75rem 1.25rem rgb(17 17 15 / 0.16));
   }
 
   .plate--desktop .plate__layers :global(img) {
+    border-radius: 0.5rem;
+    filter: none;
+    box-shadow: 0 0.75rem 1.75rem rgb(17 17 15 / 0.14), 0 0 0 1px rgb(17 17 15 / 0.06);
+  }
+
+  /* A crop shows only part of the screen, framed to its own edges. */
+  .plate__screen--crop {
+    overflow: hidden;
+    border-radius: 1.1rem;
+    box-shadow: 0 0.75rem 1.75rem rgb(17 17 15 / 0.16);
+  }
+
+  .plate--desktop .plate__screen--crop {
     border-radius: 0.6rem;
+    box-shadow: 0 0.75rem 1.75rem rgb(17 17 15 / 0.14), 0 0 0 1px rgb(17 17 15 / 0.06);
   }
 
-  /* A close crop: the part of the screen that matters, larger, without the phone around it. */
-  .plate--crop {
-    --phone: min(clamp(18rem, 30vw, 27rem), (100svh - 17rem) * 0.655);
+  .plate__screen--crop .plate__layers {
+    position: absolute;
   }
 
-  /* The frame clips the crop; the marks sit beside it, so their numbers can sit outside. */
-  .plate--crop .plate__frame {
+  .plate__screen--crop .plate__layers :global(img) {
+    border-radius: 0;
+    filter: none;
+    box-shadow: none;
+  }
+
+  /* ---- Rings: what changed, numbered ---------------------------------------------------------- */
+
+  .plate__rings {
     position: absolute;
     inset: 0;
-    overflow: hidden;
-    border-radius: 22px;
-    box-shadow: 0 1.5rem 3rem -1rem rgb(40 20 0 / 35%), 0 0.25rem 0.75rem rgb(40 20 0 / 12%);
-  }
-
-  .plate--crop .plate__layers {
-    position: absolute;
-  }
-
-  /* Two screens: the second sits a little lower, so the pair reads as two moments, not a row. */
-  @media (min-width: 760px) {
-    .plate--many .plate__shot:nth-child(2) {
-      margin-top: clamp(2rem, 5vw, 4.5rem);
-    }
-  }
-
-  .plate .plate__label,
-  .plate .plate__caption {
-    margin: calc(var(--mat) + 1rem) 0 0;
-    color: var(--color-ink);
-    font-size: var(--small, 0.875rem);
-    line-height: 1.45;
-    text-align: center;
-  }
-
-  .plate .plate__caption {
-    margin: 0;
-    padding: 0 var(--gap) var(--pad);
-  }
-
-  .plate__stage:has(+ .plate__caption) {
-    padding-bottom: 1.5rem;
-  }
-
-  /* Pinned: the plate is as tall as the words beside it, and the screen stays put while they pass. */
-  @media (min-width: 1200px) {
-    .plate--pinned {
-      height: 100%;
-    }
-
-    .plate--pinned .plate__stage {
-      box-sizing: border-box;
-      height: 100%;
-    }
-
-    .plate--pinned .plate__shot {
-      position: sticky;
-      top: max(7rem, calc(50svh - var(--phone) * 0.89));
-    }
-  }
-
-  /* ---- Focus ---------------------------------------------------------------------------------- */
-
-  /* What changed stays sharp; the rest of the screen sits just out of focus. */
-  .plate__screen--focus :global(.plate__base) {
-    filter: var(--soft);
-  }
-
-  .plate__layers :global(img) {
-    transition: filter 900ms var(--ease-out), opacity 500ms ease;
-  }
-
-  .plate__layers :global(.plate__sharp) {
-    transition-delay: calc(250ms + var(--i, 0) * 140ms);
-  }
-
-  /* Before it arrives the whole plate is out of focus, like the cover before the pull. */
-  :global(html.js) .plate:not(:global(.is-here)) .plate__layers :global(img) {
-    filter: blur(8px) saturate(0.8);
-  }
-
-  :global(html.js) .plate:not(:global(.is-here)) .plate__layers :global(.plate__sharp) {
-    opacity: 0;
-  }
-
-  /* Pointing at the screen brings all of it into focus, to read the rest. */
-  @media (hover: hover) and (pointer: fine) {
-    :global(.is-here) .plate__screen--focus:hover :global(.plate__base) {
-      filter: none;
-      transition-duration: 300ms;
-    }
-  }
-
-  /* ---- Names: a line from the sharp region out to its name ----------------------------------- */
-
-  .plate__marks,
-  .plate__notes {
     margin: 0;
     padding: 0;
     list-style: none;
+    pointer-events: none;
   }
 
-  .plate__marks li {
+  .plate__rings li {
     position: absolute;
     top: calc(var(--y) * 1%);
     left: calc(var(--x) * 1%);
     width: calc(var(--w) * 1%);
     height: calc(var(--h) * 1%);
+    border: 2px solid var(--color-ink);
+    border-radius: 0.55rem;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.9);
+    transition: opacity 240ms ease, scale 360ms var(--ease-out);
+    transition-delay: calc(200ms + var(--i) * 160ms);
   }
 
-  .plate__notes li {
+  :global(html.js) .plate:not(.is-here) .plate__rings li {
+    opacity: 0;
+    scale: 1.06;
+  }
+
+  .plate__rings span,
+  .plate__number {
+    display: inline-grid;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-ink);
+    color: #fff;
+    font-family: var(--font-study-emphasis);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .plate__rings span {
     position: absolute;
-    top: calc((var(--y) + var(--h) / 2) * 1%);
-    left: calc(100% + var(--gap));
-    width: max-content;
-    max-width: 15rem;
-    translate: 0 -50%;
-    color: var(--color-ink);
-    font-size: 0.9375rem;
-    line-height: 1.35;
-    text-wrap: balance;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 0.9);
+    translate: -55% -55%;
   }
 
-  /* The line starts with a dot on the region's edge and ends at the name. */
-  .plate__notes li::before {
+  /* ---- Inside the panel, under the screen: its name and what changed -------------------------- */
+
+  .plate__key {
+    display: grid;
+    justify-items: center;
+    gap: 0.5rem;
+    max-width: 30rem;
+    text-align: center;
+  }
+
+  .plate .plate__label {
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    font-size: var(--small, 0.9375rem);
+    line-height: 1.45;
+  }
+
+  .plate__names {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Specific enough to win over the page's running-text style for list items. */
+  .plate .plate__names li {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    color: var(--color-copy);
+    font-family: var(--font-reading);
+    font-size: var(--small, 0.9375rem);
+    line-height: 1.45;
+    text-align: left;
+  }
+
+  .plate .plate__caption {
+    max-width: 40rem;
+    margin: 0.75rem 0 0;
+    color: var(--color-muted);
+    font-size: var(--small, 0.9375rem);
+    line-height: 1.5;
+  }
+
+  /* ---- Several screens: arrows at the sides, dots at the bottom ------------------------------ */
+
+  .plate__controls[hidden] {
+    display: none;
+  }
+
+  .plate__arrow {
     position: absolute;
     top: 50%;
-    right: calc(100% + 0.6rem);
-    width: calc(var(--gap) - 0.6rem + (100 - var(--x) - var(--w)) * 1cqw + 3px);
-    height: 7px;
-    background:
-      radial-gradient(circle at 3.5px 50%, var(--color-ink) 2.5px, rgb(255 255 255 / 90%) 3px 3.5px, transparent 4px) no-repeat,
-      linear-gradient(var(--color-ink), var(--color-ink)) 0 50% / 100% 1px no-repeat;
-    content: '';
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.82);
+    box-shadow: 0 1px 2px rgb(17 17 15 / 0.12);
+    color: var(--color-ink);
+    cursor: pointer;
     translate: 0 -50%;
-    transform-origin: left center;
+    transition: opacity 160ms ease, background-color 160ms ease;
   }
 
-  .plate--left .plate__notes li {
-    right: calc(100% + var(--gap));
-    left: auto;
-    text-align: right;
+  .plate__arrow:hover {
+    background: #fff;
   }
 
-  .plate--left .plate__notes li::before {
-    right: auto;
-    left: calc(100% + 0.6rem);
-    width: calc(var(--gap) - 0.6rem + var(--x) * 1cqw + 3px);
-    background:
-      radial-gradient(circle at calc(100% - 3.5px) 50%, var(--color-ink) 2.5px, rgb(255 255 255 / 90%) 3px 3.5px, transparent 4px) no-repeat,
-      linear-gradient(var(--color-ink), var(--color-ink)) 0 50% / 100% 1px no-repeat;
-    transform-origin: right center;
-  }
-
-  .plate__notes li {
-    transition: opacity 260ms ease calc(var(--i) * 140ms + 700ms);
-  }
-
-  .plate__notes li::before {
-    transition: scale 360ms var(--ease-out) calc(var(--i) * 140ms + 480ms);
-  }
-
-  :global(html.js) .plate:not(:global(.is-here)) .plate__notes li {
+  .plate__arrow:disabled {
     opacity: 0;
+    pointer-events: none;
   }
 
-  :global(html.js) .plate:not(:global(.is-here)) .plate__notes li::before {
-    scale: 0 1;
+  .plate__arrow--prev {
+    left: 0.75rem;
+  }
+
+  .plate__arrow--next {
+    right: 0.75rem;
+  }
+
+  .plate__dots {
+    position: absolute;
+    bottom: calc(var(--pad) * 0.6);
+    left: 50%;
+    display: flex;
+    gap: 0.1rem;
+    translate: -50% 0;
+  }
+
+  .plate__dot {
+    display: grid;
+    width: 1.5rem;
+    height: 1.5rem;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .plate__dot::before {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-ink);
+    content: '';
+    opacity: 0.22;
+    transition: opacity 160ms ease;
+  }
+
+  .plate__dot:hover::before {
+    opacity: 0.5;
+  }
+
+  .plate__dot[aria-current='true']::before {
+    opacity: 0.85;
+  }
+
+  .plate :is(.plate__arrow, .plate__dot):focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: 50%;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .plate__layers :global(img),
-    .plate__mat,
-    .plate__notes li,
-    .plate__notes li::before {
+    .plate__rings li {
       transition: none;
     }
   }
 
-  /* ---- Narrow: the plate spans the page, names listed under the screen by number ---------- */
-
   @media (max-width: 759px) {
-    .plate,
-    .plate--left {
-      --mat: 1.25rem;
-      --phone: min(64vw, 16rem);
-      --pad: 2.75rem;
-      --soft: blur(0.4px) saturate(0.55) brightness(0.97) contrast(0.92);
-      border-radius: 0;
+    .plate {
+      --pad: 1.25rem;
+      --phone: min(66vw, 16.5rem);
     }
 
     .plate--crop {
-      --phone: min(76vw, 21rem);
+      --phone: min(80vw, 21rem);
     }
 
-    .plate__stage,
-    .plate--left .plate__stage {
-      justify-content: center;
-      padding-inline: 1.25rem;
+    .plate__arrow {
+      display: none;
     }
 
-    /* Two framed screens side by side keep room for both mats inside the page. */
-    .plate--many .plate__stage {
-      --between: 0.5rem;
-      padding-inline: calc(var(--mat) + 0.75rem);
+    .plate__rings li {
+      border-width: 1.5px;
+      border-radius: 0.4rem;
     }
 
-    .plate--many .plate__shot {
-      flex: 1 1 0;
-    }
-
-    .plate__marks {
-      counter-reset: mark;
-    }
-
-    .plate__marks li {
-      counter-increment: mark;
-    }
-
-    /* The number sits in the margin beside the screen, level with its region, so it never covers
-       anything on the screen. */
-    .plate__marks li::after {
-      position: absolute;
-      top: 50%;
-      left: calc(var(--x) / var(--w) * -100% - 1.75rem);
-      display: grid;
-      width: 1.35rem;
-      height: 1.35rem;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--color-ink);
-      box-shadow: 0 0 0 2px rgb(255 255 255 / 85%);
-      color: #fff;
-      content: counter(mark);
-      font-family: var(--font-study-emphasis);
-      font-size: 0.75rem;
-      font-weight: 600;
-      line-height: 1;
-      translate: 0 -50%;
-    }
-
-    .plate__notes {
-      counter-reset: note;
-      display: grid;
-      gap: 0.5rem;
-      width: max-content;
-      max-width: 100%;
-      margin: 1.75rem auto 0;
-    }
-
-    .plate__notes li,
-    .plate--left .plate__notes li {
-      position: static;
-      display: flex;
-      gap: 0.6rem;
-      align-items: baseline;
-      width: auto;
-      max-width: none;
-      counter-increment: note;
-      translate: none;
-      text-align: left;
-    }
-
-    .plate__notes li::before,
-    .plate--left .plate__notes li::before {
-      position: static;
-      display: grid;
-      flex: 0 0 1.35rem;
-      width: 1.35rem;
-      height: 1.35rem;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--color-ink);
-      color: #fff;
-      content: counter(note);
-      font-family: var(--font-study-emphasis);
-      font-size: 0.75rem;
-      font-weight: 600;
-      line-height: 1;
-      scale: 1;
-      translate: 0 0.2rem;
+    .plate__rings span {
+      width: 1.1rem;
+      height: 1.1rem;
+      font-size: 0.625rem;
     }
   }
 </style>

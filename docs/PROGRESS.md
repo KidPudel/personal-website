@@ -1,6 +1,17 @@
 # Progress
 
-Last updated: 2026-10-19
+Last updated: 2026-10-26
+
+## Case studies: calm reading line, TL;DR, screens one at a time
+
+- A senior product designer reviewed the portfolio: the site itself is strong, but the work inside the cases needs tightening (inconsistent icons, dense interfaces, broken proximity, low contrast, sizes too small; the 2024 work should be updated), and it was unclear what each project was and for which company. That first point is about the product screens themselves and still needs a Figma refresh of SuperGood and Two Sticks with 3× exports. Content and the STAR storytelling are unchanged.
+- Igor then found the case-study pages cluttered, and pointed to two references for their calm: amylalai.com/stitch-fromhome and mchiu.co.uk (its Detailed / TL;DR switch, its image handling). Two intermediate versions were rejected on the way: a labelled Project/Role/Team/Status grid ("AI slop", unnatural) and a two-column reading/side layout.
+- What each project is: one plain sentence under each cover's pitch, in Igor's voice (`about` in `src/content/case-studies.ts`, rendered by `ProjectFacts.astro`), assembled from existing facts. Instagram's and Observatory's imply Igor worked alone, to confirm.
+- One calm reading line: a centred 52rem column at 16 to 17px (the references' long line), figures 56rem, smaller Crimson headings and statement, a tighter spacing scale. Nothing sits beside the text; the decisions index, complaint lines, alternating spreads, and pinned layout are gone. Every decision has one shape: what was wrong, what I did, why, what I didn't do, the screen, the result and its source, then any chart. The section ticks stay.
+- Detailed / TL;DR (switch in `StarSummary.astro`, remembered in localStorage): TL;DR replaces the long read with a two-minute version (`Tldr.astro`): the problem, each decision with what it changed (each links into the long read), the decisions' screens as one carousel, the result, and the reflection or next step. Every sentence comes from the same page data the long read uses (`situation`, `decisions`, `result`, `closing` in each page), so the two never disagree; a closing that leads into a list loses that last sentence. Without JavaScript the page is the long read.
+- Screens (`Plate.astro`): a calm panel tinted with the study's colour (`--panel`), screens sharp, their names and the numbered names of what changed inside the panel under the screen. Several screens are one panel showing one at a time: swipe or trackpad scroll (scroll-snap, so it works without JavaScript), arrows, dots, keyboard arrows. Observatory's comparators (Blink.astro removed), first prototype row, and four shipped windows are carousels now. The homepage watercolours are no longer used inside the studies (fewer image requests); covers keep their own openings.
+- The case-studies listing had lost its frame (an undefined `--work-width` since 2026-10-12); it uses the homepage's frame, radius, and shadow again.
+- Verified all four studies at 1440 and 390 px, detailed and TL;DR, English and Russian samples, no horizontal overflow or console errors. The media contract, the design detector, and both production builds pass. `astro check` errors only in the untracked `src/components/homepage/writing/Writing.astro`, in progress outside this work.
 
 ## Little oddities
 

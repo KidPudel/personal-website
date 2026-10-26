@@ -3,6 +3,8 @@ import { getImage } from 'astro:assets';
 
 import pileImage from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.webp';
 import pile from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.json';
+import type { CaseStudy } from '../../../content/case-studies';
+import ProjectFacts from '../ProjectFacts.astro';
 import Rich from '../Rich.astro';
 
 // Instagram Saves opens on its problem: the pile. Beside the title, the prototype's saved posts
@@ -15,10 +17,11 @@ interface Props {
   pitch: string;
   /** The result, numbers in **bold**. */
   outcome: string;
-  facts: string[];
+  /** Whose project, Igor's part, the team, and whether it shipped, from src/content/case-studies.ts. */
+  about: CaseStudy['about'];
 }
 
-const { title, pitch, outcome, facts } = Astro.props;
+const { title, pitch, outcome, about } = Astro.props;
 const sprite = await getImage({ src: pileImage, format: 'webp' });
 const tile = (name: string) => {
   const index = pile.names.indexOf(name);
@@ -44,8 +47,8 @@ const query = 'spider';
     <div class="pile__text">
       <h1>{title}</h1>
       <p class="pile__pitch">{pitch}</p>
+      <ProjectFacts about={about} />
       <p class="pile__outcome"><Rich text={outcome} /></p>
-      <p class="pile__facts">{facts.map((fact, index) => <>{index > 0 && <br />}{fact}</>)}</p>
     </div>
 
     <!-- Saved, as the prototype draws it: the search field, then the pile, then what it found. -->
@@ -143,14 +146,6 @@ const query = 'spider';
     margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
     color: var(--color-ink);
     font-size: 1.0625rem;
-    line-height: 1.55;
-  }
-
-  .pile .pile__facts {
-    max-width: 26rem;
-    margin: 1.5rem 0 0;
-    color: var(--color-copy);
-    font-size: 0.875rem;
     line-height: 1.55;
   }
 

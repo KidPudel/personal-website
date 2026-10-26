@@ -24,6 +24,32 @@ const parts = [
 ---
 
 <section class="part part--summary" id="summary" data-index-section data-index-label={t('Summary', 'Коротко')} aria-labelledby="summary-title">
+  <!-- How much to read: everything, or the headings, problems, screens, and results. -->
+  <div class="depth" role="group" aria-label={t('How much to read', 'Сколько читать')} hidden>
+    <button class="depth__option" type="button" data-depth="full" aria-pressed="true">{t('Detailed', 'Подробно')}</button>
+    <button class="depth__option" type="button" data-depth="tldr" aria-pressed="false">TL;DR</button>
+  </div>
+  <script is:inline>
+    (() => {
+      const root = document.documentElement;
+      let saved = null;
+      try { saved = localStorage.getItem('study-depth'); } catch {}
+      if (saved === 'tldr') root.dataset.depth = 'tldr';
+      const group = document.currentScript.previousElementSibling;
+      const options = group.querySelectorAll('[data-depth]');
+      const show = (depth) => {
+        if (depth === 'tldr') root.dataset.depth = 'tldr';
+        else delete root.dataset.depth;
+        options.forEach((option) => option.setAttribute('aria-pressed', String(option.dataset.depth === depth)));
+      };
+      show(saved === 'tldr' ? 'tldr' : 'full');
+      options.forEach((option) => option.addEventListener('click', () => {
+        show(option.dataset.depth);
+        try { localStorage.setItem('study-depth', option.dataset.depth); } catch {}
+      }));
+      group.hidden = false;
+    })();
+  </script>
   <h2 id="summary-title">{t('The short version', 'Коротко')}</h2>
   {beside ? (
     <div class="beside">
@@ -43,3 +69,49 @@ const parts = [
     </>
   )}
 </section>
+
+<style>
+  /* Two options in one pill, the chosen one raised. */
+  .depth {
+    display: inline-flex;
+    justify-self: start;
+    gap: 0.2rem;
+    width: fit-content;
+    margin: 0 0 var(--space-block);
+    padding: 0.25rem;
+    border-radius: 999px;
+    background: var(--panel, #f0f0ee);
+  }
+
+  .depth[hidden] {
+    display: none;
+  }
+
+  .depth__option {
+    min-height: 2.5rem;
+    padding: 0 1.1rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--color-muted);
+    cursor: pointer;
+    font-family: var(--font-reading);
+    font-size: 0.9375rem;
+    transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+  }
+
+  .depth__option:hover {
+    color: var(--color-ink);
+  }
+
+  .depth__option[aria-pressed='true'] {
+    background: #fff;
+    box-shadow: 0 1px 3px rgb(17 17 15 / 0.12);
+    color: var(--color-ink);
+  }
+
+  .depth__option:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+import type { CaseStudy } from '../../content/case-studies';
+import { toLocale } from '../../i18n/locales';
+
+// What the project was and Igor's part in it, said once under the pitch, in his own voice: whose
+// project, his role, who else worked on it, and whether it shipped. Plain words, in the cover's ink.
+
+interface Props {
+  about: CaseStudy['about'];
+}
+
+const { about } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+---
+
+<p class="project-about">{about[locale]}</p>
+
+<style>
+  /* Specific enough to keep its own spacing inside the case-study page. */
+  :global(.study-plates main) .project-about {
+    max-width: 31rem;
+    margin: 1.25rem 0 0;
+    color: var(--color-copy);
+    font-family: var(--font-reading);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+</style>

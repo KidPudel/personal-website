@@ -35,12 +35,12 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Side Work and contact control | `src/components/homepage/PortfolioHeader.astro` |
 | The top bar on every page: its blur band, when it fades in on scroll, how it grows under the open contact links | `src/components/homepage/PortfolioHeader.astro` (one header for all pages, rendered by `src/layouts/BaseDocument.astro`) |
 | Contact addresses and links (header panel and page footer) | `src/config/site.ts`; footer layout in `src/components/homepage/closing/ClosingContact.astro` |
-| Case study names, pitches, roles, product tags, years (homepage cards and `/case-studies/`) | `src/content/case-studies.ts` |
+| Case study names, pitches, roles, product tags, years (homepage cards and `/case-studies/`), and each study's one-sentence project note on its cover (`about`) | `src/content/case-studies.ts`; rendered by `src/components/case-studies/ProjectFacts.astro` |
 | Work caption (pitch, tag, year) on the homepage and `/case-studies/` | `src/components/homepage/showcase/WorkCaption.astro` |
 | Case-study structure: STAR summary, functional section headings (Problem, Goal, Research, Decisions, Results), decisions, charts, contents navigation | `src/components/case-studies/`; copy lives in each page under `src/pages/case-studies/` |
-| Case-study layout, grid, spreads, highlighter colours, and the large sentence | `src/styles/plates.css` |
-| A framed screen with its named, in-focus changes | `src/components/case-studies/Plate.astro` |
-| Each study's opening and frame paper | SuperGood `supergood/FocusCover.astro`; Observatory `observatory/EyepieceCover.astro`, `night.ts`, comparator `Blink.astro`; Instagram `instagram-saves/PileCover.astro`; Two Sticks `two-sticks/CopybookCover.astro`, `copybook.ts` |
+| Case-study layout (a centred reading column, figures a little wider), type sizes, spacing scale, panel tint, switching between the long read and the TL;DR, highlighter colours, and the large sentence | `src/styles/plates.css`; the decision's order in `src/components/case-studies/Decision.astro`; the Detailed / TL;DR switch in `src/components/case-studies/StarSummary.astro`; the TL;DR read itself in `src/components/case-studies/Tldr.astro`, fed by each page's `situation`, `decisions`, `result`, and `closing` |
+| A screen on its study-tinted panel, what changed ringed and named by number, several screens shown one at a time (arrows, dots, swipe) | `src/components/case-studies/Plate.astro`; panels that aren't a Plate use `.panel-paper` |
+| Each study's opening | SuperGood `supergood/FocusCover.astro`; Observatory `observatory/EyepieceCover.astro`, `night.ts`; Instagram `instagram-saves/PileCover.astro`; Two Sticks `two-sticks/CopybookCover.astro`, `copybook.ts` |
 | Case-study live moments (highlights drawing in, chart replay, gathering rows, pen circle) | `src/components/case-studies/StudyLife.astro`; states in `src/styles/plates.css` |
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Observatory work card (the 17 process rows that gather into one app row) | `src/components/homepage/showcase/ObservatoryGroupDemo.astro` |
