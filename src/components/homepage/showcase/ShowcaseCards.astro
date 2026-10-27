@@ -11,21 +11,29 @@ import SupergoodLunch from './SupergoodLunch.astro';
 import TwoSticksChat from './TwoSticksChat.astro';
 import WorkCaption from './WorkCaption.astro';
 
+interface Props {
+  /** The homepage section by default; the case-studies listing renders the
+   *  same cards as its whole page, under its own h1. */
+  page?: boolean;
+}
+
+const { page = false } = Astro.props;
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
-// Copy lives in src/content/case-studies.ts; this adds the homepage layout.
+const Title = page ? 'h1' : 'h2';
+// Copy and order live in src/content/case-studies.ts; this adds the layout.
 // Two by two, every card the same moderately wide shape (4:3), which suits
 // what they all hold: two phones, a phone in a wall, a phone beside paper, a
-// desktop window. The order carries the ranking, SuperGood first. `position`
-// keeps the document and keyboard order the same as the visual reading order.
+// desktop window. The grid areas follow the content order, so the document
+// and keyboard order match the visual reading order.
 // `portrait` only shapes the phone layout (upright cards there).
 const layout = {
-  supergood: { area: 'supergood', kind: 'supergood', portrait: false, position: 1 },
-  'instagram-saves-redesign': { area: 'instagram', kind: 'instagram', portrait: true, position: 2 },
-  'two-sticks': { area: 'chinese', kind: 'chinese', portrait: true, position: 3 },
-  observatory: { area: 'observatory', kind: 'observatory', portrait: false, position: 4 },
+  'instagram-saves-redesign': { area: 'instagram', kind: 'instagram', portrait: true },
+  supergood: { area: 'supergood', kind: 'supergood', portrait: false },
+  observatory: { area: 'observatory', kind: 'observatory', portrait: false },
+  'two-sticks': { area: 'chinese', kind: 'chinese', portrait: true },
 } as const;
-const cards = (await Promise.all(caseStudies.map(async (study) => ({
+const cards = await Promise.all(caseStudies.map(async (study, index) => ({
     background: study.background,
     placeholder: await imagePlaceholder(study.background),
     name: study.name[locale],
@@ -34,19 +42,22 @@ const cards = (await Promise.all(caseStudies.map(async (study) => ({
     year: study.year,
     href: localePath(caseStudyPath(study.slug), locale),
     slug: study.slug,
+    // The first row is in the first viewport on wide screens, so its media
+    // loads with the page instead of waiting for layout.
+    firstRow: index < 2,
     ...layout[study.slug as keyof typeof layout],
-  }))))
-  .sort((a, b) => a.position - b.position);
-// The first row (SuperGood and Instagram) is in the first viewport on wide
-// screens, so its media loads with the page instead of waiting for layout.
-const firstRow = 2;
+  })));
 ---
 
-<showcase-cards id="work" class="showcase" data-opening-sky-fade-target>
+<showcase-cards
+  id="work"
+  class:list={['showcase', page && 'showcase--page']}
+  data-opening-sky-fade-target={page ? undefined : ''}
+>
   <div class="showcase__heading">
-    <h2 class="showcase__title">
-      {t('my work', 'мои работы')}
-    </h2>
+    <Title class="showcase__title">
+      {page ? t('case studies', 'кейсы') : t('my work', 'мои работы')}
+    </Title>
   </div>
 
   <div class="showcase__grid">
@@ -70,7 +81,7 @@ const firstRow = 2;
             alt=""
             widths={[480, 720, 960, 1280]}
             sizes="(max-width: 44rem) calc(100vw - 2rem), min(45vw, 37rem)"
-            loading={card.position <= firstRow ? 'eager' : 'lazy'}
+            loading={card.firstRow ? 'eager' : 'lazy'}
             decoding="async"
             format="webp"
             quality={82}
@@ -228,6 +239,11 @@ const firstRow = 2;
     padding: calc(var(--section-gap) - 1rem) 0 max(0px, var(--section-gap) - var(--card-trail));
   }
 
+  /* As the case-studies page, the cards start under the header and end the page. */
+  .showcase--page {
+    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6.5rem);
+  }
+
   .showcase__heading,
   .showcase__grid {
     width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
@@ -262,10 +278,10 @@ const firstRow = 2;
   .showcase__grid {
     display: grid;
     grid-template-areas:
-      'supergood instagram'
-      'supergood instagram'
-      'chinese observatory'
-      'chinese observatory';
+      'instagram supergood'
+      'instagram supergood'
+      'observatory chinese'
+      'observatory chinese';
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(4, auto);
     column-gap: var(--work-gap);

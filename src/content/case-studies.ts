@@ -30,10 +30,25 @@ export interface CaseStudy {
   about: Localized;
 }
 
-// One source for the homepage showcase and the case-studies index. The order
-// ranks the studies, strongest first, and is the order the index shows. The
-// homepage places the cards by its own layout (see ShowcaseCards.astro).
+// One source for the homepage showcase and the case-studies index, which show
+// the same cards in this order. In the two-column grid the 2026 work reads
+// first in each row, with SuperGood, the shipped app, still in the first row.
 export const caseStudies: readonly CaseStudy[] = [
+  {
+    slug: 'instagram-saves-redesign',
+    name: { en: 'Instagram Saves redesign', ru: 'Редизайн «Сохранённого» в Instagram' },
+    pitch: { en: 'The more you save, the less you can find.', ru: 'Чем больше сохраняешь, тем сложнее найти.' },
+    responsibility: { en: 'Research, UX/UI, and prototyping.', ru: 'Исследование, UX/UI и прототипирование.' },
+    tag: { en: 'Social app concept', ru: 'Концепт соцсети' },
+    year: '2026',
+    background: instagramCard,
+    cover: instagramCover,
+    coverFormat: 'phone',
+    about: {
+      en: 'A self-initiated concept from 2026, not a shipped product. I did the research, UX/UI, and prototyping: 9 user interviews, then an interactive mobile prototype.',
+      ru: 'Собственный концепт 2026 года, а не выпущенный продукт. Я провёл исследование, сделал UX/UI и прототип: 9 интервью с пользователями, а на выходе интерактивный мобильный прототип.',
+    },
+  },
   {
     slug: 'supergood',
     name: { en: 'SuperGood', ru: 'SuperGood' },
@@ -68,21 +83,6 @@ export const caseStudies: readonly CaseStudy[] = [
     about: {
       en: 'A personal project. I did the product design, research, identity, and launch film, wrote the specs, and directed AI development. Release 0.1.1 came out in 2026 for macOS 14 and later, and 3 colleagues have used it for about two months.',
       ru: 'Личный проект. Я сделал продуктовый дизайн, исследование, айдентику и ролик к запуску, писал спецификации и руководил разработкой с AI. Релиз 0.1.1 вышел в 2026 году для macOS 14 и новее, им около двух месяцев пользуются 3 коллеги.',
-    },
-  },
-  {
-    slug: 'instagram-saves-redesign',
-    name: { en: 'Instagram Saves redesign', ru: 'Редизайн «Сохранённого» в Instagram' },
-    pitch: { en: 'The more you save, the less you can find.', ru: 'Чем больше сохраняешь, тем сложнее найти.' },
-    responsibility: { en: 'Research, UX/UI, and prototyping.', ru: 'Исследование, UX/UI и прототипирование.' },
-    tag: { en: 'Social app concept', ru: 'Концепт соцсети' },
-    year: '2026',
-    background: instagramCard,
-    cover: instagramCover,
-    coverFormat: 'phone',
-    about: {
-      en: 'A self-initiated concept from 2026, not a shipped product. I did the research, UX/UI, and prototyping: 9 user interviews, then an interactive mobile prototype.',
-      ru: 'Собственный концепт 2026 года, а не выпущенный продукт. Я провёл исследование, сделал UX/UI и прототип: 9 интервью с пользователями, а на выходе интерактивный мобильный прототип.',
     },
   },
   {

@@ -51,7 +51,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | The little oddities section on the homepage: a hand of cards (found oddities face up, the ones to come face down and greyed with the scribble doodle, up to three), the deal from one stack, the fan that opens on hover, pick up and throw | `src/components/homepage/oddities/LittleOddities.astro` |
 | "Did I already send this?" oddity: its page and copy, the share sheet and its stand-in friends, the homepage card, the playable phone | Page `src/pages/oddities/already-sent/index.astro`; sheet `src/components/oddities/already-sent/ShareSheet.astro`; card `AlreadySentCard.astro`; phone `SendPlayground.astro`; avatars from `scripts/prepare-oddity-avatars.mjs` |
 | When a work card counts as looked at (hover delay, keyboard focus, the scroll line on phones) and the spotlight on it | `src/components/homepage/showcase/ShowcaseCards.astro` |
-| Case studies listing | `src/pages/case-studies/index.astro` |
+| Case studies listing (the homepage work cards as a page) | `src/pages/case-studies/index.astro`; cards and their order come from `ShowcaseCards.astro` and `src/content/case-studies.ts` |
 | Type, ink, field, accent | `src/styles/tokens.css` |
 | Link hover mark (the stop-motion marker swipe) | `.link-mark` and its frames in `src/styles/foundations.css`; timing and the faint rest mark in `src/styles/tokens.css` |
 | The "joyful" hover (pigment letters that hop, wobbling circle) | `src/components/homepage/JoyfulWord.astro` |

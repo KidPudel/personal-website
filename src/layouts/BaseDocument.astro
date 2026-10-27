@@ -57,12 +57,14 @@ const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
 // Individual case studies get the section index; the case-studies listing does not.
 const showReadingProgress = /\/case-studies\/[^/]+\//.test(Astro.url.pathname);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
-// The homepage and the case studies open into each other: a work card grows into its study's
-// opening, and the study shrinks back into the card on the way home (see the script below).
+// The work cards (on the homepage and the case-studies listing) and the case studies open into
+// each other: a card grows into its study's opening, and the study shrinks back into the card on
+// the way back (see the script below).
 const isHome = pagePath === '/';
-const opensIntoStudy = isHome || showReadingProgress;
+const isListing = pagePath === '/case-studies/';
+const opensIntoStudy = isHome || isListing || showReadingProgress;
 // The new page holds its first paint until the element it morphs into has been parsed.
-const renderAfter = isHome ? '#side-projects' : '#summary';
+const renderAfter = isHome ? '#side-projects' : isListing ? '#main-content' : '#summary';
 const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
 ---
@@ -135,16 +137,17 @@ const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
       <script is:inline>
         // A work card and the case study it opens are one object across the two pages: the
         // card's panel and the study's opening carry data-study-transition with the study's slug,
-        // and are named only for a navigation between the homepage and that study. If the element
+        // and are named only for a navigation between a page of cards and that study. If the element
         // is off screen (the reader scrolled deep into a study before going back), it isn't named,
         // and the pages simply crossfade.
         (() => {
           const base = document.documentElement.dataset.base ?? '/';
           const pathOf = (url) => new URL(url, location.href).pathname;
-          const isHome = (url) => [base, `${base}ru/`].includes(pathOf(url));
+          const cardPages = [base, `${base}ru/`, `${base}case-studies/`, `${base}ru/case-studies/`];
+          const hasCards = (url) => cardPages.includes(pathOf(url));
           const studyOf = (url) => pathOf(url).match(/\/case-studies\/([^/]+)\/?$/)?.[1] ?? null;
           const slugFor = (here, there) =>
-            isHome(here) ? studyOf(there) : isHome(there) ? studyOf(here) : null;
+            hasCards(here) ? studyOf(there) : hasCards(there) ? studyOf(here) : null;
 
           const name = (slug, transition) => {
             const element = slug && document.querySelector(`[data-study-transition="${slug}"]`);

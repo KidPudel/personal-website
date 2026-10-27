@@ -1,10 +1,7 @@
 ---
-import { Image } from 'astro:assets';
-import '@fontsource/instrument-serif/400.css';
-
-import WorkCaption from '../../components/homepage/showcase/WorkCaption.astro';
-import { caseStudies, caseStudyPath } from '../../content/case-studies';
-import { localePath, toLocale, translator } from '../../i18n/locales';
+import ShowcaseCards from '../../components/homepage/showcase/ShowcaseCards.astro';
+import { caseStudies } from '../../content/case-studies';
+import { toLocale, translator } from '../../i18n/locales';
 import BaseDocument from '../../layouts/BaseDocument.astro';
 import '../../styles/case-study.css';
 
@@ -15,174 +12,21 @@ const t = translator(locale);
 <BaseDocument
   title={t('Case studies | Igor Kupchinenko', 'Кейсы | Игорь Купчиненко')}
   description={t(
-    'Product design case studies by Igor Kupchinenko: SuperGood, Observatory, Instagram Saves, and Two Sticks.',
-    'Кейсы продуктового дизайнера Игоря Купчиненко: SuperGood, Observatory, «Сохранённое» в Instagram и «Две палочки».',
+    'Product design case studies by Igor Kupchinenko: Instagram Saves, SuperGood, Observatory, and Two Sticks.',
+    'Кейсы продуктового дизайнера Игоря Купчиненко: «Сохранённое» в Instagram, SuperGood, Observatory и «Две палочки».',
   )}
   pageClass="editorial-case-study"
   ogImage={caseStudies[0].cover.src}
 >
+  <!-- The same cards as the homepage's work section, so the two read as one. -->
   <main id="main-content" class="case-index">
-    <h1 class="case-index__title">{t('case studies', 'кейсы')}</h1>
-
-    <ol class="case-index__list">
-      {caseStudies.map((study, index) => {
-        const firstRow = index < 2;
-        return (
-          <li class="case-index__item">
-            <div class="case-index__frame" aria-hidden="true">
-              <Image
-                class="case-index__texture"
-                src={study.background}
-                alt=""
-                widths={[480, 720, 1040]}
-                sizes="(max-width: 760px) calc(100vw - 40px), 520px"
-                format="webp"
-                quality={80}
-                loading={firstRow ? 'eager' : 'lazy'}
-                decoding="async"
-              />
-              <Image
-                class:list={['case-index__cover', `case-index__cover--${study.coverFormat}`]}
-                src={study.cover}
-                alt=""
-                widths={study.coverFormat === 'phone' ? [240, 360, 480] : [480, 720, 960]}
-                sizes={study.coverFormat === 'phone'
-                  ? '(max-width: 760px) 38vw, 190px'
-                  : '(max-width: 760px) calc(86vw - 34px), 450px'}
-                format="webp"
-                quality={85}
-                loading={firstRow ? 'eager' : 'lazy'}
-                decoding="async"
-                fetchpriority={index === 0 ? 'high' : undefined}
-              />
-            </div>
-            <WorkCaption
-              class="case-index__caption"
-              heading
-              href={localePath(caseStudyPath(study.slug), locale)}
-              name={study.name[locale]}
-              pitch={study.pitch[locale]}
-              tag={study.tag[locale]}
-              year={study.year}
-            />
-          </li>
-        );
-      })}
-    </ol>
+    <ShowcaseCards page />
   </main>
 </BaseDocument>
 
 <style>
-  /* The listing uses the homepage's frame, section title, panels, and
-     captions, so a visitor moving between the two sees one system. */
+  /* The cards set their own frame. */
   .case-index {
-    /* The homepage work grid's frame and panel (ShowcaseCards.astro). */
-    --work-radius: var(--radius-card);
-    --work-shadow:
-      0 1px 0 rgb(17 17 15 / 0.06),
-      0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
-    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame)) !important;
-    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6.5rem);
-  }
-
-  .case-index .case-index__title {
-    margin: 0 0 clamp(1.5rem, 2.5vw, 2.5rem);
-    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
-    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
-    font-weight: 400;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-  }
-
-  .case-index__list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--work-gap);
-    padding: 0;
-    margin: 0;
-    list-style: none;
-  }
-
-  /* The whole card opens the case study: the caption's link covers it. */
-  .case-index__item {
-    --work-caption-hit-radius: var(--work-radius);
-    position: relative;
-    min-width: 0;
-  }
-
-  .case-index__frame {
-    position: relative;
-    display: grid;
-    aspect-ratio: 4 / 3;
-    place-items: center;
-    overflow: hidden;
-    border-radius: var(--work-radius);
-    background: #eceae6;
-    box-shadow: var(--work-shadow);
-  }
-
-  .case-index__frame::after {
-    position: absolute;
-    inset: 0;
-    border: 1px solid rgb(255 255 255 / 0.22);
-    border-radius: inherit;
-    content: '';
-    pointer-events: none;
-  }
-
-  .case-index__frame :global(img) {
-    max-width: none;
-  }
-
-  .case-index__frame :global(.case-index__texture) {
-    position: absolute;
-    inset: 0;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .case-index__frame :global(.case-index__cover) {
-    position: relative;
-    box-shadow: 0 14px 34px rgb(17 17 15 / 0.16);
-    transition: transform 260ms var(--ease-out);
-  }
-
-  .case-index__frame :global(.case-index__cover--phone) {
-    width: auto;
-    height: 84%;
-    border-radius: 14px;
-  }
-
-  .case-index__frame :global(.case-index__cover--desktop) {
-    width: 86%;
-    height: auto;
-    border-radius: 8px;
-  }
-
-  .case-index__caption {
-    padding: clamp(0.6rem, 0.9vw, 0.85rem) 0 var(--work-gap);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .case-index__item:hover :global(.case-index__cover) {
-      transform: translateY(-4px);
-    }
-  }
-
-  @media (max-width: 44rem) {
-    .case-index__list {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .case-index__caption {
-      padding: 0.6rem 0 1.75rem;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .case-index__frame :global(.case-index__cover) {
-      transition: none;
-    }
   }
 </style>

@@ -223,7 +223,7 @@ Last updated: 2026-10-26
 
 ## SuperGood leads the work
 
-- `src/content/case-studies.ts` now ranks the studies: SuperGood, Observatory, Instagram Saves, Two Sticks. The case-studies listing shows that order. Case-study footers already chain in the same order.
+- `src/content/case-studies.ts` orders the studies Instagram Saves, SuperGood, Observatory, Two Sticks (2026 work first in each row of the grid, the shipped app still in the first row). The homepage and `/case-studies/` render the same cards (`ShowcaseCards.astro`), and the case-study footers chain in that order.
 - The homepage bento keeps its diagonal of two wide cards, swapped at Igor's request: SuperGood opens at top left and Observatory closes at bottom right, with Instagram and Two Sticks in the portrait slots. A `position` field in `ShowcaseCards.astro` keeps document and keyboard order in visual reading order (SuperGood, Instagram, Two Sticks, Observatory), which is also the phone order.
 - Verified the bento at 1440 px, the listing at 1280 px, and the phone order at 375 px with no overflow.
 

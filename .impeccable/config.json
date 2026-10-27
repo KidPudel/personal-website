@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "instrument serif",
+        "createdAt": "2026-10-20T19:19:06.919Z",
+        "reason": "Claude: established section-title face in the site's fixed font roles, predates this session and was not touched by the shelf change"
+      }
+    ]
+  }
+}
