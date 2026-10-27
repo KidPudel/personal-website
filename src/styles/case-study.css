@@ -122,11 +122,11 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
   .editorial-case-study .hero { padding: 38px 0 12px; }
   .editorial-case-study .facts { gap: 18px; }
 }
-/* The writing pages share this sheet and keep their own centered reading column, in the same
-   reading type as the case studies, about 70 characters to a line. */
+/* The writing pages share this sheet and keep their own reading type, on the case studies' line
+   length: a centred column of about 80 characters, measured in that type. */
 .blog-document main,
 .blog-document .case-footer { --study-body: var(--text-reading); --study-small: var(--text-reading-small); }
-.blog-document main { width: min(calc(var(--study-body) * 38), calc(100% - 48px)); }
+.blog-document main { width: min(calc(var(--study-body) * 37), calc(100% - 2.5rem)); }
 .blog-document main :is(h1, h2, h3, p, blockquote), .blog-document figcaption { max-width: none; }
 .blog-document h1 { margin: 0 0 24px; font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.25rem); letter-spacing: -.045em; line-height: 1.12; }
 .blog-document h2 { margin: 0 0 20px; font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.75rem); letter-spacing: -.025em; line-height: 1.3; }
@@ -144,7 +144,7 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .blog-document .blog-post__medium:focus-visible { border-radius: 0.08em; outline: var(--focus-width) solid var(--color-focus); outline-offset: var(--focus-offset); }
 .blog-document .blog-post > h2:not(:first-child) { margin-top: 56px; }
 .blog-document .blog-post__reading { margin-top: 48px; padding-top: 20px; border-top: 1px solid rgb(0 0 0 / .1); color: #656560; font-size: var(--study-small); line-height: 1.6; }
-.blog-document .case-footer { width: min(calc(var(--study-body) * 38), calc(100% - 48px)); margin: 40px auto 0; padding-bottom: 100px; }
+.blog-document .case-footer { width: min(calc(var(--study-body) * 37), calc(100% - 2.5rem)); margin: 40px auto 0; padding-bottom: 100px; }
 @media (max-width: 760px) {
   .blog-document main, .blog-document .case-footer { width: calc(100% - 40px); }
   .blog-document .blog-post > h2:not(:first-child) { margin-top: 44px; }

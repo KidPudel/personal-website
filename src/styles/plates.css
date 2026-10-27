@@ -1,6 +1,6 @@
 /* Case studies: one system for all four.
 
-   One calm reading line, read top to bottom: a centred column of about 52rem at 16 to 17px, and
+   One calm reading line, read top to bottom: a centred column of about 80 characters at 16 to 17px, and
    figures a little wider under the words they belong to. Nothing sits beside the text. Every screen
    sits on a panel (Plate.astro) lightly tinted with the study's colour; several screens are one
    panel shown one at a time. A Detailed / TL;DR switch (StarSummary) hides the supporting text and
@@ -17,12 +17,13 @@
 
 html.study-plates {
   --gutter: clamp(20px, 5vw, 72px);
-  /* Calm reading type, 16px on phones to 17px on large screens, on a long line like a printed page. */
+  /* Calm reading type, 16px on phones to 17px on large screens. The column is measured in the
+     text itself, about 80 characters to a line (75 to 85 is the comfortable range). */
   --text: clamp(1rem, 0.96rem + 0.1vw, 1.0625rem);
   --small: 0.875rem;
-  --measure: 52rem;
+  --measure: calc(var(--text) * 37);
   /* Figures sit a little wider than the words. */
-  --figure: 56rem;
+  --figure: 50rem;
   /* Panels: a light neutral, tinted with the study's colour. */
   --panel: color-mix(in srgb, var(--marker) 16%, #f1f1ef);
   /* The homepage's frame, which the covers read. */
@@ -207,6 +208,11 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
   color: var(--color-muted);
   font-size: var(--small);
   line-height: 1.55;
+}
+
+/* Smaller text keeps about the same number of characters to a line as the reading text. */
+.study-plates main :is(.note, figcaption, .callout, .decision__source, .plate__caption, .chart__note) {
+  max-width: 37em;
 }
 
 .study-plates main figure {
