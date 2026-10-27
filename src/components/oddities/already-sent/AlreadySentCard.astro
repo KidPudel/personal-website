@@ -16,7 +16,7 @@ const placeholder = await imagePlaceholder(ground);
     src={ground}
     alt=""
     widths={[400, 640, 800]}
-    sizes="(max-width: 44rem) 82vw, 24rem"
+    sizes="(max-width: 44rem) calc(100vw - 2rem), min(31vw, 25rem)"
     format="webp"
     quality={82}
     loading="lazy"
@@ -28,7 +28,7 @@ const placeholder = await imagePlaceholder(ground);
 <style>
   .sent-card {
     position: relative;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1;
     overflow: hidden;
     background: var(--card-placeholder) center / cover no-repeat;
   }
