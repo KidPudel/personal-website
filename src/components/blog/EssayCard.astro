@@ -1,0 +1,201 @@
+---
+import { Image } from 'astro:assets';
+
+import { localePath, toLocale, translator } from '../../i18n/locales';
+import { imagePlaceholder } from '../../lib/image-placeholder';
+import { postHref, type LocalizedPost } from '../../lib/writing';
+
+interface Props {
+  post: LocalizedPost;
+  /** h3 under the homepage's section title, h2 on the writing page. */
+  heading: 'h2' | 'h3';
+  fresh?: boolean;
+  /** The writing page adds the summary under the title. */
+  summary?: boolean;
+  eager?: boolean;
+}
+
+const { post, heading: Heading, fresh = false, summary = false, eager = false } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const { data } = post.entry;
+const href = postHref(post, (path) => localePath(path, locale));
+const placeholder = post.cover && (await imagePlaceholder(post.cover));
+const dateFormat = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
+---
+
+<!-- An essay as a card: Igor's illustration sets the mood, the title says what
+     it is. The title's link reaches over the whole card. The panel carries
+     data-writing-transition, so on the way between the homepage and the
+     writing page the card travels to its place on the other page
+     (BaseDocument). -->
+<article class="essay-card" lang={post.contentLocale === locale ? undefined : post.contentLocale}>
+  <div
+    class="essay-card__panel"
+    data-writing-transition={post.slug}
+    style={placeholder ? `--panel-placeholder: url(${placeholder})` : undefined}
+  >
+    {post.cover && (
+      <Image
+        class="essay-card__cover"
+        src={post.cover}
+        alt=""
+        widths={[360, 540, 720, 960]}
+        sizes="(max-width: 44rem) calc(100vw - 2rem), (max-width: 60rem) 46vw, min(31vw, 25rem)"
+        loading={eager ? 'eager' : 'lazy'}
+        decoding="async"
+        format="webp"
+        quality={86}
+      />
+    )}
+  </div>
+
+  <div class="essay-card__caption">
+    <Heading class="essay-card__title">
+      <a class="essay-card__link link-mark" href={href} hreflang={data.externalLanguage}>{data.title}</a>
+    </Heading>
+    <span class="essay-card__meta">
+      {fresh && <span class="essay-card__new">{t('new', 'новое')}</span>}
+      {data.publishedAt && (
+        <time datetime={data.publishedAt.toISOString().slice(0, 10)}>{dateFormat.format(data.publishedAt)}</time>
+      )}
+      {data.externalLabel && <span>{t('on', 'на')} {data.externalLabel} ↗</span>}
+    </span>
+  </div>
+
+  {summary && <p class="essay-card__summary">{data.summary}</p>}
+</article>
+
+<style>
+  .essay-card {
+    position: relative;
+    display: grid;
+    align-content: start;
+    min-width: 0;
+    transition: transform 280ms var(--ease-out);
+  }
+
+  /* Square like the illustrations, on the same lifted panel as the work
+     cards. A few pixels of the illustration, stretched, until it loads. */
+  .essay-card__panel {
+    overflow: hidden;
+    aspect-ratio: 1;
+    border-radius: var(--radius-card);
+    background: var(--panel-placeholder, #fff) center / cover no-repeat;
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.25rem 3.5rem rgb(17 17 15 / 0.09);
+    transition: box-shadow 280ms var(--ease-out);
+  }
+
+  .essay-card__cover {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* The title in ink, the date grey under it, in the work captions' type. */
+  .essay-card__caption {
+    display: grid;
+    gap: 0.1rem;
+    margin-top: 0.85rem;
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: clamp(0.95rem, 0.15vw + 0.9rem, 1.02rem);
+    letter-spacing: 0.015em;
+    line-height: 1.4;
+  }
+
+  .essay-card__title {
+    min-width: 0;
+    margin: 0;
+    font: inherit;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+    text-wrap: pretty;
+  }
+
+  .essay-card__link {
+    color: var(--color-ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .essay-card__link::after {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-card);
+    content: '';
+  }
+
+  .essay-card__link:focus-visible {
+    outline: none;
+  }
+
+  .essay-card__link:focus-visible::after {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--focus-offset);
+  }
+
+  @media (hover: none) {
+    .essay-card__link {
+      background-image: var(--link-mark-rest);
+    }
+  }
+
+  .essay-card__meta {
+    display: inline-flex;
+    gap: 0.5em;
+    white-space: nowrap;
+  }
+
+  /* A note in the introduction's hand beside the newest date, not a badge. */
+  .essay-card__new {
+    font-family: var(--font-intro);
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-accent) 78%, var(--color-ink));
+  }
+
+  .essay-card__summary {
+    margin: 0.35rem 0 0;
+    max-width: 34rem;
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: 0.95rem;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .essay-card:has(.essay-card__link:focus-visible) {
+    transform: translateY(-0.25rem);
+  }
+
+  .essay-card:has(.essay-card__link:focus-visible) .essay-card__panel {
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.06),
+      0 1.75rem 4.25rem rgb(17 17 15 / 0.14);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .essay-card:has(.essay-card__link:hover) {
+      transform: translateY(-0.25rem);
+    }
+
+    .essay-card:has(.essay-card__link:hover) .essay-card__panel {
+      box-shadow:
+        0 1px 0 rgb(17 17 15 / 0.06),
+        0 1.75rem 4.25rem rgb(17 17 15 / 0.14);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .essay-card {
+      transition: none;
+    }
+
+    .essay-card:has(.essay-card__link:is(:hover, :focus-visible)) {
+      transform: none;
+    }
+  }
+</style>

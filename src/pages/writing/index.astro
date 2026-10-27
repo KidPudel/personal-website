@@ -1,10 +1,15 @@
 ---
-import WritingList from '../../components/blog/WritingList.astro';
+import '@fontsource/instrument-serif/400.css';
+
+import EssayCard from '../../components/blog/EssayCard.astro';
 import { toLocale, translator } from '../../i18n/locales';
 import BaseDocument from '../../layouts/BaseDocument.astro';
+import { getWriting, isFresh, newestFirst } from '../../lib/writing';
 import '../../styles/case-study.css';
 
-const t = translator(toLocale(Astro.currentLocale));
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const posts = newestFirst(await getWriting(locale));
 ---
 
 <BaseDocument
@@ -15,19 +20,56 @@ const t = translator(toLocale(Astro.currentLocale));
   )}
   pageClass="editorial-case-study blog-document"
 >
-  <main id="main-content" class="blog-index">
-    <h1>{t('Writing', 'Тексты')}</h1>
-    <WritingList class="blog-index__list" />
+  <!-- The homepage's essay cards, all of them, newest first. -->
+  <main id="main-content" class="writing-index">
+    <h1 class="writing-index__title" data-writing-transition="title">{t('writing', 'тексты')}</h1>
+    <ul class="writing-index__grid">
+      {posts.map((post, index) => (
+        <li>
+          <EssayCard post={post} heading="h2" fresh={isFresh(post, posts[0])} summary eager={index < 3} />
+        </li>
+      ))}
+    </ul>
   </main>
 </BaseDocument>
 
 <style>
-  .blog-index {
-    padding: 48px 0 120px;
+  .writing-index {
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
+    margin-inline: auto;
+    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6.5rem);
   }
 
-  /* The list is its own component, so the class it receives needs :global. */
-  .blog-index :global(.blog-index__list) {
-    font-size: var(--study-body);
+  /* The case-studies page's title, lowercase in the serif. */
+  .writing-index__title {
+    width: fit-content;
+    margin: 0 0 clamp(1.5rem, 2.5vw, 2.5rem);
+    color: var(--color-ink);
+    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+
+  .writing-index__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(2.5rem, 4vw, 3.5rem) var(--work-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (max-width: 60rem) {
+    .writing-index__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 36rem) {
+    .writing-index__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

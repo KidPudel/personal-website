@@ -1,8 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 
 import { localePath, toLocale, translator } from '../../i18n/locales';
 import BaseDocument from '../../layouts/BaseDocument.astro';
+import { imageEdgeColor } from '../../lib/image-placeholder';
 import type { LocalizedPost } from '../../lib/writing';
 import '../../styles/case-study.css';
 
@@ -11,7 +13,10 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { entry, contentLocale } = post;
+const { entry, contentLocale, cover } = post;
+// The illustration is square on a flat ground; the band under the title
+// continues that ground to its width, so nothing of the drawing is cropped.
+const coverGround = cover && (await imageEdgeColor(cover));
 const locale = toLocale(Astro.currentLocale);
 const t = translator(locale);
 const { Content } = await render(entry);
@@ -43,6 +48,24 @@ const dateFormat = new Intl.DateTimeFormat(contentLocale, {
           </a>
         )}
       </header>
+      {cover && (
+        <div id="essay-cover" class="blog-post__cover" style={`--cover-ground: ${coverGround}`} aria-hidden="true">
+          {/* The essay's card grows into this picture on the way in (BaseDocument). */}
+          <Image
+            class="blog-post__cover-picture"
+            src={cover}
+            alt=""
+            widths={[208, 384, 576, 768]}
+            sizes="(max-width: 44rem) 13rem, min(24rem, 30vw)"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            format="webp"
+            quality={86}
+            data-writing-transition={post.slug}
+          />
+        </div>
+      )}
       <Content />
     </article>
   </main>

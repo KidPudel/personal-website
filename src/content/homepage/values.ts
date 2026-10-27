@@ -42,11 +42,12 @@ const purposeHref = 'https://www.youtube.com/watch?v=A_u2WFTfbcg';
 
 export const valuesPremise = 'Three things important to me.';
 
-export type PersonalReveal = 'portrait' | 'doodles' | 'writing';
+export type PersonalReveal = 'portrait' | 'doodles';
 
 // The note closes with one sentence. Text parts are plain; `reveal` parts are
-// the interactive words that open their content beside or below the sentence.
-type ClosingPart = string | { reveal: PersonalReveal; text: string };
+// the interactive words that open their content beside or below the sentence;
+// `href` parts are plain links (the writing has its own section above).
+type ClosingPart = string | { reveal: PersonalReveal; text: string } | { href: string; text: string };
 
 export const personalNote = {
   en: {
@@ -64,7 +65,7 @@ export const personalNote = {
       ' to the best girlfriend in the world, an ',
       { reveal: 'doodles', text: 'editorial and illustrative sketcher' },
       ', and an ',
-      { reveal: 'writing', text: 'occasional writer' },
+      { href: '#writing', text: 'occasional writer' },
       '.',
     ] satisfies ClosingPart[],
     portraitAlt: 'Igor and his girlfriend outdoors',
@@ -86,7 +87,7 @@ export const personalNote = {
       ', я ',
       { reveal: 'doodles', text: 'рисую скетчи и иллюстрации' },
       ', а ',
-      { reveal: 'writing', text: 'иногда пишу' },
+      { href: '#writing', text: 'иногда пишу' },
       '.',
     ] satisfies ClosingPart[],
     portraitAlt: 'Игорь и его девушка на улице',

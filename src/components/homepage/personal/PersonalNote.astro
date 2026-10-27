@@ -2,12 +2,11 @@
 import couplePortrait from '../../../assets/life/me_and_bebe.png';
 import { personalNote as personalNoteCopy, type PersonalReveal } from '../../../content/homepage/values';
 import { toLocale } from '../../../i18n/locales';
-import WritingList from '../../blog/WritingList.astro';
 import BoxOpening from './BoxOpening.astro';
 import HoloPortrait from './HoloPortrait.astro';
 
 const personalNote = personalNoteCopy[toLocale(Astro.currentLocale)];
-const reveals: PersonalReveal[] = ['portrait', 'doodles', 'writing'];
+const reveals: PersonalReveal[] = ['portrait', 'doodles'];
 const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
 ---
 
@@ -28,6 +27,8 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
         {personalNote.closing.map((part) =>
           typeof part === 'string' ? (
             part
+          ) : 'href' in part ? (
+            <a class="personal-note__trigger link-mark" href={part.href}>{part.text}</a>
           ) : (
             <a
               class="personal-note__trigger link-mark"
@@ -48,8 +49,6 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
               <figure class="personal-note__portrait">
                 <HoloPortrait src={couplePortrait} alt={personalNote.portraitAlt} />
               </figure>
-            ) : reveal === 'writing' ? (
-              <WritingList class="personal-note__writing" limit={1} />
             ) : (
               <BoxOpening label={personalNote.boxLabel} line={personalNote.boxLine} />
             )}
@@ -298,28 +297,6 @@ const panelId = (reveal: PersonalReveal) => `personal-${reveal}`;
       opacity: 0;
       transform: translateY(0.5rem);
     }
-  }
-
-  /* The writing list is text: what it lies over melts into a soft blur behind
-     it, as under the introduction's notes and the header. */
-  :global(.js) .personal-note__body .personal-note__panel--writing {
-    isolation: isolate;
-  }
-
-  :global(.js) .personal-note__body .personal-note__panel--writing::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0 -2rem -3rem;
-    content: '';
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    --feather-y: linear-gradient(to bottom, transparent, black 1.4rem, black calc(100% - 2.25rem), transparent);
-    --feather-x: linear-gradient(to right, transparent, black 1.5rem, black calc(100% - 1.5rem), transparent);
-    mask-image: var(--feather-y), var(--feather-x);
-    mask-composite: intersect;
-    -webkit-mask-image: var(--feather-y), var(--feather-x);
-    -webkit-mask-composite: source-in;
-    pointer-events: none;
   }
 
   .personal-note__portrait {

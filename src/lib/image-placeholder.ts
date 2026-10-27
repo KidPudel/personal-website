@@ -24,3 +24,26 @@ export const imagePlaceholder = (image: ImageMetadata): Promise<string> => {
   }
   return placeholder;
 };
+
+const edgeColors = new Map<string, Promise<string>>();
+
+/**
+ * The colour in an image's top-left corner, read at build time, for images
+ * drawn on a flat ground that a wider band continues past their edges.
+ */
+export const imageEdgeColor = (image: ImageMetadata): Promise<string> => {
+  const path = (image as ImageMetadata & { fsPath?: string }).fsPath;
+  if (!path) throw new Error(`No source file for the edge colour of ${image.src}`);
+
+  let color = edgeColors.get(path);
+  if (!color) {
+    color = sharp(path)
+      .extract({ left: 2, top: 2, width: 1, height: 1 })
+      .removeAlpha()
+      .raw()
+      .toBuffer()
+      .then(([red, green, blue]) => `rgb(${red} ${green} ${blue})`);
+    edgeColors.set(path, color);
+  }
+  return color;
+};

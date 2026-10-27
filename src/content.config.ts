@@ -41,9 +41,12 @@ const games = defineCollection({
 
 const writing = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/writing' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     summary: z.string(),
+    // Igor's illustration on the post's card: a mood that fits the title, not a picture of it.
+    // Set on the English post; translations show the same one.
+    cover: image().optional(),
     publishedAt: z.coerce.date().optional(),
     // Posts that live elsewhere link out instead of getting a local page.
     externalUrl: z.url().optional(),

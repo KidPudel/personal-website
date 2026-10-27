@@ -143,6 +143,26 @@ html.editorial-case-study { background: var(--color-field); color: var(--color-i
 .blog-document .blog-post__header time + .blog-post__medium::before { content: '·'; margin: 0 .5em; }
 .blog-document .blog-post__medium:focus-visible { border-radius: 0.08em; outline: var(--focus-width) solid var(--color-focus); outline-offset: var(--focus-offset); }
 .blog-document .blog-post > h2:not(:first-child) { margin-top: 56px; }
+/* The essay's illustration under the title: a band a little wider than the column, in the
+   drawing's own ground, with the square drawing at its full height in the middle. Its sides
+   melt into the ground, so a drawing that runs off its edge fades out instead of stopping. */
+.blog-document .blog-post__cover {
+  --band: min(calc(100vw - 2.5rem), calc(100% + 12rem));
+  display: flex;
+  justify-content: center;
+  width: var(--band);
+  height: clamp(13rem, 30vw, 24rem);
+  margin: -16px calc((100% - var(--band)) / 2) 48px;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--cover-ground);
+}
+.blog-document .blog-post__cover-picture {
+  width: auto;
+  height: 100%;
+  aspect-ratio: 1;
+  mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}
 .blog-document .blog-post__reading { margin-top: 48px; padding-top: 20px; border-top: 1px solid rgb(0 0 0 / .1); color: #656560; font-size: var(--study-small); line-height: 1.6; }
 .blog-document .case-footer { width: min(calc(var(--study-body) * 37), calc(100% - 2.5rem)); margin: 40px auto 0; padding-bottom: 100px; }
 @media (max-width: 760px) {

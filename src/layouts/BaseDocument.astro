@@ -63,8 +63,19 @@ const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 const isHome = pagePath === '/';
 const isListing = pagePath === '/case-studies/';
 const opensIntoStudy = isHome || isListing || showReadingProgress;
+// The homepage's writing door opens into the writing page the same way: the essays on the
+// homepage travel to their cards there. An essay's card grows into the picture under its title.
+const isWritingIndex = pagePath === '/writing/';
+const isEssay = /^\/writing\/[^/]+\/$/.test(pagePath);
+const travels = opensIntoStudy || isWritingIndex || isEssay;
 // The new page holds its first paint until the element it morphs into has been parsed.
-const renderAfter = isHome ? '#side-projects' : isListing ? '#main-content' : '#summary';
+const renderAfter = isHome
+  ? '#side-projects'
+  : isListing || isWritingIndex
+    ? '#main-content'
+    : isEssay
+      ? '#essay-cover'
+      : '#summary';
 const faviconURL = `${import.meta.env.BASE_URL}favicon.svg`;
 const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
 ---
@@ -132,8 +143,8 @@ const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {opensIntoStudy && <link rel="expect" href={renderAfter} blocking="render" />}
-    {opensIntoStudy && (
+    {travels && <link rel="expect" href={renderAfter} blocking="render" />}
+    {travels && (
       <script is:inline>
         // A work card and the case study it opens are one object across the two pages: the
         // card's panel and the study's opening carry data-study-transition with the study's slug,
@@ -162,18 +173,57 @@ const appleTouchIconURL = `${import.meta.env.BASE_URL}apple-touch-icon.png`;
             });
           };
 
+          // Between the homepage and the writing page every essay on screen is named by its slug
+          // (data-writing-transition), and so is the section's title, so each finds its place on
+          // the other page. Between either of them and an essay, only that essay's card is named,
+          // and it grows into the picture under the essay's title.
+          const homes = [base, `${base}ru/`];
+          const writingPages = [`${base}writing/`, `${base}ru/writing/`];
+          const betweenHomeAndWriting = (here, there) =>
+            (homes.includes(pathOf(here)) && writingPages.includes(pathOf(there))) ||
+            (writingPages.includes(pathOf(here)) && homes.includes(pathOf(there)));
+          const essayCards = [...homes, ...writingPages];
+          const essayOf = (url) => pathOf(url).match(/\/writing\/([^/]+)\/?$/)?.[1] ?? null;
+          const essayFor = (here, there) =>
+            essayCards.includes(pathOf(here))
+              ? essayOf(there)
+              : essayCards.includes(pathOf(there))
+                ? essayOf(here)
+                : null;
+
+          const nameWriting = (transition, only) => {
+            document.querySelectorAll('[data-writing-transition]').forEach((element) => {
+              if (only && element.dataset.writingTransition !== only) return;
+              const box = element.getBoundingClientRect();
+              if (box.bottom < 0 || box.top > innerHeight) return;
+              element.style.viewTransitionName = `writing-${element.dataset.writingTransition}`;
+              element.style.viewTransitionClass = 'study';
+              transition.finished.finally(() => {
+                element.style.viewTransitionName = '';
+                element.style.viewTransitionClass = '';
+              });
+            });
+          };
+
+          const travel = (here, there, transition) => {
+            const essay = essayFor(here, there);
+            if (betweenHomeAndWriting(here, there)) nameWriting(transition);
+            else if (essay) nameWriting(transition, essay);
+            else name(slugFor(here, there), transition);
+          };
+
           addEventListener('pageswap', (event) => {
             const to = event.activation?.entry?.url;
-            if (event.viewTransition && to) name(slugFor(location.href, to), event.viewTransition);
+            if (event.viewTransition && to) travel(location.href, to, event.viewTransition);
           });
           addEventListener('pagereveal', (event) => {
             const from = window.navigation?.activation?.from?.url;
-            if (event.viewTransition && from) name(slugFor(location.href, from), event.viewTransition);
+            if (event.viewTransition && from) travel(location.href, from, event.viewTransition);
           });
         })();
       </script>
     )}
-    {opensIntoStudy && (
+    {travels && (
       <style is:inline>
         @view-transition {
           navigation: auto;
