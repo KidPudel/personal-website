@@ -1,0 +1,274 @@
+---
+import '@fontsource/instrument-serif/400.css';
+
+import { localePath, toLocale, translator } from '../../../i18n/locales';
+import { getWriting, isFresh, newestFirst } from '../../../lib/writing';
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+
+// A list kept over time: the first essay on the first line, the newest at the
+// bottom, as written down. The sheet holds the latest few; the rest wait on
+// the writing page.
+const shown = 5;
+const all = newestFirst(await getWriting(locale));
+const newest = all[0];
+const posts = all.slice(0, shown).reverse();
+const first = all.length - posts.length;
+---
+
+<!-- A printed list form with the essays written onto it: the numbers, lines
+     and "Notes" are printed, the titles are in the introduction's voice. The
+     lines are written down one after another when the sheet comes into view;
+     pointing at an essay (or focusing it) writes its summary into the notes. -->
+<section id="writing" class="writing" aria-labelledby="writing-title">
+  <h2 id="writing-title" class="writing__title">{t('writing', 'тексты')}</h2>
+
+  <writing-sheet class="sheet">
+    <ol class="sheet__list" start={first + 1}>
+      {posts.map(({ slug, entry: { data }, contentLocale }, index) => (
+        <li class="sheet__row" style={`--row: ${index}`} lang={contentLocale === locale ? undefined : contentLocale}>
+          <span class="sheet__number" aria-hidden="true">{first + index + 1}</span>
+          <a
+            class="sheet__entry"
+            href={data.externalUrl ?? localePath(`/writing/${slug}/`, locale)}
+            aria-describedby={`writing-summary-${slug}`}
+            data-summary={data.summary}
+          >
+            <span class="sheet__title link-mark">{data.title}</span>
+            {isFresh(posts[index], newest) && <span class="sheet__new">{t('new', 'новое')}</span>}
+          </a>
+          <span id={`writing-summary-${slug}`} class="sr-only">{data.summary}</span>
+        </li>
+      ))}
+    </ol>
+
+    <div class="sheet__notes" aria-hidden="true">
+      <span class="sheet__label">{t('Notes', 'Заметки')}</span>
+      <p class="sheet__note" data-note>{newest?.entry.data.summary}</p>
+    </div>
+  </writing-sheet>
+
+  {all.length > shown && (
+    <a class="writing__all" href={localePath('/writing/', locale)}>
+      <span class="link-mark">{t('All writing', 'Все тексты')}</span>
+    </a>
+  )}
+</section>
+
+<script>
+  // Without this script the sheet is simply filled in. With it the titles are
+  // written down when the sheet first comes into view, and the notes follow
+  // whichever essay is pointed at or focused.
+  class WritingSheet extends HTMLElement {
+    private observer?: IntersectionObserver;
+
+    connectedCallback() {
+      const note = this.querySelector<HTMLElement>('[data-note]');
+      const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!still && 'IntersectionObserver' in window) {
+        this.dataset.unwritten = '';
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            delete this.dataset.unwritten;
+            this.observer?.disconnect();
+          },
+          { threshold: 0.45 },
+        );
+        this.observer.observe(this);
+      }
+
+      const write = (summary: string | undefined) => {
+        if (!note || !summary || note.textContent === summary) return;
+        note.textContent = summary;
+        if (still) return;
+        note.animate([{ clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], {
+          duration: 640,
+          easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+        });
+      };
+
+      this.querySelectorAll<HTMLAnchorElement>('.sheet__entry').forEach((entry) => {
+        const show = () => write(entry.dataset.summary);
+        entry.addEventListener('pointerenter', show);
+        entry.addEventListener('focus', show);
+      });
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+    }
+  }
+
+  if (!customElements.get('writing-sheet')) customElements.define('writing-sheet', WritingSheet);
+</script>
+
+<style>
+  .writing {
+    width: min(calc(100% - 2 * var(--page-gutter)), var(--page-frame));
+    margin-inline: auto;
+    padding: 0 0 var(--section-gap);
+  }
+
+  /* The same title as "what i believe" (Beliefs.astro). */
+  .writing__title {
+    margin: 0 0 clamp(1.5rem, 2.5vw, 2.5rem);
+    color: var(--color-ink);
+    font-family: 'Instrument Serif', 'Oranienbaum', Georgia, serif;
+    font-size: clamp(1.55rem, 2.4vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+  }
+
+  /* The paper: white on the grey field, lifted like the oddity cards, its
+     lines and numbers printed in a faint ink. */
+  .sheet {
+    --sheet-ink: rgb(17 17 15 / 0.16);
+    --sheet-margin: 2.6rem;
+
+    display: block;
+    width: min(100%, 34rem);
+    padding: clamp(0.9rem, 1.6vw, 1.3rem) clamp(1.1rem, 2vw, 1.6rem) clamp(1.2rem, 2vw, 1.6rem);
+    border-radius: 0.3rem;
+    background: #fff;
+    box-shadow:
+      0 1px 0 rgb(17 17 15 / 0.05),
+      0 0.9rem 2.2rem rgb(17 17 15 / 0.07);
+  }
+
+  .sheet__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* A printed line: the number in its column, a rule down the margin, a rule
+     to write on. */
+  .sheet__row {
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--sheet-margin) minmax(0, 1fr);
+    align-items: baseline;
+    border-bottom: 1px solid var(--sheet-ink);
+  }
+
+  .sheet__row::before {
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    left: calc(var(--sheet-margin) - 0.75rem);
+    width: 1px;
+    background: var(--sheet-ink);
+    content: '';
+  }
+
+  .sheet__number {
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sheet__number::after {
+    content: '.';
+  }
+
+  /* The whole line is the way in. */
+  .sheet__entry {
+    display: block;
+    padding: 0.7rem 0 0.35rem;
+    color: var(--color-ink);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .sheet__entry:focus-visible {
+    border-radius: 0.15rem;
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: 0.1rem;
+  }
+
+  /* Written in the introduction's type, the hand of this page. */
+  .sheet__title {
+    font-family: var(--font-intro);
+    font-size: clamp(1.15rem, 0.5vw + 0.95rem, 1.4rem);
+    font-weight: 300;
+    letter-spacing: 0.005em;
+    line-height: 1.2;
+  }
+
+  .sheet__new {
+    margin-left: 0.45em;
+    font-family: var(--font-intro);
+    font-size: 1.05rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-accent) 78%, var(--color-ink));
+    white-space: nowrap;
+  }
+
+  .sheet__notes {
+    display: grid;
+    grid-template-columns: var(--sheet-margin) minmax(0, 1fr);
+    margin-top: clamp(1rem, 1.6vw, 1.3rem);
+  }
+
+  .sheet__label {
+    grid-column: 1 / -1;
+    color: var(--color-muted);
+    font-family: var(--font-reading);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* Room for the longest summary, so the sheet keeps its size as the notes
+     change. */
+  .sheet__note {
+    grid-column: 2;
+    min-height: 3lh;
+    margin: 0.35rem 0 0;
+    color: var(--color-copy);
+    font-family: var(--font-intro);
+    font-size: clamp(0.98rem, 0.25vw + 0.92rem, 1.08rem);
+    font-weight: 300;
+    line-height: 1.4;
+  }
+
+  /* Before the sheet comes into view its lines are blank; then each title is
+     written down, top to bottom. */
+  .sheet__entry {
+    clip-path: inset(-0.5rem);
+    transition: clip-path 700ms cubic-bezier(0.45, 0.05, 0.25, 1) calc(var(--row) * 170ms + 120ms);
+  }
+
+  .sheet[data-unwritten] .sheet__entry {
+    clip-path: inset(-0.5rem 100% -0.5rem -0.5rem);
+  }
+
+  .writing__all {
+    display: inline-block;
+    margin-top: 1rem;
+    padding-block: 0.65rem;
+    color: var(--color-ink);
+    font-family: var(--font-reading);
+    text-decoration: none;
+  }
+
+  @media (hover: none) {
+    .sheet__title {
+      background-image: var(--link-mark-rest);
+    }
+  }
+
+  @media (max-width: 52rem) {
+    .writing {
+      width: min(calc(100% - 2 * var(--page-gutter)), 36rem);
+    }
+
+    .sheet {
+      --sheet-margin: 2.1rem;
+    }
+  }
+</style>
