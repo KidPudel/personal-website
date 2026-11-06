@@ -8,6 +8,11 @@ Last updated: 2026-10-14
 - Keep the favicon transparent and adaptive to light and dark browser themes.
 - Verify media checks, production builds at both base paths, and desktop/mobile presentation. See `docs/PROGRESS.md`.
 
+## Completed milestone: Instagram Saves as a structured study (pilot)
+
+- Make the first screen the short read, name the navigation in words, add constraints, tie every finding to what it led to, and give each decision a hypothesis and an honest result. See `docs/PROGRESS.md`.
+- Next, if Igor approves the pilot: move the other three studies to `study-structured`, each with its own copy.
+
 ## Completed milestone: case studies as a marked-up proof
 
 - Replace the centred, template-like case-study pages with an editorial layout on a twelve-column page: headings hanging in the left margin, reading in the middle six columns, notes and screens in the margins.

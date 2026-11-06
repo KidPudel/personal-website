@@ -1,0 +1,32 @@
+---
+import type { Row } from './Rows.astro';
+import Rows from './Rows.astro';
+
+// One decision: its title says what was done, the rows say why, the screen shows it. Wide windows
+// keep the words and the screen in one view. `band` is for screens that need the width, such as a
+// before and after: the rows sit in two columns (`aside` is the second) with the screens under them.
+
+interface Props {
+  number: number;
+  title: string;
+  /** The short name in the section navigation. */
+  navLabel: string;
+  rows: Row[];
+  aside?: Row[];
+  layout?: 'beside' | 'band';
+}
+
+const { number, title, navLabel, rows, aside, layout = 'beside' } = Astro.props;
+---
+
+<article class:list={['decision-block', `decision-block--${layout}`]} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
+  <h3>{number}. {title}</h3>
+  <div class="decision-block__body">
+    <div class="decision-block__words">
+      <Rows rows={rows} />
+      {aside && <Rows rows={aside} />}
+      {Astro.slots.has('more') && <slot name="more" />}
+    </div>
+    <div class="decision-block__screen"><slot /></div>
+  </div>
+</article>

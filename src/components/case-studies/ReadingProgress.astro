@@ -29,6 +29,9 @@ const t = translator(toLocale(Astro.currentLocale));
       const items = Array.from(main.querySelectorAll<HTMLElement>('[data-index-section], [data-index-sub]'));
       const headings = items.map((item) => item.querySelector<HTMLElement>('h2, h3') ?? item);
       if (!headings.length) return;
+      // Each entry's section: itself, or for a sub-entry the section it sits under.
+      let section = 0;
+      const owners = items.map((item, index) => (item.hasAttribute('data-index-section') ? (section = index) : section));
       nav.replaceChildren();
       const links = headings.map((heading, index) => {
         const item = items[index];
@@ -41,6 +44,7 @@ const t = translator(toLocale(Astro.currentLocale));
         }
         const link = document.createElement('a');
         link.href = `#${item.id}`;
+        if (owners[index] !== index) link.dataset.sub = '';
         const name = item.dataset.indexLabel ?? heading.textContent?.trim();
         link.setAttribute('aria-label', name || `${this.dataset.sectionLabel ?? 'Section'} ${index + 1}`);
         const tick = document.createElement('span');
@@ -72,8 +76,10 @@ const t = translator(toLocale(Astro.currentLocale));
           if (heading.getBoundingClientRect().top <= Math.min(180, innerHeight * 0.25)) active = index;
         });
         if (main.getBoundingClientRect().bottom <= innerHeight + 2) active = headings.length - 1;
-        if ((active !== this.active || nav.clientWidth !== navWidth) && window.matchMedia('(max-width: 1000px)').matches) {
-          const link = links[active];
+        const owner = owners[active];
+        // When the section strip scrolls sideways, keep the current section in the middle of it.
+        if ((active !== this.active || nav.clientWidth !== navWidth) && nav.scrollWidth > nav.clientWidth + 1) {
+          const link = links[links[active].offsetParent ? active : owner];
           nav.scrollTo({ left: link.offsetLeft - nav.clientWidth / 2 + link.clientWidth / 2, behavior: 'instant' });
         }
         navWidth = nav.clientWidth;
@@ -81,6 +87,8 @@ const t = translator(toLocale(Astro.currentLocale));
         links.forEach((link, index) => {
           if (index === active) link.setAttribute('aria-current', 'location');
           else link.removeAttribute('aria-current');
+          link.toggleAttribute('data-owner', index === owner);
+          link.toggleAttribute('data-open', owners[index] === owner);
         });
       };
       const schedule = () => {

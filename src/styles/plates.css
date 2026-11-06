@@ -145,6 +145,11 @@ html.study-plates.is-night .portfolio-navigation:not(:has(.contact-disclosure[op
   scroll-margin-top: 6rem;
 }
 
+/* The section navigation scrolls to headings: a little past the header's blur band. */
+.study-plates main :is(h2, h3) {
+  scroll-margin-top: 1.5rem;
+}
+
 /* ---- Rhythm --------------------------------------------------------------------------------- */
 
 .study-plates .part {

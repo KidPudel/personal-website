@@ -1,0 +1,78 @@
+---
+import { Image } from 'astro:assets';
+
+import savedScreen from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/all_saved_new.png';
+import InstagramPrototypeApp from '../../homepage/showcase/instagram-prototype/InstagramPrototypeApp.jsx';
+import { toLocale, translator } from '../../../i18n/locales';
+
+// The same live search as the homepage card, on the study's panel. Until it loads, and without
+// JavaScript, the real screenshot of that screen stands in. It loads only when it comes near.
+
+const t = translator(toLocale(Astro.currentLocale));
+---
+
+<figure class="try">
+  <div class="try__panel panel-paper">
+    <div class="try__phone">
+      <div class="try__still">
+        <Image
+          src={savedScreen}
+          alt={t(
+            'Redesigned Saved screen with search across AI descriptions, titles and notes, collections, and the saved posts grid.',
+            'Редизайн «Сохранённого»: поиск по AI-описаниям, названиям и заметкам, коллекции и сетка сохранённых постов.',
+          )}
+          widths={[240, 388]}
+          sizes="(max-width: 759px) 66vw, 19rem"
+          format="webp"
+          quality={85}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <div class="try__app" lang="en"><InstagramPrototypeApp client:visible={{ rootMargin: '240px' }} /></div>
+    </div>
+  </div>
+  <figcaption>{t('Try it: tap the search field. It finds “spider”, then “new york”.', 'Попробуйте: нажмите на поле поиска. Сначала оно найдёт «spider», потом «new york».')}</figcaption>
+</figure>
+
+<style>
+  .try {
+    margin: 0;
+  }
+
+  .try__panel {
+    display: grid;
+    place-items: center;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .try__phone {
+    position: relative;
+    width: min(100%, var(--phone-width, 19rem));
+    aspect-ratio: 430 / 884;
+  }
+
+  .try__still {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+  }
+
+  .try__still :global(img) {
+    display: block;
+    width: 90%;
+    height: auto;
+    filter: drop-shadow(0 0.75rem 1.25rem rgb(17 17 15 / 0.16));
+  }
+
+  /* The still is only a placeholder until the live prototype has mounted. */
+  .try__phone:has(.instagram-prototype__stage) .try__still {
+    visibility: hidden;
+  }
+
+  .try__app {
+    position: absolute;
+    inset: 0;
+  }
+</style>

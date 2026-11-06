@@ -5,23 +5,22 @@ import pileImage from '../../../assets/case_study_images/instagram-saves-redesig
 import pile from '../../../assets/case_study_images/instagram-saves-redesign/pile/pile.json';
 import type { CaseStudy } from '../../../content/case-studies';
 import ProjectFacts from '../ProjectFacts.astro';
-import Rich from '../Rich.astro';
 
-// Instagram Saves opens on its problem: the pile. Beside the title, the prototype's saved posts
-// scroll past as you scroll, and keep scrolling. Then a search for "spider" is typed into Saved,
-// and the pile gives way to the two posts it finds, as in the prototype. Without the live layer,
-// with reduced motion, or on a phone, the pile simply sits beside the title, waiting.
+// Instagram Saves opens on its problem: the pile. Beside the title and the study's short read (the
+// default slot), the prototype's saved posts scroll past as you scroll, and keep scrolling. Then a
+// search for "spider" is typed into Saved, and the pile gives way to the two posts it finds, as in
+// the prototype. Without the live layer, with reduced motion, or on a phone, the pile simply sits
+// beside the title, waiting.
 
 interface Props {
   title: string;
-  pitch: string;
-  /** The result, numbers in **bold**. */
-  outcome: string;
   /** Whose project, Igor's part, the team, and whether it shipped, from src/content/case-studies.ts. */
   about: CaseStudy['about'];
+  /** The first entry in the section navigation. */
+  navLabel: string;
 }
 
-const { title, pitch, outcome, about } = Astro.props;
+const { title, about, navLabel } = Astro.props;
 const sprite = await getImage({ src: pileImage, format: 'webp' });
 const tile = (name: string) => {
   const index = pile.names.indexOf(name);
@@ -42,13 +41,13 @@ const found = ['spiderman-red', 'spiderman-2'];
 const query = 'spider';
 ---
 
-<header class="pile" data-pile style={`--sprite: url('${sprite.src}'); --sprite-size: ${pile.columns * 100}% ${pile.rows * 100}%`}>
+<!-- #summary is what BaseDocument holds the first paint for, so the card can open into this cover. -->
+<header class="pile" id="summary" data-index-section data-index-label={navLabel} data-pile style={`--sprite: url('${sprite.src}'); --sprite-size: ${pile.columns * 100}% ${pile.rows * 100}%`}>
   <div class="pile__stage">
     <div class="pile__text">
       <h1>{title}</h1>
-      <p class="pile__pitch">{pitch}</p>
       <ProjectFacts about={about} />
-      <p class="pile__outcome"><Rich text={outcome} /></p>
+      <slot />
     </div>
 
     <!-- Saved, as the prototype draws it: the search field, then the pile, then what it found. -->
@@ -114,8 +113,8 @@ const query = 'spider';
 
   .pile__stage {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+    gap: clamp(2rem, 4.5vw, 4.5rem);
     align-items: center;
     width: min(100% - 2 * var(--gutter), var(--wide, 76rem));
     margin: 0 auto;
@@ -126,27 +125,11 @@ const query = 'spider';
     margin: 0;
     color: var(--color-ink);
     font-family: var(--font-study-heading);
-    font-size: clamp(2.75rem, 1.6rem + 3.6vw, 5rem);
+    font-size: clamp(2.25rem, 1.6rem + 1.8vw, 3.25rem);
     font-weight: 400;
-    letter-spacing: -0.025em;
-    line-height: 0.98;
+    letter-spacing: -0.02em;
+    line-height: 1.02;
     text-wrap: balance;
-  }
-
-  .pile .pile__pitch {
-    max-width: 30rem;
-    margin: 1.1rem 0 0;
-    color: var(--color-ink);
-    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
-    line-height: 1.38;
-  }
-
-  .pile .pile__outcome {
-    max-width: 31rem;
-    margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
-    color: var(--color-ink);
-    font-size: 1.0625rem;
-    line-height: 1.55;
   }
 
   /* Saved: a tall window onto the pile, the search field over its top edge. */
@@ -241,9 +224,10 @@ const query = 'spider';
 
   /* ---- The pull: scrolling, still scrolling, then a search -------------------------------------- */
 
-  @media (prefers-reduced-motion: no-preference) and (min-width: 760px) {
+  /* Only when the short read fits a pinned screen; on very short windows the cover simply scrolls. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 760px) and (min-height: 680px) {
     :global(html.js) .pile {
-      --travel: 140svh;
+      --travel: 100svh;
       height: calc(100svh + var(--travel));
     }
 
@@ -301,7 +285,7 @@ const query = 'spider';
     }
 
     .pile__window {
-      height: 26rem;
+      height: 20rem;
     }
 
     .pile__wall {

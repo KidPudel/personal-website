@@ -1,6 +1,18 @@
 # Progress
 
-Last updated: 2026-10-26
+Last updated: 2026-11-06
+
+## Instagram Saves: restructured to be read like a document (pilot)
+
+- Igor asked for an analysis of how well the study works as a case study, then a redesign without being held back by earlier layout choices: "the #1 priority is to be easy to read, which doesn't mean like a book or an article". This study is the pilot; the other three keep the calm reading line and the Detailed / TL;DR switch until he decides.
+- The first screen is the short read (problem, goal, research, decisions, result), beside the pile. There is no TL;DR mode on this page: it measured longer than the summary it replaced (about 230 words against 115), hid the navigation, and carried across studies.
+- Section navigation is words, always visible: in the margin on wide windows, a strip at the bottom below 1180 px. Decisions expand under their section. This replaces the hover-only ticks on this page (Igor's earlier "keep the ticks" was about the other layout; his latest request wins).
+- New sections and structure: Constraints; one table of what was found, by how many, and what it led to, with the nine people, the journey map, and the notebooks closed under it; labelled rows for each decision (problem, hypothesis, decision, not chosen, result, risk) with the screen in the same view. Five decisions became three (date filter merged into search), plus two bets (reactions, collection feed) and what was left out.
+- Evidence from Igor's answers and interview notebook: the times were measured with 3 people (5 runs on today's Saved, 9 on the prototype), the prototype was shown to all nine, and nested collections and tags were considered and rejected. Hypotheses and the reason for rejecting nested collections were drafted from his notes and await his confirmation.
+- Results separate what was measured, counted, heard, and not tested. The live search from the homepage card sits beside them.
+- Shared changes stay additive: `Plate.astro` can ring any screen and show two side by side, `ReadingProgress.astro` marks each entry's section, and headings land clear of the header in all studies.
+- A participant's name was readable in the second notebook photo. Igor asked to blur it, so it's blurred in the source image and every copy built from it. The original remains in git history.
+- Verified at 1440, 1280, and 375 px, English and Russian, with every disclosure open, and SuperGood's ticks and switch unchanged.
 
 ## Case studies: calm reading line, TL;DR, screens one at a time
 

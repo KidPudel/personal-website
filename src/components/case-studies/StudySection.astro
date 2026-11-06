@@ -4,7 +4,7 @@ import Rich from './Rich.astro';
 
 // The order still follows STAR (problem and goal are the situation and task, research and decisions
 // the action), but each heading says plainly what the section holds, so a reader can find it fast.
-type Part = 'problem' | 'goal' | 'research' | 'decisions' | 'results' | 'reflection' | 'next';
+type Part = 'problem' | 'goal' | 'constraints' | 'research' | 'decisions' | 'results' | 'reflection' | 'next';
 
 interface Props {
   part: Part;
@@ -18,6 +18,7 @@ const t = translator(toLocale(Astro.currentLocale));
 const labels: Record<Part, string> = {
   problem: t('Problem', 'Проблема'),
   goal: t('Goal', 'Цель'),
+  constraints: t('Constraints', 'Ограничения'),
   research: t('Research', 'Исследование'),
   decisions: t('Decisions', 'Решения'),
   results: t('Results', 'Результаты'),

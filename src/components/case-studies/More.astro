@@ -1,0 +1,15 @@
+---
+// Detail a reader can open when they want it: the study reads whole with every one of these closed.
+// A native disclosure, so it works without JavaScript. Looks are in study-structured.css.
+
+interface Props {
+  summary: string;
+}
+
+const { summary } = Astro.props;
+---
+
+<details class="more">
+  <summary>{summary}</summary>
+  <div class="more__body"><slot /></div>
+</details>

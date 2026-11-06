@@ -1,0 +1,37 @@
+---
+import Rich from './Rich.astro';
+
+// Labelled rows, the shape a structured study is read in: the label says what the row is, so a
+// reader can scan down the labels and stop at the one they came for. Looks are in study-structured.css.
+
+export interface Row {
+  label: string;
+  /** The label also leads to the section it names. */
+  href?: string;
+  text?: string;
+  list?: string[];
+  /** Where the row's claim comes from, a quiet line under it. */
+  source?: string;
+  /** key: the row the block is about, in ink. result: its numbers get the highlighter. */
+  tone?: 'key' | 'result';
+}
+
+interface Props {
+  rows: Row[];
+}
+
+const { rows } = Astro.props;
+---
+
+<dl class="rows">
+  {rows.map((row) => (
+    <div class:list={['rows__row', row.tone && `rows__row--${row.tone}`]}>
+      <dt>{row.href ? <a href={row.href}><span class="link-mark">{row.label}</span></a> : row.label}</dt>
+      <dd class:list={[row.tone === 'result' && 'marked']} data-arrive={row.tone === 'result' ? '' : undefined}>
+        {row.text && <Rich text={row.text} />}
+        {row.list && <ul class="rows__list" role="list">{row.list.map((item) => <li><Rich text={item} /></li>)}</ul>}
+        {row.source && <span class="rows__source">{row.source}</span>}
+      </dd>
+    </div>
+  ))}
+</dl>

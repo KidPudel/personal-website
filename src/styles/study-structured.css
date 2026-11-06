@@ -1,0 +1,442 @@
+/* A structured case study, built on plates.css: information first, reading it like a document, not
+   an article. Add the page class `study-structured` to a study to use it.
+
+   The system is small:
+   - Words in the margin are the navigation (ReadingProgress), a strip at the bottom on smaller windows.
+   - The first screen is the short read. There is no separate mode for it.
+   - Labelled rows (Rows.astro) carry anything a reader scans: goal, decisions, results.
+   - A decision keeps its words and its screen in one view (DecisionBlock.astro).
+   - Supporting detail is closed until someone opens it (More.astro).
+   Fonts keep their roles: Crimson Text for headings, Instrument Sans for everything else, Semibold
+   for emphasis and labels. */
+
+html.study-structured {
+  --row-label: 7rem;
+  --split-side: 26rem;
+  --space-part: clamp(3.5rem, 2.5rem + 3vw, 5.5rem);
+  --space-decision: clamp(3.5rem, 2.75rem + 2.5vw, 5rem);
+  interpolate-size: allow-keywords;
+}
+
+/* ---- The page: one frame, the same edges as the header --------------------------------------- */
+
+.study-structured main {
+  display: block;
+}
+
+.study-structured main > .part {
+  display: block;
+  width: var(--wide);
+  margin-inline: auto;
+}
+
+.study-structured .part {
+  margin-top: var(--space-part);
+  padding-top: var(--space-part);
+  border-top: 1px solid rgb(17 17 15 / 10%);
+}
+
+.study-structured .part--problem {
+  margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* A jump from the short read or a table lands like one from the navigation: the heading just under
+   the header, with the section's top space above the fold. */
+.study-structured main > .part[id] {
+  scroll-margin-top: calc(1.5rem - var(--space-part));
+}
+
+.study-structured main > .part--problem[id],
+.study-structured :is(.decision-block, .bets, .left-out)[id] {
+  scroll-margin-top: 1.5rem;
+}
+
+.study-structured :is(.part, .finale) > h2 {
+  margin-bottom: 1.5rem;
+  font-size: clamp(2rem, 1.7rem + 0.9vw, 2.5rem);
+}
+
+.study-structured .part__lead {
+  max-width: 44rem;
+}
+
+.study-structured .case-footer {
+  width: var(--wide);
+}
+
+/* ---- Words and a screen, side by side when there is room --------------------------------------- */
+
+.study-structured .split,
+.study-structured .decision-block__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-block);
+}
+
+@media (min-width: 1180px) {
+  .study-structured .split,
+  .study-structured .decision-block--beside .decision-block__body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, var(--split-side));
+    gap: clamp(2.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+}
+
+/* ---- Labelled rows ------------------------------------------------------------------------------ */
+
+.study-structured .rows {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  container-type: inline-size;
+}
+
+.study-structured .rows__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.1rem;
+}
+
+@container (min-width: 26rem) {
+  .study-structured .rows__row {
+    grid-template-columns: var(--row-label) minmax(0, 1fr);
+    gap: 0 1rem;
+  }
+}
+
+.study-structured .rows dt {
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.68;
+}
+
+.study-structured .rows dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-copy);
+  font-size: var(--text);
+  line-height: 1.55;
+}
+
+.study-structured .rows__row--key dd {
+  color: var(--color-ink);
+}
+
+.study-structured .rows__source {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-muted);
+  font-size: var(--small);
+  line-height: 1.5;
+}
+
+.study-structured .rows__list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.study-structured main .rows__list li {
+  position: relative;
+  padding-left: 1rem;
+  line-height: 1.5;
+}
+
+.study-structured .rows__list li::before {
+  position: absolute;
+  top: 0.68em;
+  left: 0;
+  width: 0.35rem;
+  height: 1px;
+  background: var(--color-muted);
+  content: '';
+}
+
+/* Charts inside a row keep the row's rhythm. */
+.study-structured .rows :is(.chart, .steps) {
+  margin-block: 0;
+}
+
+/* ---- The short read on the cover --------------------------------------------------------------- */
+
+.study-structured .pile .rows {
+  gap: 0.7rem;
+  margin-top: clamp(1.25rem, 2.5vh, 2rem);
+}
+
+.study-structured .pile .rows dd {
+  font-size: 1rem;
+  line-height: 1.48;
+}
+
+.study-structured .pile .rows dt {
+  line-height: 1.58;
+}
+
+.study-structured main .pile .project-about {
+  max-width: 36rem;
+  margin-top: 0.85rem;
+  font-size: var(--small);
+  line-height: 1.5;
+}
+
+/* ---- Decisions ------------------------------------------------------------------------------------ */
+
+.study-structured .decision-block {
+  margin-top: var(--space-decision);
+}
+
+.study-structured .part > h2 + .part__lead + .decision-block {
+  margin-top: var(--space-block);
+}
+
+.study-structured main .decision-block h3 {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1.45rem, 1.3rem + 0.45vw, 1.75rem);
+}
+
+.study-structured .decision-block__words {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.study-structured .decision-block--band .decision-block__words {
+  gap: 0.8rem clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .study-structured .decision-block--band .decision-block__words {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+/* Screens fit the window together with their names, and a little larger than plates.css allows. */
+.study-structured .plate {
+  --phone: min(19rem, (100svh - 13rem) * 0.46);
+}
+
+/* A band sits under its rows, so it's a little smaller, to keep rows and screens in one view. */
+.study-structured .decision-block--band .plate {
+  --phone: min(17rem, (100svh - 13rem) * 0.42);
+}
+
+@media (max-width: 759px) {
+  .study-structured .plate {
+    --phone: min(72vw, 17rem);
+  }
+}
+
+/* ---- Detail, closed until opened ------------------------------------------------------------------ */
+
+.study-structured .more {
+  border-top: 1px solid rgb(17 17 15 / 10%);
+}
+
+.study-structured .more:last-of-type {
+  border-bottom: 1px solid rgb(17 17 15 / 10%);
+}
+
+.study-structured .more > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 3rem;
+  padding-block: 0.5rem;
+  color: var(--color-ink);
+  cursor: pointer;
+  font-family: var(--font-study-emphasis);
+  font-size: var(--text);
+  font-weight: 600;
+  line-height: 1.35;
+  list-style: none;
+}
+
+.study-structured .more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.study-structured .more > summary::before {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 1.5px solid currentcolor;
+  border-bottom: 1.5px solid currentcolor;
+  content: '';
+  rotate: -45deg;
+  transition: rotate 160ms var(--ease-out);
+}
+
+.study-structured .more[open] > summary::before {
+  rotate: 45deg;
+}
+
+.study-structured .more > summary:focus-visible {
+  border-radius: 0.25rem;
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.study-structured .more__body {
+  padding: 0.25rem 0 1.75rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .study-structured .more::details-content {
+    overflow: clip;
+    block-size: 0;
+    transition: block-size 220ms var(--ease-out), content-visibility 220ms allow-discrete;
+  }
+
+  .study-structured .more[open]::details-content {
+    block-size: auto;
+  }
+}
+
+/* ---- Section navigation: words in the margin, a strip of words on smaller windows ----------------- */
+
+.study-plates.study-structured reading-progress .tick {
+  box-shadow: none;
+}
+
+@media (min-width: 1180px) {
+  .study-structured reading-progress {
+    top: 8.5rem;
+    left: max(0.75rem, calc((100vw - var(--wide)) / 2 - 10.5rem));
+    width: 9.5rem;
+    transform: none;
+  }
+
+  .study-structured reading-progress nav {
+    align-items: flex-start;
+    justify-content: flex-start;
+    max-height: none;
+  }
+
+  .study-structured reading-progress a {
+    flex: none;
+    gap: 0.6rem;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
+    min-height: 1.7rem;
+  }
+
+  .study-structured reading-progress .tick {
+    flex: none;
+    width: 0.7rem;
+    height: 2px;
+    opacity: 0.22;
+    transform-origin: left;
+  }
+
+  .study-structured reading-progress :is(a[data-owner], a[aria-current]) .tick {
+    opacity: 1;
+    transform: scaleX(1.7);
+  }
+
+  .study-structured reading-progress a[data-sub] {
+    min-height: 1.5rem;
+    padding-left: 1.3rem;
+  }
+
+  .study-structured reading-progress a[data-sub] .tick {
+    width: 0.4rem;
+    transform: none;
+  }
+
+  .study-structured reading-progress a[data-sub]:not([aria-current]) .tick {
+    opacity: 0.22;
+  }
+
+  .study-structured reading-progress a[data-sub]:not([data-open]) {
+    display: none;
+  }
+}
+
+.study-structured reading-progress .label {
+  position: static;
+  width: auto;
+  max-width: none;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--color-muted);
+  font: 0.875rem/1.3 var(--font-reading);
+  opacity: 1;
+  visibility: visible;
+  transition: color 120ms ease-out;
+}
+
+.study-structured reading-progress a[data-sub] .label {
+  font-size: 0.8125rem;
+}
+
+.study-structured reading-progress a:hover .label {
+  color: var(--color-ink);
+}
+
+.study-structured reading-progress :is(a[aria-current], a[data-owner]:not([data-sub])) .label {
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-weight: 600;
+}
+
+@media (max-width: 1179.98px) {
+  .study-structured reading-progress {
+    top: auto;
+    bottom: 0.5rem;
+    left: 50%;
+    width: min(100% - 1.5rem, 42rem);
+    padding: 0 0.35rem;
+    border-radius: 1.5rem;
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 0 0 1px rgb(17 17 15 / 8%), 0 0.5rem 1.5rem rgb(17 17 15 / 14%);
+    transform: translateX(-50%);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .study-structured reading-progress nav {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    max-height: none;
+    height: 2.75rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .study-structured reading-progress nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .study-structured reading-progress a {
+    flex: 0 0 auto;
+    width: auto;
+    height: 2.75rem;
+    padding: 0 0.7rem;
+  }
+
+  .study-structured reading-progress a[data-sub],
+  .study-structured reading-progress .tick {
+    display: none;
+  }
+
+  .study-structured reading-progress .label {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .study-structured .case-footer {
+    padding-bottom: 6rem;
+  }
+}

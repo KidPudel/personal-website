@@ -31,6 +31,8 @@ interface Shot {
   label?: string;
   /** Show only this part of the screen (percent), such as an app window without its shadow. */
   crop?: Region;
+  /** What changed on this screen, ringed and named under it. */
+  notes?: Note[];
 }
 
 interface Props {
@@ -45,9 +47,11 @@ interface Props {
   caption?: string;
   /** phone: screens of one set width. desktop: an app window as wide as the panel allows. */
   kind?: 'phone' | 'desktop';
+  /** Two screens to compare, side by side on wide windows; the first one in the list sits on the right. */
+  together?: boolean;
 }
 
-const { shots, notes = [], notesOn = 0, crop, caption, kind = 'phone' } = Astro.props;
+const { shots, notes = [], notesOn = 0, crop, caption, kind = 'phone', together = false } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
 const candidates = kind === 'desktop' ? [640, 960, 1280, 1600] : [320, 480, 640, 800];
 const widthsFor = (src: ImageMetadata) => [...new Set(candidates.filter((width) => width < src.width).concat(Math.min(src.width, candidates.at(-1)!)))];
@@ -55,11 +59,14 @@ const round = (value: number) => Math.round(value * 100) / 100;
 const cropOf = (index: number) => shots[index]?.crop ?? (index === 0 ? crop : undefined);
 
 // Rings are placed against the screen as shown, so a cropped screen moves them into its frame.
-const ringCrop = cropOf(notesOn);
-const shown = (region: Region) => (ringCrop
-  ? { x: ((region.x - ringCrop.x) / ringCrop.w) * 100, y: ((region.y - ringCrop.y) / ringCrop.h) * 100, w: (region.w / ringCrop.w) * 100, h: (region.h / ringCrop.h) * 100 }
-  : region);
-const rings = notes.flatMap((note, at) => [note, ...(note.also ?? [])].map((region, index) => ({ ...shown(region), number: index === 0 ? at + 1 : undefined, at })));
+const notesFor = (index: number) => shots[index]?.notes ?? (index === notesOn ? notes : []);
+const shown = (index: number, region: Region) => {
+  const area = cropOf(index);
+  return area
+    ? { x: ((region.x - area.x) / area.w) * 100, y: ((region.y - area.y) / area.h) * 100, w: (region.w / area.w) * 100, h: (region.h / area.h) * 100 }
+    : region;
+};
+const ringsFor = (index: number) => notesFor(index).flatMap((note, at) => [note, ...(note.also ?? [])].map((region, part) => ({ ...shown(index, region), number: part === 0 ? at + 1 : undefined, at })));
 const place = (ring: Region & { at: number }) => `--x: ${round(ring.x)}; --y: ${round(ring.y)}; --w: ${round(ring.w)}; --h: ${round(ring.h)}; --i: ${ring.at}`;
 const frameOf = (index: number) => {
   const area = cropOf(index);
@@ -72,29 +79,28 @@ const layersOf = (index: number) => {
 };
 const sizes = kind === 'desktop' ? '(max-width: 759px) 90vw, 44rem' : '(max-width: 759px) 70vw, 22rem';
 const many = shots.length > 1;
-const legend = notes.map((note, at) => ({ number: at + 1, label: note.label }));
 ---
 
-<figure class:list={['plate', `plate--${kind}`, many && 'plate--many', crop && 'plate--crop']} data-plate>
+<figure class:list={['plate', `plate--${kind}`, many && 'plate--many', crop && 'plate--crop', together && 'plate--together']} data-plate>
   <div class="plate__panel">
-    <div class="plate__track" data-track tabindex={many ? 0 : undefined} role={many ? 'group' : undefined} aria-label={many ? t('Screens, one at a time', 'Экраны по одному') : undefined}>
+    <div class="plate__track" data-track tabindex={many ? 0 : undefined} role={many ? 'group' : undefined} aria-label={many ? (together ? t('Screens to compare', 'Экраны для сравнения') : t('Screens, one at a time', 'Экраны по одному')) : undefined}>
       {shots.map((shot, index) => (
         <div class="plate__slide" data-slide>
           <div class:list={['plate__screen', cropOf(index) && 'plate__screen--crop']} style={frameOf(index)}>
             <div class="plate__layers" style={layersOf(index)}>
               <Image src={shot.src} alt={shot.alt} widths={widthsFor(shot.src)} sizes={sizes} format="webp" quality={85} loading="lazy" decoding="async" />
             </div>
-            {index === notesOn && rings.length > 0 && (
+            {ringsFor(index).length > 0 && (
               <ol class="plate__rings" aria-hidden="true">
-                {rings.map((ring) => <li style={place(ring)}>{ring.number && <span>{ring.number}</span>}</li>)}
+                {ringsFor(index).map((ring) => <li style={place(ring)}>{ring.number && <span>{ring.number}</span>}</li>)}
               </ol>
             )}
           </div>
-          {(shot.label || (index === notesOn && legend.length > 0)) && (
+          {(shot.label || notesFor(index).length > 0) && (
             <div class="plate__key">
               {shot.label && <p class="plate__label">{shot.label}</p>}
-              {index === notesOn && legend.length > 0 && (
-                <ol class="plate__names">{legend.map((item) => <li><span class="plate__number" aria-hidden="true">{item.number}</span>{item.label}</li>)}</ol>
+              {notesFor(index).length > 0 && (
+                <ol class="plate__names">{notesFor(index).map((note, at) => <li><span class="plate__number" aria-hidden="true">{at + 1}</span>{note.label}</li>)}</ol>
               )}
             </div>
           )}
@@ -147,7 +153,9 @@ const legend = notes.map((note, at) => ({ number: at + 1, label: note.label }));
       prev.disabled = at === 0;
       next.disabled = at === slides.length - 1;
       dots.forEach((dot, index) => (index === at ? dot.setAttribute('aria-current', 'true') : dot.removeAttribute('aria-current')));
-      slides.forEach((slide, index) => slide.toggleAttribute('inert', index !== at));
+      // Side by side nothing is off screen, so nothing is inert.
+      const scrolls = track.scrollWidth > track.clientWidth + 1;
+      slides.forEach((slide, index) => slide.toggleAttribute('inert', scrolls && index !== at));
     };
 
     prev.addEventListener('click', () => go(current() - 1));
@@ -481,6 +489,30 @@ const legend = notes.map((note, at) => ({ number: at + 1, label: note.label }));
   @media (prefers-reduced-motion: reduce) {
     .plate__rings li {
       transition: none;
+    }
+  }
+
+  /* Two screens to compare, both in view. On a phone they fall back to one at a time. */
+  @media (min-width: 760px) {
+    .plate--together .plate__track {
+      display: grid;
+      grid-template-columns: repeat(2, auto);
+      justify-content: center;
+      gap: clamp(1rem, 4vw, 4rem);
+      overflow: visible;
+      scroll-snap-type: none;
+    }
+
+    .plate--together .plate__slide {
+      padding-bottom: calc(var(--pad) * 0.9);
+    }
+
+    .plate--together .plate__slide:first-child {
+      order: 2;
+    }
+
+    .plate--together .plate__controls {
+      display: none;
     }
   }
 

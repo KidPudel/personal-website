@@ -1,6 +1,6 @@
 # Media performance contract
 
-Last updated: 2026-10-13
+Last updated: 2026-11-06
 
 This document is the implementation contract for every image, video, flipbook, poster, and decorative media asset on the site. Future agents must read it before changing public media.
 
@@ -60,6 +60,10 @@ The homepage opens on the page itself, so the first row of work (SuperGood and I
 ### Homepage Instagram card
 
 The card is the redesigned Saved screen from the live prototype, in front of the pile. Until the prototype loads, and without JavaScript, the real screenshot of that screen (`all_saved_new.png`) stands in, eager like the rest of the first row; the twelve grid thumbnails it then shows are eager too, since they are visible at once. The pile behind the phone is the case study's sprite (`pile/pile.webp`, about 300 KB, the same file and URL as the cover, so one download serves both pages). It is decorative and optional: it starts loading only after the page's `load` event and once the card is near the viewport, never on data saver or 2G, and until it has decoded the card shows its usual texture and the search simply filters inside the phone.
+
+### Instagram case-study live search
+
+The Results section shows the homepage card's live search on the study's panel. It stays below the fold: a lazy screenshot of the same screen stands in, and the island mounts only within 240 px of the viewport (`client:visible`), so its thumbnails load only then. Without JavaScript the screenshot remains. The notebook photos, wireframes, and walkthroughs sit inside closed disclosures, so they don't compete with the rest of the page until someone opens them.
 
 ### Homepage SuperGood and Two Sticks cards
 
