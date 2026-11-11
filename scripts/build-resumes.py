@@ -19,14 +19,14 @@ BODY = 10
 
 CONTENT = {
     'en': {
-        'name': 'IGOR KUPCHINENKO', 'role': 'JUNIOR PRODUCT DESIGNER (UX/UI) · CONSUMER APPS · USER RESEARCH',
+        'name': 'IGOR KUPCHINENKO', 'role': 'JUNIOR PRODUCT DESIGNER · CONSUMER APPS · USER RESEARCH AND INTERACTION DESIGN',
         'portfolio_label': 'Portfolio: ', 'location': 'Moscow, open to office, remote, or relocation', 'linkedin': True, 'phone': None,
-        'summary': 'Junior product designer for consumer apps, with a background in software engineering and game design. I find where products don’t fit how people actually behave, through interviews and observation, and design interactions around how people think. I build what I design: alone in Flutter at SuperGood, where reordering a usual meal fell from about a minute to 5 seconds and the store rating rose from 3.1 to 3.7, and with Claude Code, Codex and ChatGPT for my 2026 projects.',
+        'summary': 'Product designer for consumer apps. Through interviews and observation I find where products don’t fit how people actually behave, and design interactions around how people think. I test decisions on working prototypes: an engineering background and AI tools get me fast feedback from real people. At SuperGood, reordering a usual meal fell from about a minute to 5 seconds and the store rating rose from 3.1 to 3.7.',
         'experience': 'EXPERIENCE',
         'experience_entries': [
             ('PizzaSushiWok (SuperGood)', 'Product Designer / Mobile Engineer, food delivery app | Aug 2023 - Jul 2024', 'supergood', [
-                'The only designer and engineer, working directly with business stakeholders. Analysed about **150 reviews** and watched **10 people** order at work to see where they hesitated.',
-                'Cut reordering a usual meal from **60 s to 5 s** with one-tap repeats from order history. In a usability test with 10 colleagues, success rose from **2 to 10 of 10** and ease from **3 to 6 of 7**.',
+                'The only designer and engineer, working directly with business stakeholders. Analysed about **150 reviews** and watched **10 people** order food at work to see where they hesitated.',
+                'Made reordering one tap from order history: a usual meal now takes **5 s instead of 60**. In a usability test with 10 colleagues, success rose from **2 to 10 of 10** and ease from **3 to 6 of 7**.',
                 'Made time and cost visible before paying: a pinned bar with delivery time and total, and weight, ingredients and nutrition on every dish.',
                 'Designed every screen in Figma (components, variables, auto layout) on my own design system with light and dark themes, then rebuilt iOS and Android as **one Flutter app** in 11 months. Store rating rose from **3.1\u00a0to\u00a03.7**.',
             ]),
@@ -39,18 +39,15 @@ CONTENT = {
         'projects': [
             ('Instagram Saves redesign', 'Independent concept, designed in Figma, prototype built with Claude Code | 2026', 'instagram-saves-redesign', [
                 'Nine interviews and a journey map: **6 of 9** couldn’t find a specific save, and **7 of 9** moved what mattered to Notes, Notion or Maps. So search in Saved came before more filing.',
-                'Finding a half-remembered post took **about 10 s instead of 90** in a timed test with 3 people. Collection suggestions make a new collection **1 tap instead of 2 and a name**.',
+                'Finding a half-remembered post took **about 10 s instead of 90** in a timed test with 3 people. Collection suggestions make a new collection **1 tap instead of 2 taps and typing a name**.',
             ]),
             ('Observatory', 'Personal macOS app, designed in Figma, built with Codex and ChatGPT from my specs, released on GitHub | Jul - Aug 2026', 'observatory', [
                 '**5 interviews**: people started from an app, never a process, so processes group under their app. Brave Browser reads as **1 row, not 17**.',
-                'Cut top-level sections from **3 to 2** by putting results where a test ends. **3 developer colleagues** have used it for two months. Also made its identity, artwork and launch film.',
+                'Cut top-level sections from **3 to 2**: saved recordings of an app’s resource use now sit where the recording ends. **3\u00a0developer colleagues** have used it for two months. Also made its identity, artwork and launch film.',
             ]),
-            ('Two Sticks', 'Telegram product for learning Chinese, built on a university diploma’s research | 2024', 'two-sticks', [
+            ('Two Sticks', 'Telegram product for learning Chinese, built on three university students’ diploma research | 2024', 'two-sticks', [
                 'Chose Telegram over a new app, so there’s **nothing to install**, with handwriting as a Telegram Web App. Designed and built the bot, API and Web App.',
                 'One saved word list feeds flashcards, notebook sheets and handwriting. Shipped the learner loop before the teacher tools in the brief; students missed pronunciation practice, the next step.',
-            ]),
-            ('This portfolio', 'Designed, drawn and art-directed by me, built with Claude Code in Astro | 2026', '', [
-                'Each work card acts out its project’s main decision in the real interface. Every drawing on the site is mine.',
             ]),
         ],
         'additional_title': 'OTHER EXPERIENCE',
@@ -58,20 +55,20 @@ CONTENT = {
             ('Paycos', 'Software Developer, contract | Jul 2024 - Dec 2025', 'Built payment and order services; cut PDF receipt processing from **6-10 s to 650 ms**.'),
         ],
         'skills_title': 'SKILLS',
-        'skills': 'Research: user interviews, customer development, contextual inquiry, comparative usability testing, review analysis, playtesting, job stories (JTBD), customer journey maps, competitor analysis.\nDesign: UX/UI, interaction design, information architecture, user flows, wireframes, prototyping, visual design, design systems, mobile (iOS, Android), motion, identity, illustration. Figma, FigJam, Material Design, Apple HIG.\nAI and code: designing AI features (semantic search, AI suggestions); building with Claude Code, Codex and ChatGPT from my own specs; Flutter, React, SwiftUI, HTML/CSS/JS.',
+        'skills': 'Research: user interviews, customer development, contextual inquiry, comparative usability testing, review analysis, playtesting, job stories (JTBD), customer journey maps, competitor analysis.\nDesign: UX/UI, interaction design, information architecture, user flows, wireframes, prototyping, design systems, mobile (iOS, Android); visual design, motion, identity, illustration. Figma, FigJam, Material Design, Apple HIG.\nAI and prototyping: designing AI features (semantic search, AI suggestions); prototyping in code (Flutter, React, SwiftUI) with Claude Code, Codex and ChatGPT.',
         'education_title': 'EDUCATION AND LANGUAGES',
-        'education': 'Programming in Computer Systems, MFUA College | 2019 - 2023',
-        'languages': 'Russian native, English B2',
+        'education': 'MFUA College, vocational diploma in Programming in Computer Systems | 2019 - 2023',
+        'languages': 'Russian native, English\u00a0B2',
     },
     'ru': {
-        'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР (JUNIOR, UX/UI) · B2C · ИССЛЕДОВАНИЯ И ИНТЕРФЕЙСЫ',
+        'name': 'ИГОРЬ КУПЧИНЕНКО', 'role': 'ПРОДУКТОВЫЙ ДИЗАЙНЕР (JUNIOR) · B2C · ИССЛЕДОВАНИЯ И ДИЗАЙН ВЗАИМОДЕЙСТВИЙ',
         'portfolio_label': 'Портфолио: ', 'location': 'Москва, открыт к офису, удалёнке и переезду', 'linkedin': False, 'phone': ('+7 985 640-21-97', 'tel:+79856402197'),
-        'summary': 'Продуктовый дизайнер B2C-приложений с опытом в разработке и гейм-дизайне. Через интервью и наблюдение нахожу, где продукт расходится с тем, как люди на самом деле себя ведут, и проектирую взаимодействия под то, как они думают. Сам собираю то, что проектирую: в SuperGood в одиночку на Flutter (повтор привычного заказа сократился с минуты до 5 секунд, рейтинг вырос с 3,1 до 3,7), а проекты 2026 года с Claude Code, Codex и ChatGPT.',
+        'summary': 'Продуктовый дизайнер B2C-приложений. Через интервью и наблюдение нахожу, где продукт расходится с тем, как люди на самом деле себя ведут, и проектирую взаимодействия под то, как они думают. Проверяю решения на работающих прототипах: опыт в разработке и AI-инструменты дают мне быструю обратную связь от реальных людей. В SuperGood повтор привычного заказа сократился с минуты до 5 секунд, рейтинг вырос с 3,1 до 3,7.',
         'experience': 'ОПЫТ РАБОТЫ',
         'experience_entries': [
             ('PizzaSushiWok (SuperGood)', 'Продуктовый дизайнер / мобильный разработчик, приложение доставки еды | август 2023 - июль 2024', 'supergood', [
-                'Единственный дизайнер и разработчик, работал напрямую со стейкхолдерами бизнеса. Разобрал около **150 отзывов** и понаблюдал, как заказывают на работе **10 человек**, чтобы увидеть, где они сомневаются.',
-                'Сократил повтор привычного заказа с **60 с до 5 с** повтором в одно касание из истории. В юзабилити-тесте на 10 коллегах успешность выросла с **2 до 10 из 10**, оценка лёгкости с **3 до 6 из 7**.',
+                'Единственный дизайнер и разработчик, работал напрямую со стейкхолдерами бизнеса. Разобрал около **150 отзывов** и понаблюдал, как **10 человек** заказывают еду на работе и где сомневаются.',
+                'Сделал повтор заказа в одно касание из истории: привычный заказ занимает **5 с вместо 60**. В юзабилити-тесте на 10 коллегах успешность выросла с **2 до 10 из 10**, оценка лёгкости с **3 до 6 из 7**.',
                 'Сделал время и цену видимыми до оплаты: закреплённая панель со временем доставки и суммой, а в карточке блюда вес, состав и КБЖУ.',
                 'Спроектировал все экраны в Figma (компоненты, варианты, переменные, auto layout) на своей дизайн-системе (светлая и тёмная темы) и пересобрал iOS и Android в **одно Flutter-приложение** за 11 месяцев. Рейтинг вырос с **3,1 до 3,7**.',
             ]),
@@ -84,18 +81,15 @@ CONTENT = {
         'projects': [
             ('Поиск сохранённых публикаций Instagram', 'Свой концепт, дизайн в Figma, прототип на Claude Code | 2026', 'instagram-saves-redesign', [
                 'Девять интервью и CJM: **6 из 9** не могли найти конкретное сохранённое, **7 из 9** уносили важное в Заметки, Notion или Карты. Поэтому начал с поиска в «Сохранённом», а не с сортировки.',
-                'В замерах с тремя людьми полузабытый пост находился **примерно за 10 с вместо 90**. Подсказки коллекций превращают создание новой в **одно касание вместо двух и названия**.',
+                'В замерах с тремя людьми полузабытый пост находился **примерно за 10 с вместо 90**. Подсказки коллекций превращают создание новой в **одно касание вместо двух касаний и ввода названия**.',
             ]),
             ('Observatory', 'Личный проект на macOS, дизайн в Figma, собран с Codex и ChatGPT, релиз на GitHub | июль - август 2026', 'observatory', [
                 '**5 CustDev-интервью**: люди начинали с приложения, а не с процесса, поэтому процессы сгруппированы по приложениям. Brave Browser занимает **1 строку вместо 17**.',
-                'Сократил разделы верхнего уровня с **3 до 2**, перенеся результаты туда, где заканчивается тест. **3 коллеги-разработчика** пользуются им два месяца. Сделал также айдентику, иллюстрацию и ролик к запуску.',
+                'Сократил разделы верхнего уровня с **3 до 2**: сохранённые записи нагрузки приложения теперь лежат там же, где запись заканчивается. **3 коллеги-разработчика** пользуются им два месяца. Сделал также айдентику, иллюстрацию и ролик к запуску.',
             ]),
-            ('Две палочки', 'Продукт в Telegram для изучения китайского по исследованию дипломной работы | 2024', 'two-sticks', [
+            ('Две палочки', 'Продукт в Telegram для изучения китайского, по дипломному исследованию трёх студенток МПГУ | 2024', 'two-sticks', [
                 'Выбрал Telegram вместо нового приложения, так что **ничего не нужно устанавливать**, а письмо от руки сделал через Telegram Web App. Спроектировал и собрал бота, API и Web App.',
                 'Один список слов питает карточки, листы-прописи и письмо. Сначала выпустил цикл ученика, а инструменты преподавателя из брифа отложил; студентам не хватило практики произношения.',
-            ]),
-            ('Это портфолио', 'Дизайн, рисунки и арт-дирекшн мои, собрано с Claude Code на Astro | 2026', '', [
-                'Каждая карточка разыгрывает главное решение проекта в настоящем интерфейсе. Все рисунки мои.',
             ]),
         ],
         'additional_title': 'ДРУГОЙ ОПЫТ РАБОТЫ',
@@ -103,9 +97,9 @@ CONTENT = {
             ('Paycos', 'Разработчик ПО, контракт | июль 2024 - декабрь 2025', 'Разрабатывал сервисы оплаты и заказов; сократил обработку PDF-чеков с **6-10 с до 650 мс**.'),
         ],
         'skills_title': 'НАВЫКИ',
-        'skills': 'Исследования: CustDev и глубинные интервью, контекстное исследование, сравнительное юзабилити-тестирование, анализ отзывов, плейтесты, job stories (JTBD), CJM, конкурентный анализ.\nДизайн: UX/UI, дизайн взаимодействий, информационная архитектура, сценарии, вайрфреймы, прототипирование, визуальный дизайн, дизайн-системы, мобильный дизайн (iOS, Android), моушн, айдентика, иллюстрация. Figma, FigJam, Material Design, Apple HIG.\nAI и код: проектирование AI-функций (семантический поиск, AI-подсказки); разработка с Claude Code, Codex и ChatGPT по своим спецификациям; Flutter, React, SwiftUI, HTML/CSS/JS.',
+        'skills': 'Исследования: CustDev и глубинные интервью, контекстное исследование, сравнительное юзабилити-тестирование, анализ отзывов, плейтесты, job stories (JTBD), CJM, конкурентный анализ.\nДизайн: UX/UI, дизайн взаимодействий, информационная архитектура, сценарии, вайрфреймы, прототипирование, дизайн-системы, мобильный дизайн (iOS, Android); визуальный дизайн, моушн, айдентика, иллюстрация. Figma, FigJam, Material Design, Apple HIG.\nAI и прототипы: проектирование AI-функций (семантический поиск, AI-подсказки); прототипирование в коде (Flutter, React, SwiftUI) с Claude Code, Codex и ChatGPT.',
         'education_title': 'ОБРАЗОВАНИЕ И ЯЗЫКИ',
-        'education': 'МФЮА, «Программирование в компьютерных системах» | 2019 - 2023',
+        'education': 'Колледж МФЮА (СПО), «Программирование в компьютерных системах» | 2019 - 2023',
         'languages': 'английский B2',
     },
 }

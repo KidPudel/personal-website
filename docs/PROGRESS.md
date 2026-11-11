@@ -4,9 +4,9 @@ Last updated: 2026-11-11
 
 ## Résumé: positioning, AI, and facts in line with the case studies
 
-- The summary now carries the portfolio's positioning (find where products don't fit how people behave, design interactions around how people think, build what you design) and names the AI tools.
+- The summary leads with research (find where products don't fit how people behave, design interactions around how people think); building and AI tools are framed as how decisions get tested on working prototypes. The titles say research and interaction design; UX/UI sits in the skills.
 - Skills split designing AI features from building with AI; code skills are listed as Igor's own. Figma, visual design, identity, and illustration are named.
-- Projects in order of relevance: Instagram (with the timed result), Observatory (with its identity, artwork, and launch film), Two Sticks, and this portfolio (designed, drawn, and art-directed by Igor, built with Claude Code).
+- Projects in order of relevance: Instagram (with the timed result), Observatory (with its identity, artwork, and launch film), and Two Sticks (credited to three students' diploma research). Education says college (СПО) plainly.
 - Key numbers are bold, "EXPERIENCE" is the plain heading parsers expect, and the location says Igor is open to office, remote, or relocation. The phone number is on the Russian version only.
 - Facts match the case studies: SuperGood is August 2023 to July 2024 (the cover line was corrected too), and "watched 10 people" replaces "watched and interviewed".
 - Both versions parse cleanly as text in reading order, keep embedded fonts and working links, and fit on one page.
