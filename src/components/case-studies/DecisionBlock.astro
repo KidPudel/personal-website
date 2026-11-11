@@ -1,29 +1,41 @@
 ---
+import { toLocale, translator } from '../../i18n/locales';
+import Rich from './Rich.astro';
 import type { Row } from './Rows.astro';
 import Rows from './Rows.astro';
 
 // One decision: its title says what was done, the rows say why, the screen shows it. Wide windows
 // keep the words and the screen in one view. `band` is for screens that need the width, such as a
 // before and after: the rows sit in two columns (`aside` is the second) with the screens under them.
+//
+// Or, in place of rows, plain words: `why` (the problem, often in a participant's words), `what`
+// (the bet and what was done, in ink), and `notChosen`, one quiet line.
 
 interface Props {
   number: number;
   title: string;
   /** The short name in the section navigation. */
   navLabel: string;
-  rows: Row[];
+  rows?: Row[];
   aside?: Row[];
+  why?: string;
+  what?: string;
+  notChosen?: string;
   layout?: 'beside' | 'band';
 }
 
-const { number, title, navLabel, rows, aside, layout = 'beside' } = Astro.props;
+const { number, title, navLabel, rows, aside, why, what, notChosen, layout = 'beside' } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
 ---
 
 <article class:list={['decision-block', `decision-block--${layout}`]} id={`decision-${number}`} data-index-sub data-index-label={`${number}. ${navLabel}`}>
   <h3>{number}. {title}</h3>
   <div class="decision-block__body">
-    <div class="decision-block__words">
-      <Rows rows={rows} />
+    <div class:list={['decision-block__words', (why || what) && 'decision-block__words--plain']}>
+      {why && <p class="decision-block__why"><Rich text={why} /></p>}
+      {what && <p class="decision-block__what"><Rich text={what} /></p>}
+      {notChosen && <p class="decision-block__not"><span>{t('Not chosen:', 'Отверг:')}</span> <Rich text={notChosen} /></p>}
+      {rows && <Rows rows={rows} />}
       {aside && <Rows rows={aside} />}
       {Astro.slots.has('more') && <slot name="more" />}
     </div>

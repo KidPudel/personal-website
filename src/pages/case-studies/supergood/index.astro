@@ -37,10 +37,6 @@ const label = {
   goal: t('Goal', 'Цель'),
   research: t('Research', 'Исследование'),
   decisions: t('Decisions', 'Решения'),
-  decision: t('Decision', 'Решение'),
-  hypothesis: t('Hypothesis', 'Гипотеза'),
-  why: t('Why', 'Почему'),
-  notChosen: t('Not chosen', 'Отверг'),
   result: t('Result', 'Результат'),
 };
 const goal = t(
@@ -56,9 +52,7 @@ const complaints = [
 
 const constraints = [
   { name: t('No say over the food or prices.', 'Никакого влияния на еду и цены.'), why: t('Most complaints were about the food for its price, and kitchens and prices weren’t part of my role.', 'Большинство жалоб было на еду за свои деньги, а кухня и цены не входили в мою зону ответственности.') },
-  { name: t('One engineer for two platforms.', 'Один разработчик на две платформы.'), why: t('I was the only person working on the app, for 11 months.', 'Над приложением работал только я, 11 месяцев.') },
-  { name: t('Regulars order every week.', 'Постоянные клиенты заказывают каждую неделю.'), why: t('A redesign couldn’t make them relearn the app.', 'Редизайн не должен был заставить их заново привыкать к приложению.') },
-  { name: t('A small, internal test.', 'Маленький внутренний тест.'), why: t('The usability test used 10 colleagues outside the app team, so its numbers show direction, not proof.', 'В юзабилити-тесте участвовали 10 коллег не из команды приложения, так что его цифры показывают направление, но ничего не доказывают.') },
+  { name: t('One engineer for two platforms.', 'Один разработчик на две платформы.'), why: t('I was the only person working on the app.', 'Над приложением работал только я.') },
 ];
 
 const methods = [
@@ -126,7 +120,6 @@ const reflection = [
           )}</p>
           <Rows rows={[
             { label: t('About the app', 'О приложении'), list: complaints },
-            { label: t('Not mine to change', 'Не в моей власти'), text: t('Most complaints were about the food for its price. Kitchens and prices weren’t part of my role.', 'Большинство жалоб было на еду за свои деньги. Кухня и цены не входили в мою зону ответственности.') },
           ]} />
         </div>
 
@@ -217,21 +210,17 @@ const reflection = [
     <StudySection
       part="decisions"
       lead={t(
-        'Five decisions. The first three answer the job stories; the last two are about not making regulars relearn, and building it alone.',
-        'Пять решений. Первые три отвечают на job stories, последние два про то, чтобы постоянным клиентам не пришлось переучиваться, и про то, как собрать всё одному.',
+        'Five decisions. The first three answer the job stories; the last two keep regulars from relearning the app and let one person build it.',
+        'Пять решений. Первые три отвечают на job stories, последние два избавляют постоянных клиентов от переучивания и позволяют собрать всё одному.',
       )}
     >
       <DecisionBlock
         number={1}
         title={t('Reorder from order history', 'Повтор заказа из истории')}
         navLabel={t('Reorder', 'Повтор')}
-        rows={[
-          { label: label.problem, text: t('Rebuilding a usual lunch meant finding each dish again in a menu that kept moving.', 'Чтобы собрать привычный обед, нужно было заново искать каждое блюдо в меню, которое постоянно сдвигалось.') },
-          { label: label.hypothesis, text: t('Most weekday orders were repeats, so if a past order can simply be ordered again, the usual lunch takes seconds instead of a search.', 'Большинство будничных заказов были повторами, поэтому если прошлый заказ можно просто повторить, привычный обед занимает секунды, а не поиски.') },
-          { label: label.decision, tone: 'key', text: t('Order history became a way to order: open a past order and repeat one dish or the whole thing. History is searchable, changed prices are flagged, and sold-out dishes show up grayed out.', 'История заказов стала способом заказать: открываете прошлый заказ и повторяете одно блюдо или весь заказ. По истории есть поиск, изменившиеся цены отмечены, а закончившиеся блюда видны серыми.') },
-          { label: label.notChosen, text: t('Favourites. They work for one dish, and a usual lunch is a few dishes together.', 'Избранное. Оно удобно для одного блюда, а привычный обед обычно из нескольких.') },
-          { label: label.result, tone: 'result', text: t('Reordering went from **8 steps to 3**, and from **about 60 seconds to about 5**.', 'Повтор заказа сократился **с 8 шагов до 3** и **примерно с 60 секунд до 5**.'), source: t('Steps counted from the flow, time from the usability test', 'Шаги посчитаны по сценарию, время из юзабилити-теста') },
-        ]}
+        why={t('Rebuilding a usual lunch meant finding each dish again in a menu that kept moving.', 'Чтобы собрать привычный обед, нужно было заново искать каждое блюдо в меню, которое постоянно сдвигалось.')}
+        what={t('If a past order can simply be ordered again, the usual lunch takes seconds instead of a search. So order history became a way to order: repeat one dish or the whole order, with search, changed prices flagged, and sold-out dishes grayed out.', 'Если прошлый заказ можно просто повторить, привычный обед занимает секунды, а не поиски. Поэтому история заказов стала способом заказать: повторить одно блюдо или весь заказ, с поиском, отмеченными изменениями цен и серыми закончившимися блюдами.')}
+        notChosen={t('favourites. They work for one dish, and a usual lunch is a few dishes together.', 'избранное. Оно удобно для одного блюда, а обед обычно из нескольких.')}
       >
         <Plate shots={[{ src: history, alt: t('Order history with an expanded order, a repeat button for each dish, and an add-whole-order button.', 'История заказов: раскрытый заказ, кнопка «Повторить» у каждого блюда и кнопка «Добавить весь заказ».') }]} notes={[
           { x: 60.6, y: 43.3, w: 22.6, h: 4.4, label: t('Repeat one dish', 'Повторить одно блюдо'), also: [{ x: 60.6, y: 52.3, w: 22.6, h: 4.4 }] },
@@ -243,13 +232,9 @@ const reflection = [
         number={2}
         title={t('A pinned bar with time and total', 'Закреплённая панель со временем и суммой')}
         navLabel={t('Pinned bar', 'Панель')}
-        rows={[
-          { label: label.problem, text: t('People kept leaving the menu or losing their place, because time and total were hidden and categories moved.', 'Люди то уходили из меню, то терялись в нём: время и сумма были спрятаны, а категории сдвигались.') },
-          { label: label.hypothesis, text: t('People checked time and cost before every order and shop from memory, so if both stay in view and the menu stays still, they can decide without leaving it.', 'Люди проверяли время и стоимость перед каждым заказом и выбирают по памяти, поэтому если и то и другое на виду, а меню не прыгает, решить можно, не уходя из него.') },
-          { label: label.decision, tone: 'key', text: t('A pinned bar with the delivery time, item count, and total, quantity controls right on the dish, and categories in a fixed order.', 'Закреплённая панель со временем доставки, количеством позиций и суммой, выбор количества прямо на блюде и закреплённый порядок категорий.') },
-          { label: label.notChosen, text: t('A basket badge with just a count. Simpler, but people would still have to open the basket to see time and total.', 'Значок корзины только со счётчиком. Проще, но за временем и суммой всё равно пришлось бы ходить в корзину.') },
-          { label: label.result, tone: 'result', text: t('Time and total went from **two taps away to always visible**.', 'Время и сумма теперь **всегда на виду, а не в двух касаниях**.'), source: t('Counted from the flow', 'Посчитано по сценарию') },
-        ]}
+        why={t('People checked time and cost before every order, but both were hidden and categories moved, so they kept leaving the menu or losing their place.', 'Время и стоимость люди проверяли перед каждым заказом, но и то и другое было спрятано, а категории сдвигались, поэтому люди то уходили из меню, то терялись в нём.')}
+        what={t('If both stay in view and the menu stays still, people can decide without leaving it. So a pinned bar shows the delivery time, item count, and total, quantity controls sit on the dish, and categories keep a fixed order.', 'Если и то и другое на виду, а меню не прыгает, решить можно, не уходя из него. Поэтому закреплённая панель показывает время доставки, количество позиций и сумму, количество выбирается прямо на блюде, а категории стоят в закреплённом порядке.')}
+        notChosen={t('a basket badge with just a count, which still leaves time and total inside the basket.', 'значок корзины со счётчиком: за временем и суммой всё равно пришлось бы ходить в корзину.')}
       >
         <Plate shots={[{ src: menuDark, alt: t('Dark menu with a fixed category bar and an order bar showing time, items, and total.', 'Тёмное меню со строкой категорий и закреплённой панелью заказа: время, позиции, сумма.') }]} notes={[
           { x: 14, y: 38.8, w: 72.7, h: 3.4, label: t('Categories stay in order', 'Категории не прыгают') },
@@ -261,12 +246,8 @@ const reflection = [
         number={3}
         title={t('Weight, nutrition, and ingredients on the dish card', 'Вес, КБЖУ и состав в карточке блюда')}
         navLabel={t('Dish card', 'Карточка блюда')}
-        rows={[
-          { label: label.problem, text: t('A photo didn’t tell people enough to judge whether a dish was worth its price.', 'По одной фотографии было не понять, стоит ли блюдо своих денег.') },
-          { label: label.hypothesis, text: t('I couldn’t change the price, but if people see what they get before paying, they should hesitate less over it.', 'Цену я поменять не мог, но если перед оплатой видно, что вы получаете, сомнений из-за неё должно быть меньше.') },
-          { label: label.decision, tone: 'key', text: t('The dish card shows weight, ingredients, nutrition, and extra cooking time, with the price right next to Add.', 'В карточке блюда есть вес, состав, КБЖУ и дополнительное время приготовления, а цена стоит прямо рядом с кнопкой «В корзину».') },
-          { label: label.result, tone: 'result', text: t('The new dish card **did better than the old one**.', 'Новая карточка блюда **показала себя лучше старой**.'), source: t('Same usability test', 'Тот же юзабилити-тест') },
-        ]}
+        why={t('A photo didn’t tell people enough to judge whether a dish was worth its price.', 'По одной фотографии было не понять, стоит ли блюдо своих денег.')}
+        what={t('I couldn’t change the price, but if people see what they get before paying, they should hesitate less over it. So the dish card shows weight, ingredients, nutrition, and extra cooking time, with the price right next to Add.', 'Цену я поменять не мог, но если перед оплатой видно, что вы получаете, сомнений должно быть меньше. Поэтому в карточке блюда есть вес, состав, КБЖУ и дополнительное время приготовления, а цена стоит прямо рядом с «В корзину».')}
       >
         <Plate crop={{ x: 12, y: 23.5, w: 77, h: 66.5 }} shots={[{ src: dishSheetDark, alt: t('Dark dish card with extra cooking time, weight, the price next to Add, nutrition, and ingredients.', 'Тёмная карточка блюда: дополнительное время приготовления, вес, цена рядом с «В корзину», КБЖУ и состав.') }]} notes={[
           { x: 73, y: 25.7, w: 13.2, h: 3.7, label: t('Extra cooking time', 'Дополнительное время приготовления') },
@@ -279,12 +260,8 @@ const reflection = [
         number={4}
         title={t('Keep the patterns people know', 'Оставить знакомые паттерны')}
         navLabel={t('Familiar patterns', 'Паттерны')}
-        rows={[
-          { label: label.problem, text: t('A redesign can make loyal customers relearn an app they use every week.', 'После редизайна постоянным клиентам часто приходится заново привыкать к приложению, которым они пользуются каждую неделю.') },
-          { label: label.decision, tone: 'key', text: t('I kept the structure people knew and borrowed patterns from Самокат and Яндекс Лавка, so the look changed but the habits didn’t.', 'Я сохранил привычную структуру и взял паттерны у «Самоката» и «Яндекс Лавки», так что поменялся внешний вид, но не привычки.') },
-          { label: label.why, text: t('Regulars order every week, and I wanted them to feel the improvement without relearning anything.', 'Постоянные клиенты заказывают каждую неделю, и мне хотелось, чтобы они почувствовали улучшение, не переучиваясь.') },
-          { label: label.result, tone: 'result', text: t('Later reviews called it **a fresher look with nothing new to learn**.', 'В отзывах потом писали, что **выглядит свежее, а переучиваться не нужно**.'), source: t('Store reviews', 'Отзывы в магазинах приложений') },
-        ]}
+        why={t('Regulars order every week, and a redesign could make them relearn an app they know.', 'Постоянные клиенты заказывают каждую неделю, и после редизайна им пришлось бы заново привыкать к знакомому приложению.')}
+        what={t('So I kept the structure people knew and borrowed patterns from Самокат and Яндекс Лавка, which our customers already used: the look changed, the habits didn’t.', 'Поэтому я сохранил привычную структуру и взял паттерны у «Самоката» и «Яндекс Лавки», которыми наши клиенты уже пользовались: поменялся вид, но не привычки.')}
       >
         <Plate caption={t('Basket patterns customers already knew from grocery apps.', 'Корзина по паттернам, знакомым по приложениям доставки продуктов.')} shots={[{ src: basket, alt: t('Basket with quantity controls, promo code, minimum order warning, payment methods, and total.', 'Корзина с количеством, промокодом, предупреждением о минимальной сумме, способами оплаты и итогом.') }]} notes={[
           { x: 42, y: 27, w: 23.5, h: 3.9, label: t('Quantity controls', 'Выбор количества') },
@@ -297,13 +274,9 @@ const reflection = [
         number={5}
         title={t('One Flutter app for iOS and Android', 'Одно приложение на Flutter для iOS и Android')}
         navLabel={t('One app', 'Одно приложение')}
-        rows={[
-          { label: label.problem, text: t('With two separate apps, every change had to be built twice and could behave differently on each platform.', 'С двумя отдельными приложениями каждое изменение приходилось делать дважды, и на разных платформах оно могло работать по-разному.') },
-          { label: label.decision, tone: 'key', text: t('I rebuilt both apps in Flutter from one codebase, from the menu and 3DS payment to tracking, loyalty, and light and dark themes on my own design system.', 'Я пересобрал оба приложения на Flutter в одной кодовой базе: от меню и оплаты с 3DS до отслеживания, лояльности и светлой и тёмной тем на моей дизайн-системе.') },
-          { label: label.why, text: t('As the only engineer, one codebase meant every fix reached iOS and Android on the same day.', 'Я был единственным разработчиком, и с одной кодовой базой каждое исправление попадало на iOS и Android в один день.') },
-          { label: label.notChosen, text: t('Keeping both native apps, which meant doing every change twice, by one person.', 'Оставить два нативных приложения, а значит, делать каждое изменение дважды, и всё одному.') },
-          { label: label.result, tone: 'result', text: t('**Two codebases became one**, built alone in 11 months.', '**Две кодовые базы стали одной**, собранной в одиночку за 11 месяцев.') },
-        ]}
+        why={t('With two native apps, every change was built twice and could behave differently on each platform.', 'С двумя нативными приложениями каждое изменение делалось дважды и могло работать по-разному на разных платформах.')}
+        what={t('So I rebuilt both in Flutter from one codebase, from the menu and 3DS payment to tracking, loyalty, and light and dark themes on my own design system, and every fix reached iOS and Android on the same day.', 'Поэтому я пересобрал оба приложения на Flutter в одной кодовой базе, от меню и оплаты с 3DS до отслеживания, лояльности и светлой и тёмной тем на моей дизайн-системе, и каждое исправление попадало на iOS и Android в один день.')}
+        notChosen={t('keeping both native apps, and doing every change twice, alone.', 'оставить два нативных приложения и делать каждое изменение дважды, в одиночку.')}
       >
         <Plate shots={[
           { src: deliveryMap, alt: t('Address picker on a map with the delivery zone and a confirmation that the address is inside it.', 'Выбор адреса на карте с зоной доставки и подтверждением, что адрес в неё входит.'), label: t('Delivery zone check', 'Проверка зоны доставки') },
@@ -332,15 +305,15 @@ const reflection = [
                   { label: t('Before: find each dish again', 'До: снова искать каждое блюдо'), value: 60, display: t('≈60 s', '≈60 с') },
                   { label: t('After: history, add whole order', 'После: история, добавить весь заказ'), value: 5, display: t('≈5 s', '≈5 с'), emphasis: true },
                 ]}
-                note={t('Usability test with 10 colleagues outside the app team: small and internal, so it shows direction rather than proof.', 'Юзабилити-тест, 10 коллег не из команды приложения: маленький и внутренний, так что он показывает направление, но ничего не доказывает.')}
+                note={t('Small and internal, so it shows direction rather than proof.', 'Тест маленький и внутренний, так что он показывает направление, но ничего не доказывает.')}
               />
             </dd>
           </div>
           <div class="rows__row">
             <dt>{t('In the same test', 'На том же тесте')}</dt>
             <dd class="marked" data-arrive><Rich text={t(
-              '**All 10** rebuilt their usual order correctly, up from 2 of 10 before. Ease went from **3 to 6 out of 7** on the Single Ease Question.',
-              'Привычный заказ правильно собрали **все 10**, а раньше только 2 из 10. Лёгкость по Single Ease Question выросла **с 3 до 6 из 7**.',
+              '**All 10** rebuilt their usual order correctly, up from 2 of 10 before. Ease went from **3 to 6 out of 7** on the Single Ease Question, and the new dish card did better than the old one.',
+              'Привычный заказ правильно собрали **все 10**, а раньше только 2 из 10. Лёгкость по Single Ease Question выросла **с 3 до 6 из 7**, а новая карточка блюда показала себя лучше старой.',
             )} /></dd>
           </div>
           <div class="rows__row">
@@ -352,7 +325,7 @@ const reflection = [
                   { label: t('Before: find each dish again', 'До: снова искать каждое блюдо'), value: 8, display: t('8 steps', '8 шагов') },
                   { label: t('After: history, add whole order', 'После: история, добавить весь заказ'), value: 3, display: t('3 steps', '3 шага'), emphasis: true },
                 ]}
-                note={t('Counted from the flow.', 'Посчитано по сценарию.')}
+                note={t('Counted from the flow. Time and total also went from two taps away to always in view.', 'Посчитано по сценарию. Время и сумма тоже перестали прятаться в двух касаниях и всегда на виду.')}
               />
             </dd>
           </div>
@@ -373,6 +346,10 @@ const reflection = [
                 note={t('Before and after the release, so the redesign isn’t the only possible cause.', 'Сравнение до и после релиза, так что редизайн не единственная возможная причина.')}
               />
             </dd>
+          </div>
+          <div class="rows__row">
+            <dt>{t('Shipped', 'Выпущено')}</dt>
+            <dd>{t('One Flutter app replaced the two native ones, built alone in 11 months.', 'Одно приложение на Flutter заменило два нативных, собрано в одиночку за 11 месяцев.')}</dd>
           </div>
           <div class="rows__row">
             <dt>{t('Heard', 'Что писали')}</dt>
@@ -405,7 +382,7 @@ const reflection = [
       <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
       <a href={localePath('/case-studies/supergood/present/', locale)}><span class="link-mark">{t('Slides', 'Слайды')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
-      <a href={localePath('/case-studies/observatory/', locale)}><span class="link-mark">{t('Observatory case study →', 'Кейс Observatory →')}</span></a>
+      <a href={localePath('/case-studies/two-sticks/', locale)}><span class="link-mark">{t('Two Sticks case study →', 'Кейс «Две палочки» →')}</span></a>
     </nav>
   </footer>
 </BaseDocument>

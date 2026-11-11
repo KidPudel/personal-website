@@ -19,7 +19,7 @@ const placeholder = await imagePlaceholder(study.background);
 const widthsFor = (src: ImageMetadata, candidates: number[]) => [...new Set(candidates.filter((width) => width < src.width).concat(Math.min(src.width, candidates.at(-1)!)))];
 ---
 
-<div class="work-panel" style={`--placeholder: url(${placeholder})`}>
+<div class:list={['work-panel', `work-panel--${study.coverFormat}`]} style={`--placeholder: url(${placeholder})`}>
   <Image
     class="work-panel__ground"
     src={study.background}
@@ -34,8 +34,8 @@ const widthsFor = (src: ImageMetadata, candidates: number[]) => [...new Set(cand
     class="work-panel__phone"
     src={study.cover}
     alt={alt}
-    widths={widthsFor(study.cover, [320, 480, 640, 800])}
-    sizes="(max-width: 899px) 50vw, 22rem"
+    widths={widthsFor(study.cover, study.coverFormat === 'desktop' ? [640, 960, 1280, 1600] : [320, 480, 640, 800])}
+    sizes={study.coverFormat === 'desktop' ? '(max-width: 899px) 90vw, 56vw' : '(max-width: 899px) 50vw, 22rem'}
     format="webp"
     quality={85}
     loading="eager"
@@ -73,13 +73,22 @@ const widthsFor = (src: ImageMetadata, candidates: number[]) => [...new Set(cand
     filter: drop-shadow(0 1rem 1.75rem rgb(17 17 15 / 0.2));
   }
 
+  /* An app window (its screenshot carries its own shadow): as wide as the panel allows. */
+  .work-panel--desktop .work-panel__phone {
+    width: 88%;
+    max-width: 88%;
+    height: auto;
+    margin-block: 2rem;
+    filter: none;
+  }
+
   /* On small windows the panel sits under the words, half the window tall. */
   @media (max-width: 899.98px) {
     .work-panel {
       height: 50svh;
     }
 
-    .work-panel__phone {
+    .work-panel--phone .work-panel__phone {
       height: calc(50svh - 3rem);
     }
   }

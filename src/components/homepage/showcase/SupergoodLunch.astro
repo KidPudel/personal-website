@@ -28,6 +28,13 @@ const button = { x: 102, y: 772, width: 392, height: 40 };
 // Where the plates drop: the cart in the bar.
 const cart = { x: 287, y: 937 };
 
+interface Props {
+  /** In the first row of work the phone loads with the page; further down it waits until near. */
+  eager?: boolean;
+}
+
+const { eager = false } = Astro.props;
+const historyLoading = eager ? 'eager' : 'lazy';
 const pct = (value: number, of: number) => `${((value / of) * 100).toFixed(3)}%`;
 const screenBox = `left: ${pct(screen.x, device.width)}; top: ${pct(screen.y, device.height)}; width: ${pct(screen.width, device.width)}; height: ${pct(screen.height, device.height)}`;
 // The phone's own image, placed inside the screen so its screen lines up with it.
@@ -49,11 +56,11 @@ const deviceImage = {
 >
   <span class="lunch__rig">
     <span class="lunch__device">
-      <Image class="lunch__frame" src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+      <Image class="lunch__frame" src={historyScreen} alt="" loading={historyLoading} decoding="async" {...deviceImage} />
 
       <span class="lunch__screen" style={screenBox}>
         <span class="lunch__page lunch__page--history">
-          <Image class="lunch__shot" style={inScreen} src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+          <Image class="lunch__shot" style={inScreen} src={historyScreen} alt="" loading={historyLoading} decoding="async" {...deviceImage} />
           <!-- Where the plates were, once they have lifted off. -->
           {plates.map((plate) => (
             <span
@@ -66,7 +73,7 @@ const deviceImage = {
             class="lunch__press"
             style={`${inScreen}; clip-path: inset(${pct(button.y, device.height)} ${pct(device.width - button.x - button.width, device.width)} ${pct(device.height - button.y - button.height, device.height)} ${pct(button.x, device.width)} round 1.6% / 0.9%); transform-origin: ${pct(button.x + button.width / 2, device.width)} ${pct(button.y + button.height / 2, device.height)}`}
           >
-            <Image src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+            <Image src={historyScreen} alt="" loading={historyLoading} decoding="async" {...deviceImage} />
           </span>
         </span>
 
@@ -98,7 +105,7 @@ const deviceImage = {
       {plates.map((plate) => (
         <span class="lunch__plate" data-plate={plate.id} data-at={`${plate.x} ${plate.y}`} style={`transform-origin: ${pct(plate.x, device.width)} ${pct(plate.y, device.height)}`}>
           <span style={`clip-path: circle(${pct(plateRadius, device.width)} at ${pct(plate.x, device.width)} ${pct(plate.y, device.height)})`}>
-            <Image src={historyScreen} alt="" loading="eager" decoding="async" {...deviceImage} />
+            <Image src={historyScreen} alt="" loading={historyLoading} decoding="async" {...deviceImage} />
           </span>
         </span>
       ))}

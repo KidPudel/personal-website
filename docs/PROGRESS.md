@@ -2,6 +2,26 @@
 
 Last updated: 2026-11-11
 
+## Work order: Observatory moves into the first row
+
+- Igor felt Observatory is the better example of his work. The order is now Instagram, Observatory, SuperGood, Two Sticks on the homepage and `/case-studies/` (the order lives in `src/content/case-studies.ts`; the homepage grid places follow it). Observatory is his newest, most complete piece and reads at a glance; SuperGood keeps its weight as the strongest evidence (real users, shipped, measured) one row down, and stays first on the résumé as his work experience.
+- SuperGood's phone now loads lazily in the second row and Observatory's card loads with the first; the homepage still has one high-priority image. The next-study links at the foot of each study follow the new order.
+
+## Case studies: all four written to the same rules, all four with slides
+
+- SuperGood, Observatory, and Two Sticks now follow the Instagram rewrite: each fact appears once, decisions are plain words (why, then the bet and what was done, then what wasn't chosen) instead of labelled rows, every result lives in Results, and Constraints keep only the real limits. Visible words: SuperGood 1,586 to about 1,410, Observatory 1,539 to about 1,380, Two Sticks 1,345 to about 1,160; labelled rows fell by half or more in each.
+- Moved rather than cut: SuperGood's dish card, pinned bar, and Flutter rebuild results joined Results (a new Shipped row); Observatory's 3 to 2 sections joined Results (Counted); Two Sticks' tech stack moved into the "one developer" constraint, and the diploma credit is said once, with names, in Problem.
+- Observatory and Two Sticks have slides too (`/present/`, English and Russian), linked as "Slides" like the others. The opening panel handles an app window (Observatory) as well as a phone; app windows get the wider column on a slide.
+- The Instagram and SuperGood slides were tightened: no slide holds more than about 45 words, long lists became short heads with the detail in the notes, and the main sentence takes the whole text column so Russian stays within five lines.
+- Verified at 1024 × 768 and 375 px, English and Russian: no slide overflows, no page scrolls sideways, builds and the media check pass.
+
+## Instagram Saves: each fact once, fewer labels
+
+- Igor felt the study was still cluttered with text. The structure stays; the copy was rewritten to four rules: each fact appears once, in the part it belongs to; each part opens with one plain sentence; the caveat that AI search is untested appears once, under Not tested in Results; decisions are plain words instead of five labelled rows.
+- A decision now reads: why (the problem, often in a participant's words), the bet and what was done (in ink), and one quiet "Not chosen" line, beside its screen (`why`, `what`, `notChosen` on `DecisionBlock.astro`; the other studies still use rows). Results live in Results; the bets lost their rows too.
+- Constraints are the two real limits on the design (one tap, no extra filing); the evidence limits moved to Not tested. The 6 of 9 and 7 of 9 figures live in Research only, and the findings table keeps details only where nothing below says them.
+- Visible words went from 1,848 to about 1,330, labelled rows from 37 to 13. The findings, numbers, quotes, and decisions are all kept; a few side details were cut (the folder names creators use, Goal's "saves filed" measure). The slides are unchanged.
+
 ## Case studies: slides for presenting Instagram Saves and SuperGood
 
 - Igor presented both studies in an interview by scrolling the reading version and got lost: the first screen already tells the whole story, the interviewer reads ahead of him, and the tables can't be read out loud. The reading version stays as it is; each study now also has slides at `/case-studies/<study>/present/`, linked as "Slides" under the section words and in the footer.

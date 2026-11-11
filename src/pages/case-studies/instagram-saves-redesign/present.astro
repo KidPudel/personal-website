@@ -95,7 +95,6 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
 
     <Stage part="constraints" id="constraints" name={t('Constraints', 'Ограничения')}>
       <h2 class="say">{t('Saving stays one tap, and nobody has to organise more.', 'Сохранение остаётся одним касанием, и сортировать больше никто не должен.')}</h2>
-      <p class="line">{t('And AI search is unverified: the prototype’s results are designed states.', 'И AI-поиск не проверен: результаты в прототипе спроектированы заранее.')}</p>
       <ul slot="notes">
         <li>{t('Saving is the part that already works, so nothing I add can slow it down.', 'Сохранение уже работает, поэтому ничто новое не должно его замедлять.')}</li>
         <li>{t('Filing is the work people skip, so the fix has to work on the saves they already have.', 'Сортировку люди и пропускают, поэтому решение должно работать с тем, что уже сохранено.')}</li>
@@ -205,11 +204,11 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     <Stage part="decisions" beat={t('Bets', 'Ставки')} name={t('Two bets', 'Две ставки')}>
       <h2 class="say">{t('Two bets I’d test before committing.', 'Две ставки, которые я бы сначала проверил.')}</h2>
       <ul class="points" role="list">
-        <li><span><strong>{t('Reactions in shared collections.', 'Реакции в общих коллекциях.')}</strong> {t('So people can tell the other person saw a post.', 'Чтобы было видно, что другой увидел пост.')}</span></li>
-        <li><span><strong>{t('Collections in the feed selector.', 'Коллекции в переключателе ленты.')}</strong> {t('So saves get a place in everyday browsing.', 'Чтобы сохранённое попадало в обычный просмотр.')}</span></li>
+        <li><span><strong>{t('Reactions in shared collections', 'Реакции в общих коллекциях')}</strong></span></li>
+        <li><span><strong>{t('Collections in the feed selector', 'Коллекции в переключателе ленты')}</strong></span></li>
       </ul>
-      <p class="source">{t('They came from fewer people, so I designed them but wouldn’t commit without testing.', 'За ними меньше людей, поэтому я их спроектировал, но без проверки не стал бы на них полагаться.')}</p>
       <ul slot="notes">
+        <li>{t('They came from fewer people, so I designed them as bets to test, not decisions.', 'За ними меньше людей, поэтому я спроектировал их как ставки для проверки, а не как решения.')}</li>
         <li>{t('Reactions: both people who used shared collections couldn’t tell if the other saw a post, so links went to DMs.', 'Реакции: оба человека с общими коллекциями не понимали, видел ли пост другой, и ссылки уходили в личку.')}</li>
         <li>{t('Feed: one person stopped using Saved, it had become a backlog. Risk: it might just become more scrolling.', 'Лента: один человек перестал пользоваться «Сохранённым», оно превратилось в склад. Риск: это может стать просто ещё одним листанием.')}</li>
         <li>{t('Left out: deeper shared folders. People proposed it when they saw the prototype, but it’s collaboration, not getting back to a save.', 'За рамками: более глубокие общие папки. Их предлагали, увидев прототип, но это про совместную работу, а не про возвращение к сохранённому.')}</li>
@@ -218,7 +217,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
 
     <Stage part="results" id="results" name={t('10 seconds instead of 90', '10 секунд вместо 90')}>
       <h2 class="say" data-arrive><Rich text={t('Finding a half-remembered post took ==about 10 seconds instead of 90==.', 'Полузабытый пост находился ==примерно за 10 секунд вместо 90==.')} /></h2>
-      <p class="source">{t('3 people, 5 timed runs on today’s Saved and 9 on the prototype. Search results were designed states, so this times the flow, not the AI.', '3 человека, 5 замеров на сегодняшнем «Сохранённом» и 9 на прототипе. Результаты поиска спроектированы заранее, так что это время сценария, а не качество AI.')}</p>
+      <p class="source">{t('Timed with 3 people. The search results were designed, so this times the flow, not the AI.', 'Замеры с тремя людьми. Результаты поиска спроектированы заранее, так что это время сценария, а не качество AI.')}</p>
       <BarCompare
         slot="visual"
         title={t('Time to find a half-remembered post', 'Время, чтобы найти полузабытый пост')}
@@ -249,11 +248,11 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     <Stage part="next" id="next" name={t('Next steps', 'Что дальше')}>
       <h2 class="say">{t('Next, test search on real, messy libraries.', 'Дальше проверить поиск на настоящих, захламлённых сохранениях.')}</h2>
       <ul class="points" role="list">
-        <li><span>{t('Repeat the timing with more people, on their own saves, with working search.', 'Повторить замеры с большим числом людей, на их собственных сохранениях и с работающим поиском.')}</span></li>
-        <li><span>{t('Test the two bets, and first add a clear “who can see this” state to shared notes.', 'Проверить две ставки, а перед этим явно показать в общих заметках, кто их видит.')}</span></li>
-        <li><span>{t('At scale, the metrics in Goal would tell if it works.', 'В масштабе понять, работает ли это, помогут метрики из цели.')}</span></li>
+        <li><span>{t('Repeat the timing with more people, on their own saves.', 'Повторить замеры с большим числом людей на их собственных сохранениях.')}</span></li>
+        <li><span>{t('Test the two bets.', 'Проверить две ставки.')}</span></li>
       </ul>
       <ul slot="notes">
+        <li>{t('Before the bets, shared notes need a clear “who can see this” state. At scale, the measures in the goal would tell if it works.', 'Перед ставками общим заметкам нужно явно показывать, кто их видит. В масштабе понять, работает ли это, помогут метрики из цели.')}</li>
         <li>{t('The prototype’s results are designed states, so real search is the biggest unknown.', 'Результаты в прототипе спроектированы заранее, поэтому настоящий поиск и есть главная неизвестная.')}</li>
         <li>{t('Then stop and ask what they want to see again.', 'Дальше остановитесь и спросите, что показать ещё раз.')}</li>
       </ul>

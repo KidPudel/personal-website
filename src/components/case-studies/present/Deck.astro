@@ -18,9 +18,11 @@ interface Props {
   studyHref: string;
   /** The parts in the strip at the bottom, in order. */
   parts: Part[];
+  /** Custom properties a study's stages read, such as Two Sticks' copybook paper. */
+  style?: string;
 }
 
-const { name, studyHref, parts } = Astro.props;
+const { name, studyHref, parts, style } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
 const labels = partLabels(t);
 ---
@@ -33,6 +35,7 @@ const labels = partLabels(t);
 <main
   id="main-content"
   class="deck"
+  style={style}
   data-deck
   data-of={t('of', 'из')}
   data-full={t('Full screen', 'Во весь экран')}
@@ -476,8 +479,8 @@ const labels = partLabels(t);
       grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     }
 
-    /* Two screens side by side get more of the width. */
-    html.study-deck .stage--beside:has(.plate--together) .stage__body {
+    /* Two screens side by side, and app windows, get more of the width. */
+    html.study-deck .stage--beside:has(.plate--together, .plate--desktop, .stage__visual--wide) .stage__body {
       grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
       gap: clamp(1.5rem, 3.5vw, 4rem);
     }
@@ -489,6 +492,11 @@ const labels = partLabels(t);
     html.study-deck .stage--title .stage__body {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: stretch;
+    }
+
+    /* An app window opens wider than a phone. */
+    html.study-deck .stage--title:has(.work-panel--desktop) .stage__body {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
     }
 
     html.study-deck .stage--title .stage__words {
@@ -510,7 +518,7 @@ const labels = partLabels(t);
   }
 
   html.study-deck .say {
-    max-width: 17ch;
+    max-width: 20ch;
     margin: 0;
     color: var(--color-ink);
     font-family: var(--font-study-heading);
@@ -531,6 +539,13 @@ const labels = partLabels(t);
     font-size: clamp(2.5rem, 1rem + 4vw, 5.5rem);
     letter-spacing: -0.025em;
     line-height: 1.02;
+  }
+
+  /* A sentence in someone's words (a job story), a size down so it stays a few lines. */
+  html.study-deck .stage--words .say--quote {
+    max-width: 26ch;
+    font-size: clamp(1.875rem, 1rem + 2.2vw, 3.5rem);
+    line-height: 1.12;
   }
 
   html.study-deck .say mark {
@@ -658,6 +673,17 @@ const labels = partLabels(t);
   @media (min-width: 760px) {
     html.study-deck .stage__visual .plate--together .plate__screen {
       width: min(50cqi - 5rem, 26rem, var(--fit) * var(--aspect, 0.486));
+    }
+  }
+
+  /* App windows are wide: no phone-width cap, and side by side each takes half. */
+  html.study-deck .stage__visual .plate--desktop .plate__screen {
+    width: min(100cqi - 4rem, var(--fit) * var(--aspect, 1.6));
+  }
+
+  @media (min-width: 760px) {
+    html.study-deck .stage__visual .plate--desktop.plate--together .plate__screen {
+      width: min(50cqi - 3.5rem, var(--fit) * var(--aspect, 1.6));
     }
   }
 

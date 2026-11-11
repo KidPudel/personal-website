@@ -80,11 +80,12 @@ const decision = (number: number) => t(`Decision ${number}`, `Решение ${n
     <Stage part="problem" name={t('What the app got wrong', 'Что было не так с приложением')}>
       <h2 class="say">{t('And the app made ordering harder.', 'А приложение только усложняло заказ.')}</h2>
       <ul class="points" role="list">
-        <li><span>{t('You couldn’t see the delivery time or the total while choosing dishes.', 'Пока выбираешь блюда, не видно ни времени доставки, ни итоговой суммы.')}</span></li>
-        <li><span>{t('Categories moved as you scrolled, so it was easy to lose your place.', 'Категории сдвигаются при прокрутке, и легко потеряться.')}</span></li>
-        <li><span><strong>{t('Every weekday lunch meant finding the same dishes again.', 'Каждый будний обед приходится заново искать те же блюда.')}</strong></span></li>
+        <li><span>{t('Time and total hidden while you choose', 'Время и сумма не видны, пока выбираешь')}</span></li>
+        <li><span>{t('Categories move as you scroll', 'Категории сдвигаются при прокрутке')}</span></li>
+        <li><span><strong>{t('The same lunch, found again every weekday', 'Тот же обед приходится искать каждый будний день')}</strong></span></li>
       </ul>
       <ul slot="notes">
+        <li>{t('From the reviews: you couldn’t see the delivery time or the total while choosing, categories moved as you scrolled, and every weekday lunch meant finding the same dishes again.', 'Из отзывов: пока выбираешь, не видно ни времени доставки, ни суммы, категории сдвигаются при прокрутке, а будний обед каждый раз приходится собирать заново.')}</li>
         <li>{t('These three are the app’s part of the complaints.', 'Эти три жалобы и есть часть приложения.')}</li>
         <li>{t('The last one leads to the main finding.', 'Последняя ведёт к главному выводу.')}</li>
       </ul>
@@ -110,11 +111,12 @@ const decision = (number: number) => t(`Decision ${number}`, `Решение ${n
     <Stage part="research" id="research" name={t('Weekday orders repeat', 'Будничные заказы повторяются')}>
       <h2 class="say" data-arrive><Rich text={t('Watching people order made one thing clear: ==weekday orders repeat==.', 'Когда я смотрел, как люди заказывают, стало ясно главное: ==будничные заказы повторяются==.')} /></h2>
       <ul class="points" role="list">
-        <li><span><strong>{t('About 150 store reviews,', 'Около 150 отзывов')}</strong> {t('sorted by complaint.', 'по темам жалоб.')}</span></li>
-        <li><span><strong>{t('10 people watched ordering at work,', '10 человек, которые заказывают на работе,')}</strong> {t('in an office and a call center.', 'в офисе и колл-центре.')}</span></li>
-        <li><span><strong>{t('A usability test with 10 colleagues,', 'Юзабилити-тест с 10 коллегами:')}</strong> {t('the old app against prototypes, then against the built app.', 'старое приложение против прототипов, потом против готового.')}</span></li>
+        <li><span><strong>{t('About 150 store reviews', 'Около 150 отзывов')}</strong></span></li>
+        <li><span><strong>{t('10 people watched ordering at work', '10 человек, которые заказывают на работе')}</strong></span></li>
+        <li><span><strong>{t('A usability test with 10 colleagues', 'Юзабилити-тест с 10 коллегами')}</strong></span></li>
       </ul>
       <ul slot="notes">
+        <li>{t('Reviews sorted by complaint. Watching in an office and a call center. The test put the old app against prototypes, then against the built app.', 'Отзывы разложены по темам жалоб. Наблюдение в офисе и колл-центре. На тесте старое приложение сравнивалось с прототипами, потом с готовым.')}</li>
         <li>{t('People already knew what they wanted, but the app made them look for it again every time.', 'Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.')}</li>
         <li>{t('In the contextual inquiry I noted where people hesitated.', 'Во время наблюдения я отмечал, где люди сомневаются.')}</li>
         <li>{t('Competitors: Кухня на районе for how to present the menu, Самокат and Яндекс Лавка for patterns our customers already knew.', 'Конкуренты: «Кухня на районе» для подачи меню, «Самокат» и «Яндекс Лавка» для паттернов, которые наши клиенты уже знали.')}</li>
@@ -125,8 +127,8 @@ const decision = (number: number) => t(`Decision ${number}`, `Решение ${n
       <h2 class="say">{t('What I found, and what it led to.', 'Что я узнал и к чему это привело.')}</h2>
       <ul class="points" role="list">
         <li><span><strong>{t('Weekday orders repeat.', 'Будничные заказы повторяются.')}</strong></span><span class="to">{t('Reorder', 'Повтор')}</span></li>
-        <li><span><strong>{t('Time and total were hidden, and the menu moved.', 'Время и сумма спрятаны, а меню прыгает.')}</strong></span><span class="to">{t('Pinned bar', 'Панель')}</span></li>
-        <li><span><strong>{t('A photo wasn’t enough to judge a dish.', 'По фото не понять, стоит ли блюдо своих денег.')}</strong></span><span class="to">{t('Dish card', 'Карточка блюда')}</span></li>
+        <li><span><strong>{t('Time and total hidden, the menu moving.', 'Время и сумма спрятаны, меню прыгает.')}</strong></span><span class="to">{t('Pinned bar', 'Панель')}</span></li>
+        <li><span><strong>{t('A photo isn’t enough to judge a dish.', 'По фото не оценить блюдо.')}</strong></span><span class="to">{t('Dish card', 'Карточка блюда')}</span></li>
         <li><span><strong>{t('Customers already knew grocery apps.', 'Клиенты уже знали приложения доставки продуктов.')}</strong></span><span class="to">{t('Familiar patterns', 'Знакомые паттерны')}</span></li>
         <li><span><strong>{t('Two apps, one engineer.', 'Два приложения, один разработчик.')}</strong></span><span class="to">{t('One app', 'Одно приложение')}</span></li>
       </ul>
@@ -199,12 +201,13 @@ const decision = (number: number) => t(`Decision ${number}`, `Решение ${n
 
     <Stage part="decisions" beat={decision(5)} name={t('One Flutter app', 'Одно приложение на Flutter')}>
       <h2 class="say">{t('One Flutter app instead of two.', 'Одно приложение на Flutter вместо двух.')}</h2>
-      <p class="line">{t('From the menu and 3DS payment to tracking, loyalty, and light and dark themes on my own design system. Built alone in 11 months.', 'От меню и оплаты с 3DS до отслеживания, лояльности и светлой и тёмной тем на моей дизайн-системе. Собрано в одиночку за 11 месяцев.')}</p>
+      <p class="line">{t('Everything from the menu to order tracking, built alone in 11 months.', 'Всё от меню до отслеживания заказа, собрано в одиночку за 11 месяцев.')}</p>
       <Plate slot="visual" together shots={[
         { src: orderTracking, alt: t('Order tracking with expected time, order stages, a route map, and courier contact.', 'Отслеживание заказа: ожидаемое время, этапы, карта маршрута и связь с курьером.'), label: t('Order tracking', 'Отслеживание заказа') },
         { src: deliveryMap, alt: t('Address picker on a map with the delivery zone and a confirmation that the address is inside it.', 'Выбор адреса на карте с зоной доставки и подтверждением, что адрес в неё входит.'), label: t('Delivery zone check', 'Проверка зоны доставки') },
       ]} />
       <ul slot="notes">
+        <li>{t('It covered the menu, 3DS payment, tracking, loyalty, and light and dark themes on my own design system.', 'В нём меню, оплата с 3DS, отслеживание, лояльность и светлая и тёмная темы на моей дизайн-системе.')}</li>
         <li>{t('With two separate apps, every change had to be built twice and could behave differently on each platform.', 'С двумя приложениями каждое изменение делалось дважды и могло работать по-разному на разных платформах.')}</li>
         <li>{t('As the only engineer, one codebase meant every fix reached iOS and Android on the same day.', 'Я был единственным разработчиком, и с одной кодовой базой каждое исправление попадало на iOS и Android в один день.')}</li>
         <li>{t('Not chosen: keeping both native apps, which meant doing every change twice, by one person.', 'Отверг: оставить два нативных приложения, то есть делать всё дважды и одному.')}</li>
@@ -256,12 +259,13 @@ const decision = (number: number) => t(`Decision ${number}`, `Решение ${n
     <Stage part="reflection" id="reflection" name={t('What I’d do differently', 'Что я сделал бы иначе')}>
       <h2 class="say">{t('What I’d do differently isn’t on the screens.', 'То, что я сделал бы иначе, не про экраны.')}</h2>
       <ul class="points" role="list">
-        <li><span>{t('Agree with stakeholders on the metric to move before designing anything.', 'До начала дизайна договориться со стейкхолдерами, какую метрику двигаем.')}</span></li>
-        <li><span>{t('Bring review counts and test results instead of arguing about taste.', 'Приходить с цифрами по отзывам и результатами тестов, а не спорить о вкусах.')}</span></li>
-        <li><span>{t('Rank ideas with the business on an impact and effort matrix, so urgency has to earn its place.', 'Раскладывать идеи вместе с бизнесом по матрице «влияние и затраты», чтобы срочность приходилось обосновывать.')}</span></li>
-        <li><span>{t('Measure more: bigger tests, ease ratings for every task, and repeat orders after release.', 'Измерять больше: тесты побольше, оценка лёгкости для каждой задачи и повторные заказы после релиза.')}</span></li>
+        <li><span>{t('Agree on the metric before designing.', 'До дизайна договориться о метрике.')}</span></li>
+        <li><span>{t('Bring evidence, not taste.', 'Приходить с данными, а не со вкусом.')}</span></li>
+        <li><span>{t('Rank ideas by impact and effort, together with the business.', 'Ранжировать идеи по влиянию и затратам вместе с бизнесом.')}</span></li>
+        <li><span>{t('Measure more, before and after release.', 'Измерять больше, до релиза и после.')}</span></li>
       </ul>
       <ul slot="notes">
+        <li>{t('In full: agree with stakeholders on the metric to move; bring review counts and test results instead of arguing about taste; rank ideas on an impact and effort matrix so urgency has to earn its place; bigger tests, ease ratings for every task, repeat orders after release.', 'Полностью: договориться со стейкхолдерами, какую метрику двигаем; приходить с цифрами по отзывам и тестам, а не спорить о вкусах; раскладывать идеи по матрице «влияние и затраты», чтобы срочность приходилось обосновывать; тесты побольше, оценка лёгкости для каждой задачи, повторные заказы после релиза.')}</li>
         <li>{t('The business often pushed its own ideas first, and urgently, while fixes that mattered more to customers waited.', 'Бизнес часто продвигал свои идеи в первую очередь и в спешке, а важные для клиентов исправления ждали.')}</li>
         <li>{t('I pushed back, but with opinions, not a process.', 'Я спорил, но опирался на мнения, а не на процесс.')}</li>
         <li>{t('Then stop and ask what they want to see again.', 'Дальше остановитесь и спросите, что показать ещё раз.')}</li>

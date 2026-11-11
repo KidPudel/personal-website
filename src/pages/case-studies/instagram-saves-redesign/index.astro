@@ -55,13 +55,7 @@ const label = {
   goal: t('Goal', 'Цель'),
   research: t('Research', 'Исследование'),
   decisions: t('Decisions', 'Решения'),
-  decision: t('Decision', 'Решение'),
-  hypothesis: t('Hypothesis', 'Гипотеза'),
-  why: t('Why', 'Почему'),
-  notChosen: t('Not chosen', 'Отверг'),
   result: t('Result', 'Результат'),
-  idea: t('Idea', 'Идея'),
-  test: t('What I’d test', 'Что проверить'),
 };
 const goal = t(
   'Get people back to a specific save quickly, without asking them to organise more.',
@@ -77,21 +71,18 @@ const loop = [
 ];
 
 const constraints = [
-  { name: t('Saving stays one tap.', 'Сохранение остаётся одним касанием.'), why: t('It’s the part that already works, so nothing I add can slow it down.', 'Это та часть, которая уже работает, поэтому ничто новое не должно её замедлять.') },
-  { name: t('No extra organising.', 'Никакой дополнительной сортировки.'), why: t('Filing is the work people skip, so the fix has to work on the saves they already have.', 'Именно сортировку люди и пропускают, поэтому решение должно работать с тем, что уже сохранено.') },
-  { name: t('AI search is unverified.', 'AI-поиск не проверен.'), why: t('The prototype’s results are designed states. Whether AI finds the right save on a real library still needs testing.', 'Результаты в прототипе спроектированы заранее. Насколько надёжно AI находит нужное в настоящих сохранениях, ещё предстоит проверить.') },
-  { name: t('A prototype built with AI.', 'Прототип, собранный с AI.'), why: t('I designed it in Figma, then built and refined it with Claude Code. The flows work, so they could be timed.', 'Я спроектировал его в Figma, а потом собрал и доработал с Claude Code. Сценарии работают, поэтому их можно было замерить.') },
-  { name: t('Nine interviews.', 'Девять интервью.'), why: t('Enough to set a direction, not enough to speak for every Instagram user.', 'Этого хватает, чтобы задать направление, но не чтобы говорить за всех пользователей Instagram.') },
+  { name: t('Saving stays one tap.', 'Сохранение остаётся одним касанием.'), why: t('It’s the part that already works, so nothing new can slow it down.', 'Это то, что уже работает, и ничто новое не должно его замедлять.') },
+  { name: t('No extra organising.', 'Никакой дополнительной сортировки.'), why: t('Filing is the work people skip, so the fix has to work on what they’ve already saved.', 'Именно сортировку люди и пропускают, поэтому решение должно работать с тем, что уже сохранено.') },
 ];
 
 // The study's spine: every finding, how many people it came from, and what it led to.
 const findings = [
   { title: t('Finding a specific save is the main problem.', 'Главная проблема: найти конкретное сохранённое.'), detail: t('Memory works by subject and time. Saved works by folder.', 'Память работает по теме и времени, а «Сохранённое» по папкам.'), who: t('6 of 9', '6 из 9'), to: t('Decision 1: search', 'Решение 1: поиск'), href: '#decision-1' },
-  { title: t('Filing feels like homework.', 'Сортировка как домашняя работа.'), detail: t('People tried more collections, and it stopped working: too many, too slow, or no clear place for a post.', 'Люди пробовали завести больше коллекций, и это переставало работать: их слишком много, это долго или непонятно, куда положить пост.'), who: t('5 of 9', '5 из 9'), to: t('Decision 2: suggestions', 'Решение 2: подсказки'), href: '#decision-2' },
-  { title: t('Important things leave Instagram.', 'Важное уходит из Instagram.'), detail: t('Into Notes, Notion, Maps, screenshots, or chats. The reason and the next step live there too.', 'В Заметки, Notion, Карты, скриншоты или чаты. Там же оказываются причина и следующий шаг.'), who: t('7 of 9', '7 из 9'), to: t('Decision 3: notes and pins', 'Решение 3: заметки и закрепление'), href: '#decision-3' },
-  { title: t('Shared collections give no feedback.', 'Общие коллекции молчат.'), detail: t('People couldn’t tell if the other person saw a post.', 'Люди не понимали, видел ли пост другой.'), who: t('Both people who used them', 'Оба, кто ими пользовался'), to: t('Bet: reactions', 'Ставка: реакции'), href: '#bets' },
-  { title: t('Saved turned into a backlog.', '«Сохранённое» превратилось в склад.'), detail: t('Things never read, made, or bought.', 'Непрочитанное, несделанное и некупленное.'), who: t('1 person', '1 человек'), to: t('Bet: collection feed', 'Ставка: лента коллекции'), href: '#bets' },
-  { title: t('Four needs from one person each.', 'Четыре потребности по одному человеку.'), detail: t('Places from travel videos, planning together as a couple, bulk tools and export, and help letting go of saves.', 'Места из видео о путешествиях, совместное планирование для пар, массовые действия с экспортом и помощь в том, чтобы отпускать сохранённое.'), who: t('1 person each', 'По 1 человеку'), to: t('Left out', 'За рамками'), href: '#left-out' },
+  { title: t('Filing feels like homework.', 'Сортировка как домашняя работа.'), detail: t('More collections made it worse: too many, too slow, no clear place for a post.', 'Больше коллекций делало только хуже: их слишком много, это долго, непонятно, куда положить пост.'), who: t('5 of 9', '5 из 9'), to: t('Decision 2: suggestions', 'Решение 2: подсказки'), href: '#decision-2' },
+  { title: t('Important things leave Instagram.', 'Важное уходит из Instagram.'), detail: t('Into Notes, Notion, Maps, screenshots, or chats.', 'В Заметки, Notion, Карты, скриншоты или чаты.'), who: t('7 of 9', '7 из 9'), to: t('Decision 3: notes and pins', 'Решение 3: заметки и закрепление'), href: '#decision-3' },
+  { title: t('Shared collections give no feedback.', 'Общие коллекции молчат.'), detail: '', who: t('Both people who used them', 'Оба, кто ими пользовался'), to: t('Bet: reactions', 'Ставка: реакции'), href: '#bets' },
+  { title: t('Saved turned into a backlog.', '«Сохранённое» превратилось в склад.'), detail: '', who: t('1 person', '1 человек'), to: t('Bet: collection feed', 'Ставка: лента коллекции'), href: '#bets' },
+  { title: t('Four needs came from one person each.', 'Четыре потребности, каждая от одного человека.'), detail: '', who: t('1 person each', 'По 1 человеку'), to: t('Left out', 'За рамками'), href: '#left-out' },
 ];
 
 const participants = [
@@ -116,10 +107,10 @@ const journey = [
 ];
 
 const nextSteps = [
-  t('Test search on real, messy libraries. The prototype’s results are designed states, so this is the biggest unknown.', 'Проверить поиск на настоящих, захламлённых сохранениях. Результаты в прототипе спроектированы заранее, и это главная неизвестная.'),
+  t('Test search on real, messy libraries, the biggest unknown.', 'Проверить поиск на настоящих, захламлённых сохранениях: это главная неизвестная.'),
   t('Repeat the timing with more people, on their own saves, with working search.', 'Повторить замеры с большим числом людей, на их собственных сохранениях и с работающим поиском.'),
-  t('Test the two bets, and first add a clear “who can see this” state to shared notes.', 'Проверить две ставки, а перед этим явно показать в общих заметках, кто их видит.'),
-  t('At scale, the metrics in Goal would tell if it works.', 'В масштабе понять, работает ли это, помогут метрики из раздела «Цель».'),
+  t('Test the two bets, after giving shared notes a clear “who can see this” state.', 'Проверить две ставки, а перед этим явно показать в общих заметках, кто их видит.'),
+  t('At scale, watch the measures in Goal.', 'В масштабе следить за метриками из цели.'),
 ];
 
 // The screens crop to what each one is about, at the same scale, so a panel fits beside its words.
@@ -144,11 +135,11 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
       navLabel="TL;DR"
     >
       <Rows rows={[
-        { label: label.problem, href: '#problem', text: t('The more you save, the less you can find. Saving takes one tap. Getting a save back means scrolling through all of them.', 'Чем больше сохраняешь, тем сложнее найти. Сохранить можно одним касанием, а чтобы вернуться к посту, приходится листать всё подряд.') },
+        { label: label.problem, href: '#problem', text: t('The more you save, the less you can find. Getting a save back means scrolling through all of them.', 'Чем больше сохраняешь, тем сложнее найти. Чтобы вернуться к посту, приходится листать всё подряд.') },
         { label: label.goal, href: '#goal', text: goal },
-        { label: label.research, href: '#research', text: t('9 interviews. 6 people named finding a specific save as their main problem.', '9 интервью. Шестеро назвали главной проблемой поиск конкретного сохранённого.') },
+        { label: label.research, href: '#research', text: t('9 interviews. For 6 people, finding a specific save was the main problem.', '9 интервью. Для шестерых главной проблемой оказался поиск конкретного сохранённого.') },
         { label: label.decisions, href: '#decisions', text: t('Search inside Saved first, then suggested collections, then notes and pins.', 'Сначала поиск в «Сохранённом», потом подсказки коллекций, потом заметки и закрепление.') },
-        { label: label.result, href: '#results', tone: 'result', text: t('Finding a half-remembered post took **about 10 seconds instead of 90** in a timed test with 3 people. AI search itself is still untested on real libraries.', 'В замерах с тремя людьми полузабытый пост находился **примерно за 10 секунд вместо 90**. Сам AI-поиск на настоящих сохранениях ещё не проверен.') },
+        { label: label.result, href: '#results', tone: 'result', text: t('A half-remembered post took **about 10 seconds to find instead of 90**, in a timed test with 3 people.', 'Полузабытый пост находился **примерно за 10 секунд вместо 90** в замерах с тремя людьми.') },
       ]} />
     </PileCover>
 
@@ -166,14 +157,10 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
             <p class="note">{t('After a minute or two of scrolling, people give up and look for something new.', 'Через минуту-другую люди сдаются и ищут что-то новое.')}</p>
           </figure>
 
-          <Rows rows={[
-            { label: t('How common', 'Насколько часто'), list: [
-              t('**6 of 9** named finding a specific save as their main problem.', '**6 из 9** назвали главной проблемой поиск конкретного сохранённого.'),
-              t('**7 of 9** moved what mattered into Notes, Notion, Maps, screenshots, or chats.', '**7 из 9** переносили важное в Заметки, Notion, Карты, скриншоты или чаты.'),
-              t('One long-time saver put the scale plainly: 30 saves are okay, 3,000 are not.', 'Один человек, который сохраняет годами, сформулировал это так: 30 сохранений ещё нормально, 3000 уже нет.'),
-            ] },
-            { label: t('Why Instagram should care', 'Зачем это Instagram'), text: t('My assumption: a save is a strong signal of intent, someone wanted to see this again. If Saved works, people get one more reason to come back to the app. If it doesn’t, those signals go to waste.', 'Моё предположение: сохранение говорит о намерении, человек хотел вернуться к этому посту. Если «Сохранённое» работает, у людей появляется ещё одна причина возвращаться в приложение. Если нет, эти сигналы просто пропадают.') },
-          ]} />
+          <p>{t(
+            'Why it matters to Instagram, as I see it: a save means someone wants to come back. When Saved works, that’s one more reason to open the app.',
+            'Почему это важно Instagram, на мой взгляд: сохраняя пост, человек собирается к нему вернуться. Когда «Сохранённое» работает, это ещё одна причина открыть приложение.',
+          )}</p>
         </div>
 
         <Plate caption={t('Saved today: collections, then one long grid. No search.', '«Сохранённое» сейчас: коллекции, а под ними одна длинная сетка. Поиска нет.')} shots={[{ src: savedOld, alt: t('Current Saved screen with collections and a grid of 76 saved posts, without search.', 'Текущий экран «Сохранённое»: коллекции и сетка из 76 публикаций, без поиска.') }]} />
@@ -188,12 +175,12 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
         )} /></p>
         <Rows rows={[
           { label: label.goal, tone: 'key', text: goal },
-          { label: t('How I’d know', 'Как пойму'), text: t('At Instagram’s scale:', 'В масштабе Instagram:'), list: [
+          { label: t('How I’d know', 'Как пойму'), list: [
             t('Saved visits that end with a post opened', 'Заходы в «Сохранённое», которые заканчиваются открытием поста'),
             t('Searches that end in an open, and how long they take', 'Поиски, после которых открыли пост, и время на них'),
-            t('Saves filed into a collection, and how often suggestions are accepted', 'Сохранения в коллекциях и то, как часто принимают подсказки'),
+            t('How often people accept a suggested collection', 'Как часто принимают подсказанную коллекцию'),
+            t('Guardrail: total saves don’t drop', 'Ограничитель: общее число сохранений не падает'),
           ] },
-          { label: 'Guardrail', text: t('Saving has to stay one tap, and total saves shouldn’t drop.', 'Сохранение должно остаться одним касанием, а общее число сохранений не должно упасть.') },
         ]} />
       </div>
     </StudySection>
@@ -207,8 +194,8 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     <StudySection
       part="research"
       lead={t(
-        'I wanted to know what people struggle with in Saved and what they actually use it for. So I ran nine interviews and asked everyone the same things: why they started saving, how they save and find things step by step, where it hurts, and what they use instead.',
-        'Я хотел понять, с чем у людей трудности в «Сохранённом» и для чего они им на самом деле пользуются. Поэтому провёл девять интервью и всем задал одни и те же вопросы: зачем начали сохранять, как шаг за шагом сохраняют и ищут, где больно и чем пользуются вместо этого.',
+        'Nine interviews, with the same questions for everyone: why they started saving, how they save and find things, where it hurts, and what they use instead.',
+        'Девять интервью, всем одни и те же вопросы: зачем начали сохранять, как сохраняют и ищут, где больно и чем пользуются вместо этого.',
       )}
     >
       <!-- The 6 of 9 finding, circled with the pen from the homepage. -->
@@ -236,7 +223,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
           <tbody>
             {findings.map((row) => (
               <tr>
-                <th scope="row"><strong>{row.title}</strong> <span>{row.detail}</span></th>
+                <th scope="row"><strong>{row.title}</strong>{row.detail && <> <span>{row.detail}</span></>}</th>
                 <td class="spine__who">{row.who}</td>
                 <td class="spine__to"><a href={row.href}><span class="link-mark">{row.to}</span></a></td>
               </tr>
@@ -247,9 +234,8 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
 
       <h3>{t('Why this order', 'Почему такой порядок')}</h3>
       <ul class="plain-list order">
-        <li>{t('Search went first: it was the main problem for the most people, and it works on saves people already have, with no new habit to build.', 'Поиск пошёл первым: это главная проблема для большинства, и он работает с тем, что уже сохранено, без новых привычек.')}</li>
-        <li>{t('7 of 9 moving things out of Instagram is a bigger number, but it’s what people do about the problem, not what they named as the problem. Notes answer it, third.', '7 из 9, которые уносят важное из Instagram, это больше, но так люди справляются с проблемой, а главной называли другую. На это отвечают заметки, третьим решением.')}</li>
-        <li>{t('Anything from one person waited. The collection feed also came from one person, so it’s a bet to test, not a decision.', 'То, что шло от одного человека, подождало. Лента коллекции тоже выросла из одного интервью, поэтому это ставка для проверки, а не решение.')}</li>
+        <li>{t('Search first: it was the main problem for the most people, and it works on saves people already have.', 'Поиск первым: это главная проблема для большинства, и он работает с тем, что уже сохранено.')}</li>
+        <li>{t('7 of 9 moved things out of Instagram, but as a workaround, not as the problem they named, so notes came third.', '7 из 9 уносили важное из Instagram, но это обходной путь, а не названная проблема, поэтому заметки третьи.')}</li>
       </ul>
 
       <div class="details-group">
@@ -309,21 +295,17 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     <StudySection
       part="decisions"
       lead={t(
-        'Three decisions, in priority order. After them, two bets I’d test before committing, and what I left out.',
-        'Три решения в порядке приоритета. За ними две ставки, которые я бы сначала проверил, и то, что я оставил за рамками.',
+        'Three decisions in priority order, then two bets and what I left out.',
+        'Три решения в порядке приоритета, потом две ставки и то, что осталось за рамками.',
       )}
     >
       <DecisionBlock
         number={1}
         title={t('Search inside Saved, narrowed by date', 'Поиск в «Сохранённом» с фильтром по дате')}
         navLabel={t('Search', 'Поиск')}
-        rows={[
-          { label: label.problem, text: t('People remember what a post showed and roughly when, not who posted it or where they filed it. “There’s no way to search for ‘pasta with lemon’ inside my saves.”', 'Люди помнят, что было в посте и примерно когда, но не кто его выложил и куда он сохранён. «В сохранённом никак не найти „пасту с лимоном“».') },
-          { label: label.hypothesis, text: t('If people can search by what they remember, they’ll get back to a save without ever having filed it.', 'Если искать можно по тому, что помнишь, к посту удастся вернуться, даже если его никуда не раскладывали.') },
-          { label: label.decision, tone: 'key', text: t('Search across titles, your notes, and AI descriptions of each post, right inside Saved. Oldest-first sorting and a saved-date range sit next to it, and the active range stays visible above the results.', 'Поиск по названиям, заметкам и AI-описаниям постов прямо в «Сохранённом». Рядом сортировка от старых к новым и диапазон дат сохранения, а выбранный диапазон остаётся на виду над результатами.') },
-          { label: label.notChosen, text: t('Nudging people to organise better. That’s work up front, and it’s exactly the work people skip.', 'Подталкивать людей лучше сортировать. Это работа заранее, а именно её люди и пропускают.') },
-          { label: label.result, tone: 'result', text: t('Finding a half-remembered post took **about 10 seconds instead of 90**.', 'Полузабытый пост находился **примерно за 10 секунд вместо 90**.'), source: t('Timed with 3 people on designed search results, so the AI itself is still untested', 'Замеры с тремя людьми на заранее спроектированных результатах, так что сам AI ещё не проверен') },
-        ]}
+        why={t('“There’s no way to search for ‘pasta with lemon’ inside my saves.” People remember what a post showed and roughly when, not where they filed it.', '«В сохранённом никак не найти „пасту с лимоном“». Люди помнят, что было в посте и примерно когда, но не куда его сохранили.')}
+        what={t('If people can search by what they remember, they get back to saves they never filed. So search covers titles, your notes, and AI descriptions of each post.', 'Если искать по тому, что помнишь, можно вернуться даже к тому, что никуда не раскладывал. Поэтому поиск идёт по названиям, вашим заметкам и AI-описаниям постов.')}
+        notChosen={t('nudging people to organise better, the work they already skip.', 'подталкивать людей лучше сортировать, ведь именно эту работу они и пропускают.')}
       >
         <More slot="more" summary={t('More evidence', 'Ещё аргументы')}>
           <ul class="plain-list">
@@ -351,15 +333,9 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
         title={t('Suggested collections when saving', 'Подсказки коллекций при сохранении')}
         navLabel={t('Suggestions', 'Подсказки')}
         layout="band"
-        rows={[
-          { label: label.problem, text: t('Filing means finding a collection or naming a new one, mid-scroll. “I don’t want to interrupt what I’m doing.”', 'Чтобы разложить пост, нужно найти коллекцию или придумать название новой прямо посреди ленты. «Не хочу отвлекаться от того, что делаю».') },
-          { label: label.hypothesis, text: t('If the right collection is already on the sheet, filing stops being a decision people put off.', 'Если нужная коллекция уже на экране, разложить пост перестаёт быть решением, которое откладывают.') },
-          { label: label.decision, tone: 'key', text: t('The save sheet shows two suggestions above the full list: the best-matching collection, and a new one with a name already filled in. The list stays for when a suggestion is wrong, the way Pinterest suggests a board when you save.', 'В окне сохранения над полным списком две подсказки: самая подходящая коллекция и новая, уже с названием. Список остаётся на случай, если подсказка ошиблась, так же как Pinterest подсказывает доску при сохранении.') },
-        ]}
-        aside={[
-          { label: label.notChosen, text: t('Nested collections, modelled on how creators keep desktop folders: years, client names, topics, hooks. It matches how they think, but it asks for more filing, the work people already skip.', 'Вложенные коллекции по образцу папок на компьютере у авторов контента: годы, клиенты, темы, хуки. Авторам это близко, но это ещё больше сортировки, а её люди и так пропускают.') },
-          { label: label.result, tone: 'result', text: t('Saving into a new collection takes **1 tap instead of 2 and a name**. Too many collections broke filing for 5 of 9, so the number to watch is how often people pick the existing match.', 'Сохранить в новую коллекцию можно **одним касанием вместо двух и названия**. Слишком много коллекций уже мешало сортировке у 5 из 9, поэтому следить нужно за тем, как часто выбирают существующую.'), source: t('Counted from the designs', 'Посчитано по макетам') },
-        ]}
+        why={t('“I don’t want to interrupt what I’m doing.” Filing means finding a collection or naming a new one, mid-scroll.', '«Не хочу отвлекаться от того, что делаю». Чтобы разложить пост, нужно найти коллекцию или придумать новую прямо посреди ленты.')}
+        what={t('If the right collection is already on the sheet, filing stops being a decision people put off. So two suggestions sit above the full list: the best match, and a new collection already named, the way Pinterest suggests a board.', 'Если нужная коллекция уже на экране, разложить пост перестаёт быть решением, которое откладывают. Поэтому над полным списком две подсказки: самая подходящая коллекция и новая, уже с названием, как Pinterest подсказывает доску.')}
+        notChosen={t('nested collections, like the desktop folders creators keep. They match how creators think, but ask for more filing.', 'вложенные коллекции, как папки на компьютере у авторов контента. Авторам это близко, но сортировки становится больше.')}
       >
         <Plate together shots={[
           { src: saveNew, crop: { x: 0, y: 22, w: 100, h: 54 }, alt: t('Redesigned save sheet suggesting an existing collection and a possible new collection.', 'Окно сохранения после редизайна: подсказывает существующую коллекцию и возможную новую.'), label: t('After: two suggestions on top.', 'После: две подсказки сверху.'), notes: [
@@ -374,13 +350,9 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
         number={3}
         title={t('Notes and pins on a save', 'Заметки и закрепление')}
         navLabel={t('Notes', 'Заметки')}
-        rows={[
-          { label: label.problem, text: t('A collection keeps the post, not the reason. One creator kept Notion just to write reasons down, and another person kept going back to the same references with nothing to anchor them.', 'Коллекция хранит пост, но не причину. Один автор контента вёл Notion, только чтобы записывать зачем, а другой человек постоянно возвращался к одним и тем же референсам, и зацепиться было не за что.') },
-          { label: label.hypothesis, text: t('If the reason lives on the save, in your own words, it becomes one more way back, and people have less reason to take things out of Instagram.', 'Если причина хранится прямо на посте, вашими словами, это ещё один путь назад и меньше поводов уносить важное из Instagram.') },
-          { label: label.decision, tone: 'key', text: t('Short notes on a save that you can search later, and pins for references you go back to often.', 'Короткие заметки к сохранённому, по которым потом можно искать, и закрепление для частых референсов.') },
-          { label: label.notChosen, text: t('Tags. They’d be another anchor for finding things, but AI search already covers that, and I suspect only a small share of power users would bother.', 'Теги. Это ещё одна опора для поиска, но её уже закрывает AI-поиск, а возиться с тегами, подозреваю, станет лишь небольшая часть самых активных пользователей.') },
-          { label: label.result, text: t('Not measured yet. Before testing, shared notes need a clear “who can see this” state.', 'Пока не измерял. Перед тестом общим заметкам нужно явно показывать, кто их видит.') },
-        ]}
+        why={t('A collection keeps the post, not the reason. One creator kept Notion just to write the reasons down.', 'Коллекция хранит пост, но не причину. Один автор контента вёл Notion только для того, чтобы записывать, зачем сохранил.')}
+        what={t('If the reason lives on the save, it’s one more way back and one less reason to leave Instagram. So a save can carry a short note you can search, and pins keep frequent references on top.', 'Если причина хранится прямо на посте, это ещё один путь назад и на один повод меньше уходить из Instagram. Поэтому к сохранённому можно добавить короткую заметку, по которой ищется, а частые референсы закрепить сверху.')}
+        notChosen={t('tags. AI search already covers that kind of finding, and I suspect only a few power users would keep them up.', 'теги. Такой поиск уже закрывает AI, а вести теги, подозреваю, станет лишь небольшая часть самых активных пользователей.')}
       >
         <Plate shots={[
           { src: annotation, crop: sheetCrop, alt: t('Annotation editor with a note about a limited blue palette.', 'Редактор заметки с записью об ограниченной синей палитре.'), label: t('A note in your own words.', 'Заметка своими словами.') },
@@ -397,15 +369,14 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
 
       <section class="bets" id="bets" data-index-sub data-index-label={t('Bets', 'Ставки')}>
         <h3>{t('Two bets I’d test first', 'Две ставки, которые я бы сначала проверил')}</h3>
-        <p class="bets__lead">{t('They came from fewer people, so I designed them but wouldn’t commit without testing.', 'За ними меньше людей, поэтому я их спроектировал, но без проверки не стал бы на них полагаться.')}</p>
+        <p class="bets__lead">{t('Two ideas came from fewer people, so I designed them as bets to test, not decisions.', 'За двумя идеями стоит меньше людей, поэтому я спроектировал их как ставки для проверки, а не как решения.')}</p>
         <div class="bets__grid">
           <article class="bet">
             <h4>{t('Reactions in shared collections', 'Реакции в общих коллекциях')}</h4>
-            <Rows rows={[
-              { label: label.problem, text: t('Both people who used shared collections couldn’t tell if the other person saw a post, so links went to DMs instead.', 'Оба человека, которые пользовались общими коллекциями, не понимали, видел ли пост другой, поэтому ссылки уходили в личные сообщения.') },
-              { label: label.idea, tone: 'key', text: t('Reactions on saves in a shared collection, visible to everyone in it.', 'Реакции на сохранённое в общей коллекции, видные всем её участникам.') },
-              { label: label.test, text: t('Whether a reaction is enough feedback to keep people out of DMs.', 'Хватит ли реакции, чтобы люди перестали уходить в личные сообщения.') },
-            ]} />
+            <div class="bet__words">
+              <p>{t('Both people who used shared collections couldn’t tell if the other had seen a post, so links went to DMs. Reactions on saves would show it.', 'Оба человека с общими коллекциями не понимали, видел ли пост другой, и ссылки уходили в личные сообщения. Реакции на сохранённое это покажут.')}</p>
+              <p class="bet__test">{t('To test: whether a reaction is enough to keep people out of DMs.', 'Проверить: хватит ли реакции, чтобы не уходить в личные сообщения.')}</p>
+            </div>
             <Plate shots={[
               { src: actions, crop: { x: 0, y: 64, w: 100, h: 36 }, alt: t('Saved-post sheet with a React in shared collection action, visible to the people in that collection.', 'Окно действий с сохранённой публикацией: реакция в общей коллекции, которую видят её участники.'), notes: [
                 { x: 4, y: 91.8, w: 92, h: 5, label: t('React in a shared collection', 'Реакция в общей коллекции') },
@@ -414,11 +385,10 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
           </article>
           <article class="bet">
             <h4>{t('Collections in the feed selector', 'Коллекции в переключателе ленты')}</h4>
-            <Rows rows={[
-              { label: label.problem, text: t('One person stopped using Saved: it had turned into a backlog of things never read, made, or bought. Saving felt like debt.', 'Один человек перестал пользоваться «Сохранённым»: оно превратилось в склад непрочитанного, несделанного и некупленного. Сохранения ощущались как долг.') },
-              { label: label.idea, tone: 'key', text: t('Collections next to Following and Favorites, so a Design collection can become a daily feed and saves get a place in everyday browsing.', 'Коллекции рядом с «Подписками» и «Избранным», чтобы коллекция «Design» могла стать ежедневной лентой, а сохранённое получило место в обычном просмотре.') },
-              { label: label.test, text: t('It might just become more scrolling, and it doesn’t help people let go of saves.', 'Это может стать просто ещё одним листанием, и отпускать сохранённое оно не помогает.') },
-            ]} />
+            <div class="bet__words">
+              <p>{t('One person stopped using Saved: it had become a backlog of things never read, made, or bought. Collections beside Following and Favorites would turn one into a daily feed.', 'Один человек перестал пользоваться «Сохранённым»: оно превратилось в склад непрочитанного, несделанного и некупленного. Коллекции рядом с «Подписками» и «Избранным» сделают из любой из них ежедневную ленту.')}</p>
+              <p class="bet__test">{t('To test: whether it turns into more scrolling, since it doesn’t help people let go of saves.', 'Проверить: не превратится ли это в ещё одно листание, ведь отпускать сохранённое оно не помогает.')}</p>
+            </div>
             <Plate shots={[
               { src: feed, crop: { x: 0, y: 0, w: 100, h: 36 }, alt: t('Instagram feed menu expanded to show Following, Favorites, and Collections with Design, Travel, Art, and Health choices.', 'Раскрытое меню ленты Instagram: «Following», «Favorites» и «Collections» с вариантами Design, Travel, Art и Health.'), notes: [
                 { x: 27, y: 17.5, w: 46, h: 17.5, label: t('Collections, next to Following and Favorites', 'Коллекции рядом с «Подписками» и «Избранным»') },
@@ -448,8 +418,8 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     <StudySection
       part="results"
       lead={t(
-        'No launch, so no product metrics yet. What I have is a small timed test, a count from the designs, and what people said when they saw it.',
-        'Продукт не запускался, поэтому продуктовых метрик пока нет. Есть небольшой замер времени, подсчёт по макетам и то, что люди сказали, увидев прототип.',
+        'It wasn’t launched, so there are no product metrics: only a small timed test, a count from the designs, and what people said.',
+        'Продукт не запускался, поэтому продуктовых метрик нет: только небольшой замер времени, подсчёт по макетам и то, что сказали люди.',
       )}
     >
       <div class="split results">
@@ -465,7 +435,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
                   { label: t('Today: scroll the grid', 'Сейчас: листать сетку'), value: 90, display: t('≈90 s', '≈90 с') },
                   { label: t('Prototype: search', 'Прототип: поиск'), value: 10, display: t('≈10 s', '≈10 с'), emphasis: true },
                 ]}
-                note={t('3 people, 5 timed runs on today’s Saved and 9 on the prototype, with a library of 76 saves. Search results were designed states, so this times the flow, not the AI.', '3 человека, 5 замеров на сегодняшнем «Сохранённом» и 9 на прототипе, 76 сохранений. Результаты поиска спроектированы заранее, так что это время самого сценария, а не качество AI.')}
+                note={t('3 people, 5 timed runs on today’s Saved and 9 on the prototype, with a library of 76 saves.', '3 человека, 5 замеров на сегодняшнем «Сохранённом» и 9 на прототипе, 76 сохранений.')}
               />
             </dd>
           </div>
@@ -478,17 +448,17 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
                   { label: t('Today', 'Сейчас'), steps: [t('New collection', 'Новая коллекция'), t('Type a name', 'Ввести название'), t('Done', 'Готово')] },
                   { label: t('Prototype', 'Прототип'), steps: [t('Suggested collection', 'Подсказанная коллекция')], emphasis: true },
                 ]}
-                note={t('Counted from the designs: 2 taps and a name, or 1 tap.', 'Посчитано по макетам: два касания и название или одно касание.')}
+                note={t('Counted from the designs.', 'Посчитано по макетам.')}
               />
             </dd>
           </div>
           <div class="rows__row">
             <dt>{t('Heard', 'Что сказали')}</dt>
-            <dd>{t('I showed the prototype to all nine people. Mostly they liked it: “this is a massive improvement”, “really convenient”. That’s nice to hear, but it’s an early reaction, not evidence. Some proposed more, like going deeper into shared folders, which is a collaboration problem and out of scope.', 'Я показал прототип всем девяти. В основном он понравился: «это огромное улучшение», «очень удобно». Приятно, но это первые впечатления, а не доказательства. Кто-то предлагал больше, например углубить общие папки, но это уже про совместную работу и за рамками задачи.')}</dd>
+            <dd>{t('I showed the prototype to all nine. Most liked it (“this is a massive improvement”, “really convenient”), but that’s an early reaction, not evidence.', 'Я показал прототип всем девяти. Большинству понравилось («это огромное улучшение», «очень удобно»), но это первые впечатления, а не доказательства.')}</dd>
           </div>
           <div class="rows__row">
             <dt>{t('Not tested', 'Не проверено')}</dt>
-            <dd>{t('Whether AI search finds the right save on a real library, and the metrics in Goal, which need real usage.', 'Находит ли AI-поиск нужное в настоящих сохранениях, и метрики из раздела «Цель», для которых нужно реальное использование.')}</dd>
+            <dd>{t('Search results in the prototype are designed states, so it’s still open whether AI finds the right save in a real library. Nine interviews set a direction, not proof for every user, and the measures in Goal need real use.', 'Результаты поиска в прототипе спроектированы заранее, так что найдёт ли AI нужное в настоящих сохранениях, пока неизвестно. Девять интервью задают направление, но ничего не доказывают за всех, а метрикам из цели нужно реальное использование.')}</dd>
           </div>
         </dl>
 
@@ -524,7 +494,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
       <a href="https://github.com/KidPudel/personal-website/blob/main/src/components/homepage/showcase/instagram-prototype/InstagramPrototypeApp.jsx"><span class="link-mark">{t('Prototype source ↗', 'Код прототипа ↗')}</span></a>
       <a href={localePath('/case-studies/instagram-saves-redesign/present/', locale)}><span class="link-mark">{t('Slides', 'Слайды')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
-      <a href={localePath('/case-studies/supergood/', locale)}><span class="link-mark">{t('SuperGood case study →', 'Кейс SuperGood →')}</span></a>
+      <a href={localePath('/case-studies/observatory/', locale)}><span class="link-mark">{t('Observatory case study →', 'Кейс Observatory →')}</span></a>
     </nav>
   </footer>
 </BaseDocument>

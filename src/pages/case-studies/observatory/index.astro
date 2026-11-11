@@ -52,10 +52,6 @@ const label = {
   goal: t('Goal', 'Цель'),
   research: t('Research', 'Исследование'),
   decisions: t('Decisions', 'Решения'),
-  decision: t('Decision', 'Решение'),
-  hypothesis: t('Hypothesis', 'Гипотеза'),
-  why: t('Why', 'Почему'),
-  notChosen: t('Not chosen', 'Отверг'),
   result: t('Result', 'Результат'),
 };
 const goal = t(
@@ -84,19 +80,17 @@ const categories = [
 ];
 
 const constraints = [
-  { name: t('A personal project, built with AI.', 'Личный проект, собранный с AI.'), why: t('I designed it in Figma and wrote the specs, then built and refined it with Codex and ChatGPT.', 'Я спроектировал его в Figma и написал спецификации, а потом собрал и доработал с Codex и ChatGPT.') },
   { name: t('Measured against Activity Monitor.', 'Сравнение с «Мониторингом системы».'), why: t('It’s the tool people already open, so every comparison is with it.', 'Это инструмент, который люди и так открывают, поэтому всё сравнивается с ним.') },
-  { name: t('No formal usability study.', 'Без формального юзабилити-исследования.'), why: t('Decisions 2 to 4 came from task walkthroughs and design critique of the first prototype.', 'Решения со 2 по 4 появились из разбора сценариев и дизайн-критики первого прототипа.') },
   { name: t('A small group.', 'Небольшая группа.'), why: t('5 interviews and 3 colleagues using it: enough to set a direction, not to speak for every Mac user.', '5 интервью и 3 коллеги, которые им пользуются: этого хватает, чтобы задать направление, но не чтобы говорить за всех пользователей Mac.') },
 ];
 
 // The study's spine: every finding, where it came from, and what it led to.
 const findings = [
-  { title: t('People start from an app or a task, never from a process.', 'Люди начинают с приложения или задачи, а не с процесса.'), detail: t('Both kinds of people I interviewed did.', 'Так делали оба типа людей, с которыми я говорил.'), who: t('Interviews', 'Интервью'), to: t('Decision 1: group by app', 'Решение 1: по приложениям'), href: '#decision-1' },
+  { title: t('People start from an app or a task, never from a process.', 'Люди начинают с приложения или задачи, а не с процесса.'), detail: '', who: t('Interviews', 'Интервью'), to: t('Decision 1: group by app', 'Решение 1: по приложениям'), href: '#decision-1' },
   { title: t('Comparing cards was slow.', 'Сравнивать карточки медленно.'), detail: t('Your eyes jumped between boxes to compare one number.', 'Чтобы сравнить одну цифру, взгляд прыгал между блоками.'), who: t('Prototype walkthrough', 'Проход по прототипу'), to: t('Decision 2: aligned list', 'Решение 2: список'), href: '#decision-2' },
   { title: t('Setup asked the wrong thing first.', 'Настройка спрашивала не то.'), detail: t('It wanted a recording mode before you’d picked an app.', 'Она просила режим записи раньше, чем вы выбрали приложение.'), who: t('Prototype walkthrough', 'Проход по прототипу'), to: t('Decision 3: test setup', 'Решение 3: настройка теста'), href: '#decision-3' },
   { title: t('A test and its result lived apart.', 'Тест и результат жили отдельно.'), detail: t('A test ended in Tests, but its result was in History.', 'Тест заканчивался в «Tests», а результат был в «History».'), who: t('Prototype walkthrough', 'Проход по прототипу'), to: t('Decision 4: saved results', 'Решение 4: результаты'), href: '#decision-4' },
-  { title: t('Comparisons need context.', 'Сравнению нужен контекст.'), detail: t('A developer wanted before and after recordings that say what was running.', 'Разработчику нужны записи до и после, по которым понятно, что было запущено.'), who: t('Interviews', 'Интервью'), to: t('Decision 4: saved results', 'Решение 4: результаты'), href: '#decision-4' },
+  { title: t('Comparisons need context.', 'Сравнению нужен контекст.'), detail: '', who: t('Interviews', 'Интервью'), to: t('Decision 4: saved results', 'Решение 4: результаты'), href: '#decision-4' },
 ];
 ---
 
@@ -109,7 +103,7 @@ const findings = [
   pageClass="study-plates study-structured study--observatory"
   ogImage={outcomeNow.src}
 >
-  <main id="main-content">
+  <main id="main-content" data-present={localePath('/case-studies/observatory/present/', locale)}>
     <!-- The first screen is the short read: each label leads to its section. -->
     <EyepieceCover
       title="Observatory"
@@ -130,8 +124,8 @@ const findings = [
     <StudySection part="problem">
       <div class="stack">
         <p class="opening">{t(
-          'During heavy work I’d open Activity Monitor to find the app I was using. Its activity was split across lots of processes, so I had to find them, add them up in my head, and keep watching while they changed. Not exactly a calm way to check memory. And once the task ended, there was nothing to come back to.',
-          'Во время тяжёлой работы я открывал «Мониторинг системы», чтобы найти приложение, которым пользуюсь. Его активность была раскидана по множеству процессов: найди их, сложи в уме и следи, пока цифры меняются. Не самый спокойный способ проверить память. А когда задача заканчивалась, вернуться было не к чему.',
+          'During heavy work I’d open Activity Monitor to find the app I was using. Its activity was split across lots of processes, so I had to find them, add them up in my head, and keep watching while they changed. And once the task ended, there was nothing to come back to.',
+          'Во время тяжёлой работы я открывал «Мониторинг системы», чтобы найти приложение, которым пользуюсь. Его активность была раскидана по множеству процессов: найди их, сложи в уме и следи, пока цифры меняются. А когда задача заканчивалась, вернуться было не к чему.',
         )}</p>
 
         <!-- The same app in both tools. As it arrives, the 17 rows gather into Observatory's one. -->
@@ -189,8 +183,8 @@ const findings = [
     <StudySection
       part="research"
       lead={t(
-        'First, I checked it wasn’t just my problem. Before building anything, I ran customer development interviews framed around Jobs to be Done. Five people walked me through the last time they looked into performance: what they wanted to know, where they looked, and what they couldn’t find.',
-        'Сначала я проверил, что проблема не только у меня. Прежде чем что-то делать, я провёл CustDev-интервью в логике Jobs to be Done. Пять человек рассказали, как в последний раз разбирались с производительностью: что хотели узнать, куда смотрели и чего не смогли найти.',
+        'First I checked it wasn’t just my problem. In customer development interviews framed around Jobs to be Done, five people walked me through the last time they looked into performance: what they wanted to know, where they looked, and what they couldn’t find.',
+        'Сначала я проверил, что проблема не только у меня. В CustDev-интервью в логике Jobs to be Done пять человек рассказали, как в последний раз разбирались с производительностью: что хотели узнать, где смотрели и чего не нашли.',
       )}
     >
       <!-- The two kinds of people behind the interviews, drawn by hand. -->
@@ -231,7 +225,7 @@ const findings = [
           <tbody>
             {findings.map((row) => (
               <tr>
-                <th scope="row"><strong>{row.title}</strong> <span>{row.detail}</span></th>
+                <th scope="row"><strong>{row.title}</strong>{row.detail && <> <span>{row.detail}</span></>}</th>
                 <td class="spine__who">{row.who}</td>
                 <td class="spine__to"><a href={row.href}><span class="link-mark">{row.to}</span></a></td>
               </tr>
@@ -264,8 +258,8 @@ const findings = [
     <StudySection
       part="decisions"
       lead={t(
-        'Four decisions. The first came from the interviews and sketches, the other three from walking through the first prototype, so only the first and the last have a number.',
-        'Четыре решения. Первое выросло из интервью и скетчей, остальные три из прохода по первому прототипу, поэтому цифры есть только у первого и последнего.',
+        'Four decisions. The first came from the interviews and sketches, the other three from walking through the first prototype.',
+        'Четыре решения. Первое выросло из интервью и скетчей, остальные три из прохода по первому прототипу.',
       )}
     >
       <DecisionBlock
@@ -273,15 +267,9 @@ const findings = [
         title={t('Group processes under their app', 'Процессы под своим приложением')}
         navLabel={t('Group by app', 'По приложениям')}
         layout="band"
-        rows={[
-          { label: label.problem, text: t('One app showed up as lots of rows, so its real cost was hidden.', 'Одно приложение занимало много строк, и его реальная нагрузка терялась.') },
-          { label: label.hypothesis, text: t('Both jobs started from an app, so if each app is one row with its totals, people can answer “what is this app using?” without adding anything up.', 'Обе задачи начинались с приложения, поэтому если каждое приложение будет одной строкой с итогами, ответить на вопрос «что потребляет это приложение?» можно, ничего не складывая.') },
-          { label: label.decision, tone: 'key', text: t('Each app became one row with its totals. Its processes sit one level below, in the same region, and open only when you need them.', 'Каждое приложение стало одной строкой с итогами. Процессы лежат уровнем ниже, в той же области, и раскрываются, только когда нужно.') },
-        ]}
-        aside={[
-          { label: label.notChosen, text: t('A flat process list with search, like Activity Monitor. You’d still be adding up rows yourself.', 'Плоский список процессов с поиском, как в «Мониторинге системы». Складывать строки всё равно пришлось бы самому.') },
-          { label: label.result, tone: 'result', text: t('Brave Browser went from **17 rows to 1**.', 'Brave Browser занимает **1 строку вместо 17**.'), source: t('Measured in the live view', 'Измерено в живом просмотре') },
-        ]}
+        why={t('One app showed up as lots of rows, so its real cost was hidden.', 'Одно приложение занимало много строк, и его реальная нагрузка терялась.')}
+        what={t('Both jobs started from an app. If each app is one row with its totals, people can answer “what is this app using?” without adding anything up. So each app became one row, with its processes one level below, open only when you need them.', 'Обе задачи начинались с приложения. Если каждое приложение будет одной строкой с итогами, ответить «что потребляет это приложение?» можно, ничего не складывая. Поэтому каждое приложение стало одной строкой, а его процессы лежат уровнем ниже и раскрываются, только когда нужны.')}
+        notChosen={t('a flat process list with search, like Activity Monitor. You’d still be adding up rows yourself.', 'плоский список процессов с поиском, как в «Мониторинге системы». Складывать строки всё равно пришлось бы самому.')}
       >
         <Plate kind="desktop" caption={t('Totals first. Processes when you need them.', 'Сначала итоги, процессы по запросу.')} shots={[{ src: outcomeProcessDetails, alt: t('Expanded process details in the final Observatory live view.', 'Раскрытые детали процессов в финальном живом просмотре Observatory.') }]} notes={[
           { x: 1, y: 2, w: 98, h: 12, label: t('One row, with the app’s totals', 'Одна строка с итогами приложения') },
@@ -294,14 +282,8 @@ const findings = [
         title={t('An aligned list instead of cards', 'Выровненный список вместо карточек')}
         navLabel={t('Aligned list', 'Список')}
         layout="band"
-        rows={[
-          { label: label.problem, text: t('Cards grouped the processes, but comparing apps meant your eyes jumping between boxes.', 'Карточки группировали процессы, но чтобы сравнить приложения, взгляд прыгал между блоками.') },
-          { label: label.decision, tone: 'key', text: t('A compact list with numbers in aligned columns, and a live chart below it.', 'Компактный список с цифрами в выровненных колонках и живым графиком под ним.') },
-        ]}
-        aside={[
-          { label: label.why, text: t('With aligned columns, you can compare one metric down a column in a single glance.', 'В выровненных колонках одну метрику можно сравнить одним взглядом сверху вниз.') },
-          { label: label.notChosen, text: t('The card grid from the first prototype. It kept the groups clear, but comparing was slow.', 'Сетка карточек из первого прототипа. Она хорошо показывала группы, но сравнивать в ней было медленно.') },
-        ]}
+        why={t('Cards grouped the processes, but comparing apps meant your eyes jumping between boxes.', 'Карточки группировали процессы, но чтобы сравнить приложения, взгляд прыгал между блоками.')}
+        what={t('In aligned columns, one metric compares down a column in a single glance. So the cards became a compact list, with a live chart below it.', 'В выровненных колонках одну метрику можно сравнить одним взглядом сверху вниз. Поэтому карточки стали компактным списком с живым графиком под ним.')}
       >
         <Plate kind="desktop" together shots={[
           { src: wireframeNowList, alt: t('Wireframe of a simplified list-based live application view.', 'Вайрфрейм упрощённого живого просмотра приложений списком.'), label: t('After: an aligned list with a live chart', 'После: выровненный список с живым графиком') },
@@ -314,13 +296,8 @@ const findings = [
         title={t('Pick apps before the recording mode', 'Сначала приложения, потом режим записи')}
         navLabel={t('Test setup', 'Настройка теста')}
         layout="band"
-        rows={[
-          { label: label.problem, text: t('Test setup asked for manual or automated mode before you’d even picked an app.', 'Настройка теста спрашивала про ручной или автоматический режим ещё до выбора приложения.') },
-          { label: label.decision, tone: 'key', text: t('You pick the apps first, then the recording mode, and setup and the running recording are separate screens.', 'Сначала выбираете приложения, потом режим записи, а настройка и идущая запись стали отдельными экранами.') },
-        ]}
-        aside={[
-          { label: label.why, text: t('People start from what they want to watch. How the tool records it comes second.', 'Люди начинают с того, за чем хотят наблюдать. Как инструмент это записывает, для них вторично.') },
-        ]}
+        why={t('Test setup asked for manual or automated mode before you’d even picked an app.', 'Настройка теста спрашивала про ручной или автоматический режим ещё до выбора приложения.')}
+        what={t('People start from what they want to watch; how the tool records it comes second. So you pick the apps first, then the mode, and setup and the running recording became separate screens.', 'Люди начинают с того, за чем хотят наблюдать, а как инструмент это записывает, для них вторично. Поэтому сначала выбираются приложения, потом режим, а настройка и идущая запись стали отдельными экранами.')}
       >
         <Plate kind="desktop" together shots={[
           { src: wireframeTestSetup, alt: t('Wireframe of a simplified controlled test setup.', 'Вайрфрейм упрощённой настройки контролируемого теста.'), label: t('After: choose, set up, start', 'После: выбрать, настроить, запустить') },
@@ -333,14 +310,8 @@ const findings = [
         title={t('Saved results inside Tests', 'Результаты внутри «Tests»')}
         navLabel={t('Saved results', 'Результаты тестов')}
         layout="band"
-        rows={[
-          { label: label.problem, text: t('A test ended in Tests, but its result lived in History, a separate section.', 'Тест заканчивался в «Tests», а результат жил в «History», отдельном разделе.') },
-          { label: label.decision, tone: 'key', text: t('Results moved into Tests as Saved Results, with a sidebar list while a result is open.', 'Результаты переехали в «Tests» как «Saved Results», со списком в боковой панели, пока результат открыт.') },
-        ]}
-        aside={[
-          { label: label.why, text: t('The information architecture should follow the task, so the next step is always right after the last one.', 'Информационная архитектура должна идти за задачей, чтобы следующий шаг всегда был сразу после предыдущего.') },
-          { label: label.result, tone: 'result', text: t('Top-level sections went from **3 to 2**.', 'Разделов верхнего уровня стало **2 вместо 3**.'), source: t('Counted from the prototypes', 'Посчитано по прототипам') },
-        ]}
+        why={t('A test ended in Tests, but its result lived in History, a separate section.', 'Тест заканчивался в «Tests», а результат жил в «History», отдельном разделе.')}
+        what={t('The structure should follow the task, with the next step right after the last one. So results moved into Tests as Saved Results, with a sidebar list while one is open.', 'Структура должна идти за задачей, чтобы следующий шаг был сразу после предыдущего. Поэтому результаты переехали в «Tests» как «Saved Results», со списком в боковой панели, пока результат открыт.')}
       >
         <Plate kind="desktop" together shots={[
           { src: wireframeSavedResults, alt: t('Wireframe of Saved Results inside the Tests workflow.', 'Вайрфрейм «Saved Results» внутри сценария «Tests».'), label: t('After: Saved Results inside Tests', 'После: «Saved Results» внутри «Tests»') },
@@ -381,6 +352,10 @@ const findings = [
             )} /></dd>
           </div>
           <div class="rows__row">
+            <dt>{t('Counted', 'Посчитано')}</dt>
+            <dd>{t('Top-level sections went from 3 to 2, with results inside Tests.', 'Разделов верхнего уровня стало 2 вместо 3: результаты живут внутри «Tests».')}</dd>
+          </div>
+          <div class="rows__row">
             <dt>{t('Not tested', 'Не проверено')}</dt>
             <dd>{t('Whether people outside my team can tell what happened in a run, and which recordings are worth comparing.', 'Понимают ли люди вне моей команды, что произошло в прогоне, и какие записи стоит сравнивать.')}</dd>
           </div>
@@ -418,8 +393,8 @@ const findings = [
 
     <StudySection part="next">
       <ol class="next-steps" role="list">
-        <li>{t('Group apps by what they’re for. My colleagues were already comparing apps of one kind, picking them one by one, so one pick could add a whole category to a test.', 'Сгруппировать приложения по назначению. Коллеги уже сравнивали приложения одного типа и выбирали их по одному, так что один выбор мог бы добавлять в тест всю категорию.')}</li>
-        <li>{t('Test with people outside my team: can they tell what happened in a run, and which recordings are worth comparing?', 'Проверить на людях вне моей команды: понимают ли они, что произошло в прогоне, и какие записи стоит сравнивать?')}</li>
+        <li>{t('Group apps by what they’re for, so one pick adds a whole category to a test. My colleagues already pick apps of one kind one by one.', 'Сгруппировать приложения по назначению, чтобы один выбор добавлял в тест всю категорию. Коллеги уже выбирают приложения одного типа по одному.')}</li>
+        <li>{t('Test with people outside my team, the question left open in Results.', 'Проверить на людях вне моей команды: это открытый вопрос из результатов.')}</li>
       </ol>
       <div class="split next-pair">
         <figure class="category-mock">
@@ -452,8 +427,9 @@ const findings = [
       <a href={releaseURL}><span class="link-mark">{t('Download 0.1.1 ↗', 'Скачать 0.1.1 ↗')}</span></a>
       <a href={repositoryURL}><span class="link-mark">{t('Source ↗', 'Исходный код ↗')}</span></a>
       <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
+      <a href={localePath('/case-studies/observatory/present/', locale)}><span class="link-mark">{t('Slides', 'Слайды')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
-      <a href={localePath('/case-studies/two-sticks/', locale)}><span class="link-mark">{t('Two Sticks case study →', 'Кейс «Две палочки» →')}</span></a>
+      <a href={localePath('/case-studies/supergood/', locale)}><span class="link-mark">{t('SuperGood case study →', 'Кейс SuperGood →')}</span></a>
     </nav>
   </footer>
 </BaseDocument>

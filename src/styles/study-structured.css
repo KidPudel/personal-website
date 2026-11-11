@@ -474,6 +474,47 @@ html.study-structured {
 }
 
 
+/* A decision in plain words: why, then what was bet and done, then what wasn't chosen. */
+.study-structured .decision-block--band .decision-block__words--plain {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 48rem;
+}
+
+.study-structured main .decision-block__words--plain p {
+  margin: 0;
+}
+
+.study-structured main .decision-block__what {
+  color: var(--color-ink);
+}
+
+.study-structured main .decision-block__not {
+  color: var(--color-muted);
+  font-size: var(--small);
+}
+
+.study-structured main .decision-block__not span {
+  color: var(--color-copy);
+  font-family: var(--font-study-emphasis);
+  font-weight: 600;
+}
+
+/* A bet: its words, then what would have to be true. */
+.study-structured .bet__words {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.study-structured main .bet__words p {
+  margin: 0;
+}
+
+.study-structured main .bet__test {
+  color: var(--color-muted);
+  font-size: var(--small);
+}
+
 /* Screens fit the window together with their names, and a little larger than plates.css allows. */
 .study-structured .plate {
   --phone: min(19rem, (100svh - 13rem) * 0.46);

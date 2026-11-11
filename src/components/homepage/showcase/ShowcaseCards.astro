@@ -93,7 +93,7 @@ const cards = await Promise.all(caseStudies.map(async (study, index) => ({
             {card.kind === 'observatory' && <ObservatoryGroupDemo />}
             {card.kind === 'instagram' && <InstagramPrototype />}
             {card.kind === 'chinese' && <TwoSticksChat />}
-            {card.kind === 'supergood' && <SupergoodLunch />}
+            {card.kind === 'supergood' && <SupergoodLunch eager={card.firstRow} />}
           </div>
         </div>
 
@@ -278,10 +278,10 @@ const cards = await Promise.all(caseStudies.map(async (study, index) => ({
   .showcase__grid {
     display: grid;
     grid-template-areas:
-      'instagram supergood'
-      'instagram supergood'
-      'observatory chinese'
-      'observatory chinese';
+      'instagram observatory'
+      'instagram observatory'
+      'supergood chinese'
+      'supergood chinese';
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: repeat(4, auto);
     column-gap: var(--work-gap);
