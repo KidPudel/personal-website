@@ -1,0 +1,40 @@
+---
+import type { Part } from '../parts';
+
+// One stage of a study's presenting version: one thing for the room to look at, and the words
+// Igor says over it in his notes. The default slot is what the room reads (a sentence, sometimes
+// a line or a few points); `visual` is the screen or chart beside it; `notes` are his notes, shown
+// only in the notes window. Without JavaScript the stages are one long page, notes included.
+
+interface Props {
+  /** The part of the study this stage belongs to; the strip at the bottom marks it. */
+  part?: Part;
+  /** A few words naming the stage, for the notes window's "next" line. */
+  name: string;
+  /** Where the stage is inside its part, such as "Decision 2". */
+  beat?: string;
+  /** Give the first stage of each part the part's name, so the strip can link to it. */
+  id?: string;
+  /** title: the opening. Otherwise the words stand alone, or beside the visual when there is one. */
+  layout?: 'title' | 'words' | 'beside';
+}
+
+const { part, name, beat, id, layout } = Astro.props;
+const hasVisual = Astro.slots.has('visual');
+const shape = layout ?? (hasVisual ? 'beside' : 'words');
+---
+
+<section class:list={['stage', `stage--${shape}`]} id={id} data-stage data-part={part} data-name={name} aria-label={name}>
+  <div class="stage__body">
+    <div class="stage__words">
+      {beat && <p class="stage__beat">{beat}</p>}
+      <slot />
+    </div>
+    {hasVisual && <div class="stage__visual"><slot name="visual" /></div>}
+  </div>
+  {Astro.slots.has('notes') && (
+    <div class="stage__notes">
+      <slot name="notes" />
+    </div>
+  )}
+</section>

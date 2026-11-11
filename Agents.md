@@ -44,6 +44,7 @@ Visual compositions and interaction choreography are working hypotheses. Igor ma
 | Case-study base: type sizes, spacing scale, panel tint, highlighter colours, and the large sentence | `src/styles/plates.css` |
 | A screen on its study-tinted panel, what changed ringed and named by number, several screens shown one at a time (arrows, dots, swipe) | `src/components/case-studies/Plate.astro`; panels that aren't a Plate use `.panel-paper` |
 | Each study's opening | SuperGood `supergood/FocusCover.astro`; Observatory `observatory/EyepieceCover.astro`, `night.ts`; Instagram `instagram-saves/PileCover.astro`; Two Sticks `two-sticks/CopybookCover.astro`, `copybook.ts` |
+| A study's slides for presenting it in an interview (one stage at a time, the notes window, the parts strip, keys and swipe) and the "Slides" link to them | Deck and stages `src/components/case-studies/present/`; each study's stages and notes in `src/pages/case-studies/<study>/present.astro` (Instagram Saves and SuperGood so far), facts kept in step with its `index.astro`; the link from `main[data-present]` in `ReadingProgress.astro` and the study's footer |
 | Case-study live moments (highlights drawing in, chart replay, gathering rows, pen circle) | `src/components/case-studies/StudyLife.astro`; states in `src/styles/plates.css` |
 | Homepage work showcase layout | `src/components/homepage/showcase/ShowcaseCards.astro` |
 | Observatory work card (the 17 process rows that gather into one app row) | `src/components/homepage/showcase/ObservatoryGroupDemo.astro` |

@@ -79,6 +79,10 @@ The pile of saves on the Instagram Saves cover, and the faint paper of its frame
 
 Each oddity card is a watercolour ground (a feralui.dev render like the work cards, 1200 px PNG served as WebP through `Image`) with the product drawn live in HTML on it. The card is below the fold: its ground is lazy and paints a 24 px inline copy until it arrives. The share sheet's stand-in avatars are Igor's doodles, trimmed and centred by `scripts/prepare-oddity-avatars.mjs` into 192 px PNGs (line art, kept lossless, about 6 KB each). On an oddity's own page the before-and-after plate's ground is the route's one high-priority image; the playable phone's ground and reel (the homepage sky poster) are lazy, and without JavaScript the playground and its plate are left out, since the page says the same in words and the static pair.
 
+### Case-study slides
+
+A study's slides (`/case-studies/<study>/present/`) show one stage at a time; the others are `display: none`, so their lazy images don't load. The opening stage is the homepage work card, large: its phone is the route's one high-priority image and its watercolour ground is eager, painting a 24 px copy of itself until it arrives. Every other screen is lazy, and when a stage is shown, the images on the next two stages and the one before it are switched to eager so they are ready before they're needed. The live Instagram search on its stage mounts only when that stage is shown (`client:visible`).
+
 ## Flipbooks and animated image sequences
 
 - Do not eagerly fetch or decode every frame when a component connects.

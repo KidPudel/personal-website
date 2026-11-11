@@ -1,0 +1,304 @@
+---
+import { Image } from 'astro:assets';
+
+import penCircle from '../../../assets/art/elements/circled.png';
+import annotation from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/annotation.png';
+import collectionNew from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/collection_new.png';
+import filter from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/filter.png';
+import savedOld from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/all_saved_old.png';
+import saveNew from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/save_new.png';
+import saveOld from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/save_old.png';
+import spider from '../../../assets/case_study_images/instagram-saves-redesign/screenshots/search_spider.png';
+import BarCompare from '../../../components/case-studies/BarCompare.astro';
+import Plate from '../../../components/case-studies/Plate.astro';
+import Rich from '../../../components/case-studies/Rich.astro';
+import StudyLife from '../../../components/case-studies/StudyLife.astro';
+import TryPrototype from '../../../components/case-studies/instagram-saves/TryPrototype.astro';
+import Deck from '../../../components/case-studies/present/Deck.astro';
+import Stage from '../../../components/case-studies/present/Stage.astro';
+import WorkPanel from '../../../components/case-studies/present/WorkPanel.astro';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
+import { caseStudy } from '../../../content/case-studies';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+import '../../../styles/plates.css';
+
+// The presenting version of the Instagram Saves study (see present/Deck.astro). The facts are the
+// study's own (index.astro next to this file): change one there, change it here.
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const study = caseStudy('instagram-saves-redesign');
+const decision = (number: number) => t(`Decision ${number}`, `Решение ${number}`);
+const searchCrop = { x: 0, y: 0, w: 100, h: 58 };
+const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
+---
+
+<BaseDocument
+  title={t('Instagram Saves, presenting | Igor Kupchinenko', '«Сохранённое» в Instagram, показ | Игорь Купчиненко')}
+  description={t(
+    'The Instagram Saves case study, one stage at a time, with speaker notes.',
+    'Кейс про «Сохранённое» в Instagram по одному слайду, с заметками для рассказа.',
+  )}
+  pageClass="study-plates study-deck study--instagram"
+  robots="noindex"
+>
+  <Deck
+    name={t('Instagram Saves', '«Сохранённое» в Instagram')}
+    studyHref={localePath('/case-studies/instagram-saves-redesign/', locale)}
+    parts={['problem', 'goal', 'constraints', 'research', 'decisions', 'results', 'next']}
+  >
+    <Stage layout="title" name={t('Opening', 'Начало')}>
+      <h1 class="say">{t('Instagram Saves, worth coming back to.', '«Сохранённое» в Instagram, к которому хочется возвращаться.')}</h1>
+      <p class="line">{study.about[locale]}</p>
+      <WorkPanel slot="visual" slug="instagram-saves-redesign" alt={t('The redesigned Saved screen, with search across AI descriptions, titles and notes.', 'Редизайн «Сохранённого»: поиск по AI-описаниям, названиям и заметкам.')} />
+      <ul slot="notes">
+        <li>{t('A concept of my own from 2026, not a shipped product.', 'Собственный концепт 2026 года, а не выпущенный продукт.')}</li>
+        <li>{t('I did the research (9 interviews) and the design in Figma, then built and refined the prototype with Claude Code.', 'Исследование (9 интервью) и дизайн в Figma мои, прототип я собрал и доработал с Claude Code.')}</li>
+        <li>{t('It started with my own problem: I kept losing references I’d saved on purpose.', 'Началось с моей проблемы: я постоянно терял референсы, которые сохранял специально.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="problem" id="problem" name={t('The more you save', 'Чем больше сохраняешь')}>
+      <h2 class="say">{t('The more you save, the less you can find.', 'Чем больше сохраняешь, тем сложнее найти.')}</h2>
+      <p class="line">{t('Saving takes one tap. Getting a save back means scrolling through all of them.', 'Сохранить можно одним касанием, а чтобы вернуться к посту, приходится листать всё подряд.')}</p>
+      <Plate slot="visual" caption={t('Saved today: collections, then one long grid. No search.', '«Сохранённое» сейчас: коллекции, а под ними одна длинная сетка. Поиска нет.')} shots={[{ src: savedOld, alt: t('Current Saved screen with collections and a grid of 76 saved posts, without search.', 'Текущий экран «Сохранённое»: коллекции и сетка из 76 публикаций, без поиска.') }]} />
+      <ul slot="notes">
+        <li>{t('You saved it for later, and later is here. You remember the reel, more or less. You open Saved and keep scrolling.', 'Вы сохранили пост на потом, и «потом» наступило. Примерно помните тот рилс, открываете «Сохранённое» и листаете.')}</li>
+        <li>{t('Point at the screen: collections on top, then one long grid, and no search.', 'Покажите на экран: сверху коллекции, под ними одна длинная сетка, и поиска нет.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="problem" name={t('What keeps happening', 'Что происходит раз за разом')}>
+      <h2 class="say">{t('After a minute or two of scrolling, people give up.', 'Через минуту-другую люди сдаются.')}</h2>
+      <ol class="sequence" role="list">
+        <li>{t('Save it for later', 'Сохранить на потом')}</li>
+        <li>{t('Choosing a collection is hard', 'Выбрать коллекцию сложно')}</li>
+        <li>{t('Dump it in All', 'Бросить в общую кучу')}</li>
+        <li>{t('Scroll to find it', 'Листать в поисках')}</li>
+        <li>{t('Give up', 'Сдаться')}</li>
+      </ol>
+      <ul slot="notes">
+        <li>{t('Walk the loop left to right. Then they look for something new instead.', 'Пройдите петлю слева направо. Потом люди ищут что-то новое вместо старого.')}</li>
+        <li>{t('One long-time saver put it plainly: 30 saves are okay, 3,000 are not.', 'Один человек, который сохраняет годами, сказал так: 30 сохранений ещё нормально, 3000 уже нет.')}</li>
+        <li>{t('Why Instagram should care, my assumption: a save is a strong signal of intent. If Saved works, people get one more reason to come back.', 'Зачем это Instagram, моё предположение: сохранение говорит о намерении. Если «Сохранённое» работает, у людей ещё одна причина возвращаться.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="goal" id="goal" name={t('A way back', 'Способ возвращаться')}>
+      <h2 class="say" data-arrive><Rich text={t('So the goal wasn’t another way to save. It was ==a way back==.', 'Так что цель была не в новом способе сохранять, а ==в способе возвращаться==.')} /></h2>
+      <p class="line">{t('Get people back to a specific save quickly, without asking them to organise more.', 'Быстро возвращать людей к конкретному сохранённому посту и не заставлять их больше сортировать.')}</p>
+      <ul slot="notes">
+        <li>{t('How I’d know, at Instagram’s scale: Saved visits that end with a post opened, searches that end in an open and how long they take, and how often suggested collections are accepted.', 'Как пойму, в масштабе Instagram: заходы в «Сохранённое», которые заканчиваются открытием поста, поиски с открытием и время на них, и как часто принимают подсказки коллекций.')}</li>
+        <li>{t('Guardrail: saving has to stay one tap, and total saves shouldn’t drop.', 'Ограничитель: сохранение остаётся одним касанием, а общее число сохранений не должно упасть.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="constraints" id="constraints" name={t('Constraints', 'Ограничения')}>
+      <h2 class="say">{t('Saving stays one tap, and nobody has to organise more.', 'Сохранение остаётся одним касанием, и сортировать больше никто не должен.')}</h2>
+      <p class="line">{t('And AI search is unverified: the prototype’s results are designed states.', 'И AI-поиск не проверен: результаты в прототипе спроектированы заранее.')}</p>
+      <ul slot="notes">
+        <li>{t('Saving is the part that already works, so nothing I add can slow it down.', 'Сохранение уже работает, поэтому ничто новое не должно его замедлять.')}</li>
+        <li>{t('Filing is the work people skip, so the fix has to work on the saves they already have.', 'Сортировку люди и пропускают, поэтому решение должно работать с тем, что уже сохранено.')}</li>
+        <li>{t('Nine interviews are enough to set a direction, not to speak for every Instagram user.', 'Девяти интервью хватает, чтобы задать направление, но не чтобы говорить за всех пользователей Instagram.')}</li>
+        <li>{t('I designed it in Figma, then built it with Claude Code, so the flows work and could be timed.', 'Я спроектировал его в Figma и собрал с Claude Code, поэтому сценарии работают и их можно было замерить.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="research" id="research" name={t('6 of 9', '6 из 9')}>
+      <p class="headcount" data-arrive aria-hidden="true">
+        <span class="headcount__finding">
+          {Array.from({ length: 6 }, (_, index) => <span class="headcount__dot headcount__dot--on" style={`--i: ${index}`}></span>)}
+          <Image class="headcount__circle pen-circle" src={penCircle} alt="" widths={[256, 512]} sizes="20rem" loading="lazy" decoding="async" />
+        </span>
+        {Array.from({ length: 3 }, () => <span class="headcount__dot"></span>)}
+      </p>
+      <h2 class="say">{t('6 of 9 named finding a specific save as their main problem.', '6 из 9 назвали главной проблемой поиск конкретного сохранённого.')}</h2>
+      <p class="line">{t('Nine interviews, the same questions for everyone.', 'Девять интервью, всем одни и те же вопросы.')}</p>
+      <ul slot="notes">
+        <li>{t('I asked why they started saving, how they save and find things step by step, where it hurts, and what they use instead.', 'Я спрашивал, зачем начали сохранять, как шаг за шагом сохраняют и ищут, где больно и чем пользуются вместо этого.')}</li>
+        <li>{t('Memory works by subject and time. Saved works by folder.', 'Память работает по теме и времени, а «Сохранённое» по папкам.')}</li>
+        <li>{t('I drew in my notebook during the interviews as well as writing.', 'Во время интервью я не только записывал, но и рисовал в блокноте.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="research" name={t('Findings into decisions', 'Выводы и решения')}>
+      <h2 class="say">{t('Three findings became three decisions.', 'Три вывода стали тремя решениями.')}</h2>
+      <ul class="points" role="list">
+        <li><span><strong>{t('Finding a specific save is the main problem.', 'Главная проблема: найти конкретное сохранённое.')}</strong> {t('6 of 9', '6 из 9')}</span><span class="to">{t('Search', 'Поиск')}</span></li>
+        <li><span><strong>{t('Filing feels like homework.', 'Сортировка как домашняя работа.')}</strong> {t('5 of 9', '5 из 9')}</span><span class="to">{t('Suggested collections', 'Подсказки коллекций')}</span></li>
+        <li><span><strong>{t('Important things leave Instagram.', 'Важное уходит из Instagram.')}</strong> {t('7 of 9', '7 из 9')}</span><span class="to">{t('Notes and pins', 'Заметки и закрепление')}</span></li>
+      </ul>
+      <ul slot="notes">
+        <li>{t('Search went first: the main problem for the most people, and it works on saves people already have, with no new habit to build.', 'Поиск первым: это главная проблема для большинства, и он работает с тем, что уже сохранено, без новых привычек.')}</li>
+        <li>{t('7 of 9 is a bigger number, but it’s what people do about the problem, not what they named as the problem. Notes answer it, third.', '7 из 9 больше, но так люди справляются с проблемой, а называли они другую. На это отвечают заметки, третьими.')}</li>
+        <li>{t('Anything from one person waited: places from travel videos, planning as a couple, bulk tools and export, letting go of saves.', 'То, что шло от одного человека, подождало: места из видео о путешествиях, планирование для пар, массовые действия и экспорт, помощь отпускать сохранённое.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" id="decisions" beat={decision(1)} name={t('Search inside Saved', 'Поиск в «Сохранённом»')}>
+      <h2 class="say">{t('Search inside Saved, by what you remember.', 'Поиск в «Сохранённом» по тому, что помнишь.')}</h2>
+      <p class="line">{t('Across titles, your notes, and AI descriptions of each post.', 'По названиям, вашим заметкам и AI-описаниям постов.')}</p>
+      <Plate slot="visual" shots={[
+        { src: spider, crop: searchCrop, alt: t('Prototype search for spider returning two saved posts.', 'Поиск в прототипе по запросу «spider» находит две сохранённые публикации.'), notes: [
+          { x: 4, y: 15.6, w: 92, h: 5, label: t('Search, right inside Saved', 'Поиск прямо в «Сохранённом»') },
+          { x: 4, y: 21.7, w: 92, h: 5.5, label: t('Titles, notes, AI descriptions', 'Названия, заметки, AI-описания') },
+        ] },
+      ]} />
+      <ul slot="notes">
+        <li>{t('People remember what a post showed and roughly when, not who posted it or where they filed it.', 'Люди помнят, что было в посте и примерно когда, но не кто его выложил и куда он сохранён.')}</li>
+        <li>{t('Quote: “There’s no way to search for ‘pasta with lemon’ inside my saves.”', 'Цитата: «В сохранённом никак не найти „пасту с лимоном“».')}</li>
+        <li>{t('Hypothesis: if people can search by what they remember, they get back to a save without ever having filed it.', 'Гипотеза: если искать можно по тому, что помнишь, к посту удастся вернуться, даже если его никуда не раскладывали.')}</li>
+        <li>{t('Not chosen: nudging people to organise better. That’s work up front, the work people skip.', 'Отверг: подталкивать людей лучше сортировать. Это работа заранее, а её люди и пропускают.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(1)} name={t('Narrow it by date', 'Сузить по дате')}>
+      <h2 class="say">{t('Then narrow it down by when you saved it.', 'А потом сузить по тому, когда сохранили.')}</h2>
+      <p class="line">{t('Oldest-first sorting and a saved-date range. The range stays in view above the results.', 'Сортировка от старых к новым и диапазон дат сохранения. Диапазон остаётся на виду над результатами.')}</p>
+      <Plate slot="visual" shots={[
+        { src: filter, crop: searchCrop, alt: t('Saved search filter with latest-first and oldest-first sorting and a saved-date range from August 26, 2025 to August 21, 2026.', 'Фильтр поиска по сохранённому с сортировкой от новых и от старых и диапазоном дат сохранения с 26 августа 2025 по 21 августа 2026 года.'), notes: [
+          { x: 24, y: 8.8, w: 70, h: 11.4, label: t('Oldest-first sorting', 'Сортировка от старых') },
+          { x: 24, y: 21, w: 70, h: 11, label: t('A saved-date range', 'Диапазон дат сохранения') },
+        ] },
+      ]} />
+      <ul slot="notes">
+        <li>{t('A long-time saver knew roughly when they’d saved a post but couldn’t jump to a month or year.', 'Человек, который сохраняет годами, примерно помнил, когда сохранил пост, но не мог перейти к нужному месяцу или году.')}</li>
+        <li>{t('With years of saves, even a rough time window cuts the pile down a lot.', 'Когда сохранения копятся годами, даже примерный промежуток сильно сужает поиск.')}</li>
+        <li>{t('AI descriptions aren’t a stretch: Instagram belongs to Meta, which already builds AI.', 'AI-описания не фантазия: Instagram принадлежит Meta, которая сама развивает AI.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(2)} name={t('Suggested collections', 'Подсказки коллекций')}>
+      <h2 class="say">{t('The right collection is already on the sheet.', 'Нужная коллекция уже на экране.')}</h2>
+      <p class="line">{t('Two suggestions above the full list: the best match, and a new one with its name filled in.', 'Над полным списком две подсказки: самая подходящая коллекция и новая, уже с названием.')}</p>
+      <Plate slot="visual" together shots={[
+        { src: saveNew, crop: { x: 0, y: 22, w: 100, h: 54 }, alt: t('Redesigned save sheet suggesting an existing collection and a possible new collection.', 'Окно сохранения после редизайна: подсказывает существующую коллекцию и возможную новую.'), label: t('After', 'После'), notes: [
+          { x: 4, y: 48.5, w: 92, h: 7, label: t('The best-matching collection', 'Самая подходящая коллекция') },
+          { x: 4, y: 56.6, w: 92, h: 7, label: t('A new one, its name filled in', 'Новая, уже с названием') },
+        ] },
+        { src: saveOld, crop: { x: 0, y: 37, w: 100, h: 54 }, alt: t('Original save sheet showing the collection list.', 'Исходное окно сохранения со списком коллекций.'), label: t('Before: find or name it yourself', 'До: найти или назвать самому') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('Filing meant finding or naming a collection mid-scroll: “I don’t want to interrupt what I’m doing.”', 'Чтобы разложить пост, нужно найти или назвать коллекцию прямо посреди ленты: «Не хочу отвлекаться от того, что делаю».')}</li>
+        <li>{t('Hypothesis: if the right collection is already there, filing stops being a decision people put off.', 'Гипотеза: если нужная коллекция уже на экране, разложить пост перестаёт быть решением, которое откладывают.')}</li>
+        <li>{t('The way Pinterest suggests a board. The list stays for when a suggestion is wrong.', 'Так же Pinterest подсказывает доску. Список остаётся на случай, если подсказка ошиблась.')}</li>
+        <li>{t('Not chosen: nested collections. They match how creators think, but ask for more filing.', 'Отверг: вложенные коллекции. Авторам контента это близко, но сортировки становится больше.')}</li>
+        <li>{t('Counted from the designs: a new collection takes 1 tap instead of 2 and a name.', 'По макетам: новая коллекция занимает одно касание вместо двух и названия.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(3)} name={t('Notes and pins', 'Заметки и закрепление')}>
+      <h2 class="say">{t('Keep the reason with the save.', 'Хранить причину вместе с постом.')}</h2>
+      <p class="line">{t('Short notes you can search later, and pins for references you go back to often.', 'Короткие заметки, по которым потом можно искать, и закрепление для частых референсов.')}</p>
+      <Plate slot="visual" together shots={[
+        { src: collectionNew, crop: { x: 0, y: 0, w: 100, h: 60 }, alt: t('Art collection with two pinned posts above the rest of the saves.', 'Коллекция «Art»: две закреплённые публикации над остальными сохранениями.'), label: t('Pinned stays on top', 'Закреплённое остаётся сверху') },
+        { src: annotation, crop: sheetCrop, alt: t('Annotation editor with a note about a limited blue palette.', 'Редактор заметки с записью об ограниченной синей палитре.'), label: t('A note in your own words', 'Заметка своими словами') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('A collection keeps the post, not the reason. One creator kept Notion just to write reasons down.', 'Коллекция хранит пост, но не причину. Один автор контента вёл Notion, только чтобы записывать зачем.')}</li>
+        <li>{t('Hypothesis: if the reason lives on the save, it’s one more way back, and less reason to take things out of Instagram.', 'Гипотеза: если причина хранится на посте, это ещё один путь назад и меньше поводов уносить важное из Instagram.')}</li>
+        <li>{t('Not chosen: tags. AI search already covers that, and I suspect only a small share of power users would bother.', 'Отверг: теги. Это уже закрывает AI-поиск, а возиться с ними, подозреваю, станет лишь небольшая часть самых активных.')}</li>
+        <li>{t('Not measured yet. Shared notes need a clear “who can see this” state first.', 'Пока не измерял. Сначала общим заметкам нужно явно показывать, кто их видит.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={t('Bets', 'Ставки')} name={t('Two bets', 'Две ставки')}>
+      <h2 class="say">{t('Two bets I’d test before committing.', 'Две ставки, которые я бы сначала проверил.')}</h2>
+      <ul class="points" role="list">
+        <li><span><strong>{t('Reactions in shared collections.', 'Реакции в общих коллекциях.')}</strong> {t('So people can tell the other person saw a post.', 'Чтобы было видно, что другой увидел пост.')}</span></li>
+        <li><span><strong>{t('Collections in the feed selector.', 'Коллекции в переключателе ленты.')}</strong> {t('So saves get a place in everyday browsing.', 'Чтобы сохранённое попадало в обычный просмотр.')}</span></li>
+      </ul>
+      <p class="source">{t('They came from fewer people, so I designed them but wouldn’t commit without testing.', 'За ними меньше людей, поэтому я их спроектировал, но без проверки не стал бы на них полагаться.')}</p>
+      <ul slot="notes">
+        <li>{t('Reactions: both people who used shared collections couldn’t tell if the other saw a post, so links went to DMs.', 'Реакции: оба человека с общими коллекциями не понимали, видел ли пост другой, и ссылки уходили в личку.')}</li>
+        <li>{t('Feed: one person stopped using Saved, it had become a backlog. Risk: it might just become more scrolling.', 'Лента: один человек перестал пользоваться «Сохранённым», оно превратилось в склад. Риск: это может стать просто ещё одним листанием.')}</li>
+        <li>{t('Left out: deeper shared folders. People proposed it when they saw the prototype, but it’s collaboration, not getting back to a save.', 'За рамками: более глубокие общие папки. Их предлагали, увидев прототип, но это про совместную работу, а не про возвращение к сохранённому.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="results" id="results" name={t('10 seconds instead of 90', '10 секунд вместо 90')}>
+      <h2 class="say" data-arrive><Rich text={t('Finding a half-remembered post took ==about 10 seconds instead of 90==.', 'Полузабытый пост находился ==примерно за 10 секунд вместо 90==.')} /></h2>
+      <p class="source">{t('3 people, 5 timed runs on today’s Saved and 9 on the prototype. Search results were designed states, so this times the flow, not the AI.', '3 человека, 5 замеров на сегодняшнем «Сохранённом» и 9 на прототипе. Результаты поиска спроектированы заранее, так что это время сценария, а не качество AI.')}</p>
+      <BarCompare
+        slot="visual"
+        title={t('Time to find a half-remembered post', 'Время, чтобы найти полузабытый пост')}
+        unit={10}
+        unitLabel={t('One mark is 10 seconds.', 'Одна отметка: 10 секунд.')}
+        rows={[
+          { label: t('Today: scroll the grid', 'Сейчас: листать сетку'), value: 90, display: t('≈90 s', '≈90 с') },
+          { label: t('Prototype: search', 'Прототип: поиск'), value: 10, display: t('≈10 s', '≈10 с'), emphasis: true },
+        ]}
+      />
+      <ul slot="notes">
+        <li>{t('No launch, so no product metrics yet. This is a small timed test.', 'Продукт не запускался, поэтому продуктовых метрик нет. Это небольшой замер.')}</li>
+        <li>{t('One person 3 times on the old Saved and 5 on the prototype, two people once and twice. A library of 76 saves.', 'Один человек 3 раза на старом и 5 на прототипе, двое по разу и по два. Библиотека из 76 сохранений.')}</li>
+        <li>{t('Heard: I showed it to all nine. “This is a massive improvement”, “really convenient”. Nice, but an early reaction, not evidence.', 'Что сказали: я показал прототип всем девяти. «Это огромное улучшение», «очень удобно». Приятно, но это первые впечатления, а не доказательства.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="results" name={t('Try it', 'Попробовать')}>
+      <h2 class="say">{t('The prototype works, so you can try it.', 'Прототип работает, его можно попробовать.')}</h2>
+      <TryPrototype slot="visual" />
+      <ul slot="notes">
+        <li>{t('Tap the search field and let them watch it find “spider”, then “new york”.', 'Нажмите на поле поиска и дайте посмотреть, как оно находит «spider», а потом «new york».')}</li>
+        <li>{t('Designed in Figma, built and refined with Claude Code.', 'Спроектирован в Figma, собран и доработан с Claude Code.')}</li>
+        <li>{t('Not tested yet: whether AI search finds the right save on a real library.', 'Ещё не проверено: находит ли AI-поиск нужное в настоящих сохранениях.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="next" id="next" name={t('Next steps', 'Что дальше')}>
+      <h2 class="say">{t('Next, test search on real, messy libraries.', 'Дальше проверить поиск на настоящих, захламлённых сохранениях.')}</h2>
+      <ul class="points" role="list">
+        <li><span>{t('Repeat the timing with more people, on their own saves, with working search.', 'Повторить замеры с большим числом людей, на их собственных сохранениях и с работающим поиском.')}</span></li>
+        <li><span>{t('Test the two bets, and first add a clear “who can see this” state to shared notes.', 'Проверить две ставки, а перед этим явно показать в общих заметках, кто их видит.')}</span></li>
+        <li><span>{t('At scale, the metrics in Goal would tell if it works.', 'В масштабе понять, работает ли это, помогут метрики из цели.')}</span></li>
+      </ul>
+      <ul slot="notes">
+        <li>{t('The prototype’s results are designed states, so real search is the biggest unknown.', 'Результаты в прототипе спроектированы заранее, поэтому настоящий поиск и есть главная неизвестная.')}</li>
+        <li>{t('Then stop and ask what they want to see again.', 'Дальше остановитесь и спросите, что показать ещё раз.')}</li>
+      </ul>
+    </Stage>
+  </Deck>
+  <StudyLife />
+</BaseDocument>
+
+<style>
+  /* Nine people, the six who named finding a save circled in the pen from the homepage. */
+  .headcount {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.5rem, 0.9vw, 0.75rem);
+    margin: 0 0 clamp(2rem, 5vh, 3rem);
+  }
+
+  .headcount__finding {
+    position: relative;
+    display: flex;
+    gap: inherit;
+    margin-right: clamp(1rem, 2vw, 1.75rem);
+  }
+
+  .headcount__dot {
+    width: clamp(1.25rem, 2.4vw, 2.25rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1.5px var(--context);
+  }
+
+  .headcount__dot--on {
+    background: var(--color-ink);
+    box-shadow: none;
+  }
+
+  /* Sized against the six dots the way the study sizes it. */
+  :global(html.study-deck) .headcount :global(.headcount__circle) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 132%;
+    max-width: none;
+    height: auto;
+    translate: -50% -50%;
+    pointer-events: none;
+  }
+</style>

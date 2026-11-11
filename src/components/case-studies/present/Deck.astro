@@ -1,0 +1,883 @@
+---
+import { toLocale, translator } from '../../../i18n/locales';
+import { partLabels, type Part } from '../parts';
+
+// A study's presenting version: one stage at a time, for Igor to talk over in an interview. The
+// room sees one thing to look at per stage; what he says is in his notes, in a second window
+// (the same page with ?notes) that he keeps off the shared screen. Both windows move together.
+//
+//   Stage window: arrows, Space, Page Up/Down, swipe, or the buttons move; F is full screen; N
+//   opens the notes; the parts at the bottom jump to the first stage of each part.
+//   Notes window: the same keys, the stage's own words, his notes, what comes next, a timer.
+//
+// Without JavaScript every stage is on one long page, notes included.
+
+interface Props {
+  /** The study's name, top left; it leads back to the reading version. */
+  name: string;
+  studyHref: string;
+  /** The parts in the strip at the bottom, in order. */
+  parts: Part[];
+}
+
+const { name, studyHref, parts } = Astro.props;
+const t = translator(toLocale(Astro.currentLocale));
+const labels = partLabels(t);
+---
+
+<script is:inline>
+  // Decide which window this is before anything paints.
+  document.documentElement.dataset.deckView = new URLSearchParams(location.search).has('notes') ? 'notes' : 'stage';
+</script>
+
+<main
+  id="main-content"
+  class="deck"
+  data-deck
+  data-of={t('of', 'из')}
+  data-full={t('Full screen', 'Во весь экран')}
+  data-exit-full={t('Exit full screen', 'Выйти из полноэкранного режима')}
+>
+  <header class="deck__top">
+    <a class="deck__study" href={studyHref}><span class="link-mark">{name}</span></a>
+    <div class="deck__actions" data-actions hidden>
+      <button class="deck__action" type="button" data-open-notes>{t('Notes', 'Заметки')}</button>
+      <button class="deck__action" type="button" data-fullscreen hidden>{t('Full screen', 'Во весь экран')}</button>
+      <button class="deck__action deck__action--stage" type="button" data-open-stage>{t('Open the stage', 'Открыть слайды')}</button>
+      <button class="deck__action deck__action--timer" type="button" data-timer aria-label={t('Time since the notes opened. Press to restart.', 'Время с открытия заметок. Нажмите, чтобы начать заново.')}>0:00</button>
+    </div>
+  </header>
+
+  <div class="deck__stages">
+    <slot />
+  </div>
+
+  <footer class="deck__bottom">
+    <nav class="deck__parts" aria-label={t('Parts of the study', 'Части кейса')}>
+      {parts.map((part) => <a href={`#${part}`} data-part-link={part}>{labels[part]}</a>)}
+    </nav>
+    <div class="deck__step" data-step hidden>
+      <span class="deck__next-name" data-next-name data-label={t('Next: ', 'Дальше: ')}></span>
+      <span class="deck__count" data-count></span>
+      <button class="deck__arrow" type="button" data-prev aria-label={t('Previous', 'Назад')}>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M14.5 6 8.5 12l6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+      <button class="deck__arrow" type="button" data-next aria-label={t('Next', 'Дальше')}>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </button>
+    </div>
+  </footer>
+
+  <p class="deck__live" aria-live="polite" data-live></p>
+  <p class="deck__hint" data-hint hidden>{t(
+    'Share only the stage window. Arrows or Space move both windows.',
+    'Показывайте только окно со слайдами. Стрелки или пробел листают оба окна.',
+  )}</p>
+</main>
+
+<script>
+  const deck = document.querySelector<HTMLElement>('[data-deck]');
+
+  if (deck) {
+    const root = document.documentElement;
+    const notes = root.dataset.deckView === 'notes';
+    const stages = Array.from(deck.querySelectorAll<HTMLElement>('[data-stage]'));
+    const partLinks = Array.from(deck.querySelectorAll<HTMLAnchorElement>('[data-part-link]'));
+    const step = deck.querySelector<HTMLElement>('[data-step]')!;
+    const count = deck.querySelector<HTMLElement>('[data-count]')!;
+    const nextName = deck.querySelector<HTMLElement>('[data-next-name]')!;
+    const prevButton = deck.querySelector<HTMLButtonElement>('[data-prev]')!;
+    const nextButton = deck.querySelector<HTMLButtonElement>('[data-next]')!;
+    const live = deck.querySelector<HTMLElement>('[data-live]')!;
+    const actions = deck.querySelector<HTMLElement>('[data-actions]')!;
+    const fullButton = deck.querySelector<HTMLButtonElement>('[data-fullscreen]')!;
+    const timer = deck.querySelector<HTMLButtonElement>('[data-timer]')!;
+    const of = deck.dataset.of ?? 'of';
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+    const channel = 'BroadcastChannel' in window ? new BroadcastChannel(`deck:${location.pathname}`) : null;
+
+    stages.forEach((stage, index) => {
+      if (!stage.id) stage.id = `stage-${index + 1}`;
+    });
+
+    let current = -1;
+    const clamp = (index: number) => Math.max(0, Math.min(stages.length - 1, index));
+    const fromHash = () => {
+      const id = decodeURIComponent(location.hash.slice(1));
+      return id ? stages.findIndex((stage) => stage.id === id) : -1;
+    };
+
+    // Images on the stages either side start loading before they are needed.
+    const prepare = (index: number) => {
+      stages[index]?.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((image) => {
+        image.loading = 'eager';
+      });
+    };
+
+    const show = (index: number, tell = true) => {
+      const target = clamp(index);
+      if (target === current) return;
+      current = target;
+      const stage = stages[target];
+      stages.forEach((each, at) => each.classList.toggle('is-current', at === target));
+      partLinks.forEach((link) => {
+        if (link.dataset.partLink === stage.dataset.part) link.setAttribute('aria-current', 'true');
+        else link.removeAttribute('aria-current');
+      });
+      count.textContent = `${target + 1} ${of} ${stages.length}`;
+      nextName.textContent = stages[target + 1]?.dataset.name ?? '';
+      prevButton.disabled = target === 0;
+      nextButton.disabled = target === stages.length - 1;
+      live.textContent = `${stage.dataset.name}, ${target + 1} ${of} ${stages.length}`;
+      history.replaceState(history.state, '', `${location.pathname}${location.search}#${stage.id}`);
+      prepare(target + 1);
+      prepare(target + 2);
+      prepare(target - 1);
+      // The stage's highlighter, rings, and charts play as it appears, not when they scroll in
+      // (StudyLife and Plate watch scrolling; a stage never scrolls into view).
+      window.setTimeout(() => {
+        stage.querySelectorAll('[data-arrive], [data-plate]').forEach((element) => element.classList.add('is-here'));
+      }, still.matches ? 0 : 120);
+      if (tell) channel?.postMessage({ type: 'go', index: target });
+    };
+
+    const go = (delta: number) => show(current + delta);
+
+    // ---- The other window ----------------------------------------------------------------------
+    channel?.addEventListener('message', (event) => {
+      const message = event.data as { type?: string; index?: number };
+      if (message.type === 'go' && typeof message.index === 'number') show(message.index, false);
+      if (message.type === 'where' && !notes) channel.postMessage({ type: 'go', index: current });
+    });
+
+    const openWindow = (search: string, name: string, features: string) => {
+      const opened = window.open(`${location.pathname}${search}#${stages[current].id}`, name, features);
+      opened?.focus();
+    };
+    const openNotes = () => openWindow('?notes', 'deck-notes', 'popup,width=760,height=900');
+
+    deck.querySelector('[data-open-notes]')?.addEventListener('click', openNotes);
+    deck.querySelector('[data-open-stage]')?.addEventListener('click', () => openWindow('', 'deck-stage', ''));
+    prevButton.addEventListener('click', () => go(-1));
+    nextButton.addEventListener('click', () => go(1));
+    partLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const first = stages.findIndex((stage) => stage.dataset.part === link.dataset.partLink);
+        if (first < 0) return;
+        event.preventDefault();
+        show(first);
+      });
+    });
+
+    // ---- Full screen ---------------------------------------------------------------------------
+    const syncFull = () => {
+      fullButton.textContent = document.fullscreenElement ? deck.dataset.exitFull ?? '' : deck.dataset.full ?? '';
+    };
+    const toggleFull = () => {
+      if (!document.fullscreenEnabled) return;
+      if (document.fullscreenElement) void document.exitFullscreen();
+      else void root.requestFullscreen().catch(() => undefined);
+    };
+    if (document.fullscreenEnabled && !notes) {
+      fullButton.hidden = false;
+      fullButton.addEventListener('click', toggleFull);
+      document.addEventListener('fullscreenchange', syncFull);
+    }
+
+    // ---- Keys ----------------------------------------------------------------------------------
+    const typing = (target: EventTarget | null) =>
+      target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+    const pressable = (target: EventTarget | null) =>
+      target instanceof Element && Boolean(target.closest('a, button, summary, [role="button"]'));
+    // A row of screens that scrolls sideways (on narrow windows) keeps its own arrows.
+    const scrollingTrack = (target: EventTarget | null) => {
+      const track = target instanceof Element ? target.closest<HTMLElement>('[data-track]') : null;
+      return Boolean(track && track.scrollWidth > track.clientWidth + 1);
+    };
+
+    window.addEventListener('keydown', (event) => {
+      if (event.metaKey || event.ctrlKey || event.altKey || typing(event.target)) return;
+      const key = event.key;
+      let handled = true;
+      if (key === 'ArrowRight' || key === 'ArrowDown' || key === 'PageDown') {
+        if (scrollingTrack(event.target)) return;
+        go(1);
+      } else if (key === 'ArrowLeft' || key === 'ArrowUp' || key === 'PageUp') {
+        if (scrollingTrack(event.target)) return;
+        go(-1);
+      } else if (key === ' ' && !pressable(event.target)) {
+        go(event.shiftKey ? -1 : 1);
+      } else if (key === 'Home') show(0);
+      else if (key === 'End') show(stages.length - 1);
+      else if ((key === 'f' || key === 'F') && !notes) toggleFull();
+      else if ((key === 'n' || key === 'N') && !notes) openNotes();
+      else handled = false;
+      if (handled) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, { capture: true });
+
+    // ---- Swipe on touch screens ----------------------------------------------------------------
+    let touchX = 0;
+    let touchY = 0;
+    let touching = false;
+    deck.addEventListener('touchstart', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      touching = event.touches.length === 1 && !target?.closest('[data-track], .try__app');
+      touchX = event.touches[0]?.clientX ?? 0;
+      touchY = event.touches[0]?.clientY ?? 0;
+    }, { passive: true });
+    deck.addEventListener('touchend', (event) => {
+      if (!touching) return;
+      touching = false;
+      const end = event.changedTouches[0];
+      if (!end) return;
+      const dx = end.clientX - touchX;
+      const dy = end.clientY - touchY;
+      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    // ---- The controls step back while Igor talks -------------------------------------------------
+    let idle = 0;
+    const wake = () => {
+      deck.classList.remove('is-idle');
+      clearTimeout(idle);
+      idle = window.setTimeout(() => deck.classList.add('is-idle'), 2500);
+    };
+    if (!notes) {
+      window.addEventListener('pointermove', wake, { passive: true });
+      wake();
+    }
+
+    // ---- The notes window's timer --------------------------------------------------------------
+    if (notes) {
+      let started = Date.now();
+      const tick = () => {
+        const seconds = Math.floor((Date.now() - started) / 1000);
+        timer.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+      };
+      timer.addEventListener('click', () => {
+        started = Date.now();
+        tick();
+      });
+      window.setInterval(tick, 1000);
+      deck.querySelector<HTMLElement>('[data-hint]')!.hidden = false;
+    }
+
+    window.addEventListener('hashchange', () => {
+      const index = fromHash();
+      if (index >= 0) show(index);
+    });
+
+    actions.hidden = false;
+    step.hidden = false;
+    show(Math.max(0, fromHash()), false);
+    deck.classList.add('is-ready');
+    if (still.matches) deck.classList.add('is-still');
+    if (notes) channel?.postMessage({ type: 'where' });
+  }
+</script>
+
+<style is:global>
+  /* ---- The page: one window-sized stage, the site's header left out ---------------------------- */
+
+  html.study-deck {
+    --deck-gutter: clamp(1.25rem, 4.5vw, 5rem);
+    --deck-bar: 3.75rem;
+    background: var(--color-field);
+  }
+
+  html.study-deck :is(.portfolio-navigation, .portfolio-navigation-spacer, .portfolio-navigation-sentinel) {
+    display: none;
+  }
+
+  html.study-deck main.deck {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  html.study-deck main.deck > * {
+    grid-column: auto;
+  }
+
+  html.study-deck .deck__top,
+  html.study-deck .deck__bottom {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    min-height: var(--deck-bar);
+    padding-inline: var(--deck-gutter);
+  }
+
+  html.study-deck .deck__study {
+    color: var(--color-ink);
+    font: 600 0.9375rem/1.3 var(--font-study-emphasis);
+    text-decoration: none;
+  }
+
+  html.study-deck .deck__actions {
+    display: flex;
+    gap: 0.25rem;
+    transition: opacity 240ms ease;
+  }
+
+  html.study-deck .deck__actions[hidden] {
+    display: none;
+  }
+
+  html.study-deck :is(.deck__action, .deck__arrow) {
+    min-height: 2.5rem;
+    padding: 0 0.85rem;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--color-copy);
+    font: 0.9375rem/1 var(--font-reading);
+    cursor: pointer;
+  }
+
+  html.study-deck :is(.deck__action, .deck__arrow):hover {
+    background: rgb(17 17 15 / 6%);
+    color: var(--color-ink);
+  }
+
+  html.study-deck :is(.deck__action, .deck__arrow, .deck__parts a, .deck__study):focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  html.study-deck .deck__arrow {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    padding: 0;
+  }
+
+  html.study-deck .deck__arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  html.study-deck .deck__arrow:disabled:hover {
+    background: none;
+  }
+
+  /* The parts of the study, the current one in ink: where the story is, for the room and for Igor. */
+  html.study-deck .deck__parts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+  }
+
+  html.study-deck .deck__parts a {
+    padding-block: 0.6rem;
+    color: var(--color-muted);
+    font: 0.9375rem/1.2 var(--font-reading);
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  html.study-deck .deck__parts a:hover {
+    color: var(--color-ink);
+  }
+
+  html.study-deck .deck__parts a[aria-current] {
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  html.study-deck .deck__step {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.25rem;
+    transition: opacity 240ms ease;
+  }
+
+  html.study-deck .deck__step[hidden] {
+    display: none;
+  }
+
+  html.study-deck .deck__count {
+    min-width: 4.5rem;
+    margin-right: 0.5rem;
+    color: var(--color-muted);
+    font: 0.875rem/1 var(--font-reading);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  html.study-deck .deck__next-name {
+    display: none;
+  }
+
+  html.study-deck .deck__live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  html.study-deck .deck__hint[hidden],
+  html.study-deck .deck__action--stage,
+  html.study-deck .deck__action--timer {
+    display: none;
+  }
+
+  /* While Igor talks, the buttons fade and the pointer hides; moving the mouse brings them back. */
+  html.study-deck .deck.is-idle :is(.deck__actions, .deck__arrow):not(:focus-within, :focus-visible) {
+    opacity: 0;
+  }
+
+  html.study-deck .deck.is-idle {
+    cursor: none;
+  }
+
+  /* ---- A stage ---------------------------------------------------------------------------------- */
+
+  html.study-deck .stage {
+    display: grid;
+    min-height: 0;
+    padding: clamp(0.75rem, 2.5vh, 2rem) var(--deck-gutter);
+  }
+
+  html.study-deck .stage__body {
+    display: grid;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 6rem);
+    min-height: 0;
+  }
+
+  html.study-deck .stage__words {
+    min-width: 0;
+  }
+
+  html.study-deck .stage__visual {
+    display: grid;
+    align-content: center;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  html.study-deck .stage__notes {
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    html.study-deck .stage--beside .stage__body {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    }
+
+    /* Two screens side by side get more of the width. */
+    html.study-deck .stage--beside:has(.plate--together) .stage__body {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: clamp(1.5rem, 3.5vw, 4rem);
+    }
+
+    html.study-deck .stage__visual .plate--together .plate__slide {
+      padding-inline: clamp(0.75rem, 1.5vw, 1.5rem);
+    }
+
+    html.study-deck .stage--title .stage__body {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    html.study-deck .stage--title .stage__words {
+      align-self: center;
+    }
+  }
+
+  html.study-deck .stage--words .stage__body {
+    align-content: center;
+    max-width: 72rem;
+  }
+
+  /* ---- What the room reads ----------------------------------------------------------------------- */
+
+  html.study-deck .stage__beat {
+    margin: 0 0 1.25rem;
+    color: var(--color-muted);
+    font: 1rem/1.3 var(--font-reading);
+  }
+
+  html.study-deck .say {
+    max-width: 17ch;
+    margin: 0;
+    color: var(--color-ink);
+    font-family: var(--font-study-heading);
+    font-size: clamp(2rem, 1rem + 2.5vw, 3.75rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  html.study-deck .stage--words .say {
+    max-width: 20ch;
+    font-size: clamp(2.25rem, 1rem + 3.4vw, 5rem);
+  }
+
+  html.study-deck .stage--title .say {
+    max-width: 13ch;
+    font-size: clamp(2.5rem, 1rem + 4vw, 5.5rem);
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+  }
+
+  html.study-deck .say mark {
+    padding-inline: 0.06em;
+  }
+
+  html.study-deck .line {
+    max-width: 36ch;
+    margin: 1.25em 0 0;
+    color: var(--color-copy);
+    font: clamp(1.0625rem, 0.75rem + 0.65vw, 1.5rem)/1.45 var(--font-reading);
+    text-wrap: pretty;
+  }
+
+  html.study-deck .source {
+    max-width: 44ch;
+    margin: 1rem 0 0;
+    color: var(--color-muted);
+    font: clamp(0.875rem, 0.75rem + 0.25vw, 1.0625rem)/1.45 var(--font-reading);
+  }
+
+  /* A few short points: each a bold head and, sometimes, what it led to. */
+  html.study-deck .points {
+    display: grid;
+    gap: clamp(0.75rem, 1.6vh, 1.25rem);
+    max-width: 56rem;
+    margin: clamp(1.75rem, 4vh, 3rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  html.study-deck .points li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.25rem 2rem;
+    align-items: baseline;
+    padding-top: clamp(0.75rem, 1.6vh, 1.25rem);
+    border-top: 1px solid rgb(17 17 15 / 12%);
+    color: var(--color-copy);
+    font: clamp(1.0625rem, 0.75rem + 0.65vw, 1.5rem)/1.4 var(--font-reading);
+  }
+
+  html.study-deck .points li > :only-child {
+    grid-column: 1 / -1;
+  }
+
+  html.study-deck .points strong {
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  /* What a point led to, at the end of its row. */
+  html.study-deck .points .to {
+    color: var(--color-ink);
+    text-align: right;
+  }
+
+  html.study-deck .points .to::before {
+    content: '→ ';
+    color: var(--color-muted);
+  }
+
+  /* A sequence, read left to right (the loop people described). */
+  html.study-deck .sequence {
+    display: grid;
+    grid-template-columns: repeat(var(--steps, 5), minmax(0, 1fr));
+    gap: 1rem;
+    max-width: 64rem;
+    margin: clamp(2rem, 5vh, 3.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  html.study-deck .sequence li {
+    position: relative;
+    padding-top: 1.75rem;
+    color: var(--color-copy);
+    font: clamp(1rem, 0.75rem + 0.55vw, 1.375rem)/1.35 var(--font-reading);
+    counter-increment: step;
+  }
+
+  html.study-deck .sequence li::before {
+    content: counter(step);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: var(--color-muted);
+    font: 0.875rem/1 var(--font-reading);
+  }
+
+  html.study-deck .sequence li::after {
+    content: '';
+    position: absolute;
+    top: 0.45rem;
+    left: 1.5rem;
+    right: 0;
+    height: 1px;
+    background: rgb(17 17 15 / 16%);
+  }
+
+  html.study-deck .sequence li:last-child {
+    color: var(--color-ink);
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  /* ---- Screens and charts, fitted to the window ----------------------------------------------------- */
+
+  html.study-deck .stage__visual .plate {
+    --fit: calc(100svh - 2 * var(--deck-bar) - 14rem);
+  }
+
+  /* A screen is as tall as the window allows and as wide as its column allows (the visual is a
+     container, so two screens side by side each take half of it). */
+  html.study-deck .stage__visual {
+    container-type: inline-size;
+  }
+
+  html.study-deck .stage__visual .plate__screen {
+    width: min(100cqi - 5rem, 30rem, var(--fit) * var(--aspect, 0.486));
+  }
+
+  @media (min-width: 760px) {
+    html.study-deck .stage__visual .plate--together .plate__screen {
+      width: min(50cqi - 5rem, 26rem, var(--fit) * var(--aspect, 0.486));
+    }
+  }
+
+  html.study-deck .stage__visual :is(.plate__label, .plate__names li, .plate__caption) {
+    font-size: clamp(0.9375rem, 0.8rem + 0.25vw, 1.125rem);
+  }
+
+  html.study-deck .stage__visual .try {
+    --phone-width: min(24rem, (100svh - 2 * var(--deck-bar) - 12rem) * 0.486);
+  }
+
+  /* Charts are drawn at reading size; on a stage they're shown larger. */
+  @media (min-width: 900px) {
+    html.study-deck .stage__visual .chart {
+      zoom: 1.25;
+    }
+  }
+
+  @media (min-width: 1200px) and (min-height: 760px) {
+    html.study-deck .stage__visual .chart {
+      zoom: 1.5;
+    }
+  }
+
+  /* ---- Windows: the stage, and the notes beside it ---------------------------------------------------- */
+
+  html.js.study-deck .deck {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    height: 100svh;
+    overflow: hidden;
+  }
+
+  html.js.study-deck .deck__stages {
+    display: grid;
+    min-height: 0;
+  }
+
+  html.js.study-deck .deck:not(.is-ready) .stage:not(:first-child),
+  html.js.study-deck .deck.is-ready .stage:not(.is-current) {
+    display: none;
+  }
+
+  html.js.study-deck .stage {
+    overflow: auto;
+  }
+
+  html.js.study-deck .deck:not(.is-still) .stage.is-current {
+    animation: deck-stage-in 280ms var(--ease-out) both;
+  }
+
+  @keyframes deck-stage-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* The notes window: the stage's words small, Igor's notes large, what comes next, a timer. */
+  html[data-deck-view='notes'].study-deck .stage__visual,
+  html[data-deck-view='notes'].study-deck .deck__parts,
+  html[data-deck-view='notes'].study-deck .deck__actions > :not(.deck__action--stage, .deck__action--timer) {
+    display: none;
+  }
+
+  html[data-deck-view='notes'].study-deck :is(.deck__action--stage, .deck__action--timer) {
+    display: inline-block;
+  }
+
+  html[data-deck-view='notes'].study-deck .deck__action--timer {
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  html[data-deck-view='notes'].study-deck .stage {
+    align-content: start;
+  }
+
+  html[data-deck-view='notes'].study-deck .stage__body {
+    display: block;
+    max-width: 52rem;
+  }
+
+  html[data-deck-view='notes'].study-deck .stage__words {
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgb(17 17 15 / 12%);
+  }
+
+  html[data-deck-view='notes'].study-deck :is(.say, .stage--words .say, .stage--title .say) {
+    max-width: none;
+    font-size: 1.375rem;
+    line-height: 1.2;
+  }
+
+  html[data-deck-view='notes'].study-deck :is(.line, .points li, .sequence li, .source) {
+    font-size: 0.9375rem;
+  }
+
+  html[data-deck-view='notes'].study-deck :is(.points, .sequence) {
+    margin-top: 0.75rem;
+  }
+
+  html[data-deck-view='notes'].study-deck .stage__beat {
+    margin-bottom: 0.5rem;
+  }
+
+  html[data-deck-view='notes'].study-deck .stage__notes {
+    display: block;
+    max-width: 52rem;
+  }
+
+  html[data-deck-view='notes'].study-deck .deck__next-name {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    color: var(--color-copy);
+    font: 0.9375rem/1.3 var(--font-reading);
+  }
+
+  html[data-deck-view='notes'].study-deck .deck__next-name:not(:empty)::before {
+    content: attr(data-label);
+  }
+
+  html[data-deck-view='notes'].study-deck .deck__bottom {
+    border-top: 1px solid rgb(17 17 15 / 12%);
+  }
+
+  html[data-deck-view='notes'].study-deck .deck__step {
+    flex: 1;
+  }
+
+  html[data-deck-view='notes'].study-deck .deck__hint {
+    position: absolute;
+    right: var(--deck-gutter);
+    bottom: calc(var(--deck-bar) + 0.5rem);
+    margin: 0;
+    color: var(--color-muted);
+    font: 0.8125rem/1.4 var(--font-reading);
+  }
+
+  /* Igor's notes: large enough to read at a glance, a sentence or two each. */
+  html.study-deck .stage__notes ul {
+    display: grid;
+    gap: 0.9rem;
+    margin: 1.5rem 0 0;
+    padding: 0 0 0 1.1rem;
+  }
+
+  html.study-deck .stage__notes li {
+    color: var(--color-ink);
+    font: clamp(1.125rem, 0.9rem + 0.6vw, 1.375rem)/1.45 var(--font-reading);
+  }
+
+  html.study-deck .stage__notes li::marker {
+    color: var(--color-muted);
+  }
+
+  html.study-deck .stage__notes strong {
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+  }
+
+  /* ---- Without JavaScript: one long page of stages, notes under each ----------------------------- */
+
+  html:not(.js).study-deck .stage {
+    min-height: calc(100svh - 2 * var(--deck-bar));
+    border-top: 1px solid rgb(17 17 15 / 10%);
+  }
+
+  html:not(.js).study-deck .stage__notes {
+    display: block;
+    max-width: 48rem;
+    margin-top: 2rem;
+  }
+
+  /* ---- Small windows: words over the visual, the parts left out --------------------------------- */
+
+  @media (max-width: 899.98px) {
+    html.study-deck {
+      --deck-bar: 3.25rem;
+    }
+
+    /* The stage scrolls instead of squeezing its words and screen together. */
+    html.study-deck .stage {
+      align-content: start;
+    }
+
+    html.study-deck :is(.stage__body, .stage__visual) {
+      min-height: auto;
+    }
+
+    html.study-deck .stage__body {
+      align-content: start;
+      gap: 1.5rem;
+    }
+
+    html.study-deck .deck__parts {
+      display: none;
+    }
+
+    html.study-deck .deck__bottom {
+      justify-content: flex-end;
+    }
+
+    html.study-deck .stage__visual .plate {
+      --fit: 60svh;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.study-deck .deck__actions,
+    html.study-deck .deck__step {
+      transition: none;
+    }
+  }
+
+  @media print {
+    html.study-deck .deck__top,
+    html.study-deck .deck__bottom {
+      display: none;
+    }
+  }
+</style>

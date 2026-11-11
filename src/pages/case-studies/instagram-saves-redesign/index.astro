@@ -136,7 +136,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
   pageClass="study-plates study-structured study--instagram"
   ogImage={savedNew.src}
 >
-  <main id="main-content">
+  <main id="main-content" data-present={localePath('/case-studies/instagram-saves-redesign/present/', locale)}>
     <!-- The first screen is the short read: each label leads to its section. -->
     <PileCover
       title={t('Instagram Saves, worth coming back to.', '«Сохранённое» в Instagram, к которому хочется возвращаться.')}
@@ -522,6 +522,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     <nav aria-label={t('Instagram Saves project links', 'Ссылки проекта «Сохранённое» в Instagram')}>
       <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
       <a href="https://github.com/KidPudel/personal-website/blob/main/src/components/homepage/showcase/instagram-prototype/InstagramPrototypeApp.jsx"><span class="link-mark">{t('Prototype source ↗', 'Код прототипа ↗')}</span></a>
+      <a href={localePath('/case-studies/instagram-saves-redesign/present/', locale)}><span class="link-mark">{t('Slides', 'Слайды')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
       <a href={localePath('/case-studies/supergood/', locale)}><span class="link-mark">{t('SuperGood case study →', 'Кейс SuperGood →')}</span></a>
     </nav>

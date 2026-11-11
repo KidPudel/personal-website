@@ -2,6 +2,14 @@
 
 Last updated: 2026-11-11
 
+## Case studies: slides for presenting Instagram Saves and SuperGood
+
+- Igor presented both studies in an interview by scrolling the reading version and got lost: the first screen already tells the whole story, the interviewer reads ahead of him, and the tables can't be read out loud. The reading version stays as it is; each study now also has slides at `/case-studies/<study>/present/`, linked as "Slides" under the section words and in the footer.
+- One stage at a time, in the order of a told story rather than the page's: the opening (the homepage card, large), the problem as a moment, goal, constraints, research, the decisions one by one with their screens ringed, results last, then next steps or reflection. Each stage has one thing to look at and at most a line or a few short points. 15 stages each, roughly 5 to 7 minutes.
+- His notes for each stage, taken from the study's own text, are in a second window (the same page with `?notes`): the stage's words small, the notes large, what comes next, and a timer. He shares only the stage window; arrows, Space, or the buttons move both windows (BroadcastChannel). F is full screen, N opens the notes, the parts strip at the bottom jumps between parts, and the buttons and pointer fade while he talks.
+- Without JavaScript the stages are one long page with the notes under each. The slides are `noindex` and left out of the sitemap. English and Russian.
+- Verified at 1440 × 900, 1024 × 768, and 375 px, English and Russian: no stage overflows, both windows follow each other, highlights and rings play as a stage appears. Observatory and Two Sticks have no slides yet.
+
 ## Résumé: positioning, AI, and facts in line with the case studies
 
 - The summary leads with research (find where products don't fit how people behave, design interactions around how people think); building and AI tools are framed as how decisions get tested on working prototypes. The titles say research and interaction design; UX/UI sits in the skills.

@@ -616,6 +616,26 @@ html.study-structured {
     display: none;
   }
 
+  /* The way into a study's presenting version, under its sections. */
+  .study-structured reading-progress .reading-present {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--color-muted);
+    font: 0.875rem/1.3 var(--font-reading);
+    text-decoration: none;
+    transition: color 120ms ease-out;
+  }
+
+  .study-structured reading-progress .reading-present:hover {
+    color: var(--color-ink);
+  }
+
+  .study-structured reading-progress .reading-present:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
   /* While a study's opening is night (Observatory), the words in the margin take the night's inks. */
   html.study-structured.is-night reading-progress {
     --color-ink: #dfe8c8;
@@ -688,7 +708,8 @@ html.study-structured {
   }
 
   .study-structured reading-progress a[data-sub],
-  .study-structured reading-progress .tick {
+  .study-structured reading-progress .tick,
+  .study-structured reading-progress .reading-present {
     display: none;
   }
 

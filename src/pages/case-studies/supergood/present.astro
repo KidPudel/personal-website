@@ -1,0 +1,352 @@
+---
+import { Image } from 'astro:assets';
+
+import penCircle from '../../../assets/art/elements/circled.png';
+import basket from '../../../assets/case_study_images/supergood/basket.png';
+import dishSheetDark from '../../../assets/case_study_images/supergood/dish-sheet-dark.png';
+import history from '../../../assets/case_study_images/supergood/history.png';
+import deliveryMap from '../../../assets/case_study_images/supergood/map.png';
+import menuDark from '../../../assets/case_study_images/supergood/menu-dark.png';
+import orderTracking from '../../../assets/case_study_images/supergood/order-tracking.png';
+import BarCompare from '../../../components/case-studies/BarCompare.astro';
+import Plate from '../../../components/case-studies/Plate.astro';
+import Rich from '../../../components/case-studies/Rich.astro';
+import StudyLife from '../../../components/case-studies/StudyLife.astro';
+import Deck from '../../../components/case-studies/present/Deck.astro';
+import Stage from '../../../components/case-studies/present/Stage.astro';
+import WorkPanel from '../../../components/case-studies/present/WorkPanel.astro';
+import { localePath, toLocale, translator } from '../../../i18n/locales';
+import { caseStudy } from '../../../content/case-studies';
+import BaseDocument from '../../../layouts/BaseDocument.astro';
+import '../../../styles/plates.css';
+
+// The presenting version of the SuperGood study (see present/Deck.astro). The facts are the
+// study's own (index.astro next to this file): change one there, change it here.
+
+const locale = toLocale(Astro.currentLocale);
+const t = translator(locale);
+const study = caseStudy('supergood');
+const decision = (number: number) => t(`Decision ${number}`, `Решение ${number}`);
+---
+
+<BaseDocument
+  title={t('SuperGood, presenting | Igor Kupchinenko', 'SuperGood, показ | Игорь Купчиненко')}
+  description={t(
+    'The SuperGood case study, one stage at a time, with speaker notes.',
+    'Кейс SuperGood по одному слайду, с заметками для рассказа.',
+  )}
+  pageClass="study-plates study-deck study--supergood"
+  robots="noindex"
+>
+  <Deck
+    name="SuperGood"
+    studyHref={localePath('/case-studies/supergood/', locale)}
+    parts={['problem', 'goal', 'constraints', 'research', 'decisions', 'results', 'reflection']}
+  >
+    <Stage layout="title" name={t('Opening', 'Начало')}>
+      <h1 class="say">SuperGood</h1>
+      <p class="line">{t('A homemade food delivery app. I redesigned ordering and rebuilt the iOS and Android apps as one Flutter app.', 'Приложение доставки домашней еды. Я переделал заказ и собрал вместо двух нативных приложений одно на Flutter.')}</p>
+      <WorkPanel slot="visual" slug="supergood" alt={t('SuperGood dish card with weight, price, nutrition, ingredients, and an add-to-basket button.', 'Карточка блюда SuperGood с весом, ценой, КБЖУ, составом и кнопкой «В корзину».')} />
+      <ul slot="notes">
+        <li>{study.about[locale]}</li>
+        <li>{t('I joined as a mobile engineer and took the part I could change: the whole ordering experience, from research to the Flutter rebuild.', 'Я пришёл мобильным разработчиком и взял то, что мог изменить: весь процесс заказа, от исследования до пересборки на Flutter.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="problem" id="problem" name={t('Worth the price?', 'Стоит ли своих денег')}>
+      <h2 class="say">{t('People weren’t sure the food was worth the price, and the app didn’t help.', 'Люди сомневались, что еда стоит своих денег, а приложение не помогало.')}</h2>
+      <figure slot="visual" class="review-split" data-arrive>
+        <figcaption class="review-split__title">{t('What public reviews complained about', 'На что жаловались в публичных отзывах')}</figcaption>
+        <div class="review-split__marks" aria-hidden="true">
+          {Array.from({ length: 7 }, (_, index) => <span class="review-split__mark" style={`--i: ${index}`}></span>)}
+          <span class="review-split__mine">
+            {Array.from({ length: 3 }, () => <span class="review-split__mark review-split__mark--mine"></span>)}
+            <Image class="review-split__circle pen-circle" src={penCircle} alt="" widths={[256, 512]} sizes="16rem" loading="lazy" decoding="async" />
+          </span>
+        </div>
+        <dl class="review-split__legend">
+          <div class="review-split__key review-split__key--mine"><dt>≈30%</dt><dd>{t('The app. This part was mine.', 'Приложение. Это была моя часть.')}</dd></div>
+          <div class="review-split__key"><dt>≈70%</dt><dd>{t('The food for its price.', 'Еда за свои деньги.')}</dd></div>
+        </dl>
+        <p class="review-split__note">{t('A rough split from about 150 App Store and Google Play reviews.', 'Примерное соотношение по 150 отзывам в App Store и Google Play.')}</p>
+      </figure>
+      <ul slot="notes">
+        <li>{t('SuperGood competed with Кухня на районе for everyday meals: lunch at work, or dinner when you don’t feel like cooking.', 'SuperGood конкурировал с «Кухней на районе» за повседневные заказы: обед на работе или ужин, когда готовить не хочется.')}</li>
+        <li>{t('To see why people hesitated, I started with about 150 public reviews, sorted by complaint.', 'Чтобы понять, почему люди сомневаются, я начал с примерно 150 публичных отзывов, разложенных по темам.')}</li>
+        <li>{t('Most complaints were about the food for its price. Kitchens and prices weren’t part of my role, so I took the app’s part.', 'Большинство жалоб было на еду за свои деньги. Кухня и цены не входили в мою зону, поэтому я взял часть приложения.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="problem" name={t('What the app got wrong', 'Что было не так с приложением')}>
+      <h2 class="say">{t('And the app made ordering harder.', 'А приложение только усложняло заказ.')}</h2>
+      <ul class="points" role="list">
+        <li><span>{t('You couldn’t see the delivery time or the total while choosing dishes.', 'Пока выбираешь блюда, не видно ни времени доставки, ни итоговой суммы.')}</span></li>
+        <li><span>{t('Categories moved as you scrolled, so it was easy to lose your place.', 'Категории сдвигаются при прокрутке, и легко потеряться.')}</span></li>
+        <li><span><strong>{t('Every weekday lunch meant finding the same dishes again.', 'Каждый будний обед приходится заново искать те же блюда.')}</strong></span></li>
+      </ul>
+      <ul slot="notes">
+        <li>{t('These three are the app’s part of the complaints.', 'Эти три жалобы и есть часть приложения.')}</li>
+        <li>{t('The last one leads to the main finding.', 'Последняя ведёт к главному выводу.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="goal" id="goal" name={t('Seconds', 'Секунды')}>
+      <h2 class="say" data-arrive><Rich text={t('Make the usual order take ==seconds==.', 'Чтобы привычный заказ занимал ==секунды==.')} /></h2>
+      <p class="line">{t('Remove the reasons to hesitate before paying, and turn two apps into one.', 'Убрать причины сомневаться перед оплатой и собрать из двух приложений одно.')}</p>
+      <ul slot="notes">
+        <li>{t('How I’d know: time, success rate, and ease (SEQ) of repeating an order; app complaints in store reviews; the store rating.', 'Как пойму: время, доля успешных попыток и лёгкость (SEQ) повтора заказа, жалобы на приложение в отзывах, рейтинг в магазинах.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="constraints" id="constraints" name={t('Constraints', 'Ограничения')}>
+      <h2 class="say">{t('No say over the food or prices, and one engineer for two platforms.', 'Никакого влияния на еду и цены и один разработчик на две платформы.')}</h2>
+      <p class="line">{t('Regulars order every week, so a redesign couldn’t make them relearn the app.', 'Постоянные клиенты заказывают каждую неделю, поэтому редизайн не должен был заставить их переучиваться.')}</p>
+      <ul slot="notes">
+        <li>{t('I was the only person working on the app, for 11 months.', 'Над приложением работал только я, 11 месяцев.')}</li>
+        <li>{t('The usability test used 10 colleagues outside the app team, so its numbers show direction, not proof.', 'В юзабилити-тесте были 10 коллег не из команды приложения, так что цифры показывают направление, но ничего не доказывают.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="research" id="research" name={t('Weekday orders repeat', 'Будничные заказы повторяются')}>
+      <h2 class="say" data-arrive><Rich text={t('Watching people order made one thing clear: ==weekday orders repeat==.', 'Когда я смотрел, как люди заказывают, стало ясно главное: ==будничные заказы повторяются==.')} /></h2>
+      <ul class="points" role="list">
+        <li><span><strong>{t('About 150 store reviews,', 'Около 150 отзывов')}</strong> {t('sorted by complaint.', 'по темам жалоб.')}</span></li>
+        <li><span><strong>{t('10 people watched ordering at work,', '10 человек, которые заказывают на работе,')}</strong> {t('in an office and a call center.', 'в офисе и колл-центре.')}</span></li>
+        <li><span><strong>{t('A usability test with 10 colleagues,', 'Юзабилити-тест с 10 коллегами:')}</strong> {t('the old app against prototypes, then against the built app.', 'старое приложение против прототипов, потом против готового.')}</span></li>
+      </ul>
+      <ul slot="notes">
+        <li>{t('People already knew what they wanted, but the app made them look for it again every time.', 'Люди уже знали, чего хотят, но приложение каждый раз заставляло искать всё заново.')}</li>
+        <li>{t('In the contextual inquiry I noted where people hesitated.', 'Во время наблюдения я отмечал, где люди сомневаются.')}</li>
+        <li>{t('Competitors: Кухня на районе for how to present the menu, Самокат and Яндекс Лавка for patterns our customers already knew.', 'Конкуренты: «Кухня на районе» для подачи меню, «Самокат» и «Яндекс Лавка» для паттернов, которые наши клиенты уже знали.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="research" name={t('Findings into decisions', 'Выводы и решения')}>
+      <h2 class="say">{t('What I found, and what it led to.', 'Что я узнал и к чему это привело.')}</h2>
+      <ul class="points" role="list">
+        <li><span><strong>{t('Weekday orders repeat.', 'Будничные заказы повторяются.')}</strong></span><span class="to">{t('Reorder', 'Повтор')}</span></li>
+        <li><span><strong>{t('Time and total were hidden, and the menu moved.', 'Время и сумма спрятаны, а меню прыгает.')}</strong></span><span class="to">{t('Pinned bar', 'Панель')}</span></li>
+        <li><span><strong>{t('A photo wasn’t enough to judge a dish.', 'По фото не понять, стоит ли блюдо своих денег.')}</strong></span><span class="to">{t('Dish card', 'Карточка блюда')}</span></li>
+        <li><span><strong>{t('Customers already knew grocery apps.', 'Клиенты уже знали приложения доставки продуктов.')}</strong></span><span class="to">{t('Familiar patterns', 'Знакомые паттерны')}</span></li>
+        <li><span><strong>{t('Two apps, one engineer.', 'Два приложения, один разработчик.')}</strong></span><span class="to">{t('One app', 'Одно приложение')}</span></li>
+      </ul>
+      <ul slot="notes">
+        <li>{t('Job story 1: when it’s lunchtime at work, I want my usual meal again with no effort, so ordering takes seconds.', 'Job story 1: когда на работе время обеда, я хочу без усилий заказать то же, что обычно, чтобы заказ занимал секунды.')}</li>
+        <li>{t('Job story 2: when I’m deciding whether to order, I want to know when the food arrives and what it costs, so nothing surprises me after I pay.', 'Job story 2: когда я решаю, заказывать ли, я хочу знать, когда привезут и сколько это стоит, чтобы после оплаты не было сюрпризов.')}</li>
+        <li>{t('Job story 3: when I pick a dish, I want to be sure it’s worth the price, so I don’t feel I overpaid.', 'Job story 3: когда я выбираю блюдо, я хочу быть уверен, что оно стоит своих денег, чтобы не чувствовать, что переплатил.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" id="decisions" beat={decision(1)} name={t('Reorder from history', 'Повтор из истории')}>
+      <h2 class="say">{t('Order history became a way to order.', 'История заказов стала способом заказать.')}</h2>
+      <p class="line">{t('Open a past order and repeat one dish, or the whole thing.', 'Откройте прошлый заказ и повторите одно блюдо или весь заказ.')}</p>
+      <Plate slot="visual" shots={[{ src: history, alt: t('Order history with an expanded order, a repeat button for each dish, and an add-whole-order button.', 'История заказов: раскрытый заказ, кнопка «Повторить» у каждого блюда и кнопка «Добавить весь заказ».') }]} notes={[
+        { x: 60.6, y: 43.3, w: 22.6, h: 4.4, label: t('Repeat one dish', 'Повторить одно блюдо'), also: [{ x: 60.6, y: 52.3, w: 22.6, h: 4.4 }] },
+        { x: 17.1, y: 72.8, w: 65.8, h: 3.8, label: t('Or bring back the whole order', 'Или вернуть весь заказ') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('Rebuilding a usual lunch meant finding each dish again in a menu that kept moving.', 'Чтобы собрать привычный обед, нужно было заново искать каждое блюдо в меню, которое постоянно сдвигалось.')}</li>
+        <li>{t('Hypothesis: most weekday orders were repeats, so if a past order can simply be ordered again, the usual lunch takes seconds instead of a search.', 'Гипотеза: большинство будничных заказов повторы, поэтому если прошлый заказ можно просто повторить, обед занимает секунды, а не поиски.')}</li>
+        <li>{t('History is searchable, changed prices are flagged, and sold-out dishes show up grayed out.', 'По истории есть поиск, изменившиеся цены отмечены, закончившиеся блюда видны серыми.')}</li>
+        <li>{t('Not chosen: favourites. They work for one dish, and a usual lunch is a few dishes together.', 'Отверг: избранное. Оно удобно для одного блюда, а обед обычно из нескольких.')}</li>
+        <li>{t('Result: 8 steps to 3, about 60 seconds to about 5.', 'Результат: с 8 шагов до 3, примерно с 60 секунд до 5.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(2)} name={t('Pinned bar', 'Закреплённая панель')}>
+      <h2 class="say">{t('Time and total, always in view.', 'Время и сумма всегда на виду.')}</h2>
+      <p class="line">{t('A pinned bar with the delivery time, item count, and total, and categories in a fixed order.', 'Закреплённая панель со временем доставки, количеством позиций и суммой, а категории в закреплённом порядке.')}</p>
+      <Plate slot="visual" shots={[{ src: menuDark, alt: t('Dark menu with a fixed category bar and an order bar showing time, items, and total.', 'Тёмное меню со строкой категорий и закреплённой панелью заказа: время, позиции, сумма.') }]} notes={[
+        { x: 14, y: 38.8, w: 72.7, h: 3.4, label: t('Categories stay in order', 'Категории не прыгают') },
+        { x: 16.7, y: 86.2, w: 66.7, h: 4.8, label: t('Time, items, and total stay pinned', 'Время, позиции и сумма всегда на виду') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('People kept leaving the menu or losing their place, because time and total were hidden and categories moved.', 'Люди то уходили из меню, то терялись: время и сумма спрятаны, категории сдвигались.')}</li>
+        <li>{t('Hypothesis: people checked time and cost before every order, so if both stay in view and the menu stays still, they can decide without leaving it.', 'Гипотеза: время и стоимость проверяли перед каждым заказом, поэтому если и то и другое на виду, а меню не прыгает, решить можно, не уходя из него.')}</li>
+        <li>{t('Quantity controls sit right on the dish.', 'Количество выбирается прямо на блюде.')}</li>
+        <li>{t('Not chosen: a basket badge with just a count. People would still have to open the basket to see time and total.', 'Отверг: значок корзины со счётчиком. За временем и суммой всё равно пришлось бы ходить в корзину.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(3)} name={t('Dish card', 'Карточка блюда')}>
+      <h2 class="say">{t('Show what you get before you pay.', 'Показать, что вы получите, до оплаты.')}</h2>
+      <p class="line">{t('Weight, ingredients, nutrition, and extra cooking time, with the price right next to Add.', 'Вес, состав, КБЖУ и дополнительное время приготовления, а цена прямо рядом с «В корзину».')}</p>
+      <Plate slot="visual" crop={{ x: 12, y: 23.5, w: 77, h: 66.5 }} shots={[{ src: dishSheetDark, alt: t('Dark dish card with extra cooking time, weight, the price next to Add, nutrition, and ingredients.', 'Тёмная карточка блюда: дополнительное время приготовления, вес, цена рядом с «В корзину», КБЖУ и состав.') }]} notes={[
+        { x: 73, y: 25.7, w: 13.2, h: 3.7, label: t('Extra cooking time', 'Дополнительное время приготовления') },
+        { x: 14.3, y: 55.2, w: 71.8, h: 10, label: t('Weight, and the price right next to Add', 'Вес, и цена прямо рядом с «В корзину»') },
+        { x: 12.3, y: 68.1, w: 76, h: 21, label: t('Nutrition and ingredients', 'КБЖУ и состав') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('A photo didn’t tell people enough to judge whether a dish was worth its price.', 'По одной фотографии было не понять, стоит ли блюдо своих денег.')}</li>
+        <li>{t('Hypothesis: I couldn’t change the price, but if people see what they get before paying, they should hesitate less over it.', 'Гипотеза: цену я поменять не мог, но если перед оплатой видно, что вы получаете, сомнений должно быть меньше.')}</li>
+        <li>{t('In the same usability test, the new dish card did better than the old one.', 'На том же юзабилити-тесте новая карточка показала себя лучше старой.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(4)} name={t('Familiar patterns', 'Знакомые паттерны')}>
+      <h2 class="say">{t('A fresher look, the same habits.', 'Свежий вид, те же привычки.')}</h2>
+      <p class="line">{t('I kept the structure people knew and borrowed patterns from Самокат and Яндекс Лавка.', 'Я сохранил привычную структуру и взял паттерны у «Самоката» и «Яндекс Лавки».')}</p>
+      <Plate slot="visual" caption={t('Basket patterns customers already knew from grocery apps.', 'Корзина по паттернам, знакомым по приложениям доставки продуктов.')} shots={[{ src: basket, alt: t('Basket with quantity controls, promo code, minimum order warning, payment methods, and total.', 'Корзина с количеством, промокодом, предупреждением о минимальной сумме, способами оплаты и итогом.') }]} notes={[
+        { x: 42, y: 27, w: 23.5, h: 3.9, label: t('Quantity controls', 'Выбор количества') },
+        { x: 14, y: 46.9, w: 72, h: 9.8, label: t('Promo code and minimum order warning', 'Промокод и предупреждение о минимальной сумме') },
+        { x: 14, y: 61.4, w: 72, h: 18.3, label: t('Payment methods', 'Способы оплаты') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('Regulars order every week, and I wanted them to feel the improvement without relearning anything.', 'Постоянные клиенты заказывают каждую неделю, и мне хотелось, чтобы они почувствовали улучшение, не переучиваясь.')}</li>
+        <li>{t('Later reviews called it a fresher look with nothing new to learn.', 'В отзывах потом писали, что выглядит свежее, а переучиваться не нужно.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="decisions" beat={decision(5)} name={t('One Flutter app', 'Одно приложение на Flutter')}>
+      <h2 class="say">{t('One Flutter app instead of two.', 'Одно приложение на Flutter вместо двух.')}</h2>
+      <p class="line">{t('From the menu and 3DS payment to tracking, loyalty, and light and dark themes on my own design system. Built alone in 11 months.', 'От меню и оплаты с 3DS до отслеживания, лояльности и светлой и тёмной тем на моей дизайн-системе. Собрано в одиночку за 11 месяцев.')}</p>
+      <Plate slot="visual" together shots={[
+        { src: orderTracking, alt: t('Order tracking with expected time, order stages, a route map, and courier contact.', 'Отслеживание заказа: ожидаемое время, этапы, карта маршрута и связь с курьером.'), label: t('Order tracking', 'Отслеживание заказа') },
+        { src: deliveryMap, alt: t('Address picker on a map with the delivery zone and a confirmation that the address is inside it.', 'Выбор адреса на карте с зоной доставки и подтверждением, что адрес в неё входит.'), label: t('Delivery zone check', 'Проверка зоны доставки') },
+      ]} />
+      <ul slot="notes">
+        <li>{t('With two separate apps, every change had to be built twice and could behave differently on each platform.', 'С двумя приложениями каждое изменение делалось дважды и могло работать по-разному на разных платформах.')}</li>
+        <li>{t('As the only engineer, one codebase meant every fix reached iOS and Android on the same day.', 'Я был единственным разработчиком, и с одной кодовой базой каждое исправление попадало на iOS и Android в один день.')}</li>
+        <li>{t('Not chosen: keeping both native apps, which meant doing every change twice, by one person.', 'Отверг: оставить два нативных приложения, то есть делать всё дважды и одному.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="results" id="results" name={t('60 seconds to 5', '60 секунд до 5')}>
+      <h2 class="say" data-arrive><Rich text={t('Repeating a usual order went from ==about 60 seconds to about 5==.', 'Повтор привычного заказа сократился ==примерно с 60 секунд до 5==.')} /></h2>
+      <p class="line"><Rich text={t('**All 10** rebuilt their usual order correctly, up from 2 of 10 before. Ease went from **3 to 6 out of 7**.', 'Привычный заказ правильно собрали **все 10**, а раньше только 2 из 10. Лёгкость выросла **с 3 до 6 из 7**.')} /></p>
+      <BarCompare
+        slot="visual"
+        title={t('Time to repeat a usual order', 'Время на повтор привычного заказа')}
+        unit={5}
+        unitLabel={t('One mark is 5 seconds.', 'Одна отметка: 5 секунд.')}
+        rows={[
+          { label: t('Before: find each dish again', 'До: снова искать каждое блюдо'), value: 60, display: t('≈60 s', '≈60 с') },
+          { label: t('After: history, add whole order', 'После: история, добавить весь заказ'), value: 5, display: t('≈5 s', '≈5 с'), emphasis: true },
+        ]}
+        note={t('Usability test with 10 colleagues outside the app team.', 'Юзабилити-тест, 10 коллег не из команды приложения.')}
+      />
+      <ul slot="notes">
+        <li>{t('Small and internal, so it shows direction rather than proof.', 'Тест маленький и внутренний, так что он показывает направление, но ничего не доказывает.')}</li>
+        <li>{t('Ease is the Single Ease Question, out of 7.', 'Лёгкость измерял по Single Ease Question, из 7.')}</li>
+        <li>{t('Steps, counted from the flow: 8 before, 3 after.', 'Шаги по сценарию: 8 до, 3 после.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="results" name={t('Store rating', 'Рейтинг')}>
+      <h2 class="say" data-arrive><Rich text={t('After the release, the store rating went from ==3.1 to 3.7==.', 'После релиза рейтинг приложения вырос ==с 3,1 до 3,7==.')} /></h2>
+      <p class="line">{t('And one codebase replaced two.', 'А одна кодовая база заменила две.')}</p>
+      <BarCompare
+        slot="visual"
+        shape="scale"
+        title={t('Store rating, out of 5', 'Рейтинг в магазинах приложений, из 5')}
+        from={1}
+        max={5}
+        rows={[
+          { label: t('Before the redesign', 'До редизайна'), value: 3.1, display: t('3.1', '3,1') },
+          { label: t('After the release', 'После релиза'), value: 3.7, display: t('3.7', '3,7'), emphasis: true },
+        ]}
+        note={t('Before and after the release, so the redesign isn’t the only possible cause.', 'Сравнение до и после релиза, так что редизайн не единственная возможная причина.')}
+      />
+      <ul slot="notes">
+        <li>{t('In the new reviews, complaints about the food’s value stayed, but people praised the app: a fresher look, nothing new to learn, and an order history that actually helps.', 'В новых отзывах жалобы на еду за свои деньги остались, а приложение хвалили: выглядит свежее, переучиваться не нужно, история заказов правда помогает.')}</li>
+        <li>{t('Not measured: repeat orders after the release. SuperGood later closed because of the company’s financial situation.', 'Не измерено: повторные заказы после релиза. Позже SuperGood закрылся из-за финансового положения компании.')}</li>
+      </ul>
+    </Stage>
+
+    <Stage part="reflection" id="reflection" name={t('What I’d do differently', 'Что я сделал бы иначе')}>
+      <h2 class="say">{t('What I’d do differently isn’t on the screens.', 'То, что я сделал бы иначе, не про экраны.')}</h2>
+      <ul class="points" role="list">
+        <li><span>{t('Agree with stakeholders on the metric to move before designing anything.', 'До начала дизайна договориться со стейкхолдерами, какую метрику двигаем.')}</span></li>
+        <li><span>{t('Bring review counts and test results instead of arguing about taste.', 'Приходить с цифрами по отзывам и результатами тестов, а не спорить о вкусах.')}</span></li>
+        <li><span>{t('Rank ideas with the business on an impact and effort matrix, so urgency has to earn its place.', 'Раскладывать идеи вместе с бизнесом по матрице «влияние и затраты», чтобы срочность приходилось обосновывать.')}</span></li>
+        <li><span>{t('Measure more: bigger tests, ease ratings for every task, and repeat orders after release.', 'Измерять больше: тесты побольше, оценка лёгкости для каждой задачи и повторные заказы после релиза.')}</span></li>
+      </ul>
+      <ul slot="notes">
+        <li>{t('The business often pushed its own ideas first, and urgently, while fixes that mattered more to customers waited.', 'Бизнес часто продвигал свои идеи в первую очередь и в спешке, а важные для клиентов исправления ждали.')}</li>
+        <li>{t('I pushed back, but with opinions, not a process.', 'Я спорил, но опирался на мнения, а не на процесс.')}</li>
+        <li>{t('Then stop and ask what they want to see again.', 'Дальше остановитесь и спросите, что показать ещё раз.')}</li>
+      </ul>
+    </Stage>
+  </Deck>
+  <StudyLife />
+</BaseDocument>
+
+<style>
+  /* The review split, large: ten marks, the app's three circled in the pen from the homepage. */
+  .review-split {
+    margin: 0;
+  }
+
+  :global(html.study-deck) .review-split__title {
+    margin: 0 0 clamp(1.5rem, 3vh, 2.25rem);
+    color: var(--color-ink);
+    font: 600 clamp(1rem, 0.8rem + 0.4vw, 1.25rem)/1.4 var(--font-study-emphasis);
+  }
+
+  .review-split__marks,
+  .review-split__mine {
+    display: flex;
+    gap: clamp(0.4rem, 0.8vw, 0.7rem);
+  }
+
+  .review-split__mine {
+    position: relative;
+  }
+
+  .review-split__mark {
+    display: block;
+    width: clamp(1.25rem, 2.2vw, 2.25rem);
+    height: clamp(3rem, 6vw, 6rem);
+    border-radius: 0.3rem;
+    background: color-mix(in srgb, var(--context) calc(100% - var(--i, 0) * 4%), var(--color-field));
+  }
+
+  .review-split__mark--mine {
+    background: var(--color-ink);
+  }
+
+  :global(html.study-deck) .review-split__mine :global(.review-split__circle) {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 165%;
+    max-width: none;
+    height: auto;
+    translate: -50% -48%;
+    pointer-events: none;
+  }
+
+  .review-split__legend {
+    display: grid;
+    gap: 0.75rem;
+    margin: clamp(2rem, 5vh, 3rem) 0 0;
+  }
+
+  .review-split__key {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    color: var(--color-muted);
+    font: clamp(1rem, 0.75rem + 0.55vw, 1.375rem)/1.4 var(--font-reading);
+  }
+
+  .review-split__key--mine {
+    color: var(--color-ink);
+  }
+
+  .review-split__key dt {
+    font-family: var(--font-study-emphasis);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .review-split__key dd {
+    margin: 0;
+  }
+
+  :global(html.study-deck) .review-split__note {
+    margin: 1.5rem 0 0;
+    color: var(--color-muted);
+    font: clamp(0.875rem, 0.75rem + 0.25vw, 1.0625rem)/1.45 var(--font-reading);
+  }
+</style>

@@ -54,8 +54,10 @@ const alternates = translated
 // unless they chose a language with the switcher.
 const russianPath = translated && locale === defaultLocale ? localePath(pagePath, 'ru') : undefined;
 const canonicalURL = new URL(canonicalPath ?? Astro.url.pathname, Astro.site);
-// Individual case studies get the section index; the case-studies listing does not.
-const showReadingProgress = /\/case-studies\/[^/]+\//.test(Astro.url.pathname);
+// Individual case studies get the section index; the case-studies listing does not, and neither
+// does a study's presenting version (/present/), which has its own strip of parts.
+const isPresenting = /\/case-studies\/[^/]+\/present\/?$/.test(Astro.url.pathname);
+const showReadingProgress = !isPresenting && /\/case-studies\/[^/]+\//.test(Astro.url.pathname);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site) : undefined;
 // The work cards (on the homepage and the case-studies listing) and the case studies open into
 // each other: a card grows into its study's opening, and the study shrinks back into the card on

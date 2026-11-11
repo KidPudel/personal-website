@@ -1,0 +1,86 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+import { caseStudy } from '../../../content/case-studies';
+import { imagePlaceholder } from '../../../lib/image-placeholder';
+
+// The study's homepage work card, large: its watercolour ground and its phone. It opens the
+// presenting version, so the room sees the same picture they may have clicked on.
+
+interface Props {
+  slug: string;
+  alt: string;
+}
+
+const { slug, alt } = Astro.props;
+const study = caseStudy(slug);
+const placeholder = await imagePlaceholder(study.background);
+const widthsFor = (src: ImageMetadata, candidates: number[]) => [...new Set(candidates.filter((width) => width < src.width).concat(Math.min(src.width, candidates.at(-1)!)))];
+---
+
+<div class="work-panel" style={`--placeholder: url(${placeholder})`}>
+  <Image
+    class="work-panel__ground"
+    src={study.background}
+    alt=""
+    widths={widthsFor(study.background, [640, 960, 1200])}
+    sizes="(max-width: 899px) 100vw, 50vw"
+    format="webp"
+    loading="eager"
+    decoding="async"
+  />
+  <Image
+    class="work-panel__phone"
+    src={study.cover}
+    alt={alt}
+    widths={widthsFor(study.cover, [320, 480, 640, 800])}
+    sizes="(max-width: 899px) 50vw, 22rem"
+    format="webp"
+    quality={85}
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+  />
+</div>
+
+<style>
+  .work-panel {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    height: 100%;
+    min-height: 18rem;
+    border-radius: var(--radius-card);
+    background: var(--placeholder) center / cover no-repeat;
+  }
+
+  .work-panel__ground {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .work-panel__phone {
+    position: relative;
+    width: auto;
+    max-width: 70%;
+    height: min(42rem, 100svh - 2 * var(--deck-bar, 3.75rem) - 13rem);
+    object-fit: contain;
+    filter: drop-shadow(0 1rem 1.75rem rgb(17 17 15 / 0.2));
+  }
+
+  /* On small windows the panel sits under the words, half the window tall. */
+  @media (max-width: 899.98px) {
+    .work-panel {
+      height: 50svh;
+    }
+
+    .work-panel__phone {
+      height: calc(50svh - 3rem);
+    }
+  }
+</style>

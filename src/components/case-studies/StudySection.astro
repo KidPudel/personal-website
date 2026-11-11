@@ -1,10 +1,10 @@
 ---
 import { toLocale, translator } from '../../i18n/locales';
 import Rich from './Rich.astro';
+import { partLabels, type Part } from './parts';
 
 // The order still follows STAR (problem and goal are the situation and task, research and decisions
 // the action), but each heading says plainly what the section holds, so a reader can find it fast.
-type Part = 'problem' | 'goal' | 'constraints' | 'research' | 'decisions' | 'results' | 'reflection' | 'next';
 
 interface Props {
   part: Part;
@@ -15,17 +15,7 @@ interface Props {
 
 const { part, title, lead } = Astro.props;
 const t = translator(toLocale(Astro.currentLocale));
-const labels: Record<Part, string> = {
-  problem: t('Problem', 'Проблема'),
-  goal: t('Goal', 'Цель'),
-  constraints: t('Constraints', 'Ограничения'),
-  research: t('Research', 'Исследование'),
-  decisions: t('Decisions', 'Решения'),
-  results: t('Results', 'Результаты'),
-  reflection: t('Reflection', 'Выводы'),
-  next: t('Next steps', 'Что дальше'),
-};
-const label = labels[part];
+const label = partLabels(t)[part];
 ---
 
 <section class:list={['part', `part--${part}`]} id={part} data-index-section data-index-label={label}>

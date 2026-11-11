@@ -4,7 +4,7 @@ import { toLocale, translator } from '../../i18n/locales';
 const t = translator(toLocale(Astro.currentLocale));
 ---
 
-<reading-progress hidden data-section-label={t('Section', 'Раздел')}>
+<reading-progress hidden data-section-label={t('Section', 'Раздел')} data-present-label={t('Slides', 'Слайды')}>
   <nav aria-label={t('Case study sections', 'Разделы кейса')}></nav>
 </reading-progress>
 
@@ -68,6 +68,15 @@ const t = translator(toLocale(Astro.currentLocale));
         nav.append(link);
         return link;
       });
+      // A study with a presenting version (main[data-present]) links to it under its sections.
+      this.querySelector('.reading-present')?.remove();
+      if (main.dataset.present) {
+        const present = document.createElement('a');
+        present.className = 'reading-present';
+        present.href = main.dataset.present;
+        present.textContent = this.dataset.presentLabel ?? 'Slides';
+        this.append(present);
+      }
       let navWidth = 0;
       const update = () => {
         this.frame = 0;

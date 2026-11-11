@@ -68,10 +68,15 @@ const shown = (index: number, region: Region) => {
 };
 const ringsFor = (index: number) => notesFor(index).flatMap((note, at) => [note, ...(note.also ?? [])].map((region, part) => ({ ...shown(index, region), number: part === 0 ? at + 1 : undefined, at })));
 const place = (ring: Region & { at: number }) => `--x: ${round(ring.x)}; --y: ${round(ring.y)}; --w: ${round(ring.w)}; --h: ${round(ring.h)}; --i: ${ring.at}`;
+// --aspect is the screen's width over its height as shown, so a page can size it to a height
+// (the presenting version fits each screen to the window).
 const frameOf = (index: number) => {
   const area = cropOf(index);
   const shot = shots[index];
-  return area ? `aspect-ratio: ${round(area.w * shot.src.width)} / ${round(area.h * shot.src.height)}` : undefined;
+  const width = area ? area.w * shot.src.width : shot.src.width;
+  const height = area ? area.h * shot.src.height : shot.src.height;
+  const aspect = `--aspect: ${(width / height).toFixed(4)}`;
+  return area ? `${aspect}; aspect-ratio: ${round(width)} / ${round(height)}` : aspect;
 };
 const layersOf = (index: number) => {
   const area = cropOf(index);

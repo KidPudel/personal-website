@@ -20,8 +20,9 @@ export default defineConfig({
     react(),
     sitemap({
       i18n: { defaultLocale: 'en', locales: { en: 'en', ru: 'ru' } },
-      // Old /blog/ addresses are redirect pages in src/pages/blog/.
-      filter: (page) => !/\/blog\//.test(page),
+      // Old /blog/ addresses are redirect pages in src/pages/blog/; a study's presenting version
+      // (/present/) is for interviews, not search.
+      filter: (page) => !/\/blog\//.test(page) && !/\/present\/$/.test(page),
     }),
   ],
   vite: {

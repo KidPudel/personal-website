@@ -95,7 +95,7 @@ const reflection = [
   pageClass="study-plates study-structured study--supergood"
   ogImage={menuLight.src}
 >
-  <main id="main-content">
+  <main id="main-content" data-present={localePath('/case-studies/supergood/present/', locale)}>
     <!-- The first screen is the short read: each label leads to its section. -->
     <FocusCover
       title="SuperGood"
@@ -403,6 +403,7 @@ const reflection = [
   <footer class="case-footer">
     <nav aria-label={t('SuperGood project links', 'Ссылки проекта SuperGood')}>
       <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
+      <a href={localePath('/case-studies/supergood/present/', locale)}><span class="link-mark">{t('Slides', 'Слайды')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
       <a href={localePath('/case-studies/observatory/', locale)}><span class="link-mark">{t('Observatory case study →', 'Кейс Observatory →')}</span></a>
     </nav>
