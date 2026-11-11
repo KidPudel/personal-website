@@ -60,7 +60,6 @@ const label = {
   why: t('Why', 'Почему'),
   notChosen: t('Not chosen', 'Отверг'),
   result: t('Result', 'Результат'),
-  risk: t('Risk', 'Риск'),
   idea: t('Idea', 'Идея'),
   test: t('What I’d test', 'Что проверить'),
 };
@@ -81,6 +80,7 @@ const constraints = [
   { name: t('Saving stays one tap.', 'Сохранение остаётся одним касанием.'), why: t('It’s the part that already works, so nothing I add can slow it down.', 'Это та часть, которая уже работает, поэтому ничто новое не должно её замедлять.') },
   { name: t('No extra organising.', 'Никакой дополнительной сортировки.'), why: t('Filing is the work people skip, so the fix has to work on the saves they already have.', 'Именно сортировку люди и пропускают, поэтому решение должно работать с тем, что уже сохранено.') },
   { name: t('AI search is unverified.', 'AI-поиск не проверен.'), why: t('The prototype’s results are designed states. Whether AI finds the right save on a real library still needs testing.', 'Результаты в прототипе спроектированы заранее. Насколько надёжно AI находит нужное в настоящих сохранениях, ещё предстоит проверить.') },
+  { name: t('A prototype built with AI.', 'Прототип, собранный с AI.'), why: t('I designed it in Figma, then built and refined it with Claude Code. The flows work, so they could be timed.', 'Я спроектировал его в Figma, а потом собрал и доработал с Claude Code. Сценарии работают, поэтому их можно было замерить.') },
   { name: t('Nine interviews.', 'Девять интервью.'), why: t('Enough to set a direction, not enough to speak for every Instagram user.', 'Этого хватает, чтобы задать направление, но не чтобы говорить за всех пользователей Instagram.') },
 ];
 
@@ -322,8 +322,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
           { label: label.hypothesis, text: t('If people can search by what they remember, they’ll get back to a save without ever having filed it.', 'Если искать можно по тому, что помнишь, к посту удастся вернуться, даже если его никуда не раскладывали.') },
           { label: label.decision, tone: 'key', text: t('Search across titles, your notes, and AI descriptions of each post, right inside Saved. Oldest-first sorting and a saved-date range sit next to it, and the active range stays visible above the results.', 'Поиск по названиям, заметкам и AI-описаниям постов прямо в «Сохранённом». Рядом сортировка от старых к новым и диапазон дат сохранения, а выбранный диапазон остаётся на виду над результатами.') },
           { label: label.notChosen, text: t('Nudging people to organise better. That’s work up front, and it’s exactly the work people skip.', 'Подталкивать людей лучше сортировать. Это работа заранее, а именно её люди и пропускают.') },
-          { label: label.result, tone: 'result', text: t('Finding a half-remembered post took **about 10 seconds instead of 90**.', 'Полузабытый пост находился **примерно за 10 секунд вместо 90**.'), source: t('Timed with 3 people, details in Results', 'Замеры с тремя людьми, подробнее в результатах') },
-          { label: label.risk, text: t('The results are designed states. Whether AI search reliably finds the right save still needs testing on real libraries.', 'Результаты спроектированы заранее. Насколько надёжно AI-поиск находит нужное, ещё предстоит проверить на настоящих сохранениях.') },
+          { label: label.result, tone: 'result', text: t('Finding a half-remembered post took **about 10 seconds instead of 90**.', 'Полузабытый пост находился **примерно за 10 секунд вместо 90**.'), source: t('Timed with 3 people on designed search results, so the AI itself is still untested', 'Замеры с тремя людьми на заранее спроектированных результатах, так что сам AI ещё не проверен') },
         ]}
       >
         <More slot="more" summary={t('More evidence', 'Ещё аргументы')}>
@@ -355,13 +354,11 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
         rows={[
           { label: label.problem, text: t('Filing means finding a collection or naming a new one, mid-scroll. “I don’t want to interrupt what I’m doing.”', 'Чтобы разложить пост, нужно найти коллекцию или придумать название новой прямо посреди ленты. «Не хочу отвлекаться от того, что делаю».') },
           { label: label.hypothesis, text: t('If the right collection is already on the sheet, filing stops being a decision people put off.', 'Если нужная коллекция уже на экране, разложить пост перестаёт быть решением, которое откладывают.') },
-          { label: label.decision, tone: 'key', text: t('The save sheet shows two suggestions above the full list: the best-matching collection, and a new one with a name already filled in.', 'В окне сохранения над полным списком две подсказки: самая подходящая коллекция и новая, уже с названием.') },
-          { label: label.why, text: t('It makes the choice easier without taking it away. The full list stays for when a suggestion is wrong, and Pinterest already suggests a board when you save, so the pattern isn’t new.', 'Так выбирать проще, но выбор остаётся за человеком. Полный список на месте, если подсказка ошиблась. А Pinterest уже подсказывает доску при сохранении, так что приём не новый.') },
+          { label: label.decision, tone: 'key', text: t('The save sheet shows two suggestions above the full list: the best-matching collection, and a new one with a name already filled in. The list stays for when a suggestion is wrong, the way Pinterest suggests a board when you save.', 'В окне сохранения над полным списком две подсказки: самая подходящая коллекция и новая, уже с названием. Список остаётся на случай, если подсказка ошиблась, так же как Pinterest подсказывает доску при сохранении.') },
         ]}
         aside={[
           { label: label.notChosen, text: t('Nested collections, modelled on how creators keep desktop folders: years, client names, topics, hooks. It matches how they think, but it asks for more filing, the work people already skip.', 'Вложенные коллекции по образцу папок на компьютере у авторов контента: годы, клиенты, темы, хуки. Авторам это близко, но это ещё больше сортировки, а её люди и так пропускают.') },
-          { label: label.result, tone: 'result', text: t('Saving into a new collection takes **1 tap instead of 2 and a name**.', 'Сохранить в новую коллекцию можно **одним касанием вместо двух и названия**.'), source: t('Counted from the designs', 'Посчитано по макетам') },
-          { label: label.risk, text: t('Too many collections is part of why filing broke for 5 of 9, and this makes a new one easier to create. How often people accept the existing match over the new one would show if that’s a problem.', 'Слишком большое число коллекций уже мешало сортировке у 5 из 9, а здесь новую завести ещё проще. Понять, проблема ли это, поможет то, как часто выбирают существующую коллекцию, а не новую.') },
+          { label: label.result, tone: 'result', text: t('Saving into a new collection takes **1 tap instead of 2 and a name**. Too many collections broke filing for 5 of 9, so the number to watch is how often people pick the existing match.', 'Сохранить в новую коллекцию можно **одним касанием вместо двух и названия**. Слишком много коллекций уже мешало сортировке у 5 из 9, поэтому следить нужно за тем, как часто выбирают существующую.'), source: t('Counted from the designs', 'Посчитано по макетам') },
         ]}
       >
         <Plate together shots={[
@@ -382,8 +379,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
           { label: label.hypothesis, text: t('If the reason lives on the save, in your own words, it becomes one more way back, and people have less reason to take things out of Instagram.', 'Если причина хранится прямо на посте, вашими словами, это ещё один путь назад и меньше поводов уносить важное из Instagram.') },
           { label: label.decision, tone: 'key', text: t('Short notes on a save that you can search later, and pins for references you go back to often.', 'Короткие заметки к сохранённому, по которым потом можно искать, и закрепление для частых референсов.') },
           { label: label.notChosen, text: t('Tags. They’d be another anchor for finding things, but AI search already covers that, and I suspect only a small share of power users would bother.', 'Теги. Это ещё одна опора для поиска, но её уже закрывает AI-поиск, а возиться с тегами, подозреваю, станет лишь небольшая часть самых активных пользователей.') },
-          { label: label.result, text: t('Not measured yet.', 'Пока не измерял.') },
-          { label: label.risk, text: t('Shared notes still need a clear “who can see this” state before testing.', 'Общим заметкам ещё нужно явно показывать, кто их видит, до тестирования.') },
+          { label: label.result, text: t('Not measured yet. Before testing, shared notes need a clear “who can see this” state.', 'Пока не измерял. Перед тестом общим заметкам нужно явно показывать, кто их видит.') },
         ]}
       >
         <Plate shots={[
@@ -457,7 +453,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
       )}
     >
       <div class="split results">
-        <dl class="rows">
+        <dl class="rows rows--stacked">
           <div class="rows__row">
             <dt>{t('Measured', 'Замерено')}</dt>
             <dd>
@@ -525,6 +521,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
   <footer class="case-footer">
     <nav aria-label={t('Instagram Saves project links', 'Ссылки проекта «Сохранённое» в Instagram')}>
       <a href={localePath('/', locale)}><span class="link-mark">{t('Home', 'Главная')}</span></a>
+      <a href="https://github.com/KidPudel/personal-website/blob/main/src/components/homepage/showcase/instagram-prototype/InstagramPrototypeApp.jsx"><span class="link-mark">{t('Prototype source ↗', 'Код прототипа ↗')}</span></a>
       <a href={localePath('/case-studies/', locale)}><span class="link-mark">{t('All case studies', 'Все кейсы')}</span></a>
       <a href={localePath('/case-studies/supergood/', locale)}><span class="link-mark">{t('SuperGood case study →', 'Кейс SuperGood →')}</span></a>
     </nav>
@@ -532,17 +529,6 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
 </BaseDocument>
 
 <style>
-  .stack {
-    display: grid;
-    gap: var(--space-block);
-    min-width: 0;
-  }
-
-  :global(.study-plates) main .opening {
-    max-width: 44rem;
-    margin: 0;
-  }
-
   /* ---- The loop people described, in the same drawn steps as the charts ------------------------- */
 
   .loop {
@@ -635,41 +621,6 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     }
   }
 
-  /* ---- Goal: the one large sentence, then what it means ---------------------------------------- */
-
-  .goal {
-    display: grid;
-    gap: var(--space-block);
-  }
-
-  @media (min-width: 1000px) {
-    .goal {
-      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-      gap: clamp(2.5rem, 4vw, 4rem);
-      align-items: start;
-    }
-  }
-
-  :global(.study-plates) main .goal .statement {
-    margin-block: 0;
-  }
-
-  /* ---- Constraints: four short facts ------------------------------------------------------------- */
-
-  .constraints {
-    display: grid;
-    gap: 1.1rem clamp(2rem, 4vw, 4rem);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  @media (min-width: 760px) {
-    .constraints {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
   /* ---- Research ------------------------------------------------------------------------------------ */
 
   .headcount {
@@ -717,71 +668,6 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     height: auto;
     translate: -50% -50%;
     pointer-events: none;
-  }
-
-  :global(.study-plates) main :global(#research) h3 {
-    margin-top: 2.75rem;
-  }
-
-  /* The spine: finding, how many, what it led to. */
-  .spine table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-  }
-
-  .spine th,
-  .spine td {
-    padding: 0.85rem 1.5rem 0.85rem 0;
-    vertical-align: top;
-  }
-
-  .spine th:last-child,
-  .spine td:last-child {
-    padding-right: 0;
-  }
-
-  .spine thead th {
-    padding-block: 0 0.6rem;
-    color: var(--color-muted);
-    font-size: var(--small);
-    font-weight: 400;
-  }
-
-  .spine tbody tr {
-    border-top: 1px solid rgb(17 17 15 / 10%);
-  }
-
-  .spine tbody th {
-    color: var(--color-copy);
-    font-size: var(--text);
-    font-weight: 400;
-    line-height: 1.5;
-  }
-
-  .spine__who {
-    width: 11rem;
-    color: var(--color-ink);
-    font-family: var(--font-study-emphasis);
-    font-size: var(--text);
-    font-weight: 600;
-    line-height: 1.5;
-  }
-
-  .spine__to {
-    width: 15rem;
-    color: var(--color-ink);
-    font-size: var(--text);
-    line-height: 1.5;
-  }
-
-  :global(.study-plates) main .order {
-    max-width: 48rem;
-    margin-bottom: 0;
-  }
-
-  .details-group {
-    margin-top: 2.5rem;
   }
 
   /* The nine people, inside their disclosure. */
@@ -880,84 +766,7 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     gap: 2.5rem;
   }
 
-  /* ---- Bets and what was left out -------------------------------------------------------------- */
-
-  .bets,
-  .left-out {
-    margin-top: var(--space-decision);
-  }
-
-  :global(.study-plates) main .bets__lead {
-    max-width: 44rem;
-    margin-bottom: var(--space-block);
-  }
-
-  .bets__grid {
-    display: grid;
-    gap: var(--space-decision) clamp(2rem, 4vw, 3.5rem);
-  }
-
-  @media (min-width: 900px) {
-    .bets__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .bet {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 1rem;
-    min-width: 0;
-  }
-
-  :global(.study-plates) main .bet h4 {
-    margin: 0;
-    color: var(--color-ink);
-    font-family: var(--font-study-emphasis);
-    font-size: calc(var(--text) * 1.1);
-    font-weight: 600;
-    line-height: 1.35;
-  }
-
-  .left-out__list {
-    display: grid;
-    gap: 0.7rem;
-    max-width: 48rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  /* ---- Results --------------------------------------------------------------------------------- */
-
-  .results {
-    margin-top: var(--space-block);
-  }
-
-  /* Charts need the whole column, so their labels sit above them here. */
-  :global(.study-plates.study-structured) main .results > .rows {
-    gap: 2.25rem;
-  }
-
-  .results > .rows > :global(.rows__row) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.5rem;
-  }
-
-  .results > .rows > :global(.rows__row) > :global(dt) {
-    color: var(--color-muted);
-  }
-
-  @media (min-width: 1180px) and (min-height: 900px) {
-    .results > :global(.try) {
-      position: sticky;
-      top: 8rem;
-    }
-  }
-
-  .results__more {
-    margin-top: var(--space-block);
-  }
+  /* ---- Results: the three walkthroughs, inside their disclosure ------------------------------- */
 
   .films {
     display: grid;
@@ -974,33 +783,6 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     padding: clamp(1rem, 2.4vw, 2rem);
     border-radius: var(--radius-card);
     background: var(--panel);
-  }
-
-  /* ---- Next steps: a real sequence, so numbered ------------------------------------------------- */
-
-  .next-steps {
-    display: grid;
-    gap: 0.7rem;
-    max-width: 48rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    counter-reset: step;
-  }
-
-  :global(.study-plates) main .next-steps li {
-    position: relative;
-    padding-left: 1.75rem;
-    counter-increment: step;
-  }
-
-  .next-steps li::before {
-    position: absolute;
-    left: 0;
-    color: var(--color-ink);
-    content: counter(step) '.';
-    font-family: var(--font-study-emphasis);
-    font-weight: 600;
   }
 
   /* ---- Phones ------------------------------------------------------------------------------------ */
@@ -1020,17 +802,11 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
       grid-template-columns: minmax(0, 1fr);
     }
 
-    /* The spine and the map become one block per row. */
-    .spine thead,
+    /* The map becomes one block per stage. */
     .journey thead {
       display: none;
     }
 
-    .spine table,
-    .spine tbody,
-    .spine tr,
-    .spine th,
-    .spine td,
     .journey table,
     .journey tbody,
     .journey tr,
@@ -1038,19 +814,6 @@ const sheetCrop = { x: 0, y: 40, w: 100, h: 60 };
     .journey td {
       display: block;
       width: auto;
-    }
-
-    .spine tbody tr {
-      padding: 0.9rem 0;
-    }
-
-    .spine th,
-    .spine td {
-      padding: 0;
-    }
-
-    .spine td {
-      margin-top: 0.3rem;
     }
 
     .journey tbody tr {

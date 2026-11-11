@@ -3,9 +3,9 @@
    One calm reading line, read top to bottom: a centred column of about 80 characters at 16 to 17px, and
    figures a little wider under the words they belong to. Nothing sits beside the text. Every screen
    sits on a panel (Plate.astro) lightly tinted with the study's colour; several screens are one
-   panel shown one at a time. A Detailed / TL;DR switch (StarSummary) hides the supporting text and
-   keeps the headings, the problem and what was done, the screens, and the results. Each study opens
-   with its own moment, chosen for its subject; after that, all four share one system.
+   panel shown one at a time. Each study opens with its own moment, chosen for its subject; after
+   that, all four share one system. The structured layout on top of this (short read on the cover,
+   words as navigation, labelled rows) is in study-structured.css.
 
    Rhythm, smallest to largest: a source under its claim (--space-tight), a caption or names under
    a panel (--space-caption), words and a figure (--space-block), one decision and the next
@@ -571,26 +571,4 @@ html.js.study-plates .gather:not(.is-here) .gather__one {
   .study-plates :is(.chart--units, .people).is-here :is(.chart__unit, .chart__value, .people__dot--on) {
     animation: none;
   }
-}
-
-/* ---- Detailed or TL;DR: the switch is in StarSummary. TL;DR shows the study's two-minute read
-   (Tldr.astro) in place of the long one; without JavaScript the long read is the page. ---------- */
-
-html.study-plates:not([data-depth='tldr']) main .tldr {
-  display: none;
-}
-
-html.study-plates[data-depth='tldr'] main > :not(header, .part--summary, .tldr),
-html.study-plates[data-depth='tldr'] main .part--summary > :not(.depth, script),
-html.study-plates[data-depth='tldr'] reading-progress {
-  display: none;
-}
-
-/* Right under the switch. */
-html.study-plates[data-depth='tldr'] main .tldr {
-  margin-top: 0;
-}
-
-.study-plates main .tldr > .tldr__screens {
-  grid-column: wide;
 }

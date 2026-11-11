@@ -9,7 +9,6 @@ import footageStill from '../../../assets/case_study_images/observatory/archive-
 import type { CaseStudy } from '../../../content/case-studies';
 import { nightPaper } from './night';
 import ProjectFacts from '../ProjectFacts.astro';
-import Rich from '../Rich.astro';
 
 // Observatory opens at night, on the archive film of an astronomer at a telescope, printed in the
 // launch film's two inks and seen through a round eyepiece. Scrolling brings the eyepiece to the
@@ -20,22 +19,22 @@ import Rich from '../Rich.astro';
 
 interface Props {
   title: string;
-  pitch: string;
-  /** The result, numbers in **bold**. */
-  outcome: string;
   /** Whose project, Igor's part, the team, and whether it shipped, from src/content/case-studies.ts. */
   about: CaseStudy['about'];
+  /** The first entry in the section navigation. */
+  navLabel: string;
   /** Observatory's live view, what the eyepiece turns to. */
   view: ImageMetadata;
   viewAlt: string;
 }
 
-const { title, pitch, outcome, about, view, viewAlt } = Astro.props;
+const { title, about, navLabel, view, viewAlt } = Astro.props;
 const texture = await getImage({ src: titleTexture, width: 1600, format: 'webp', quality: 80 });
 const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width < view.width).concat(Math.min(view.width, 2400)))];
 ---
 
-<header class="eyepiece" data-eyepiece style={`--night-paper: ${nightPaper}`}>
+<!-- #summary is what BaseDocument holds the first paint for, so the card can open into this cover. -->
+<header class="eyepiece" id="summary" data-index-section data-index-label={navLabel} data-eyepiece style={`--night-paper: ${nightPaper}`}>
   <div class="eyepiece__stage">
     <div class="eyepiece__text">
       <h1 class="eyepiece__title wordmark" aria-label={title} style={`--title-texture: url('${texture.src}')`}>
@@ -43,9 +42,8 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
           <span class="wordmark__letter" aria-hidden="true" data-letter={letter} style={`--letter-index: ${index}; --texture-position: ${(index / (title.length - 1)) * 100}%`}>{letter}</span>
         ))}
       </h1>
-      <p class="eyepiece__pitch">{pitch}</p>
       <ProjectFacts about={about} />
-      <p class="eyepiece__outcome"><Rich text={outcome} /></p>
+      <slot />
     </div>
 
     <!-- The eyepiece: the dithered still at once, then the film, dithered frame by frame. -->
@@ -233,7 +231,7 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
     margin: 0;
     color: var(--night-ink);
     font-family: var(--font-display);
-    font-size: clamp(3.25rem, 1.5rem + 6vw, 7rem);
+    font-size: clamp(3rem, 1.5rem + 4.2vw, 5.25rem);
     font-weight: 700;
     font-synthesis: none;
     letter-spacing: -0.06em;
@@ -272,26 +270,15 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
     38%, 68% { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  .eyepiece .eyepiece__pitch {
-    max-width: 26rem;
-    margin: 1.25rem 0 0;
-    color: var(--night-ink);
-    font-size: clamp(1.125rem, 1rem + 0.45vw, 1.375rem);
-    line-height: 1.38;
+  /* The short read in the night's inks; the highlighter keeps dark ink so its words stay legible. */
+  .eyepiece__text {
+    --color-ink: var(--night-ink);
+    --color-copy: rgb(223 232 200 / 82%);
+    --color-muted: rgb(223 232 200 / 62%);
   }
 
-  .eyepiece .eyepiece__outcome {
-    max-width: 30rem;
-    margin: clamp(1.75rem, 4vw, 2.75rem) 0 0;
-    color: var(--night-ink);
-    font-size: 1.0625rem;
-    line-height: 1.55;
-  }
-
-  :global(.study-plates main) .eyepiece__outcome :global(strong) {
-    color: #fff;
-    font-family: var(--font-study-emphasis);
-    font-weight: 600;
+  :global(.study-plates main) .eyepiece__text :global(.marked strong) {
+    color: #0b0c0a;
   }
 
   /* Clear of the section ticks at the window's left edge. */
@@ -337,8 +324,9 @@ const viewWidths = [...new Set([960, 1280, 1600, 2000].filter((width) => width <
     :global(html.js) .eyepiece__text {
       position: absolute;
       top: 50%;
-      left: var(--gutter);
-      width: min(44cqw, 34rem);
+      /* On the page frame's left edge, the same as the header's. */
+      left: max(var(--gutter), (100cqw - var(--wide, 76rem)) / 2);
+      width: min(46cqw, 36rem);
       opacity: calc(1 - min(1, var(--p) * 3));
       translate: 0 calc(-50% - var(--p) * 6rem);
     }

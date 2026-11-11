@@ -45,8 +45,8 @@ export const caseStudies: readonly CaseStudy[] = [
     cover: instagramCover,
     coverFormat: 'phone',
     about: {
-      en: 'A self-initiated concept from 2026, not a shipped product. I did the research, UX/UI, and prototyping: 9 user interviews, then an interactive mobile prototype.',
-      ru: 'Собственный концепт 2026 года, а не выпущенный продукт. Я провёл исследование, сделал UX/UI и прототип: 9 интервью с пользователями, а на выходе интерактивный мобильный прототип.',
+      en: 'A self-initiated concept from 2026, not a shipped product. I ran 9 user interviews, designed it in Figma, then built and refined the interactive prototype with Claude Code.',
+      ru: 'Собственный концепт 2026 года, а не выпущенный продукт. Я провёл 9 интервью с пользователями, спроектировал интерфейс в Figma, а потом собрал и доработал интерактивный прототип с Claude Code.',
     },
   },
   {
@@ -63,8 +63,8 @@ export const caseStudies: readonly CaseStudy[] = [
     cover: supergoodCover,
     coverFormat: 'phone',
     about: {
-      en: 'I was the product designer and the only mobile engineer at PizzaSushiWok, a small company, and worked on the app alone for 11 months in 2024. It shipped on iOS and Android and was later closed for financial reasons.',
-      ru: 'Я был продуктовым дизайнером и единственным мобильным разработчиком в PizzaSushiWok, небольшой компании, и 11 месяцев в 2024 году делал приложение один. Оно вышло на iOS и Android, позже проект закрыли по финансовым причинам.',
+      en: 'I was the product designer and the only mobile engineer at PizzaSushiWok, a small company, and worked on the app alone from August 2023 to July 2024. It shipped on iOS and Android and was later closed for financial reasons.',
+      ru: 'Я был продуктовым дизайнером и единственным мобильным разработчиком в PizzaSushiWok, небольшой компании, и с августа 2023 по июль 2024 года делал приложение один. Оно вышло на iOS и Android, позже проект закрыли по финансовым причинам.',
     },
   },
   {
@@ -81,8 +81,8 @@ export const caseStudies: readonly CaseStudy[] = [
     cover: observatoryCover,
     coverFormat: 'desktop',
     about: {
-      en: 'A personal project. I did the product design, research, identity, and launch film, wrote the specs, and directed AI development. Release 0.1.1 came out in 2026 for macOS 14 and later, and 3 colleagues have used it for about two months.',
-      ru: 'Личный проект. Я сделал продуктовый дизайн, исследование, айдентику и ролик к запуску, писал спецификации и руководил разработкой с AI. Релиз 0.1.1 вышел в 2026 году для macOS 14 и новее, им около двух месяцев пользуются 3 коллеги.',
+      en: 'A personal project. I did the research, the design in Figma, the identity, and the launch film, wrote the specs, then built and refined the app with Codex and ChatGPT. Release 0.1.1 came out in 2026 for macOS 14 and later, and 3 colleagues have used it for about two months.',
+      ru: 'Личный проект. Я провёл исследование, спроектировал приложение в Figma, сделал айдентику и ролик к запуску, написал спецификации, а потом собрал и доработал приложение с Codex и ChatGPT. Релиз 0.1.1 вышел в 2026 году для macOS 14 и новее, им около двух месяцев пользуются 3 коллеги.',
     },
   },
   {

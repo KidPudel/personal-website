@@ -511,6 +511,12 @@ const many = shots.length > 1;
       order: 2;
     }
 
+    /* App windows share the width equally. */
+    .plate--together.plate--desktop .plate__track {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      justify-content: stretch;
+    }
+
     .plate--together .plate__controls {
       display: none;
     }

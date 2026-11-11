@@ -1,6 +1,6 @@
 # Media performance contract
 
-Last updated: 2026-11-06
+Last updated: 2026-11-10
 
 This document is the implementation contract for every image, video, flipbook, poster, and decorative media asset on the site. Future agents must read it before changing public media.
 
@@ -64,6 +64,8 @@ The card is the redesigned Saved screen from the live prototype, in front of the
 ### Instagram case-study live search
 
 The Results section shows the homepage card's live search on the study's panel. It stays below the fold: a lazy screenshot of the same screen stands in, and the island mounts only within 240 px of the viewport (`client:visible`), so its thumbnails load only then. Without JavaScript the screenshot remains. The notebook photos, wireframes, and walkthroughs sit inside closed disclosures, so they don't compete with the rest of the page until someone opens them.
+
+The same holds in the other studies: Observatory's sketches and first prototype sit in closed disclosures, and its launch film poster is lazy beside the results.
 
 ### Homepage SuperGood and Two Sticks cards
 

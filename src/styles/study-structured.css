@@ -1,5 +1,5 @@
 /* A structured case study, built on plates.css: information first, reading it like a document, not
-   an article. Add the page class `study-structured` to a study to use it.
+   an article. Every study has the page class `study-structured`.
 
    The system is small:
    - Words in the margin are the navigation (ReadingProgress), a strip at the bottom on smaller windows.
@@ -163,27 +163,282 @@ html.study-structured {
   margin-block: 0;
 }
 
-/* ---- The short read on the cover --------------------------------------------------------------- */
+/* Rows whose content needs the whole width, such as charts: the label sits above, quieter. */
+.study-structured .rows--stacked {
+  gap: 2.25rem;
+}
 
-.study-structured .pile .rows {
+.study-structured .rows--stacked > .rows__row {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.study-structured .rows--stacked > .rows__row > dt {
+  color: var(--color-muted);
+}
+
+/* ---- The short read on the cover (each study's own opening, the first entry in the navigation) --- */
+
+.study-structured main > header .rows {
   gap: 0.7rem;
   margin-top: clamp(1.25rem, 2.5vh, 2rem);
 }
 
-.study-structured .pile .rows dd {
+.study-structured main > header .rows dd {
   font-size: 1rem;
   line-height: 1.48;
 }
 
-.study-structured .pile .rows dt {
+.study-structured main > header .rows dt {
   line-height: 1.58;
 }
 
-.study-structured main .pile .project-about {
+.study-structured main > header .project-about {
   max-width: 36rem;
   margin-top: 0.85rem;
   font-size: var(--small);
   line-height: 1.5;
+}
+
+/* ---- Shared blocks: problem, goal, constraints, findings, what was left out, next steps --------- */
+
+.study-structured .stack {
+  display: grid;
+  gap: var(--space-block);
+  min-width: 0;
+}
+
+.study-structured main .opening {
+  max-width: 44rem;
+  margin: 0;
+}
+
+.study-structured main .part > h3 {
+  margin-top: 2.75rem;
+}
+
+/* The goal: its one large sentence, when there is one, beside what it means. */
+.study-structured .goal {
+  display: grid;
+  gap: var(--space-block);
+}
+
+.study-structured .goal > .rows {
+  max-width: 52rem;
+}
+
+@media (min-width: 1000px) {
+  .study-structured .goal:has(> .statement) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(2.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+}
+
+.study-structured main .goal .statement {
+  margin-block: 0;
+}
+
+/* Constraints: a few short facts, two to a row. */
+.study-structured .constraints {
+  display: grid;
+  gap: 1.1rem clamp(2rem, 4vw, 4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 760px) {
+  .study-structured .constraints {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* The spine: each finding, where it came from, and what it led to. */
+.study-structured .spine table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.study-structured .spine :is(th, td) {
+  padding: 0.85rem 1.5rem 0.85rem 0;
+  vertical-align: top;
+}
+
+.study-structured .spine :is(th, td):last-child {
+  padding-right: 0;
+}
+
+.study-structured .spine thead th {
+  padding-block: 0 0.6rem;
+  color: var(--color-muted);
+  font-size: var(--small);
+  font-weight: 400;
+}
+
+.study-structured .spine tbody tr {
+  border-top: 1px solid rgb(17 17 15 / 10%);
+}
+
+.study-structured .spine tbody th {
+  color: var(--color-copy);
+  font-size: var(--text);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.study-structured .spine__who {
+  width: 11rem;
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-size: var(--text);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.study-structured .spine__to {
+  width: 15rem;
+  color: var(--color-ink);
+  font-size: var(--text);
+  line-height: 1.5;
+}
+
+@media (max-width: 759px) {
+  .study-structured .spine thead {
+    display: none;
+  }
+
+  .study-structured .spine :is(table, tbody, tr, th, td) {
+    display: block;
+    width: auto;
+  }
+
+  .study-structured .spine tbody tr {
+    padding: 0.9rem 0;
+  }
+
+  .study-structured .spine :is(th, td) {
+    padding: 0;
+  }
+
+  .study-structured .spine td {
+    margin-top: 0.3rem;
+  }
+}
+
+.study-structured main .order {
+  max-width: 48rem;
+  margin-bottom: 0;
+}
+
+.study-structured .details-group {
+  margin-top: 2.5rem;
+}
+
+/* Bets and what was left out, after the decisions. */
+.study-structured :is(.bets, .left-out) {
+  margin-top: var(--space-decision);
+}
+
+.study-structured main .bets__lead {
+  max-width: 44rem;
+  margin-bottom: var(--space-block);
+}
+
+.study-structured .bets__grid {
+  display: grid;
+  gap: var(--space-decision) clamp(2rem, 4vw, 3.5rem);
+}
+
+@media (min-width: 900px) {
+  .study-structured .bets__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.study-structured .bet {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.study-structured main .bet h4 {
+  margin: 0;
+  color: var(--color-ink);
+  font-family: var(--font-study-emphasis);
+  font-size: calc(var(--text) * 1.1);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.study-structured .left-out__list {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 48rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Results: a plain lead, then what was measured, counted, heard, and not tested. */
+.study-structured .results {
+  margin-top: var(--space-block);
+}
+
+.study-structured .results--even {
+  display: grid;
+  gap: 2.25rem clamp(2.5rem, 4vw, 4rem);
+}
+
+@media (min-width: 1000px) {
+  .study-structured .results--even {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+@media (min-width: 1180px) and (min-height: 900px) {
+  .study-structured .results > .try {
+    position: sticky;
+    top: 8rem;
+  }
+}
+
+.study-structured .results__more {
+  margin-top: var(--space-block);
+}
+
+/* Steps that are a real sequence, numbered. */
+.study-structured .next-steps {
+  display: grid;
+  gap: 0.7rem;
+  max-width: 48rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.study-structured main .next-steps li {
+  position: relative;
+  padding-left: 1.75rem;
+  counter-increment: step;
+}
+
+.study-structured .next-steps li::before {
+  position: absolute;
+  left: 0;
+  color: var(--color-ink);
+  content: counter(step) '.';
+  font-family: var(--font-study-emphasis);
+  font-weight: 600;
+}
+
+.study-structured main .part > .next-steps + p,
+.study-structured main .part > p + .next-steps {
+  margin-top: var(--space-block);
 }
 
 /* ---- Decisions ------------------------------------------------------------------------------------ */
@@ -359,6 +614,12 @@ html.study-structured {
 
   .study-structured reading-progress a[data-sub]:not([data-open]) {
     display: none;
+  }
+
+  /* While a study's opening is night (Observatory), the words in the margin take the night's inks. */
+  html.study-structured.is-night reading-progress {
+    --color-ink: #dfe8c8;
+    --color-muted: rgb(223 232 200 / 62%);
   }
 }
 

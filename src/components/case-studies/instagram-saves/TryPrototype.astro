@@ -9,6 +9,7 @@ import { toLocale, translator } from '../../../i18n/locales';
 // JavaScript, the real screenshot of that screen stands in. It loads only when it comes near.
 
 const t = translator(toLocale(Astro.currentLocale));
+const source = 'https://github.com/KidPudel/personal-website/blob/main/src/components/homepage/showcase/instagram-prototype/InstagramPrototypeApp.jsx';
 ---
 
 <figure class="try">
@@ -32,7 +33,10 @@ const t = translator(toLocale(Astro.currentLocale));
       <div class="try__app" lang="en"><InstagramPrototypeApp client:visible={{ rootMargin: '240px' }} /></div>
     </div>
   </div>
-  <figcaption>{t('Try it: tap the search field. It finds “spider”, then “new york”.', 'Попробуйте: нажмите на поле поиска. Сначала оно найдёт «spider», потом «new york».')}</figcaption>
+  <figcaption>
+    {t('Try it: tap the search field. It finds “spider”, then “new york”. Built with Claude Code.', 'Попробуйте: нажмите на поле поиска. Сначала оно найдёт «spider», потом «new york». Собрано с Claude Code.')}
+    <a class="try__source" href={source}><span class="link-mark">{t('Prototype source ↗', 'Код прототипа ↗')}</span></a>
+  </figcaption>
 </figure>
 
 <style>
@@ -74,5 +78,13 @@ const t = translator(toLocale(Astro.currentLocale));
   .try__app {
     position: absolute;
     inset: 0;
+  }
+
+  .try__source {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    min-height: 44px;
+    color: var(--color-ink);
   }
 </style>

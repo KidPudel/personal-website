@@ -18,12 +18,14 @@ export interface Row {
 
 interface Props {
   rows: Row[];
+  /** Labels above their content, for content that needs the whole width, such as charts. */
+  stacked?: boolean;
 }
 
-const { rows } = Astro.props;
+const { rows, stacked = false } = Astro.props;
 ---
 
-<dl class="rows">
+<dl class:list={['rows', stacked && 'rows--stacked']}>
   {rows.map((row) => (
     <div class:list={['rows__row', row.tone && `rows__row--${row.tone}`]}>
       <dt>{row.href ? <a href={row.href}><span class="link-mark">{row.label}</span></a> : row.label}</dt>

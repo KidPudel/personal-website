@@ -1,6 +1,27 @@
 # Progress
 
-Last updated: 2026-11-06
+Last updated: 2026-11-11
+
+## Résumé: positioning, AI, and facts in line with the case studies
+
+- The summary now carries the portfolio's positioning (find where products don't fit how people behave, design interactions around how people think, build what you design) and names the AI tools.
+- Skills split designing AI features from building with AI; code skills are listed as Igor's own. Figma, visual design, identity, and illustration are named.
+- Projects in order of relevance: Instagram (with the timed result), Observatory (with its identity, artwork, and launch film), Two Sticks, and this portfolio (designed, drawn, and art-directed by Igor, built with Claude Code).
+- Key numbers are bold, "EXPERIENCE" is the plain heading parsers expect, and the location says Igor is open to office, remote, or relocation. The phone number is on the Russian version only.
+- Facts match the case studies: SuperGood is August 2023 to July 2024 (the cover line was corrected too), and "watched 10 people" replaces "watched and interviewed".
+- Both versions parse cleanly as text in reading order, keep embedded fonts and working links, and fit on one page.
+
+## Case studies: SuperGood, Observatory, and Two Sticks follow the structured study
+
+- Igor approved the Instagram pilot ("this is great") and asked for the rest to be read and fixed. All four studies now share it: the short read on each opening's first screen, words as section navigation, Constraints, a findings table that says where each finding came from and what it led to, decisions as labelled rows beside their screens, and Results split by kind of evidence. The Detailed / TL;DR switch and its components (`StarSummary`, `Tldr`, `Decision`) are gone.
+- Each opening keeps its moment. The pitch lines gave way to the short read, the titles got smaller, and the Observatory words take the night's inks. The Two Sticks copybook is smaller so the short read fits beside it.
+- SuperGood: the review split beside the problem, four research methods as rows, the job stories closed under the findings table, reflection as a list.
+- Observatory: personas side by side, the sketches and first prototype closed, wireframe before and after shown side by side, the download and launch film beside the results.
+- Two Sticks: the diploma team's research stays credited, scope cuts moved from a decision into "What I left out", and results say plainly what wasn't measured.
+- Hypotheses on the main decisions are drafted from each study's own reasoning and await Igor's confirmation. SuperGood's dish card result ("did better than the old one") still needs its measure.
+- Verified at 1440 and 375 px in English, and Russian samples, with no horizontal overflow or console errors.
+- Then, at Igor's request: how each AI-built project was made is said plainly. Instagram was designed in Figma and built and refined with Claude Code (cover line, a constraint, the prototype's source linked beside the live search and in the footer); Observatory was designed in Figma and built and refined with Codex and ChatGPT (cover line, a constraint). The résumé says the same, and both résumés still fit on one page.
+- Copy tightened: every decision has at most five rows (a reason that restated the hypothesis became part of it), the short read names the main decision and counts the rest, and where nothing was measured the section says so once.
 
 ## Instagram Saves: restructured to be read like a document (pilot)
 

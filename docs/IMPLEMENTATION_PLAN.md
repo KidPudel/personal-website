@@ -11,7 +11,7 @@ Last updated: 2026-10-14
 ## Completed milestone: Instagram Saves as a structured study (pilot)
 
 - Make the first screen the short read, name the navigation in words, add constraints, tie every finding to what it led to, and give each decision a hypothesis and an honest result. See `docs/PROGRESS.md`.
-- Next, if Igor approves the pilot: move the other three studies to `study-structured`, each with its own copy.
+- Done for all four studies (2026-11-10), each with its own copy. Next: Igor confirms the drafted hypotheses and the open facts listed in `docs/PROGRESS.md`.
 
 ## Completed milestone: case studies as a marked-up proof
 
